@@ -1,4 +1,4 @@
-var root = 'https://www.brokengekko.com/';
+var root = 'https://www.brokengekko.com';
 var useHash = true;
 var hash = '#!';
 var router = new Navigo(root, useHash, hash);
@@ -27,7 +27,10 @@ router.on({
   'thirdroute': () => { loadHTML('./templates/third.html', 'view'); }
 });
 
-// set the default route
-router.on(() => { $id('view').innerHTML = '<h2>Here by default</h2><p><a href="#!/firstroute/" onclick="router.navigate(\'/#!/firstroute/\')">First Route</a></p>'; });
+// set the default route and 404 routes
+var default404 = '<h2>Here by default</h2><p><a href="#!/firstroute/" onclick="router.navigate(\'/#!/firstroute/\')">First Route</a></p>';
+router.on(() => { $id('view').innerHTML = default404; });
+router.notFound((query) => { $id('view').innerHTML = default404 + ' Error 404.'; });
+
 
 router.resolve();
