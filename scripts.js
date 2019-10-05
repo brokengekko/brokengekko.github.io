@@ -1,3 +1,8 @@
+var root = 'www.brokengekko.com';
+var useHash = false;
+var hash = '#!';
+var router = new Navigo(root, useHash, hash);
+
 // getElementById wrapper
 function $id(id) {
   return document.getElementById(id);
@@ -15,7 +20,6 @@ function loadHTML(url, id) {
 }
 
 // use #! to hash
-router = new Navigo(null, true, '#!');
 router.on({
   // 'view' is the id of the div element inside which we render the HTML
   'firstroute': () => { loadHTML('template-first.html', 'view'); },
