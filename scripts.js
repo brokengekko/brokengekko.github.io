@@ -28,7 +28,7 @@ router.on({
 });
 
 // set the default route
-router.on(() => { $id('view').innerHTML = '<h2>Here by default</h2><p><a href="javascript:router.navigate(`firstroute`);">First Route</a></p>'; });
+router.on(() => { $id('view').innerHTML = '<h2>Here by default</h2><p><a onclick="router.navigate(`firstroute`);">First Route</a></p>'; });
 
 // set the 404 route
 router.notFound((query) => { $id('view').innerHTML = '<h3>Couldn\'t find the page you\'re looking for...</h3>'; });
