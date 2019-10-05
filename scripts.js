@@ -19,17 +19,16 @@ function loadHTML(url, id) {
   };
 }
 
-// use #! to hash
+var default404 = '<h2>Here by default</h2><p><a href="#!/firstroute/" onclick="router.navigate(\'/#!/firstroute/\')">First Route</a></p>';
 router.on({
   // 'view' is the id of the div element inside which we render the HTML
   'firstroute': () => { loadHTML('template-first.html', 'view'); },
   'secondroute': () => { loadHTML('./templates/second.html', 'view'); },
-  'thirdroute': () => { loadHTML('./templates/third.html', 'view'); }
+  'thirdroute': () => { loadHTML('./templates/third.html', 'view'); },
+  '*': () => { $id('view').innerHTML = default404; }
 });
 
 // set the default route and 404 routes
-var default404 = '<h2>Here by default</h2><p><a href="#!/firstroute/" onclick="router.navigate(\'/#!/firstroute/\')">First Route</a></p>';
-router.on(() => { $id('view').innerHTML = default404; });
 router.notFound((query) => { $id('view').innerHTML = default404 + ' Error 404.'; });
 
 
