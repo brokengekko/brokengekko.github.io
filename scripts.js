@@ -1,4 +1,4 @@
-var root = 'www.brokengekko.com';
+var root = null;
 var useHash = true;
 var hash = '#!';
 var router = new Navigo(root, useHash, hash);
