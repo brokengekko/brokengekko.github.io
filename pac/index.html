@@ -820,6 +820,7 @@
                 map[pacGridY][pacGridX] = 0; score += 50;
                 resetPowerUpEffects();
                 pacman.poweredUp = true;
+                addChatMessage(getClosestGhost().name, "Run!", getClosestGhost().color);
                 poweredUpTimer = POWER_UP_DURATION;
                 ghosts.forEach(g => { g.isScared = true; });
                 updateUI();
@@ -830,6 +831,7 @@
                 pacman.poweredUp = true;
                 pacman.speedBoosted = true;
                 pacman.isRedHot = true;
+                addChatMessage(getClosestGhost().name, "Cannnnnnnn't.. . moooooooove...", getClosestGhost().color);
                 poweredUpTimer = POWER_UP_DURATION;
                 ghosts.forEach(g => { g.isScared = true; g.isFrozen = true; });
                 updateUI();
@@ -838,6 +840,7 @@
                 resetPowerUpEffects();
                 pacman.poweredUp = true; // Use timer
                 pacman.isPoisoned = true;
+                addChatMessage(getClosestGhost().name, "Fool ate the poison pellet. U ded!", getClosestGhost().color);
                 poweredUpTimer = POWER_UP_DURATION;
                 updateUI();
             }
