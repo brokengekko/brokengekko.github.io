@@ -499,8 +499,7 @@
             update(fixedTimeStep) {
                 if (this.isDefeated || this.isFrozen) return;
 
-                addChatMessage(this.name, "My X,Y = " + (this.x).toString(), this.color);
-                if (this.x > 20 || this.x < 1 || this.y > 20 || this.y < 1) {
+                if (this.x > 600 || this.x < 1 || this.y > 600 || this.y < 1) {
                     this.isEaten = false; this.isHomed = true;
                     this.homedTimer = GHOST_HOME_TIME;
                     this.x = homeBaseX; this.y = homeBaseY;
