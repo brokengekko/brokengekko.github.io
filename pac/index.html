@@ -759,7 +759,7 @@
         
         function handleGhostDefeat(ghost) {
             ghost.isEaten = true;
-            ghost.eatenTimer = 8000;
+            ghost.eatenTimer = 2000; // From 8000
             ghost.isFrozen = false; 
             const ghostGridX = Math.floor(ghost.x / TILE_SIZE);
             const ghostGridY = Math.floor(ghost.y / TILE_SIZE);
