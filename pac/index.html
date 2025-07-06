@@ -475,7 +475,7 @@
                     ctx.beginPath(); ctx.arc(this.x + 4, this.y, 3, 0, Math.PI * 2); ctx.fill();
                     return;
                 }
-                ctx.fillStyle = this.isScared ? '#0000FF' : this.color;
+                ctx.fillStyle = this.isScared ? '#0000FF' : (this.isHomed ? "#888888" : this.color);
                 if (this.isFrozen) ctx.fillStyle = '#ADD8E6';
                 
                 ctx.beginPath();
