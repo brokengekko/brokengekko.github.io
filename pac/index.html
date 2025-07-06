@@ -669,21 +669,26 @@
             addChatMessage(randomGhost.name, "Ghost Gang Assemble!", randomGhost.color);
         }
 
+        function getClosestGhost() {
+            let closestGhost = null;
+            let minDistance = Infinity;
+            for (const ghost of ghosts) {
+                if (ghost.isDefeated) continue;
+                const distance = Math.hypot(pacman.x - ghost.x, pacman.y - ghost.y);
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    closestGhost = ghost;
+                }
+            }
+            return closestGhost;
+        }
+        
         function update(fixedTimeStep) {
             if (!gameRunning) return;
 
             chatTimer -= fixedTimeStep;
             if (chatTimer <= 0) {
-                let closestGhost = null;
-                let minDistance = Infinity;
-                for (const ghost of ghosts) {
-                    if (ghost.isDefeated) continue;
-                    const distance = Math.hypot(pacman.x - ghost.x, pacman.y - ghost.y);
-                    if (distance < minDistance) {
-                        minDistance = distance;
-                        closestGhost = ghost;
-                    }
-                }
+                let closestGhost = getClosestGhost();
                 if (closestGhost) {
                     let message = "";
                     switch(closestGhost.name) {
