@@ -498,6 +498,14 @@
             
             update(fixedTimeStep) {
                 if (this.isDefeated || this.isFrozen) return;
+
+                if (this.x > 20 || this.x < 1 || this.y > 20 || this.y < 1) {
+                    this.isEaten = false; this.isHomed = true;
+                    this.homedTimer = GHOST_HOME_TIME;
+                    this.x = homeBaseX; this.y = homeBaseY;
+                    this.velX = 0; this.velY = 0;
+                    return;
+                }
                 
                 if (this.isEaten) {
                     this.eatenTimer -= fixedTimeStep;
