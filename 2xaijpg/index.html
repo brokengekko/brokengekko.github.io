@@ -302,7 +302,7 @@
         <!-- Stage 2: File Upload -->
         <div class="stage" id="stage2">
             <h1>2x AI JPG</h1>
-            <p>Upload your JPG image to upscale it 2x using Stability AI</p>
+            <p>Upload your JPG image and describe it for optimal upscaling</p>
             
             <div class="upload-section">
                 <div class="upload-area" id="uploadArea">
@@ -314,12 +314,27 @@
                     </button>
                 </div>
                 <input type="file" id="fileInput" class="file-input" accept=".jpg,.jpeg" />
+                
+                <div class="prompt-section" id="promptSection" style="display: none;">
+                    <div style="margin: 2rem 0;">
+                        <label for="imagePrompt" style="display: block; margin-bottom: 0.5rem; font-weight: bold;">Describe your image:</label>
+                        <textarea 
+                            id="imagePrompt" 
+                            placeholder="e.g., Two people taking a selfie together in warm lighting, portrait photo, high quality"
+                            style="width: 100%; padding: 1rem; border-radius: 10px; background: rgba(255,255,255,0.1); border: 2px solid rgba(255,255,255,0.2); color: #fff; font-family: inherit; font-size: 14px; resize: vertical; min-height: 80px;"
+                        ></textarea>
+                    </div>
+                    
+                    <button class="upload-button" id="processButton">
+                        🚀 Upscale Image
+                    </button>
+                </div>
             </div>
 
             <div class="loading-container" id="loadingContainer" style="display: none;">
                 <div class="loading-spinner"></div>
                 <div class="loading-text">Upscaling your image with Stability AI...</div>
-                <p style="font-size: 0.9rem; opacity: 0.6; margin-top: 1rem;">This may take a few moments</p>
+                <p style="font-size: 0.9rem; opacity: 0.6; margin-top: 1rem;">Processing with Conservative Upscale...</p>
             </div>
 
             <div id="errorContainer"></div>
@@ -429,6 +444,9 @@
         const fileInput = document.getElementById('fileInput');
         const loadingContainer = document.getElementById('loadingContainer');
         const errorContainer = document.getElementById('errorContainer');
+        const promptSection = document.getElementById('promptSection');
+        const processButton = document.getElementById('processButton');
+        let selectedFile = null;
 
         // Drag and drop functionality
         uploadArea.addEventListener('dragover', (e) => {
@@ -446,17 +464,26 @@
             uploadArea.classList.remove('dragover');
             const files = e.dataTransfer.files;
             if (files.length > 0) {
-                handleFileUpload(files[0]);
+                handleFileSelection(files[0]);
             }
         });
 
         fileInput.addEventListener('change', (e) => {
             if (e.target.files.length > 0) {
-                handleFileUpload(e.target.files[0]);
+                handleFileSelection(e.target.files[0]);
             }
         });
 
-        function handleFileUpload(file) {
+        processButton.addEventListener('click', () => {
+            const prompt = document.getElementById('imagePrompt').value.trim();
+            if (!prompt) {
+                showError('Please describe your image before processing.');
+                return;
+            }
+            handleFileUpload(selectedFile, prompt);
+        });
+
+        function handleFileSelection(file) {
             // Validate file type
             if (!file.type.match('image/jpeg')) {
                 showError('Please upload a JPG/JPEG file only.');
@@ -469,15 +496,23 @@
                 return;
             }
 
+            selectedFile = file;
             originalFileName = file.name;
             
-            // Hide upload area and show loading
-            document.querySelector('.upload-section').style.display = 'none';
+            // Hide upload area and show prompt section
+            uploadArea.style.display = 'none';
+            promptSection.style.display = 'block';
+            errorContainer.innerHTML = '';
+        }
+
+        function handleFileUpload(file, prompt) {
+            // Hide prompt section and show loading
+            promptSection.style.display = 'none';
             loadingContainer.style.display = 'block';
             errorContainer.innerHTML = '';
 
             // Process the image
-            upscaleImage(file);
+            upscaleImage(file, prompt);
         }
 
         async function upscaleImage(file) {
@@ -629,11 +664,15 @@
             // Reset everything
             upscaledImageBlob = null;
             originalFileName = '';
+            selectedFile = null;
             fileInput.value = '';
+            document.getElementById('imagePrompt').value = '';
             errorContainer.innerHTML = '';
             
             // Show upload area again
             loadingContainer.style.display = 'none';
+            promptSection.style.display = 'none';
+            uploadArea.style.display = 'block';
             document.querySelector('.upload-section').style.display = 'block';
             
             showStage(2);
