@@ -363,8 +363,8 @@
             </div>
 
             <div class="slider-container" style="display: none;">
-                <label for="creativity">Creativity: <span id="creativityValue">0.2</span></label>
-                <input type="range" id="creativity" min="2" max="5" value="2" style="width: 100%;">
+                <label for="creativity">Creativity: <span id="creativityValue">0.35</span></label>
+                <input type="range" id="creativity" min="0" max="100" value="35" style="width: 100%;">
             </div>
 
             <div class="upload-section" style="display: none;">
@@ -524,7 +524,7 @@
         });
         
         creativitySlider.addEventListener('input', (e) => {
-            creativityValue.textContent = e.target.value / 10;
+            creativityValue.textContent = e.target.value / 100;
         });
         
         uploadArea.addEventListener('dragover', (e) => {
@@ -607,7 +607,8 @@
                 
                 const userPrompt = promptInput.value.trim();
                 formData.append('prompt', userPrompt);
-                formData.append('creativity', creativitySlider.value / 10);
+                // Send creativity value from 0.0 to 1.0
+                formData.append('creativity', creativitySlider.value / 100);
 
                 const response = await fetch('https://image-upscaler-backend.onrender.com/upscale', {
                     method: 'POST',
