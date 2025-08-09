@@ -502,7 +502,7 @@
                 const userPrompt = promptInput.value.trim();
                 const finalPrompt = userPrompt || 'high quality, sharp details, enhanced resolution, professional upscaling, crisp and clear';
                 formData.append('prompt', finalPrompt);
-                formData.append('creativity', '0.3');
+                formData.append('creativity', '0.2');
 
                 const response = await fetch('https://api.stability.ai/v2beta/stable-image/upscale/creative', {
                     method: 'POST',
