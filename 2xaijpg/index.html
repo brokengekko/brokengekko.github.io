@@ -609,20 +609,26 @@
                 formData.append('prompt', userPrompt);
                 formData.append('creativity', creativitySlider.value / 10);
 
-                // Point the fetch request to your Render backend
                 const response = await fetch('https://image-upscaler-backend.onrender.com/upscale', {
                     method: 'POST',
                     body: formData
                 });
 
                 if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.error || 'Unknown error from backend');
+                    const errorText = await response.text();
+                    let errorMessage = errorText;
+                    try {
+                        const errorJson = JSON.parse(errorText);
+                        errorMessage = errorJson.error || errorText;
+                    } catch (e) {
+                        // The error was not JSON, use the raw text.
+                    }
+                    throw new Error(errorMessage);
                 }
 
                 upscaledImageBlob = await response.blob();
-                if (!upscaledImageBlob || upscaledImageBlob.size === 0) {
-                    throw new Error('Received empty image data from backend');
+                if (!upscaledImageBlob || upscaledImageBlob.size < 1000) {
+                    throw new Error('Received an invalid or empty image file from the backend.');
                 }
                 
                 console.log('Success! Upscaled image size:', upscaledImageBlob.size, 'bytes');
