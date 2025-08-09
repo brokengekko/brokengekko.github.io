@@ -442,18 +442,19 @@
                 }
 
                 if (value) {
+                    // Set the data value immediately
+                    e.target.setAttribute('data-value', value);
+                    // Then visually update and check the code
                     setTimeout(() => {
                         e.target.value = '●';
                         e.target.setAttribute('data-filled', 'true');
-                        e.target.setAttribute('data-value', value);
-                    }, 500);
+                        checkPasscode();
+                    }, 300); // A shorter delay for better UX
                 }
 
                 if (value && index < passcodeInputs.length - 1) {
                     passcodeInputs[index + 1].focus();
                 }
-
-                setTimeout(() => checkPasscode(), 100);
             });
 
             input.addEventListener('keydown', (e) => {
@@ -471,9 +472,10 @@
 
         function checkPasscode() {
             const inputs = Array.from(passcodeInputs);
-            const allFilled = inputs.every(input => input.getAttribute('data-filled') === 'true');
+            // Check if all 4 inputs have a data-value
+            const allHaveValue = inputs.every(input => input.getAttribute('data-value'));
 
-            if (allFilled) {
+            if (allHaveValue) {
                 const p1 = inputs[0].getAttribute('data-value');
                 const p2 = inputs[1].getAttribute('data-value');
                 const p3 = inputs[2].getAttribute('data-value');
