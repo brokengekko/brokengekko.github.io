@@ -336,7 +336,7 @@
         <!-- Stage 1: Pass Code Protection -->
         <div class="stage active" id="stage1">
             <h1>2x AI JPG</h1>
-            <p>You see a tortoise lying on it's back...</p>
+            <p>Enter access code to continue</p>
             <div class="passcode-container">
                 <input type="text" class="passcode-input" maxlength="1" data-index="0">
                 <input type="text" class="passcode-input" maxlength="1" data-index="1">
@@ -348,32 +348,32 @@
         <!-- Stage 2: File Upload -->
         <div class="stage" id="stage2">
             <h1>2x AI JPG</h1>
-            <p>Which way? Up... or down?</p>
+            <p>Select a method to upscale your JPG image 2x</p>
 
             <div class="radio-container">
                 <input type="radio" id="html" name="upscale" value="html">
                 <label for="html">HTML</label>
                 <input type="radio" id="ai" name="upscale" value="ai">
-                <label for="ai">A.I.</label>
+                <label for="ai">AI</label>
             </div>
             
             <div class="prompt-container" style="margin-bottom: 1.5rem; text-align: left; display: none;">
-                <label for="promptInput" style="display: block; margin-bottom: 0.5rem; font-weight: bold; opacity: 0.9;">Describe what you saw, tell me about...</label>
+                <label for="promptInput" style="display: block; margin-bottom: 0.5rem; font-weight: bold; opacity: 0.9;">Describe the image:</label>
                 <input type="text" id="promptInput" class="prompt-input" placeholder="e.g., a photorealistic portrait, sharp details...">
             </div>
 
             <div class="slider-container" style="display: none;">
-                <label for="creativity">Warmth: <span id="creativityValue">0.2</span></label>
+                <label for="creativity">Creativity: <span id="creativityValue">0.2</span></label>
                 <input type="range" id="creativity" min="2" max="5" value="2" style="width: 100%;">
             </div>
 
             <div class="upload-section" style="display: none;">
                 <div class="upload-area" id="uploadArea">
                     <div class="upload-icon">📸</div>
-                    <p>Drag 'n Drop (JPG-Only)</p>
+                    <p>Drag and drop your JPG file here</p>
                     <p style="margin: 0.5rem 0; opacity: 0.6;">or</p>
                     <button class="upload-button" onclick="document.getElementById('fileInput').click()">
-                        Browse
+                        Choose File
                     </button>
                 </div>
                 <input type="file" id="fileInput" class="file-input" accept=".jpg,.jpeg" />
@@ -382,7 +382,7 @@
             <div class="loading-container" id="loadingContainer" style="display: none;">
                 <div class="loading-spinner"></div>
                 <div class="loading-text">Upscaling your image...</div>
-                <p style="font-size: 0.9rem; opacity: 0.6; margin-top: 1rem;">(This will not be instantaneous)</p>
+                <p style="font-size: 0.9rem; opacity: 0.6; margin-top: 1rem;">This may take a few moments</p>
             </div>
 
             <div id="errorContainer"></div>
@@ -392,7 +392,7 @@
         <div class="stage" id="stage3">
             <h1>2x AI JPG</h1>
             <div class="success-message">
-                ✅ Fortunate for you, fleshie, processing was successful!
+                ✅ Your image has been successfully upscaled to 2x!
             </div>
             
             <div class="action-buttons">
@@ -442,19 +442,18 @@
                 }
 
                 if (value) {
-                    // Set the data value immediately
-                    e.target.setAttribute('data-value', value);
-                    // Then visually update and check the code
                     setTimeout(() => {
                         e.target.value = '●';
                         e.target.setAttribute('data-filled', 'true');
-                        checkPasscode();
-                    }, 300); // A shorter delay for better UX
+                        e.target.setAttribute('data-value', value);
+                    }, 500);
                 }
 
                 if (value && index < passcodeInputs.length - 1) {
                     passcodeInputs[index + 1].focus();
                 }
+
+                setTimeout(() => checkPasscode(), 100);
             });
 
             input.addEventListener('keydown', (e) => {
@@ -472,10 +471,9 @@
 
         function checkPasscode() {
             const inputs = Array.from(passcodeInputs);
-            // Check if all 4 inputs have a data-value
-            const allHaveValue = inputs.every(input => input.getAttribute('data-value'));
+            const allFilled = inputs.every(input => input.getAttribute('data-filled') === 'true');
 
-            if (allHaveValue) {
+            if (allFilled) {
                 const p1 = inputs[0].getAttribute('data-value');
                 const p2 = inputs[1].getAttribute('data-value');
                 const p3 = inputs[2].getAttribute('data-value');
