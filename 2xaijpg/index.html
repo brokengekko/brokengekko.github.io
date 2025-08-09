@@ -133,10 +133,6 @@
             border-color: #4CAF50;
             box-shadow: 0 0 15px rgba(76, 175, 80, 0.2);
         }
-
-        .slider-container {
-            margin-bottom: 1.5rem;
-        }
         
         .upload-area {
             border: 3px dashed rgba(255, 255, 255, 0.3);
@@ -406,24 +402,6 @@
         let upscaledImageBlob = null;
         let originalFileName = '';
         
-        // Obfuscated API Key and decoder
-        const ENCODED_API_KEY = 'Ky0gLh8AGhIWOg04Fj0aPgw7BjYPPBIzCDgGJAk/GzUKOwE5ADsBOwI4ADoBOwA4ADg=';
-        const URL_KEY = 'https://www.brokengekko.com/gjpg/';
-
-        function decodeKey(encodedText, key) {
-            try {
-                const rawText = atob(encodedText);
-                let result = '';
-                for (let i = 0; i < rawText.length; i++) {
-                    result += String.fromCharCode(rawText.charCodeAt(i) ^ key.charCodeAt(i % key.length));
-                }
-                return result;
-            } catch (e) {
-                console.error("Failed to decode API key:", e);
-                return ""; // Return empty string on failure
-            }
-        }
-
         // Stage 1: Pass Code Logic
         const passcodeInputs = document.querySelectorAll('.passcode-input');
 
@@ -437,14 +415,12 @@
                 }
 
                 if (value) {
-                    // Set the data value immediately
                     e.target.setAttribute('data-value', value);
-                    // Then visually update and check the code
                     setTimeout(() => {
                         e.target.value = '●';
                         e.target.setAttribute('data-filled', 'true');
                         checkPasscode();
-                    }, 300); // A shorter delay for better UX
+                    }, 300);
                 }
 
                 if (value && index < passcodeInputs.length - 1) {
@@ -467,7 +443,6 @@
 
         function checkPasscode() {
             const inputs = Array.from(passcodeInputs);
-            // Check if all 4 inputs have a data-value
             const allHaveValue = inputs.every(input => input.getAttribute('data-value'));
 
             if (allHaveValue) {
@@ -476,12 +451,11 @@
                 const p3 = inputs[2].getAttribute('data-value');
                 const p4 = inputs[3].getAttribute('data-value');
 
-                // Creative checks for each digit of "9110"
                 const isCorrect = 
-                    (Number(p1) * 3 === 27) && // Check for 9
-                    (p2.charCodeAt(0) === 49) && // Check for 1 using ASCII
-                    (parseInt(p3, 10) === Math.ceil(0.5)) && // Check for 1 using Math
-                    ((Number(p4) + 5) === 5); // Check for 0
+                    (Number(p1) * 3 === 27) && 
+                    (p2.charCodeAt(0) === 49) && 
+                    (parseInt(p3, 10) === Math.ceil(0.5)) && 
+                    ((Number(p4) + 5) === 5);
 
                 if (isCorrect) {
                     setTimeout(() => {
@@ -611,50 +585,27 @@
             try {
                 const formData = new FormData();
                 formData.append('image', file);
-                formData.append('output_format', 'jpeg');
                 
                 const userPrompt = promptInput.value.trim();
                 if (userPrompt) {
                     formData.append('prompt', userPrompt);
                 }
 
-                const apiKey = decodeKey(ENCODED_API_KEY, URL_KEY);
-                if (!apiKey) throw new Error("API Key is invalid.");
-
-                // Using the Conservative Upscaler endpoint
-                const response = await fetch('https://api.stability.ai/v2beta/stable-image/upscale/conservative', {
+                // The API key is no longer needed here.
+                // The fetch URL points to your new serverless function.
+                const response = await fetch('/api/upscale', {
                     method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${apiKey}`,
-                        // Accept an image directly, or JSON for an error
-                        'Accept': 'image/*, application/json'
-                    },
                     body: formData
                 });
 
                 if (!response.ok) {
-                    let errorMessage;
-                    const contentType = response.headers.get('content-type');
-                    
-                    if (contentType && contentType.includes('application/json')) {
-                        const errorData = await response.json();
-                        errorMessage = errorData.message || errorData.error || errorData.detail || `API Error: ${response.status}`;
-                        
-                        if (errorData.errors) {
-                            errorMessage += ' - Details: ' + JSON.stringify(errorData.errors);
-                        }
-                    } else {
-                        const errorText = await response.text();
-                        errorMessage = errorText || `HTTP Error: ${response.status} ${response.statusText}`;
-                    }
-                    
-                    throw new Error(errorMessage);
+                    const errorText = await response.text();
+                    throw new Error(`Upscale failed: ${errorText}`);
                 }
 
-                // If response is OK, the body is the upscaled image
                 upscaledImageBlob = await response.blob();
                 if (!upscaledImageBlob || upscaledImageBlob.size === 0) {
-                    throw new Error('Received empty image data from API');
+                    throw new Error('Received empty image data from proxy');
                 }
                 
                 console.log('Success! Upscaled image size:', upscaledImageBlob.size, 'bytes');
