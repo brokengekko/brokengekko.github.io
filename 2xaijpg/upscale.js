@@ -18,7 +18,7 @@ export default async function handler(request, response) {
   try {
     // The Stability AI API key should be stored as an environment variable for security,
     // not hardcoded. The name 'STABILITY_API_KEY' is an example.
-    const apiKey = process.env.STABILITY_API_KEY;
+    const apiKey = 'sk-haoABoMCG6n7omBbo8lzyW8fmQZ01kCvFUvzgQbcjhE6vQI8';
     if (!apiKey) {
       throw new Error('API key is not configured on the server.');
     }
