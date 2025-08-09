@@ -125,7 +125,13 @@
                 formData.append('output_format', 'jpeg');
 
                 try {
-                    const response = await fetch('https://api.stability.ai/v2/image/upscale', {
+                    // WARNING: Using a public CORS proxy is a workaround for development and is not secure or reliable for production.
+                    // It is used here to bypass browser security restrictions (CORS) that prevent direct calls to the Stability AI API.
+                    // The correct, production-safe solution is to use a backend proxy server.
+                    const PROXY_URL = 'https://corsproxy.io/?';
+                    const API_URL = 'https://api.stability.ai/v2/image/upscale';
+
+                    const response = await fetch(PROXY_URL + API_URL, {
                         method: 'POST',
                         headers: {
                             'Authorization': `Bearer ${STABILITY_API_KEY}`,
@@ -163,7 +169,7 @@
                     console.error("Fetch API call failed:", err);
                     let displayError;
                     if (err.message.includes('Failed to fetch')) {
-                        displayError = "Image processing failed. This is likely due to browser security (CORS). This app must be run from a web server (http/https) and not a local file. Check the developer console for details.";
+                        displayError = "Image processing failed. This is likely due to browser/API security restrictions (CORS) or a network issue. Using a CORS proxy can be unreliable. Please try again or check the developer console.";
                     } else {
                         displayError = err.message;
                     }
