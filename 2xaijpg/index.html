@@ -517,14 +517,47 @@
                     throw new Error(errorMessage);
                 }
 
-                // The response should be a direct image blob
-                upscaledImageBlob = await response.blob();
-                
-                // Verify we got an image
-                if (!upscaledImageBlob.type.startsWith('image/')) {
-                    throw new Error('Invalid response: Expected image data');
+                // Check response content type to handle different formats
+                const contentType = response.headers.get('content-type');
+                console.log('Response content type:', contentType);
+
+                if (contentType && contentType.includes('application/json')) {
+                    // JSON response with base64 image
+                    const result = await response.json();
+                    console.log('JSON response received:', result);
+                    
+                    if (result.image) {
+                        // Handle base64 image data
+                        const base64Data = result.image;
+                        const binaryString = atob(base64Data);
+                        const bytes = new Uint8Array(binaryString.length);
+                        for (let i = 0; i < binaryString.length; i++) {
+                            bytes[i] = binaryString.charCodeAt(i);
+                        }
+                        upscaledImageBlob = new Blob([bytes], { type: 'image/jpeg' });
+                    } else if (result.artifacts && result.artifacts[0]) {
+                        // Handle artifacts format
+                        const base64Data = result.artifacts[0].base64 || result.artifacts[0].image;
+                        const binaryString = atob(base64Data);
+                        const bytes = new Uint8Array(binaryString.length);
+                        for (let i = 0; i < binaryString.length; i++) {
+                            bytes[i] = binaryString.charCodeAt(i);
+                        }
+                        upscaledImageBlob = new Blob([bytes], { type: 'image/jpeg' });
+                    } else {
+                        throw new Error('No image data found in JSON response');
+                    }
+                } else {
+                    // Direct image blob response
+                    upscaledImageBlob = await response.blob();
                 }
                 
+                // Final verification
+                if (!upscaledImageBlob || upscaledImageBlob.size === 0) {
+                    throw new Error('Received empty image data');
+                }
+                
+                console.log('Upscaled image blob size:', upscaledImageBlob.size, 'bytes');
                 showStage(3);
 
             } catch (error) {
