@@ -485,6 +485,7 @@
                 const formData = new FormData();
                 formData.append('image', file);
                 formData.append('output_format', 'jpeg');
+                formData.append('prompt', 'high quality, sharp details, enhanced resolution, professional upscaling, crisp and clear, improved detail preservation');
 
                 // Use the current v2beta creative upscale endpoint
                 const response = await fetch('https://api.stability.ai/v2beta/stable-image/upscale/creative', {
