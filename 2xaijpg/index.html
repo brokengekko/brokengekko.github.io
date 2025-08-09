@@ -302,7 +302,7 @@
         <!-- Stage 2: File Upload -->
         <div class="stage" id="stage2">
             <h1>2x AI JPG</h1>
-            <p>Upload your JPG image and describe it for optimal upscaling</p>
+            <p>Upload your JPG image to upscale it 2x using Stability AI</p>
             
             <div class="upload-section">
                 <div class="upload-area" id="uploadArea">
@@ -314,27 +314,12 @@
                     </button>
                 </div>
                 <input type="file" id="fileInput" class="file-input" accept=".jpg,.jpeg" />
-                
-                <div class="prompt-section" id="promptSection" style="display: none;">
-                    <div style="margin: 2rem 0;">
-                        <label for="imagePrompt" style="display: block; margin-bottom: 0.5rem; font-weight: bold;">Describe your image:</label>
-                        <textarea 
-                            id="imagePrompt" 
-                            placeholder="e.g., Two people taking a selfie together in warm lighting, portrait photo, high quality"
-                            style="width: 100%; padding: 1rem; border-radius: 10px; background: rgba(255,255,255,0.1); border: 2px solid rgba(255,255,255,0.2); color: #fff; font-family: inherit; font-size: 14px; resize: vertical; min-height: 80px;"
-                        ></textarea>
-                    </div>
-                    
-                    <button class="upload-button" id="processButton">
-                        🚀 Upscale Image
-                    </button>
-                </div>
             </div>
 
             <div class="loading-container" id="loadingContainer" style="display: none;">
                 <div class="loading-spinner"></div>
                 <div class="loading-text">Upscaling your image with Stability AI...</div>
-                <p style="font-size: 0.9rem; opacity: 0.6; margin-top: 1rem;">Processing with Conservative Upscale...</p>
+                <p style="font-size: 0.9rem; opacity: 0.6; margin-top: 1rem;">This may take a few moments</p>
             </div>
 
             <div id="errorContainer"></div>
@@ -362,7 +347,8 @@
         let currentStage = 1;
         let upscaledImageBlob = null;
         let originalFileName = '';
-        const API_KEY = 'sk-haoABoMCG6n7omBbo8lzyW8fmQZ01kCvFUvzgQbcjhE6vQI8';
+        // IMPORTANT: Replace with your actual Stability AI API Key
+        const API_KEY = 'sk-haoABoMCG6n7omBbo8lzyW8fmQZ01kCvFUvzgQbcjhE6vQI8'; 
 
         // Stage 1: Pass Code Logic
         const passcodeInputs = document.querySelectorAll('.passcode-input');
@@ -378,7 +364,7 @@
                     return;
                 }
 
-                // Hide the number with asterisk after a short delay
+                // Hide the number with a symbol after a short delay
                 if (value) {
                     setTimeout(() => {
                         e.target.value = '●';
@@ -415,12 +401,14 @@
             let allFilled = true;
 
             passcodeInputs.forEach(input => {
-                const value = input.getAttribute('data-value') || input.value;
+                const value = input.getAttribute('data-value') || '';
                 enteredCode += value;
-                if (!value) allFilled = false;
+                if (!input.getAttribute('data-filled') || input.getAttribute('data-filled') === 'false') {
+                    allFilled = false;
+                }
             });
 
-            if (allFilled) {
+            if (allFilled && enteredCode.length === 4) {
                 if (enteredCode === correctCode) {
                     // Correct code - proceed to stage 2
                     setTimeout(() => {
@@ -444,9 +432,6 @@
         const fileInput = document.getElementById('fileInput');
         const loadingContainer = document.getElementById('loadingContainer');
         const errorContainer = document.getElementById('errorContainer');
-        const promptSection = document.getElementById('promptSection');
-        const processButton = document.getElementById('processButton');
-        let selectedFile = null;
 
         // Drag and drop functionality
         uploadArea.addEventListener('dragover', (e) => {
@@ -464,26 +449,17 @@
             uploadArea.classList.remove('dragover');
             const files = e.dataTransfer.files;
             if (files.length > 0) {
-                handleFileSelection(files[0]);
+                handleFileUpload(files[0]);
             }
         });
 
         fileInput.addEventListener('change', (e) => {
             if (e.target.files.length > 0) {
-                handleFileSelection(e.target.files[0]);
+                handleFileUpload(e.target.files[0]);
             }
         });
 
-        processButton.addEventListener('click', () => {
-            const prompt = document.getElementById('imagePrompt').value.trim();
-            if (!prompt) {
-                showError('Please describe your image before processing.');
-                return;
-            }
-            handleFileUpload(selectedFile, prompt);
-        });
-
-        function handleFileSelection(file) {
+        function handleFileUpload(file) {
             // Validate file type
             if (!file.type.match('image/jpeg')) {
                 showError('Please upload a JPG/JPEG file only.');
@@ -496,23 +472,15 @@
                 return;
             }
 
-            selectedFile = file;
             originalFileName = file.name;
             
-            // Hide upload area and show prompt section
-            uploadArea.style.display = 'none';
-            promptSection.style.display = 'block';
-            errorContainer.innerHTML = '';
-        }
-
-        function handleFileUpload(file, prompt) {
-            // Hide prompt section and show loading
-            promptSection.style.display = 'none';
+            // Hide upload area and show loading
+            document.querySelector('.upload-section').style.display = 'none';
             loadingContainer.style.display = 'block';
             errorContainer.innerHTML = '';
 
             // Process the image
-            upscaleImage(file, prompt);
+            upscaleImage(file);
         }
 
         async function upscaleImage(file) {
@@ -520,18 +488,21 @@
                 const formData = new FormData();
                 formData.append('image', file);
                 formData.append('output_format', 'jpeg');
-                formData.append('prompt', 'high quality, sharp details, enhanced resolution, professional upscaling, crisp and clear, improved detail preservation');
+                // Set creativity level for the Conservative upscaler
+                formData.append('creativity', '0.3');
 
-                // Start the upscale job
-                const response = await fetch('https://api.stability.ai/v2beta/stable-image/upscale/creative', {
+                // Use the Conservative Upscaler endpoint (synchronous)
+                const response = await fetch('https://api.stability.ai/v2beta/stable-image/upscale/conservative', {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${API_KEY}`,
-                        'Accept': 'application/json'
+                        // Expect an image directly, or JSON for an error
+                        'Accept': 'image/*, application/json'
                     },
                     body: formData
                 });
 
+                // If the response is not OK, it's an error (likely JSON)
                 if (!response.ok) {
                     let errorMessage;
                     const contentType = response.headers.get('content-type');
@@ -551,96 +522,24 @@
                     throw new Error(errorMessage);
                 }
 
-                const result = await response.json();
-                console.log('Initial response:', result);
+                // If response is OK, the body is the upscaled image
+                upscaledImageBlob = await response.blob();
 
-                if (!result.id) {
-                    throw new Error('No job ID received from API');
+                if (!upscaledImageBlob || upscaledImageBlob.size === 0) {
+                    throw new Error('Received empty image data from API');
                 }
 
-                // Start polling for the result using the job ID
-                console.log('Starting to poll for job ID:', result.id);
-                await pollForResult(result.id);
+                console.log('Success! Upscaled image size:', upscaledImageBlob.size, 'bytes');
+                showStage(3);
 
             } catch (error) {
                 console.error('Upscaling error:', error);
                 showError(`Failed to upscale image: ${error.message}`);
                 
-                // Show upload area again
+                // Show upload area again on failure
                 loadingContainer.style.display = 'none';
                 document.querySelector('.upload-section').style.display = 'block';
             }
-        }
-
-        async function pollForResult(jobId) {
-            const maxAttempts = 30; // 30 attempts = 2 minutes max
-            let attempts = 0;
-
-            while (attempts < maxAttempts) {
-                try {
-                    await new Promise(resolve => setTimeout(resolve, 4000)); // Wait 4 seconds between polls
-                    
-                    const resultResponse = await fetch(`https://api.stability.ai/v2beta/stable-image/upscale/creative/result/${jobId}`, {
-                        method: 'GET',
-                        headers: {
-                            'Authorization': `Bearer ${API_KEY}`,
-                            'Accept': 'image/*'
-                        }
-                    });
-
-                    console.log('Poll attempt', attempts + 1, 'Status:', resultResponse.status);
-
-                    if (resultResponse.status === 202) {
-                        // Still processing, continue polling
-                        attempts++;
-                        continue;
-                    }
-
-                    if (resultResponse.ok) {
-                        // Check if it's an image or JSON
-                        const contentType = resultResponse.headers.get('content-type');
-                        
-                        if (contentType && contentType.includes('application/json')) {
-                            const jsonResult = await resultResponse.json();
-                            console.log('Final JSON result:', jsonResult);
-                            
-                            if (jsonResult.image) {
-                                // Convert base64 to blob
-                                const base64Data = jsonResult.image;
-                                const binaryString = atob(base64Data);
-                                const bytes = new Uint8Array(binaryString.length);
-                                for (let i = 0; i < binaryString.length; i++) {
-                                    bytes[i] = binaryString.charCodeAt(i);
-                                }
-                                upscaledImageBlob = new Blob([bytes], { type: 'image/jpeg' });
-                            } else {
-                                throw new Error('No image data in final result');
-                            }
-                        } else {
-                            // Direct image response
-                            upscaledImageBlob = await resultResponse.blob();
-                        }
-
-                        if (!upscaledImageBlob || upscaledImageBlob.size === 0) {
-                            throw new Error('Received empty image data');
-                        }
-
-                        console.log('Success! Upscaled image size:', upscaledImageBlob.size, 'bytes');
-                        showStage(3);
-                        return;
-                    } else {
-                        // Error response
-                        const errorText = await resultResponse.text();
-                        throw new Error(`Polling failed: ${resultResponse.status} - ${errorText}`);
-                    }
-
-                } catch (pollError) {
-                    console.error('Polling error:', pollError);
-                    throw pollError;
-                }
-            }
-
-            throw new Error('Upscaling timed out - please try again');
         }
 
         // Stage 3: Download Logic
@@ -664,15 +563,11 @@
             // Reset everything
             upscaledImageBlob = null;
             originalFileName = '';
-            selectedFile = null;
             fileInput.value = '';
-            document.getElementById('imagePrompt').value = '';
             errorContainer.innerHTML = '';
             
             // Show upload area again
             loadingContainer.style.display = 'none';
-            promptSection.style.display = 'none';
-            uploadArea.style.display = 'block';
             document.querySelector('.upload-section').style.display = 'block';
             
             showStage(2);
