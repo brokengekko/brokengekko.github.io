@@ -92,6 +92,23 @@
         }
 
         /* Stage 2 - File Upload */
+        .prompt-input {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: #ffffff;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .prompt-input:focus {
+            outline: none;
+            border-color: #4CAF50;
+            box-shadow: 0 0 15px rgba(76, 175, 80, 0.2);
+        }
+        
         .upload-area {
             border: 3px dashed rgba(255, 255, 255, 0.3);
             border-radius: 20px;
@@ -302,8 +319,13 @@
         <!-- Stage 2: File Upload -->
         <div class="stage" id="stage2">
             <h1>2x AI JPG</h1>
-            <p>Upload your JPG image to upscale it 2x using Stability AI</p>
+            <p>Upload your JPG and describe it to upscale it 2x using Stability AI</p>
             
+            <div class="prompt-container" style="margin-bottom: 1.5rem; text-align: left;">
+                <label for="promptInput" style="display: block; margin-bottom: 0.5rem; font-weight: bold; opacity: 0.9;">Describe the image:</label>
+                <input type="text" id="promptInput" class="prompt-input" placeholder="e.g., a photorealistic portrait, sharp details...">
+            </div>
+
             <div class="upload-section">
                 <div class="upload-area" id="uploadArea">
                     <div class="upload-icon">📸</div>
@@ -358,13 +380,11 @@
             input.addEventListener('input', (e) => {
                 const value = e.target.value;
                 
-                // Only allow numbers
                 if (!/^\d*$/.test(value)) {
                     e.target.value = '';
                     return;
                 }
 
-                // Hide the number with a symbol after a short delay
                 if (value) {
                     setTimeout(() => {
                         e.target.value = '●';
@@ -373,17 +393,14 @@
                     }, 500);
                 }
 
-                // Move to next input if current is filled
                 if (value && index < passcodeInputs.length - 1) {
                     passcodeInputs[index + 1].focus();
                 }
 
-                // Check code when all inputs are filled
                 setTimeout(() => checkPasscode(), 100);
             });
 
             input.addEventListener('keydown', (e) => {
-                // Allow backspace to move to previous input
                 if (e.key === 'Backspace') {
                     e.target.value = '';
                     e.target.setAttribute('data-filled', 'false');
@@ -396,7 +413,6 @@
             });
         });
 
-        // REVERTED to original working function
         function checkPasscode() {
             let enteredCode = '';
             let allFilled = true;
@@ -409,12 +425,10 @@
 
             if (allFilled) {
                 if (enteredCode === correctCode) {
-                    // Correct code - proceed to stage 2
                     setTimeout(() => {
                         showStage(2);
                     }, 300);
                 } else {
-                    // Wrong code - lock the screen
                     passcodeInputs.forEach(input => {
                         input.classList.add('error');
                     });
@@ -431,8 +445,8 @@
         const fileInput = document.getElementById('fileInput');
         const loadingContainer = document.getElementById('loadingContainer');
         const errorContainer = document.getElementById('errorContainer');
+        const promptInput = document.getElementById('promptInput');
 
-        // Drag and drop functionality
         uploadArea.addEventListener('dragover', (e) => {
             e.preventDefault();
             uploadArea.classList.add('dragover');
@@ -459,13 +473,11 @@
         });
 
         function handleFileUpload(file) {
-            // Validate file type
             if (!file.type.match('image/jpeg')) {
                 showError('Please upload a JPG/JPEG file only.');
                 return;
             }
 
-            // Validate file size (max 10MB for Stability AI)
             if (file.size > 10 * 1024 * 1024) {
                 showError('File size must be less than 10MB.');
                 return;
@@ -473,12 +485,11 @@
 
             originalFileName = file.name;
             
-            // Hide upload area and show loading
+            document.querySelector('.prompt-container').style.display = 'none';
             document.querySelector('.upload-section').style.display = 'none';
             loadingContainer.style.display = 'block';
             errorContainer.innerHTML = '';
 
-            // Process the image
             upscaleImage(file);
         }
 
@@ -487,21 +498,21 @@
                 const formData = new FormData();
                 formData.append('image', file);
                 formData.append('output_format', 'jpeg');
-                // Set creativity level for the Conservative upscaler
+                
+                const userPrompt = promptInput.value.trim();
+                const finalPrompt = userPrompt || 'high quality, sharp details, enhanced resolution, professional upscaling, crisp and clear';
+                formData.append('prompt', finalPrompt);
                 formData.append('creativity', '0.3');
 
-                // Use the Conservative Upscaler endpoint (synchronous)
-                const response = await fetch('https://api.stability.ai/v2beta/stable-image/upscale/conservative', {
+                const response = await fetch('https://api.stability.ai/v2beta/stable-image/upscale/creative', {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${API_KEY}`,
-                        // Expect an image directly, or JSON for an error
-                        'Accept': 'image/*, application/json'
+                        'Accept': 'application/json'
                     },
                     body: formData
                 });
 
-                // If the response is not OK, it's an error (likely JSON)
                 if (!response.ok) {
                     let errorMessage;
                     const contentType = response.headers.get('content-type');
@@ -521,25 +532,72 @@
                     throw new Error(errorMessage);
                 }
 
-                // If response is OK, the body is the upscaled image
-                upscaledImageBlob = await response.blob();
-
-                if (!upscaledImageBlob || upscaledImageBlob.size === 0) {
-                    throw new Error('Received empty image data from API');
+                const result = await response.json();
+                if (!result.id) {
+                    throw new Error('No job ID received from API');
                 }
 
-                console.log('Success! Upscaled image size:', upscaledImageBlob.size, 'bytes');
-                showStage(3);
+                await pollForResult(result.id);
 
             } catch (error) {
                 console.error('Upscaling error:', error);
                 showError(`Failed to upscale image: ${error.message}`);
                 
-                // Show upload area again on failure
                 loadingContainer.style.display = 'none';
+                document.querySelector('.prompt-container').style.display = 'block';
                 document.querySelector('.upload-section').style.display = 'block';
             }
         }
+
+        async function pollForResult(jobId) {
+            const maxAttempts = 30;
+            let attempts = 0;
+
+            while (attempts < maxAttempts) {
+                try {
+                    await new Promise(resolve => setTimeout(resolve, 4000));
+                    
+                    const resultResponse = await fetch(`https://api.stability.ai/v2beta/stable-image/upscale/creative/result/${jobId}`, {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${API_KEY}`,
+                            'Accept': 'image/*, application/json'
+                        }
+                    });
+
+                    if (resultResponse.status === 202) {
+                        attempts++;
+                        continue;
+                    }
+
+                    if (resultResponse.ok) {
+                        const contentType = resultResponse.headers.get('content-type');
+                        if (contentType && contentType.includes('application/json')) {
+                             throw new Error('Received JSON instead of image, job may have failed.');
+                        }
+
+                        upscaledImageBlob = await resultResponse.blob();
+                        if (!upscaledImageBlob || upscaledImageBlob.size === 0) {
+                            throw new Error('Received empty image data');
+                        }
+
+                        console.log('Success! Upscaled image size:', upscaledImageBlob.size, 'bytes');
+                        showStage(3);
+                        return;
+                    } else {
+                        const errorText = await resultResponse.text();
+                        throw new Error(`Polling failed: ${resultResponse.status} - ${errorText}`);
+                    }
+
+                } catch (pollError) {
+                    console.error('Polling error:', pollError);
+                    throw pollError;
+                }
+            }
+
+            throw new Error('Upscaling timed out - please try again');
+        }
+
 
         // Stage 3: Download Logic
         const downloadButton = document.getElementById('downloadButton');
@@ -559,14 +617,14 @@
         });
 
         restartButton.addEventListener('click', () => {
-            // Reset everything
             upscaledImageBlob = null;
             originalFileName = '';
             fileInput.value = '';
+            promptInput.value = '';
             errorContainer.innerHTML = '';
             
-            // Show upload area again
             loadingContainer.style.display = 'none';
+            document.querySelector('.prompt-container').style.display = 'block';
             document.querySelector('.upload-section').style.display = 'block';
             
             showStage(2);
@@ -574,12 +632,10 @@
 
         // Utility Functions
         function showStage(stageNumber) {
-            // Hide all stages
             document.querySelectorAll('.stage').forEach(stage => {
                 stage.classList.remove('active');
             });
 
-            // Show target stage
             document.getElementById(`stage${stageNumber}`).classList.add('active');
             currentStage = stageNumber;
         }
