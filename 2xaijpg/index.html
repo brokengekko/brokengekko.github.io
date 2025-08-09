@@ -396,19 +396,18 @@
             });
         });
 
+        // REVERTED to original working function
         function checkPasscode() {
             let enteredCode = '';
             let allFilled = true;
 
             passcodeInputs.forEach(input => {
-                const value = input.getAttribute('data-value') || '';
+                const value = input.getAttribute('data-value') || input.value;
                 enteredCode += value;
-                if (!input.getAttribute('data-filled') || input.getAttribute('data-filled') === 'false') {
-                    allFilled = false;
-                }
+                if (!value) allFilled = false;
             });
 
-            if (allFilled && enteredCode.length === 4) {
+            if (allFilled) {
                 if (enteredCode === correctCode) {
                     // Correct code - proceed to stage 2
                     setTimeout(() => {
