@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Image Upscaler</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        img { max-width: 100%; height: auto; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Creative Image Upscaler</h1>
+    <form id="upscaleForm">
+        <label>Upload image:</label>
+        <input type="file" name="image" accept="image/*" required><br><br>
+        <label>Prompt (optional):</label>
+        <input type="text" name="prompt" placeholder="Describe the enhancement"><br><br>
+        <label>Creativity (0.0 - 1.0):</label>
+        <input type="number" name="creativity" step="0.1" value="0.2" min="0" max="1"><br><br>
+        <button type="submit">Upscale</button>
+    </form>
+
+    <div id="result"></div>
+
+    <script>
+    document.getElementById("upscaleForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+
+        document.getElementById("result").innerHTML = "Processing...";
+
+        const response = await fetch("https://your-backend.onrender.com/upscale", {
+            method: "POST",
+            body: formData
+        });
+
+        if (!response.ok) {
+            const err = await response.text();
+            document.getElementById("result").innerHTML = "Error: " + err;
+            return;
+        }
+
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+        document.getElementById("result").innerHTML = `<img src="${url}">`;
+    });
+    </script>
+</body>
+</html>
