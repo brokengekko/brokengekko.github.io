@@ -336,7 +336,7 @@
         <!-- Stage 1: Pass Code Protection -->
         <div class="stage active" id="stage1">
             <h1>2x AI JPG</h1>
-            <p>Enter access code to continue</p>
+            <p>You see a tortoise lying on it's back...</p>
             <div class="passcode-container">
                 <input type="text" class="passcode-input" maxlength="1" data-index="0">
                 <input type="text" class="passcode-input" maxlength="1" data-index="1">
@@ -348,32 +348,32 @@
         <!-- Stage 2: File Upload -->
         <div class="stage" id="stage2">
             <h1>2x AI JPG</h1>
-            <p>Select a method to upscale your JPG image 2x</p>
+            <p>Which way? Up... or down?</p>
 
             <div class="radio-container">
                 <input type="radio" id="html" name="upscale" value="html">
                 <label for="html">HTML</label>
                 <input type="radio" id="ai" name="upscale" value="ai">
-                <label for="ai">AI</label>
+                <label for="ai">A.I.</label>
             </div>
             
             <div class="prompt-container" style="margin-bottom: 1.5rem; text-align: left; display: none;">
-                <label for="promptInput" style="display: block; margin-bottom: 0.5rem; font-weight: bold; opacity: 0.9;">Describe the image:</label>
+                <label for="promptInput" style="display: block; margin-bottom: 0.5rem; font-weight: bold; opacity: 0.9;">Describe what you saw, tell me about...</label>
                 <input type="text" id="promptInput" class="prompt-input" placeholder="e.g., a photorealistic portrait, sharp details...">
             </div>
 
             <div class="slider-container" style="display: none;">
-                <label for="creativity">Creativity: <span id="creativityValue">0.2</span></label>
+                <label for="creativity">Warmth: <span id="creativityValue">0.2</span></label>
                 <input type="range" id="creativity" min="2" max="5" value="2" style="width: 100%;">
             </div>
 
             <div class="upload-section" style="display: none;">
                 <div class="upload-area" id="uploadArea">
                     <div class="upload-icon">📸</div>
-                    <p>Drag and drop your JPG file here</p>
+                    <p>Drag 'n Drop (JPG-Only)</p>
                     <p style="margin: 0.5rem 0; opacity: 0.6;">or</p>
                     <button class="upload-button" onclick="document.getElementById('fileInput').click()">
-                        Choose File
+                        Browse
                     </button>
                 </div>
                 <input type="file" id="fileInput" class="file-input" accept=".jpg,.jpeg" />
@@ -382,7 +382,7 @@
             <div class="loading-container" id="loadingContainer" style="display: none;">
                 <div class="loading-spinner"></div>
                 <div class="loading-text">Upscaling your image...</div>
-                <p style="font-size: 0.9rem; opacity: 0.6; margin-top: 1rem;">This may take a few moments</p>
+                <p style="font-size: 0.9rem; opacity: 0.6; margin-top: 1rem;">(This will not be instantaneous)</p>
             </div>
 
             <div id="errorContainer"></div>
@@ -392,7 +392,7 @@
         <div class="stage" id="stage3">
             <h1>2x AI JPG</h1>
             <div class="success-message">
-                ✅ Your image has been successfully upscaled to 2x!
+                ✅ Fortunate for you, fleshie, processing was successful!
             </div>
             
             <div class="action-buttons">
