@@ -1,128 +1,705 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Creative Image Upscaler</title>
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        margin: 40px;
-        background-color: #f8f9fa;
-    }
-    h1 {
-        font-size: 2.5em;
-        margin-bottom: 20px;
-    }
-    input[type="file"], input[type="text"], input[type="number"] {
-        padding: 8px;
-        border-radius: 6px;
-        border: 1px solid #ccc;
-        width: 300px;
-        margin-bottom: 15px;
-    }
-    button {
-        background-color: #007bff;
-        color: white;
-        padding: 10px 20px;
-        border-radius: 6px;
-        border: none;
-        cursor: pointer;
-        font-size: 1em;
-    }
-    button:hover {
-        background-color: #0056b3;
-    }
-    #output {
-        margin-top: 20px;
-    }
-    #output img {
-        max-width: 100%;
-        border: 1px solid #ccc;
-        border-radius: 6px;
-        margin-top: 10px;
-    }
-    #passcode-screen {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        height: 80vh;
-    }
-    #app {
-        display: none;
-    }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2X•AI•JPG</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+        }
+
+        .container {
+            text-align: center;
+            padding: 2rem;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .stage {
+            display: none;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .stage.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Stage 1 - Pass Code */
+        .passcode-container {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .passcode-input {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: #ffffff;
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            font-family: monospace;
+        }
+
+        .passcode-input[data-filled="true"] {
+            color: #4CAF50;
+        }
+
+        .passcode-input[data-filled="true"]::placeholder {
+            content: "●";
+        }
+
+        .passcode-input:focus {
+            outline: none;
+            border-color: #4CAF50;
+            box-shadow: 0 0 20px rgba(76, 175, 80, 0.3);
+        }
+
+        .passcode-input.error {
+            border-color: #f44336;
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        /* Stage 2 - File Upload */
+        .radio-container {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .radio-container label {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .radio-container input[type="radio"] {
+            display: none;
+        }
+
+        .radio-container input[type="radio"]:checked + label {
+            background: #4CAF50;
+            border-color: #4CAF50;
+        }
+
+        .prompt-input {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: #ffffff;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .prompt-input:focus {
+            outline: none;
+            border-color: #4CAF50;
+            box-shadow: 0 0 15px rgba(76, 175, 80, 0.2);
+        }
+
+        .slider-container {
+            margin-bottom: 1.5rem;
+        }
+        
+        .upload-area {
+            border: 3px dashed rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            padding: 3rem;
+            margin: 2rem 0;
+            background: rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+        }
+
+        .upload-area:hover {
+            border-color: #4CAF50;
+            background: rgba(76, 175, 80, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .upload-area.dragover {
+            border-color: #4CAF50;
+            background: rgba(76, 175, 80, 0.2);
+            transform: scale(1.02);
+        }
+
+        .upload-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.7;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .upload-button {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        .upload-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+        }
+
+        /* Loading Animation */
+        .loading-container {
+            padding: 3rem;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-left-color: #4CAF50;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            font-size: 18px;
+            opacity: 0.8;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 0.4; }
+        }
+
+        /* Stage 3 - Download */
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .action-button {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 120px;
+        }
+
+        .download-button {
+            background: linear-gradient(45deg, #2196F3, #1976D2);
+            color: white;
+            box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3);
+        }
+
+        .download-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(33, 150, 243, 0.4);
+        }
+
+        .restart-button {
+            background: linear-gradient(45deg, #ff9800, #f57c00);
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 152, 0, 0.3);
+        }
+
+        .restart-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 152, 0, 0.4);
+        }
+
+        .error-message {
+            background: rgba(244, 67, 54, 0.1);
+            border: 1px solid rgba(244, 67, 54, 0.3);
+            border-radius: 10px;
+            padding: 1rem;
+            margin: 1rem 0;
+            color: #ff6b6b;
+            word-break: break-word;
+        }
+
+        .success-message {
+            background: rgba(76, 175, 80, 0.1);
+            border: 1px solid rgba(76, 175, 80, 0.3);
+            border-radius: 10px;
+            padding: 1rem;
+            margin: 1rem 0;
+            color: #4CAF50;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #4CAF50, #2196F3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        p {
+            font-size: 1.1rem;
+            opacity: 0.8;
+            margin-bottom: 2rem;
+        }
+
+        .locked-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000000;
+            z-index: 9999;
+            display: none;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .passcode-container {
+                gap: 0.5rem;
+            }
+            
+            .passcode-input {
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
 </head>
 <body>
+    <div class="locked-screen" id="lockedScreen"></div>
+    
+    <div class="container">
+        <!-- Stage 1: Pass Code Protection -->
+        <div class="stage active" id="stage1">
+            <h1>2X•AI•JPG</h1>
+            <p>You see a tortuoise lying on its back...</p>
+            <div class="passcode-container">
+                <input type="text" class="passcode-input" maxlength="1" data-index="0">
+                <input type="text" class="passcode-input" maxlength="1" data-index="1">
+                <input type="text" class="passcode-input" maxlength="1" data-index="2">
+                <input type="text" class="passcode-input" maxlength="1" data-index="3">
+            </div>
+        </div>
 
-<div id="passcode-screen">
-    <h1>Enter Passcode</h1>
-    <input type="password" id="passcode" placeholder="Passcode">
-    <button onclick="checkPasscode()">Enter</button>
-</div>
+        <!-- Stage 2: File Upload -->
+        <div class="stage" id="stage2">
+            <h1>2X•AI•JPG</h1>
+            <p>Which way? Up... or down?</p>
 
-<div id="app">
-    <h1>Creative Image Upscaler</h1>
-    <label>Upload image:</label><br>
-    <input type="file" id="imageUpload"><br><br>
-    
-    <label>Prompt (optional):</label><br>
-    <input type="text" id="prompt" placeholder="Describe changes"><br><br>
-    
-    <label>Creativity (0.0 - 1.0):</label><br>
-    <input type="number" id="creativity" min="0" max="1" step="0.1" value="0.2"><br><br>
-    
-    <button onclick="upscaleImage()">Upscale</button>
-    
-    <div id="output"></div>
-</div>
+            <div class="radio-container">
+                <input type="radio" id="html" name="upscale" value="html">
+                <label for="html">HTML</label>
+                <input type="radio" id="ai" name="upscale" value="ai">
+                <label for="ai">A.I.</label>
+            </div>
+            
+            <div class="prompt-container" style="margin-bottom: 1.5rem; text-align: left; display: none;">
+                <label for="promptInput" style="display: block; margin-bottom: 0.5rem; font-weight: bold; opacity: 0.9;">Tell me a bit about...</label>
+                <input type="text" id="promptInput" class="prompt-input" placeholder="e.g., a photorealistic portrait, sharp details...">
+            </div>
 
-<script>
-const BACKEND_URL = "https://image-upscaler-backend.onrender.com/upscale"; // change to your Render URL
+            <div class="slider-container" style="display: none;">
+                <label for="creativity">Creativity: <span id="creativityValue">0.3</span></label>
+                <input type="range" id="creativity" min="0" max="100" value="30" style="width: 100%;">
+            </div>
 
-function checkPasscode() {
-    const entered = document.getElementById("passcode").value;
-    const correct = "9" + ((5*5)/25) + String.fromCharCode(49) + '0'; // change to your real passcode
-    if (entered === correct) {
-        document.getElementById("passcode-screen").style.display = "none";
-        document.getElementById("app").style.display = "block";
-    } else {
-        alert("Incorrect passcode");
-    }
-}
+            <div class="upload-section" style="display: none;">
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon">📸</div>
+                    <p>Drag-n-Drop (JPG-Only)</p>
+                    <p style="margin: 0.5rem 0; opacity: 0.6;">or</p>
+                    <button class="upload-button" onclick="document.getElementById('fileInput').click()">
+                        Browse
+                    </button>
+                </div>
+                <input type="file" id="fileInput" class="file-input" accept=".jpg,.jpeg" />
+            </div>
 
-async function upscaleImage() {
-    const fileInput = document.getElementById("imageUpload");
-    if (!fileInput.files.length) {
-        alert("Please upload an image");
-        return;
-    }
-    
-    const formData = new FormData();
-    formData.append("image", fileInput.files[0]);
-    formData.append("prompt", document.getElementById("prompt").value);
-    formData.append("creativity", document.getElementById("creativity").value);
-    
-    document.getElementById("output").innerHTML = "Processing...";
-    
-    try {
-        const response = await fetch(BACKEND_URL, {
-            method: "POST",
-            body: formData
+            <div class="loading-container" id="loadingContainer" style="display: none;">
+                <div class="loading-spinner"></div>
+                <div class="loading-text">Upscaling your image...</div>
+                <p style="font-size: 0.9rem; opacity: 0.6; margin-top: 1rem;">(This will not be instantaneous)</p>
+            </div>
+
+            <div id="errorContainer"></div>
+        </div>
+
+        <!-- Stage 3: Download -->
+        <div class="stage" id="stage3">
+            <h1>2x AI JPG</h1>
+            <div class="success-message">
+                ✅ Congratulations! Your image has expanded.
+            </div>
+            
+            <div class="action-buttons">
+                <button class="action-button download-button" id="downloadButton">
+                    📥 Download
+                </button>
+                <button class="action-button restart-button" id="restartButton">
+                    🔄 Restart
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentStage = 1;
+        let upscaledImageBlob = null;
+        let originalFileName = '';
+        
+        // Stage 1: Pass Code Logic
+        const passcodeInputs = document.querySelectorAll('.passcode-input');
+
+        passcodeInputs.forEach((input, index) => {
+            input.addEventListener('input', (e) => {
+                const value = e.target.value;
+                
+                if (!/^\d*$/.test(value)) {
+                    e.target.value = '';
+                    return;
+                }
+
+                if (value) {
+                    e.target.setAttribute('data-value', value);
+                    setTimeout(() => {
+                        e.target.value = '●';
+                        e.target.setAttribute('data-filled', 'true');
+                        checkPasscode();
+                    }, 300);
+                }
+
+                if (value && index < passcodeInputs.length - 1) {
+                    passcodeInputs[index + 1].focus();
+                }
+            });
+
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Backspace') {
+                    e.target.value = '';
+                    e.target.setAttribute('data-filled', 'false');
+                    e.target.removeAttribute('data-value');
+                    
+                    if (index > 0) {
+                        passcodeInputs[index - 1].focus();
+                    }
+                }
+            });
+        });
+
+        function checkPasscode() {
+            const inputs = Array.from(passcodeInputs);
+            const allHaveValue = inputs.every(input => input.getAttribute('data-value'));
+
+            if (allHaveValue) {
+                const p1 = inputs[0].getAttribute('data-value');
+                const p2 = inputs[1].getAttribute('data-value');
+                const p3 = inputs[2].getAttribute('data-value');
+                const p4 = inputs[3].getAttribute('data-value');
+
+                const isCorrect = 
+                    (Number(p1) * 3 === 27) && 
+                    (p2.charCodeAt(0) === 49) && 
+                    (parseInt(p3, 10) === Math.ceil(0.5)) && 
+                    ((Number(p4) + 5) === 5);
+
+                if (isCorrect) {
+                    setTimeout(() => {
+                        showStage(2);
+                    }, 300);
+                } else {
+                    passcodeInputs.forEach(input => {
+                        input.classList.add('error');
+                    });
+                    
+                    setTimeout(() => {
+                        document.getElementById('lockedScreen').style.display = 'block';
+                    }, 500);
+                }
+            }
+        }
+
+        // Stage 2: File Upload Logic
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const loadingContainer = document.getElementById('loadingContainer');
+        const errorContainer = document.getElementById('errorContainer');
+        const promptInput = document.getElementById('promptInput');
+        const creativitySlider = document.getElementById('creativity');
+        const creativityValue = document.getElementById('creativityValue');
+        const promptContainer = document.querySelector('.prompt-container');
+        const sliderContainer = document.querySelector('.slider-container');
+        const uploadSection = document.querySelector('.upload-section');
+        const upscaleRadios = document.querySelectorAll('input[name="upscale"]');
+
+        upscaleRadios.forEach(radio => {
+            radio.addEventListener('change', () => {
+                if (radio.value === 'ai') {
+                    promptContainer.style.display = 'block';
+                    sliderContainer.style.display = 'block';
+                    if (promptInput.value.trim() !== '') {
+                        uploadSection.style.display = 'block';
+                    } else {
+                        uploadSection.style.display = 'none';
+                    }
+                } else { // HTML is selected
+                    promptContainer.style.display = 'none';
+                    sliderContainer.style.display = 'none';
+                    uploadSection.style.display = 'block';
+                }
+            });
+        });
+
+        promptInput.addEventListener('input', () => {
+            if (document.querySelector('input[name="upscale"]:checked')?.value === 'ai') {
+                if (promptInput.value.trim() !== '') {
+                    uploadSection.style.display = 'block';
+                } else {
+                    uploadSection.style.display = 'none';
+                }
+            }
         });
         
-        if (!response.ok) throw new Error("API request failed");
+        creativitySlider.addEventListener('input', (e) => {
+            creativityValue.textContent = e.target.value / 100;
+        });
         
-        const blob = await response.blob();
-        const imgURL = URL.createObjectURL(blob);
-        document.getElementById("output").innerHTML = `<img src="${imgURL}" alt="Upscaled Image">`;
-        
-    } catch (err) {
-        console.error(err);
-        document.getElementById("output").innerHTML = "Error processing image.";
-    }
-}
-</script>
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
 
+        uploadArea.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFileUpload(files[0]);
+            }
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFileUpload(e.target.files[0]);
+            }
+        });
+
+        function handleFileUpload(file) {
+            if (!file.type.match('image/jpeg')) {
+                showError('Please upload a JPG/JPEG file only.');
+                return;
+            }
+
+            if (file.size > 10 * 1024 * 1024) {
+                showError('File size must be less than 10MB.');
+                return;
+            }
+
+            originalFileName = file.name;
+            
+            promptContainer.style.display = 'none';
+            sliderContainer.style.display = 'none';
+            uploadSection.style.display = 'none';
+            document.querySelector('.radio-container').style.display = 'none';
+            loadingContainer.style.display = 'block';
+            errorContainer.innerHTML = '';
+
+            const upscaleMethod = document.querySelector('input[name="upscale"]:checked').value;
+            if (upscaleMethod === 'ai') {
+                upscaleImageAI(file);
+            } else {
+                upscaleImageHTML(file);
+            }
+        }
+
+        function upscaleImageHTML(file) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    canvas.width = img.width * 2;
+                    canvas.height = img.height * 2;
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    canvas.toBlob(function(blob) {
+                        upscaledImageBlob = blob;
+                        showStage(3);
+                    }, 'image/jpeg');
+                }
+                img.src = event.target.result;
+            }
+            reader.readAsDataURL(file);
+        }
+
+        async function upscaleImageAI(file) {
+            try {
+                const formData = new FormData();
+                formData.append('image', file);
+                
+                const userPrompt = promptInput.value.trim();
+                formData.append('prompt', userPrompt);
+                // Send creativity value from 0.0 to 1.0
+                formData.append('creativity', creativitySlider.value / 100);
+
+                const response = await fetch('https://image-upscaler-backend.onrender.com/upscale', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    let errorMessage = errorText;
+                    try {
+                        const errorJson = JSON.parse(errorText);
+                        errorMessage = errorJson.error || errorText;
+                    } catch (e) {
+                        // The error was not JSON, use the raw text.
+                    }
+                    throw new Error(errorMessage);
+                }
+
+                upscaledImageBlob = await response.blob();
+                if (!upscaledImageBlob || upscaledImageBlob.size < 1000) {
+                    throw new Error('Received an invalid or empty image file from the backend.');
+                }
+                
+                console.log('Success! Upscaled image size:', upscaledImageBlob.size, 'bytes');
+                showStage(3);
+
+            } catch (error) {
+                console.error('Upscaling error:', error);
+                showError(`Failed to upscale image: ${error.message}`);
+                
+                loadingContainer.style.display = 'none';
+                document.querySelector('.radio-container').style.display = 'flex';
+                const selectedRadio = document.querySelector('input[name="upscale"]:checked');
+                if (selectedRadio) {
+                    selectedRadio.dispatchEvent(new Event('change'));
+                }
+            }
+        }
+
+        // Stage 3: Download Logic
+        const downloadButton = document.getElementById('downloadButton');
+        const restartButton = document.getElementById('restartButton');
+
+        downloadButton.addEventListener('click', () => {
+            if (upscaledImageBlob) {
+                const url = URL.createObjectURL(upscaledImageBlob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `2x_${originalFileName}`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }
+        });
+
+        restartButton.addEventListener('click', () => {
+            upscaledImageBlob = null;
+            originalFileName = '';
+            fileInput.value = '';
+            promptInput.value = '';
+            errorContainer.innerHTML = '';
+            
+            document.getElementById('html').checked = false;
+            document.getElementById('ai').checked = false;
+
+            loadingContainer.style.display = 'none';
+            promptContainer.style.display = 'none';
+            sliderContainer.style.display = 'none';
+            uploadSection.style.display = 'none';
+            document.querySelector('.radio-container').style.display = 'flex';
+            
+            showStage(2);
+        });
+
+        // Utility Functions
+        function showStage(stageNumber) {
+            document.querySelectorAll('.stage').forEach(stage => {
+                stage.classList.remove('active');
+            });
+
+            document.getElementById(`stage${stageNumber}`).classList.add('active');
+            currentStage = stageNumber;
+        }
+
+        function showError(message) {
+            errorContainer.innerHTML = `<div class="error-message">❌ ${message}</div>`;
+        }
+
+        // Initialize
+        passcodeInputs[0].focus();
+    </script>
 </body>
 </html>
