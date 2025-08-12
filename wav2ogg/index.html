@@ -28,9 +28,7 @@
 
     fileInput.addEventListener('change', () => {
       selectedFile = fileInput.files[0];
-      if (selectedFile) {
-        convertBtn.disabled = false;
-      }
+      convertBtn.disabled = !selectedFile;
     });
 
     convertBtn.addEventListener('click', async () => {
