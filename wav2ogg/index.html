@@ -1,61 +1,41 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>WAV to OGA Converter for Telegram</title>
-  <style>
-    body { font-family: sans-serif; padding: 20px; text-align: center; }
-    button, input { margin-top: 10px; }
-  </style>
-</head>
-<body>
-  <h1>WAV → OGA Converter (Telegram-Ready)</h1>
-  <input type="file" id="fileInput" accept=".wav" />
-  <br />
-  <button id="convertBtn" disabled>Convert to OGA</button>
-  <br />
-  <a id="downloadLink" style="display:none;" download="converted.oga">Download OGA File</a>
+<script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.6/dist/ffmpeg.min.js"></script>
+<script>
+  const { createFFmpeg, fetchFile } = FFmpeg;
 
-  <script type="module">
-    import { createFFmpeg, fetchFile } from 'https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.6/dist/ffmpeg.min.js';
+  const fileInput = document.getElementById('fileInput');
+  const convertBtn = document.getElementById('convertBtn');
+  const downloadLink = document.getElementById('downloadLink');
 
-    const fileInput = document.getElementById('fileInput');
-    const convertBtn = document.getElementById('convertBtn');
-    const downloadLink = document.getElementById('downloadLink');
+  const ffmpeg = createFFmpeg({ log: true });
+  let selectedFile = null;
 
-    const ffmpeg = createFFmpeg({ log: true });
-
-    let selectedFile = null;
-
-    fileInput.addEventListener('change', (e) => {
-      selectedFile = e.target.files[0];
-      convertBtn.disabled = !selectedFile;
-    });
-
-    convertBtn.addEventListener('click', async () => {
-      if (!selectedFile) return;
-
-      convertBtn.disabled = true;
-      convertBtn.textContent = 'Loading FFmpeg...';
-
-      if (!ffmpeg.isLoaded()) {
-        await ffmpeg.load();
-      }
-
-      convertBtn.textContent = 'Converting...';
-
-      ffmpeg.FS('writeFile', 'input.wav', await fetchFile(selectedFile));
-      await ffmpeg.run('-i', 'input.wav', '-c:a', 'libopus', 'output.oga');
-
-      const data = ffmpeg.FS('readFile', 'output.oga');
-      const blob = new Blob([data.buffer], { type: 'audio/ogg' });
-      const url = URL.createObjectURL(blob);
-
-      downloadLink.href = url;
-      downloadLink.style.display = 'inline-block';
-      convertBtn.textContent = 'Convert to OGA';
+  fileInput.addEventListener('change', () => {
+    selectedFile = fileInput.files[0];
+    if (selectedFile) {
       convertBtn.disabled = false;
-    });
-  </script>
-</body>
-</html>
+    }
+  });
+
+  convertBtn.addEventListener('click', async () => {
+    if (!selectedFile) return;
+
+    convertBtn.disabled = true;
+    convertBtn.textContent = 'Loading FFmpeg...';
+
+    if (!ffmpeg.isLoaded()) {
+      await ffmpeg.load();
+    }
+
+    convertBtn.textContent = 'Converting...';
+    ffmpeg.FS('writeFile', 'input.wav', await fetchFile(selectedFile));
+    await ffmpeg.run('-i', 'input.wav', '-c:a', 'libopus', 'output.oga');
+
+    const data = ffmpeg.FS('readFile', 'output.oga');
+    const blob = new Blob([data.buffer], { type: 'audio/ogg' });
+    downloadLink.href = URL.createObjectURL(blob);
+    downloadLink.style.display = 'inline-block';
+
+    convertBtn.textContent = 'Convert to OGA';
+    convertBtn.disabled = false;
+  });
+</script>
