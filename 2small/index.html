@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Shrinker</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- JSZip for creating zip files -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <style>
+        /* Custom styles inspired by the provided website */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .gradient-bg {
+            background-image: linear-gradient(to right, #4f46e5, #c026d3);
+        }
+        .gradient-text {
+            background-image: linear-gradient(to right, #4f46e5, #c026d3);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .hidden {
+            display: none;
+        }
+        #drop-zone.dragover {
+            border-color: #4f46e5;
+            background-color: rgba(79, 70, 229, 0.1);
+        }
+    </style>
+    <!-- Preconnect for Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-gray-900 text-gray-200 flex items-center justify-center min-h-screen p-4">
+
+    <div class="w-full max-w-2xl mx-auto">
+        <!-- Main Card Container -->
+        <div id="app-container" class="bg-gray-800 border border-gray-700 rounded-2xl shadow-2xl p-6 md:p-8 transition-all duration-300">
+
+            <!-- Header Section -->
+            <header class="text-center mb-6">
+                <h1 class="text-3xl md:text-4xl font-bold gradient-text">The Shrinker!</h1>
+                <p class="text-gray-400 mt-2">Drag in JPGs to shrink to 1080p width.</p>
+            </header>
+
+            <!-- 1. Drag and Drop Zone -->
+            <div id="drop-zone" class="border-2 border-dashed border-gray-600 rounded-xl p-8 text-center cursor-pointer hover:border-indigo-500 transition-colors duration-300">
+                <div class="flex flex-col items-center justify-center space-y-4">
+                    <svg class="w-16 h-16 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+                    </svg>
+                    <p class="text-lg font-semibold text-gray-300">Drop your JPG files here</p>
+                    <p class="text-sm text-gray-500">(or click to select files)</p>
+                </div>
+                <input type="file" id="file-input" multiple accept="image/jpeg" class="hidden">
+            </div>
+
+            <!-- 2. Progress Bar -->
+            <div id="progress-container" class="hidden w-full mt-4">
+                <p id="progress-text" class="text-center text-gray-400 mb-2">Processing 0 of 0 images...</p>
+                <div class="w-full bg-gray-700 rounded-full h-4 overflow-hidden">
+                    <div id="progress-bar" class="gradient-bg h-4 rounded-full transition-all duration-500 ease-out" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <!-- 3. Download List -->
+            <div id="download-container" class="hidden mt-6">
+                <h2 class="text-2xl font-semibold text-center mb-4">Processing Complete!</h2>
+                <ul id="file-list" class="space-y-3 max-h-60 overflow-y-auto bg-gray-900/50 p-4 rounded-lg border border-gray-700">
+                    <!-- File items will be injected here by JavaScript -->
+                </ul>
+                <div class="mt-6 flex justify-center">
+                    <button id="download-all-btn" class="gradient-bg text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300">
+                        Download All as .ZIP
+                    </button>
+                </div>
+                 <div class="mt-4 flex justify-center">
+                    <button id="reset-btn" class="bg-gray-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-gray-500 transition-colors duration-300">
+                        Start Over
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // DOM Element References
+        const dropZone = document.getElementById('drop-zone');
+        const fileInput = document.getElementById('file-input');
+        const progressContainer = document.getElementById('progress-container');
+        const progressBar = document.getElementById('progress-bar');
+        const progressText = document.getElementById('progress-text');
+        const downloadContainer = document.getElementById('download-container');
+        const fileList = document.getElementById('file-list');
+        const downloadAllBtn = document.getElementById('download-all-btn');
+        const resetBtn = document.getElementById('reset-btn');
+
+        let processedFiles = [];
+
+        // --- Event Listeners ---
+
+        // Open file dialog when drop zone is clicked
+        dropZone.addEventListener('click', () => fileInput.click());
+
+        // Handle file selection from dialog
+        fileInput.addEventListener('change', (e) => {
+            handleFiles(e.target.files);
+        });
+
+        // Drag and Drop events
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('dragover');
+        });
+
+        dropZone.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            handleFiles(e.dataTransfer.files);
+        });
+
+        // Download all button
+        downloadAllBtn.addEventListener('click', downloadAllAsZip);
+        
+        // Reset button
+        resetBtn.addEventListener('click', resetApp);
+
+
+        // --- Core Functions ---
+
+        /**
+         * Filters and initiates the processing of selected files.
+         * @param {FileList} files - The files selected by the user.
+         */
+        function handleFiles(files) {
+            const jpegFiles = Array.from(files).filter(file => file.type === 'image/jpeg');
+            if (jpegFiles.length === 0) {
+                alert('Please upload JPG files only.');
+                return;
+            }
+            
+            // Switch UI to progress view
+            dropZone.classList.add('hidden');
+            progressContainer.classList.remove('hidden');
+            
+            processImages(jpegFiles);
+        }
+
+        /**
+         * Resizes images and updates the UI.
+         * @param {File[]} files - An array of JPEG files to process.
+         */
+        async function processImages(files) {
+            processedFiles = [];
+            const totalFiles = files.length;
+            let processedCount = 0;
+
+            for (const file of files) {
+                try {
+                    const resizedBlob = await resizeImage(file, 1080);
+                    const originalFileName = file.name;
+                    const newFileName = originalFileName.replace(/\.jpe?g$/i, '_resized.jpg');
+                    processedFiles.push({ name: newFileName, blob: resizedBlob });
+                } catch (error) {
+                    console.error('Error processing file:', file.name, error);
+                }
+                processedCount++;
+                updateProgress(processedCount, totalFiles);
+            }
+            
+            // Switch UI to download view
+            progressContainer.classList.add('hidden');
+            downloadContainer.classList.remove('hidden');
+            displayDownloadableFiles();
+        }
+        
+        /**
+         * Resizes a single image file to a specified width.
+         * @param {File} file - The image file to resize.
+         * @param {number} maxWidth - The target width for the image.
+         * @returns {Promise<Blob>} A promise that resolves with the resized image as a Blob.
+         */
+        function resizeImage(file, maxWidth) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        
+                        const aspectRatio = img.height / img.width;
+                        const newWidth = maxWidth;
+                        const newHeight = Math.round(newWidth * aspectRatio);
+
+                        canvas.width = newWidth;
+                        canvas.height = newHeight;
+                        
+                        ctx.drawImage(img, 0, 0, newWidth, newHeight);
+
+                        canvas.toBlob((blob) => {
+                            if (blob) {
+                                resolve(blob);
+                            } else {
+                                reject(new Error('Canvas to Blob conversion failed'));
+                            }
+                        }, 'image/jpeg', 0.9); // 0.9 is quality setting
+                    };
+                    img.onerror = reject;
+                    img.src = e.target.result;
+                };
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+
+        /**
+         * Updates the progress bar and text.
+         * @param {number} count - The number of files processed so far.
+         * @param {number} total - The total number of files.
+         */
+        function updateProgress(count, total) {
+            const percentage = Math.round((count / total) * 100);
+            progressBar.style.width = `${percentage}%`;
+            progressText.textContent = `Processing ${count} of ${total} images...`;
+        }
+
+        /**
+         * Renders the list of downloadable files.
+         */
+        function displayDownloadableFiles() {
+            fileList.innerHTML = ''; // Clear previous list
+            processedFiles.forEach((file) => {
+                const li = document.createElement('li');
+                li.className = 'flex items-center justify-between bg-gray-800 p-3 rounded-md';
+                
+                const fileNameSpan = document.createElement('span');
+                fileNameSpan.textContent = file.name;
+                fileNameSpan.className = 'truncate mr-4';
+
+                const downloadLink = document.createElement('a');
+                downloadLink.href = URL.createObjectURL(file.blob);
+                downloadLink.download = file.name;
+                downloadLink.textContent = 'Download';
+                downloadLink.className = 'text-indigo-400 hover:text-indigo-300 font-semibold text-sm flex-shrink-0';
+                
+                li.appendChild(fileNameSpan);
+                li.appendChild(downloadLink);
+                fileList.appendChild(li);
+            });
+        }
+        
+        /**
+         * Creates a zip file from processed images and initiates download.
+         */
+        async function downloadAllAsZip() {
+            if (processedFiles.length === 0) return;
+
+            const zip = new JSZip();
+            processedFiles.forEach(file => {
+                zip.file(file.name, file.blob);
+            });
+            
+            downloadAllBtn.textContent = 'Zipping...';
+            downloadAllBtn.disabled = true;
+
+            try {
+                const content = await zip.generateAsync({ type: 'blob' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(content);
+                link.download = 'shrinked_wrapped.zip';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            } catch (error) {
+                console.error("Failed to create zip file:", error);
+                alert("An error occurred while creating the zip file.");
+            } finally {
+                downloadAllBtn.textContent = 'Download All (ZIP)';
+                downloadAllBtn.disabled = false;
+            }
+        }
+        
+        /**
+         * Resets the application to its initial state.
+         */
+        function resetApp() {
+            // Clear processed files
+            processedFiles.forEach(file => URL.revokeObjectURL(file.blob));
+            processedFiles = [];
+
+            // Reset UI elements
+            downloadContainer.classList.add('hidden');
+            progressContainer.classList.add('hidden');
+            dropZone.classList.remove('hidden');
+
+            // Reset progress bar
+            progressBar.style.width = '0%';
+            progressText.textContent = 'Processing 0 of 0 images...';
+            
+            // Clear file list
+            fileList.innerHTML = '';
+            
+            // Reset file input
+            fileInput.value = '';
+        }
+    </script>
+
+</body>
+</html>
