@@ -1,23 +1,130 @@
-<html>
-  <head><title>One Guitar & Two Bullets (2026)</title></head>
-  <style>
-    body{
-      background-color:#000;
-      color:#fff;
-    }
-    p,h1{
-      text-align:center;
-    }
-  </style>
-  <body style="width:100%;height:100%;vertical-align:middle;text-align:center;">
-    <h1>One Guitar & Two Bullets</h1>
-    <p>
-      <audio controls>
-        <source src="The Long Road of Revenge (1G2BV5).mp3" type="audio/mpeg">
-        Your browser does not support the audio element.
-      </audio>
-    </p>
-    <p><img src="One Guitar and Two Bullets.png" alt="One Guitar and Two Bullets" style="width:40%;height:auto;"/></p>
-    <p><i>Coming 2026</i></p>
-  </body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>One Guitar & Two Bullets | San Jaya Prime</title>
+    
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+
+    <style>
+        /* Custom styles for a cohesive dark theme and audio player */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0a0a0a; /* A very dark gray, almost black */
+        }
+
+        /* Basic styling for the audio player to match the dark theme */
+        audio {
+            width: 100%;
+            border-radius: 0.5rem;
+            margin-top: 1.5rem;
+            filter: invert(1) grayscale(1) brightness(0.7) contrast(1.5);
+        }
+
+        /* Webkit specific styles for better audio player appearance in Chrome/Safari */
+        audio::-webkit-media-controls-panel {
+            background-color: #1a1a1a;
+            border-radius: 0.5rem;
+        }
+
+        audio::-webkit-media-controls-play-button,
+        audio::-webkit-media-controls-current-time-display,
+        audio::-webkit-media-controls-time-remaining-display,
+        audio::-webkit-media-controls-mute-button,
+        audio::-webkit-media-controls-volume-slider,
+        audio::-webkit-media-controls-fullscreen-button {
+             filter: invert(1);
+        }
+
+        /* Fade-in animation */
+        .fade-in {
+            opacity: 0;
+            animation: fadeInAnimation 1s ease-in-out forwards;
+        }
+
+        @keyframes fadeInAnimation {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body class="text-gray-200 antialiased">
+
+    <!-- Main container for centering content -->
+    <div class="min-h-screen flex flex-col items-center justify-center p-4 sm:p-6 lg:p-8">
+        
+        <main id="content-container" class="fade-in w-full max-w-md mx-auto bg-gray-900/50 backdrop-blur-sm rounded-2xl shadow-2xl shadow-purple-500/10 p-6 sm:p-8 text-center border border-gray-800">
+            
+            <!-- 
+                EDIT THIS SECTION: Album Art
+                Replace the 'src' with the path to your album art image.
+                I'm using a placeholder image here.
+            -->
+            <div class="mb-6">
+                <img 
+                    src="./One Guitar and Two Bullets.png" 
+                    alt="One Guitar &amp; Two Bullets" 
+                    class="w-full h-auto rounded-xl shadow-lg"
+                >
+            </div>
+
+            <!-- 
+                EDIT THIS SECTION: Album/Song Title & Artist
+                Replace the text content with your details.
+            -->
+            <h1 class="text-3xl sm:text-4xl font-black text-white tracking-tight">
+                One Guitar & Two Bullets
+            </h1>
+            <h2 class="text-lg sm:text-xl font-bold text-purple-400 mt-1">
+                San Jaya Prime
+            </h2>
+
+            <!-- 
+                EDIT THIS SECTION: MP3 File
+                Replace the 'src' with the path to your MP3 audio file.
+                The 'controls' attribute displays the default browser player controls.
+            -->
+            <audio controls controlsList="nodownload" class="w-full mt-6">
+                <source src="The Long Road of Revenge (1G2BV5).mp3" type="audio/mpeg">
+                Your browser does not support the audio element.
+            </audio>
+
+            <!-- 
+                EDIT THIS SECTION: Album Art Caption
+                Replace the text content with your caption or a short description.
+            -->
+            <p class="text-sm text-gray-400 mt-6 leading-relaxed">
+                This is the first master cut from the single, "The Long Road of Revenge (1G2BV5)", with of course many of the usual suspects returning for their own takes. Coming in 2026!
+            </p>
+
+        </main>
+        
+        <footer class="fade-in text-center mt-8">
+             <p class="text-xs text-gray-600">&copy; 2026 San Jaya Prime</p>
+        </footer>
+    </div>
+
+    <script>
+        // A simple script to apply the fade-in animation after the page loads.
+        document.addEventListener('DOMContentLoaded', () => {
+            const content = document.getElementById('content-container');
+            // This just ensures the animation class is there, which it is by default.
+            // You could add more complex JS here if needed in the future.
+        });
+    </script>
+
+</body>
 </html>
