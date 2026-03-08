@@ -40,7 +40,7 @@
             const res = await fetch(`${cat.file}?t=${new Date().getTime()}`);
             if (!res.ok) throw new Error(`Failed to fetch ${cat.file}`);
             const items = await res.json();
-            return items.map(item => ({ ...item, categoryId: cat.id, categoryTitle: cat.title }));
+            return items.map(item => ({ ...item, categoryId: cat.id, categoryTitle: cat.title, categoryColor: cat.color }));
           } catch(e) {
             console.error('Error fetching', cat.file, e);
             return [];
@@ -48,8 +48,14 @@
         });
         
         const results = await Promise.all(fetchPromises);
-        // Flatten and sort by timestamp newest first
-        allSuggestions = results.flat().sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
+        // Flatten and randomize order for initial load
+        allSuggestions = results.flat();
+        
+        // Fisher-Yates shuffle
+        for (let i = allSuggestions.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [allSuggestions[i], allSuggestions[j]] = [allSuggestions[j], allSuggestions[i]];
+        }
         
         renderGrid();
       } catch(err) {
@@ -64,6 +70,7 @@
       const allBtn = document.createElement('button');
       allBtn.className = 'nav-btn active';
       allBtn.textContent = 'All';
+      allBtn.style.setProperty('--cat-color', '#ffffff');
       allBtn.onclick = () => setFilter('all', allBtn);
       nav.appendChild(allBtn);
 
@@ -71,6 +78,7 @@
         const btn = document.createElement('button');
         btn.className = 'nav-btn';
         btn.textContent = cat.title;
+        btn.style.setProperty('--cat-color', cat.color);
         btn.onclick = () => setFilter(cat.id, btn);
         nav.appendChild(btn);
       });
@@ -107,22 +115,24 @@
     function createCard(item) {
       const card = document.createElement('div');
       card.className = 'suggestion-card';
+      if (item.categoryColor) {
+        card.style.setProperty('--cat-color', item.categoryColor);
+      }
       
       const copyText = item.title;
       
       card.innerHTML = `
         <div class="card-header">
           <div class="card-title">${item.title}</div>
-          <div class="card-category-badge">${item.categoryTitle}</div>
+          <div style="display:flex; align-items:center; gap: 0.75rem;">
+            <div class="card-category-badge">${item.categoryTitle}</div>
+            <button class="action-btn copy-btn" title="Copy to clipboard">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            </button>
+          </div>
         </div>
         <div class="card-content">
           ${item.suggestedBy ? `Suggested by ${item.suggestedBy}` : ''}
-        </div>
-        <div class="card-footer">
-          <div class="card-date">${item.timestamp}</div>
-          <button class="action-btn copy-btn" title="Copy to clipboard">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-          </button>
         </div>
       `;
       

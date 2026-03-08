@@ -2,36 +2,43 @@
   {
     "id": "disney",
     "title": "Disney+",
-    "file": "disney.json"
+    "file": "disney.json",
+    "color": "#0063e5"
   },
   {
     "id": "amazon",
     "title": "Amazon Prime",
-    "file": "amazon.json"
+    "file": "amazon.json",
+    "color": "#00a8e1"
   },
   {
     "id": "netflix",
     "title": "Netflix",
-    "file": "netflix.json"
+    "file": "netflix.json",
+    "color": "#e50914"
   },
   {
     "id": "vandwelling",
     "title": "Vandwelling",
-    "file": "vandwelling.json"
+    "file": "vandwelling.json",
+    "color": "#20c997"
   },
   {
     "id": "books",
     "title": "Books",
-    "file": "books.json"
+    "file": "books.json",
+    "color": "#6f42c1"
   },
   {
     "id": "food",
     "title": "Food",
-    "file": "food.json"
+    "file": "food.json",
+    "color": "#fd7e14"
   },
   {
     "id": "drinks",
     "title": "Drinks",
-    "file": "drinks.json"
+    "file": "drinks.json",
+    "color": "#8d6e63"
   }
 ]
