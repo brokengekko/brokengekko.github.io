@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tops - Moderation</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header>
+    <h1>Tops Moderation</h1>
+    <p style="color: var(--delete-color); margin-top: 0.5rem; font-weight: 500;">Admin View: Use checkbox to delete items</p>
+  </header>
+
+  <main>
+    <div id="grid" class="masonry-grid">
+      <!-- Cards will be injected here -->
+    </div>
+  </main>
+  
+  <div id="toast">Item scheduled for deletion.</div>
+
+  <script>
+    // Webhook URL endpoint for deletion. Change this variable to your actual n8n webhook URL.
+    const N8N_DELETE_WEBHOOK = 'https://n8n.example.com/webhook/tops-delete';
+
+    async function loadData() {
+      try {
+        const categoriesRes = await fetch('categories.json');
+        const categories = await categoriesRes.json();
+        
+        const fetchPromises = categories.map(async cat => {
+          try {
+            const res = await fetch(`${cat.file}?t=${new Date().getTime()}`);
+            if (!res.ok) throw new Error(`Failed to fetch ${cat.file}`);
+            const items = await res.json();
+            return items.map(item => ({ ...item, categoryId: cat.id, categoryTitle: cat.title }));
+          } catch(e) {
+            console.error('Error fetching', cat.file, e);
+            return [];
+          }
+        });
+        
+        const results = await Promise.all(fetchPromises);
+        const allItems = results.flat().sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
+        
+        const grid = document.getElementById('grid');
+        grid.innerHTML = ''; 
+        
+        if (allItems.length === 0) {
+          grid.innerHTML = '<p style="text-align:center;color:var(--text-muted);">No suggestions found.</p>';
+          return;
+        }
+
+        allItems.forEach(item => {
+          grid.appendChild(createAdminCard(item));
+        });
+      } catch(err) {
+        console.error('Failed to load Tops data:', err);
+      }
+    }
+
+    function createAdminCard(item) {
+      const card = document.createElement('div');
+      card.className = 'suggestion-card';
+      const checkboxId = `cbx-${item.uid}`;
+      
+      card.innerHTML = `
+        <div class="card-header">
+          <div class="card-title">${item.title}</div>
+          <div class="card-category-badge">${item.categoryTitle}</div>
+        </div>
+        <div class="card-content">
+          ${item.suggestedBy ? `Suggested by ${item.suggestedBy}` : ''}
+        </div>
+        <div class="card-footer" style="padding-top:1rem;">
+          <div class="card-date">${item.timestamp}</div>
+          <div class="checkbox-wrapper-46">
+            <input type="checkbox" id="${checkboxId}" class="inp-cbx" />
+            <label for="${checkboxId}" class="cbx" title="Delete suggestion">
+              <span>
+                <svg viewBox="0 0 12 10" height="10px" width="12px">
+                  <polyline points="1.5 6 4.5 9 10.5 1"></polyline>
+                </svg>
+              </span>
+              <span style="display:none;">Delete</span>
+            </label>
+          </div>
+        </div>
+      `;
+      
+      const checkbox = card.querySelector('.inp-cbx');
+      checkbox.addEventListener('change', async (e) => {
+        if (e.target.checked) {
+          // Apply strikethrough using CSS class
+          card.classList.add('stricken');
+          
+          // Send Webhook request
+          try {
+            const payload = {
+              uid: item.uid,
+              categoryId: item.categoryId,
+              action: "delete"
+            };
+            
+            await fetch(N8N_DELETE_WEBHOOK, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(payload)
+            });
+            
+            showToast(`Sent delete request for: ${item.title}`);
+          } catch (err) {
+            console.error('Error sending delete webhook', err);
+            showToast(`Webhook triggered (or failed due to CORS) for ${item.title}`);
+          }
+        } else {
+          // If they uncheck it quickly
+          card.classList.remove('stricken');
+        }
+      });
+      
+      return card;
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', loadData);
+  </script>
+</body>
+</html>

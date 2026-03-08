@@ -1,0 +1,37 @@
+[
+  {
+    "id": "disney",
+    "title": "Disney+",
+    "file": "disney.json"
+  },
+  {
+    "id": "amazon",
+    "title": "Amazon Prime",
+    "file": "amazon.json"
+  },
+  {
+    "id": "netflix",
+    "title": "Netflix",
+    "file": "netflix.json"
+  },
+  {
+    "id": "vandwelling",
+    "title": "Vandwelling",
+    "file": "vandwelling.json"
+  },
+  {
+    "id": "books",
+    "title": "Books",
+    "file": "books.json"
+  },
+  {
+    "id": "food",
+    "title": "Food",
+    "file": "food.json"
+  },
+  {
+    "id": "drinks",
+    "title": "Drinks",
+    "file": "drinks.json"
+  }
+]

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tops - Directory of Suggestions</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header>
+    <h1>Tops</h1>
+    <nav id="categoryNav" class="category-nav">
+      <!-- Nav items injected here -->
+    </nav>
+  </header>
+
+  <main>
+    <div id="grid" class="masonry-grid">
+      <!-- Cards will be injected here -->
+    </div>
+  </main>
+  
+  <div id="toast">Copied to clipboard!</div>
+
+  <script>
+    let allSuggestions = []; // Store globally for filtering
+    let currentFilter = 'all';
+
+    async function loadData() {
+      try {
+        const categoriesRes = await fetch('categories.json');
+        const categories = await categoriesRes.json();
+        
+        buildNavigation(categories);
+
+        const fetchPromises = categories.map(async cat => {
+          try {
+            // Append timestamp to avoid caching issues during development
+            const res = await fetch(`${cat.file}?t=${new Date().getTime()}`);
+            if (!res.ok) throw new Error(`Failed to fetch ${cat.file}`);
+            const items = await res.json();
+            return items.map(item => ({ ...item, categoryId: cat.id, categoryTitle: cat.title }));
+          } catch(e) {
+            console.error('Error fetching', cat.file, e);
+            return [];
+          }
+        });
+        
+        const results = await Promise.all(fetchPromises);
+        // Flatten and sort by timestamp newest first
+        allSuggestions = results.flat().sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
+        
+        renderGrid();
+      } catch(err) {
+        console.error('Failed to load Tops data:', err);
+      }
+    }
+
+    function buildNavigation(categories) {
+      const nav = document.getElementById('categoryNav');
+      nav.innerHTML = '';
+      
+      const allBtn = document.createElement('button');
+      allBtn.className = 'nav-btn active';
+      allBtn.textContent = 'All';
+      allBtn.onclick = () => setFilter('all', allBtn);
+      nav.appendChild(allBtn);
+
+      categories.forEach(cat => {
+        const btn = document.createElement('button');
+        btn.className = 'nav-btn';
+        btn.textContent = cat.title;
+        btn.onclick = () => setFilter(cat.id, btn);
+        nav.appendChild(btn);
+      });
+    }
+
+    function setFilter(categoryId, btnElement) {
+      currentFilter = categoryId;
+      
+      // Update active state
+      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+      btnElement.classList.add('active');
+      
+      renderGrid();
+    }
+
+    function renderGrid() {
+      const grid = document.getElementById('grid');
+      grid.innerHTML = ''; 
+      
+      const filteredItems = currentFilter === 'all' 
+        ? allSuggestions 
+        : allSuggestions.filter(item => item.categoryId === currentFilter);
+      
+      if (filteredItems.length === 0) {
+        grid.innerHTML = '<p style="text-align:center;color:var(--text-muted); width: 100%;">No suggestions found in this category.</p>';
+        return;
+      }
+
+      filteredItems.forEach(item => {
+        grid.appendChild(createCard(item));
+      });
+    }
+
+    function createCard(item) {
+      const card = document.createElement('div');
+      card.className = 'suggestion-card';
+      
+      const copyText = item.title;
+      
+      card.innerHTML = `
+        <div class="card-header">
+          <div class="card-title">${item.title}</div>
+          <div class="card-category-badge">${item.categoryTitle}</div>
+        </div>
+        <div class="card-content">
+          ${item.suggestedBy ? `Suggested by ${item.suggestedBy}` : ''}
+        </div>
+        <div class="card-footer">
+          <div class="card-date">${item.timestamp}</div>
+          <button class="action-btn copy-btn" title="Copy to clipboard">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+          </button>
+        </div>
+      `;
+      
+      const copyBtn = card.querySelector('.copy-btn');
+      copyBtn.addEventListener('click', () => {
+        navigator.clipboard.writeText(copyText).then(() => {
+          showToast('Copied to clipboard!');
+        }).catch(err => {
+          console.error('Failed to copy', err);
+        });
+      });
+      
+      return card;
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', loadData);
+  </script>
+</body>
+</html>

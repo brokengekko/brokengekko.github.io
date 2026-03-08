@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tops - Ingest</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header>
+    <h1>Tops Ingest</h1>
+    <p style="color: var(--text-muted); margin-top: 0.5rem;">Add a new suggestion</p>
+  </header>
+
+  <main>
+    <div class="form-container">
+      <form id="ingestForm">
+        <div class="form-group">
+          <label for="category">Category</label>
+          <select id="category" name="category" required>
+            <option value="" disabled selected>Loading categories...</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="title">Title</label>
+          <input type="text" id="title" name="title" placeholder="E.g., The Mandalorian" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="suggestedBy">Suggested By</label>
+          <input type="text" id="suggestedBy" name="suggestedBy" placeholder="E.g., Skybreak">
+        </div>
+
+        <div class="form-group">
+          <label for="secretKey">Secret Key</label>
+          <input type="password" id="secretKey" name="secretKey" placeholder="Enter password to authorize" required>
+        </div>
+
+        <button type="submit" id="submitBtn">Submit Suggestion</button>
+      </form>
+    </div>
+  </main>
+  
+  <div id="toast"></div>
+
+  <script>
+    // Webhook URL endpoint for ingestion. Change this variable to your actual n8n webhook URL.
+    const N8N_INGEST_WEBHOOK = 'https://n8n.example.com/webhook/tops-ingest';
+
+    async function loadCategories() {
+      try {
+        const res = await fetch('categories.json');
+        const categories = await res.json();
+        
+        const select = document.getElementById('category');
+        select.innerHTML = '<option value="" disabled selected>Select a category...</option>';
+        
+        categories.forEach(cat => {
+          const option = document.createElement('option');
+          option.value = cat.id;
+          option.textContent = cat.title;
+          select.appendChild(option);
+        });
+      } catch(err) {
+        console.error('Failed to load categories', err);
+        const select = document.getElementById('category');
+        select.innerHTML = '<option value="" disabled>Error loading categories</option>';
+      }
+    }
+
+    document.getElementById('ingestForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const btn = document.getElementById('submitBtn');
+      btn.disabled = true;
+      btn.textContent = 'Submitting...';
+      btn.style.opacity = 0.7;
+
+      const payload = {
+        categoryId: document.getElementById('category').value,
+        title: document.getElementById('title').value,
+        suggestedBy: document.getElementById('suggestedBy').value,
+        secretKey: document.getElementById('secretKey').value,
+        timestamp: new Date().toISOString().split('T')[0], // YYYY-MM-DD
+        uid: Date.now().toString()
+      };
+
+      try {
+        const response = await fetch(N8N_INGEST_WEBHOOK, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        // Even if webhook URL is dummy, n8n usually returns 200 OK.
+        // We'll optimistically treat a successful fetch execution as success.
+        
+        showToast('Suggestion submitted successfully!');
+        document.getElementById('ingestForm').reset();
+      } catch (error) {
+        console.error('Error submitting form', error);
+        showToast('Submission triggered (or failed due to CORS/invalid URL). Check console.');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Submit Suggestion';
+        btn.style.opacity = 1;
+      }
+    });
+
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 4000);
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', loadCategories);
+  </script>
+</body>
+</html>
