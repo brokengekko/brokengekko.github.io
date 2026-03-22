@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VGA ASCII Landscapes</title>
+    <style>
+        :root {
+            --bg: #000000;
+            --nav-bg: #111111;
+            --text: #eeeeee;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        nav {
+            background-color: var(--nav-bg);
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #333;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+            z-index: 10;
+        }
+
+        .logo {
+            font-size: 1.2rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+            color: #ffffff; /* Explicitly requested white */
+        }
+
+        .controls {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        select, .icon-btn {
+            background-color: #333333;
+            color: #ffffff;
+            border: 1px solid #555555;
+            padding: 8px 16px;
+            font-size: 0.9rem;
+            border-radius: 4px;
+            cursor: pointer;
+            outline: none;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 180px;
+        }
+
+        .icon-btn {
+            padding: 8px;
+        }
+
+        select:hover, .icon-btn:hover {
+            background-color: #444444;
+            border-color: #777777;
+        }
+
+        #downloadBtn {
+            background-color: #006699;
+            border-color: #0099cc;
+            display: none;
+        }
+
+        #downloadBtn:hover {
+            background-color: #0088cc;
+            border-color: #00ccff;
+            box-shadow: 0 0 8px rgba(0, 204, 255, 0.4);
+        }
+
+        .canvas-container {
+            flex-grow: 1;
+            display: block;
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+            background: #000000;
+            overflow: hidden;
+        }
+
+        /* Fixed font styling allows perfect grid calculations to fill the screen */
+        pre#canvas {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 12px;
+            line-height: 12px; /* 1:1 ratio for seamless block characters */
+            letter-spacing: 0;
+            font-weight: bold;
+            user-select: none;
+            background-color: #000000;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">VGA ASCII Landscapes</div>
+        <div class="controls">
+            <select id="themeSelect" onchange="generateNewScene()">
+                <option value="autumn">Autumn Sunset</option>
+                <option value="winter">Winter Night</option>
+                <option value="spring">Spring Sunrise</option>
+                <option value="summer">Summer Day</option>
+            </select>
+            <button class="icon-btn" onclick="generateNewScene()" title="Regenerate Scene">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+                    <path d="M3 3v5h5"/>
+                </svg>
+            </button>
+            <button id="downloadBtn" class="icon-btn" onclick="downloadExport()" title="Download Animation">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+            </button>
+        </div>
+    </nav>
+
+    <div class="canvas-container" id="container">
+        <pre id="canvas"></pre>
+    </div>
+
+    <script>
+        // --- 1. CORE ENGINE & CONFIG ---
+        // These functions and constants are self-contained so they can be bundled into the downloaded HTML.
+        const DITHERS = [' ', '░', '▒', '▓', '█'];
+        
+        let COLS = 100;
+        let ROWS = 40;
+        let currentThemeKey = 'autumn';
+        let currentTheme = {};
+        let sceneState = {};
+        let buffer = [];
+        let timeOffset = 0;
+        let animationInterval = null;
+
+        const THEMES = {
+            autumn: {
+                name: "Autumn Sunset",
+                skyBase: ['#330033', '#660000', '#990000', '#CC3300', '#FF6600', '#FFCC00'],
+                sun: { bg: '#FF3300', fg: '#FFFF00' },
+                mountains: { back: ['#660033', '#330000'], front: ['#993300', '#330000'] },
+                ground: ['#663300', '#333300', '#000000'],
+                water: false,
+                clouds: { fg: '#CC6633' },
+                treeColors: ['#CC3300', '#FF6600', '#FFCC00', '#442200'],
+                treeChars: ['♣', '♠', 'Y', 'T'],
+                stars: false,
+                leaves: true, birds: false, boats: false
+            },
+            winter: {
+                name: "Winter Night",
+                skyBase: ['#000000', '#000033', '#000066', '#003366', '#336699'],
+                sun: { bg: '#000033', fg: '#FFFFFF' }, 
+                mountains: { back: ['#333366', '#000033'], front: ['#666699', '#333366'] },
+                ground: ['#FFFFFF', '#CCCCCC', '#999999', '#333333'],
+                water: false,
+                clouds: { fg: '#333333' },
+                treeColors: ['#FFFFFF', '#EEEEEE', '#AACCFF'],
+                treeChars: ['▲', '↑', 'Y'],
+                stars: true,
+                leaves: false, birds: false, boats: false
+            },
+            spring: {
+                name: "Spring Sunrise",
+                skyBase: ['#6699FF', '#99CCFF', '#CCFFFF', '#FFFFCC', '#FFCC99'],
+                sun: { bg: '#FFFF66', fg: '#FFFFFF' },
+                mountains: { back: ['#339966', '#003300'], front: ['#66CC66', '#006600'] },
+                ground: ['#99FF99', '#66CC66', '#339933'],
+                water: ['#33CCFF', '#006699', '#003366'],
+                clouds: { fg: '#FFFFFF' },
+                treeColors: ['#FF99CC', '#FF66B2', '#66CC66', '#339933'],
+                treeChars: ['♣', '♠', '*'],
+                stars: false,
+                leaves: false, birds: true, boats: false
+            },
+            summer: {
+                name: "Summer Day",
+                skyBase: ['#0033CC', '#0066FF', '#3399FF', '#66CCFF', '#99FFFF'],
+                sun: { bg: '#FFCC00', fg: '#FFFF00' },
+                mountains: { back: ['#006633', '#003300'], front: ['#339933', '#006600'] },
+                ground: ['#66CC00', '#339900', '#006600'],
+                water: ['#0099FF', '#0066CC', '#003399'],
+                clouds: { fg: '#FFFFFF' },
+                treeColors: ['#006600', '#004400', '#339900'],
+                treeChars: ['▲', '♣', '♠'],
+                stars: false,
+                leaves: false, birds: false, boats: true
+            }
+        };
+
+        function measureChar() {
+            const span = document.createElement('span');
+            span.style.fontFamily = "'Courier New', Courier, monospace";
+            span.style.fontSize = "12px";
+            span.style.lineHeight = "12px";
+            span.style.fontWeight = "bold";
+            span.style.position = "absolute";
+            span.style.visibility = "hidden";
+            span.innerText = "█";
+            document.body.appendChild(span);
+            const rect = span.getBoundingClientRect();
+            document.body.removeChild(span);
+            return { w: rect.width || 9.6, h: 16 };
+        }
+
+        function initCanvasSize() {
+            const container = document.getElementById('container') || document.body;
+            const dims = measureChar();
+            COLS = Math.floor(container.clientWidth / dims.w);
+            ROWS = Math.floor(container.clientHeight / dims.h);
+            
+            // Re-initialize buffer matrix
+            buffer = new Array(ROWS);
+            for(let y = 0; y < ROWS; y++) {
+                buffer[y] = new Array(COLS);
+                for(let x = 0; x < COLS; x++) {
+                    buffer[y][x] = { char: ' ', bg: '#000', fg: '#000' };
+                }
+            }
+        }
+
+        function applyDitheredColor(cell, colorsArray, t) {
+            t = Math.max(0, Math.min(1, t));
+            if (t === 1) {
+                cell.bg = colorsArray[colorsArray.length - 1];
+                cell.fg = cell.bg;
+                cell.char = ' ';
+                return;
+            }
+            let scaledT = t * (colorsArray.length - 1);
+            let idx = Math.floor(scaledT);
+            let frac = scaledT - idx;
+            
+            let c1 = colorsArray[idx];
+            let c2 = colorsArray[idx + 1];
+            let ditherIdx = Math.floor(frac * 5); // 0, 1, 2, 3, 4
+            
+            cell.bg = c1;
+            cell.fg = c2;
+            cell.char = DITHERS[ditherIdx];
+        }
+
+        function generateHeights(minH, maxH, minFreq, maxFreq) {
+            let arr = [];
+            let p1 = Math.random() * Math.PI * 2;
+            let p2 = Math.random() * Math.PI * 2;
+            let f1 = minFreq + Math.random() * (maxFreq - minFreq);
+            let f2 = f1 * 1.5;
+            let range = maxH - minH;
+            for(let x = 0; x < COLS; x++) {
+                let v = Math.sin((x / COLS) * Math.PI * f1 + p1) * 0.6 + Math.sin((x / COLS) * Math.PI * f2 + p2) * 0.4;
+                arr.push(Math.floor(minH + (v + 1) / 2 * range));
+            }
+            return arr;
+        }
+
+        function generateScene(themeKey) {
+            currentTheme = THEMES[themeKey];
+            let state = {
+                mountains: {
+                    m1: generateHeights(Math.floor(ROWS*0.35), Math.floor(ROWS*0.65), 2, 4), // Back
+                    m2: generateHeights(Math.floor(ROWS*0.1), Math.floor(ROWS*0.3), 3, 5)    // Front
+                },
+                sun: {
+                    x: Math.floor(Math.random() * (COLS - 30)) + 15,
+                    y: Math.floor(Math.random() * (ROWS * 0.25)) + 4,
+                    radius: 4 + Math.random() * 3
+                },
+                clouds: [],
+                stars: [],
+                trees: [],
+                leaves: [],
+                birds: [],
+                boats: []
+            };
+
+            // Clouds
+            let numClouds = 5 + Math.random() * 5;
+            for(let i = 0; i < numClouds; i++) {
+                state.clouds.push({
+                    x: Math.random() * COLS,
+                    y: Math.random() * (ROWS * 0.4), 
+                    width: 8 + Math.random() * 16,
+                    height: 3 + Math.floor(Math.random() * 3),
+                    speed: 0.1 + Math.random() * 0.3
+                });
+            }
+
+            // Stars
+            if (currentTheme.stars) {
+                for(let i = 0; i < (COLS * ROWS * 0.02); i++) {
+                    state.stars.push({
+                        x: Math.floor(Math.random() * COLS),
+                        y: Math.floor(Math.random() * (ROWS * 0.6)),
+                        twinkleSpeed: 0.05 + Math.random() * 0.15,
+                        offset: Math.random() * Math.PI * 2
+                    });
+                }
+            }
+
+            // Trees
+            for(let x = 0; x < COLS; x++) {
+                if (Math.random() < 0.25) {
+                    let groundY = ROWS - state.mountains.m2[x];
+                    if (groundY < ROWS - 5) { // Avoid water edge
+                        state.trees.push({
+                            x: x,
+                            y: groundY - 1,
+                            type: currentTheme.treeChars[Math.floor(Math.random() * currentTheme.treeChars.length)],
+                            color: currentTheme.treeColors[Math.floor(Math.random() * currentTheme.treeColors.length)]
+                        });
+                    }
+                }
+            }
+
+            // Leaves
+            if (currentTheme.leaves) {
+                for(let i=0; i < (COLS * ROWS * 0.015); i++) {
+                    state.leaves.push({
+                        x: Math.random() * COLS,
+                        y: Math.random() * ROWS,
+                        speedY: 0.2 + Math.random() * 0.6,
+                        swaySpeed: 0.5 + Math.random() * 1.5,
+                        swayOffset: Math.random() * Math.PI * 2,
+                        char: ['*', '+', ',', '`', '\'', '~'][Math.floor(Math.random() * 6)],
+                        color: ['#FF6600', '#CC3300', '#FFCC00', '#990000'][Math.floor(Math.random() * 4)]
+                    });
+                }
+            }
+
+            // Birds
+            if (currentTheme.birds) {
+                for(let i=0; i < 6 + Math.random() * 6; i++) {
+                    state.birds.push({
+                        x: Math.random() * COLS,
+                        y: Math.random() * (ROWS * 0.4),
+                        speedX: (Math.random() > 0.5 ? 1 : -1) * (0.3 + Math.random() * 0.6),
+                        phase: Math.random() * Math.PI * 2
+                    });
+                }
+            }
+
+            // Boats
+            if (currentTheme.boats) {
+                let groundStart = ROWS - Math.floor(ROWS * 0.2);
+                let waterStart = ROWS - Math.floor((ROWS - groundStart) * 0.5);
+                for(let i=0; i < 3 + Math.random() * 3; i++) {
+                    state.boats.push({
+                        x: Math.random() * COLS,
+                        y: waterStart + 1 + Math.floor(Math.random() * (ROWS - waterStart - 3)),
+                        speedX: (Math.random() > 0.5 ? 1 : -1) * (0.1 + Math.random() * 0.2),
+                        chars: Math.random() > 0.5 ? ['4', '_', '/'] : ['\\', '_', '/']
+                    });
+                }
+            }
+
+            return state;
+        }
+
+        function fillBuffer(t) {
+            let groundStart = ROWS - Math.floor(ROWS * 0.2); // Bottom 20% is ground
+
+            // 1. Sky Gradient & Stars
+            for(let y = 0; y < ROWS; y++) {
+                let t_sky = Math.min(1, y / groundStart);
+                for(let x = 0; x < COLS; x++) {
+                    applyDitheredColor(buffer[y][x], currentTheme.skyBase, t_sky);
+                }
+            }
+
+            if (currentTheme.stars) {
+                let starChars = ['+', '.', '*', '\'', '°'];
+                for (let i = 0; i < sceneState.stars.length; i++) {
+                    let star = sceneState.stars[i];
+                    if(star.y >= ROWS || star.x >= COLS) continue;
+                    let twinkling = Math.sin(t * star.twinkleSpeed + star.offset) > 0.5;
+                    buffer[star.y][star.x].char = twinkling ? starChars[i % starChars.length] : ' ';
+                    buffer[star.y][star.x].fg = twinkling ? '#FFFFFF' : '#888888';
+                }
+            }
+
+            // 2. Sun / Moon (with dithering glow)
+            let s = sceneState.sun;
+            let coreChars = ['@', '#', 'O', '0', '*'];
+            for(let y = Math.max(0, Math.floor(s.y - s.radius - 2)); y <= Math.min(ROWS - 1, Math.ceil(s.y + s.radius + 2)); y++) {
+                for(let x = Math.max(0, Math.floor(s.x - (s.radius + 2) * 2)); x <= Math.min(COLS - 1, Math.ceil(s.x + (s.radius + 2) * 2)); x++) {
+                    let dist = Math.sqrt(Math.pow((x - s.x) * 0.55, 2) + Math.pow(y - s.y, 2));
+                    let cell = buffer[y][x];
+                    
+                    if (dist <= s.radius * 0.4) {
+                        cell.bg = currentTheme.sun.bg;
+                        cell.fg = currentTheme.sun.fg;
+                        cell.char = coreChars[(x + y) % coreChars.length];
+                    } else if (dist <= s.radius * 0.7) {
+                        cell.bg = currentTheme.sun.bg;
+                        cell.fg = currentTheme.sun.fg;
+                        cell.char = '█';
+                    } else if (dist <= s.radius) {
+                        cell.fg = currentTheme.sun.bg;
+                        cell.char = '▓';
+                    } else if (dist <= s.radius + 1.2) {
+                        cell.fg = currentTheme.sun.bg;
+                        cell.char = '▒';
+                    } else if (dist <= s.radius + 2.0) {
+                        cell.fg = currentTheme.sun.bg;
+                        cell.char = '░';
+                    }
+                }
+            }
+
+            // 3. Clouds (Procedural density dithering)
+            let cloudDensities = [' ', '░', '▒', '▓', '█', '@', '&', '%', '~'];
+            for (let i = 0; i < sceneState.clouds.length; i++) {
+                let cloud = sceneState.clouds[i];
+                let cx = (cloud.x + t * cloud.speed) % COLS;
+                for(let cy = 0; cy < cloud.height; cy++) {
+                    let drawY = Math.floor(cloud.y + cy);
+                    if (drawY >= ROWS) continue;
+                    for(let cx_offset = 0; cx_offset < cloud.width; cx_offset++) {
+                        let drawX = Math.floor(cx + cx_offset) % COLS;
+                        let dist = Math.sqrt(Math.pow((cx_offset - cloud.width/2)/2, 2) + Math.pow(cy - cloud.height/2, 2));
+                        let maxDist = Math.max(cloud.width/4, cloud.height/2);
+                        let intensity = 1 - (dist / maxDist);
+                        
+                        if (intensity > 0) {
+                            let dIdx = Math.min(cloudDensities.length - 1, Math.max(1, Math.floor(intensity * cloudDensities.length)));
+                            let cell = buffer[drawY][drawX];
+                            cell.fg = currentTheme.clouds.fg;
+                            cell.char = cloudDensities[dIdx];
+                        }
+                    }
+                }
+            }
+
+            // 4. Background Mountains
+            for(let x = 0; x < COLS; x++) {
+                let m1Y = ROWS - sceneState.mountains.m1[x];
+                let peakH = sceneState.mountains.m1[x];
+                for(let y = Math.max(0, m1Y); y < ROWS; y++) {
+                    let t_m = (y - m1Y) / peakH;
+                    let cell = buffer[y][x];
+                    applyDitheredColor(cell, currentTheme.mountains.back, t_m);
+                    if (y === m1Y) {
+                        cell.char = '▄';
+                        cell.fg = cell.bg; 
+                        cell.bg = (y > 0) ? buffer[y-1][x].bg : cell.bg; // Blend with sky behind
+                    } else if (y > m1Y && (x * 7 + y * 13) % 17 === 0) {
+                        cell.char = '^'; // Add mountain crags
+                        cell.fg = '#000000';
+                    }
+                }
+            }
+
+            // 5. Foreground Mountains
+            for(let x = 0; x < COLS; x++) {
+                let m2Y = ROWS - sceneState.mountains.m2[x];
+                let peakH = sceneState.mountains.m2[x];
+                for(let y = Math.max(0, m2Y); y < ROWS; y++) {
+                    let t_m = (y - m2Y) / peakH;
+                    let cell = buffer[y][x];
+                    applyDitheredColor(cell, currentTheme.mountains.front, t_m);
+                    if (y === m2Y) {
+                        cell.char = '▄';
+                        cell.fg = cell.bg;
+                        cell.bg = buffer[y-1][x].bg; // Blend top half with background
+                    } else if (y > m2Y && (x * 11 + y * 5) % 13 === 0) {
+                        cell.char = (x % 2 === 0) ? '/' : '\\'; // Add mountain slopes
+                        cell.fg = '#000000';
+                    }
+                }
+            }
+
+            // 6. Ground and Water
+            let gChars = ['.', ',', '`', '\'', 'v', 'w', '"', ' '];
+            let wChars = ['~', '-', '=', '≈', '▒', '░'];
+            for(let y = groundStart; y < ROWS; y++) {
+                let t_g = (y - groundStart) / (ROWS - groundStart);
+                for(let x = 0; x < COLS; x++) {
+                    let cell = buffer[y][x];
+                    if (currentTheme.water && y >= ROWS - Math.floor((ROWS - groundStart) * 0.5)) {
+                        let t_w = (y - (ROWS - Math.floor((ROWS - groundStart) * 0.5))) / (Math.floor((ROWS - groundStart) * 0.5));
+                        applyDitheredColor(cell, currentTheme.water, t_w);
+                        
+                        // Animated shimmering water with more diversity
+                        let waveIdx = Math.floor(Math.sin(x * 0.4 + t * 1.2 + y) * 3 + 3);
+                        waveIdx = Math.max(0, Math.min(wChars.length - 1, waveIdx));
+                        cell.char = wChars[waveIdx];
+                        if (waveIdx > 3) cell.fg = '#FFFFFF';
+                    } else {
+                        applyDitheredColor(cell, currentTheme.ground, t_g);
+                        // Static grass texture based on coordinates
+                        let gHash = (x * 17 + y * 23) % 20;
+                        if (gHash < gChars.length) {
+                            cell.char = gChars[gHash];
+                            cell.fg = '#000000';
+                        }
+                    }
+                }
+            }
+
+            // 7. Trees
+            for (let i = 0; i < sceneState.trees.length; i++) {
+                let tree = sceneState.trees[i];
+                if(tree.y >= 0 && tree.y < ROWS && tree.x >= 0 && tree.x < COLS) {
+                    buffer[tree.y][tree.x].char = tree.type;
+                    buffer[tree.y][tree.x].fg = tree.color;
+                }
+            }
+
+            // 8. Entities (Leaves, Birds, Boats)
+            if (currentTheme.leaves) {
+                for(let i=0; i < sceneState.leaves.length; i++) {
+                    let leaf = sceneState.leaves[i];
+                    let lx = Math.floor(leaf.x + Math.sin(t * leaf.swaySpeed + leaf.swayOffset) * 2);
+                    lx = (lx % COLS + COLS) % COLS; // wrap x
+                    let ly = Math.floor(leaf.y + t * leaf.speedY) % ROWS;
+                    if (ly >= 0 && ly < ROWS && lx >= 0 && lx < COLS) {
+                        buffer[ly][lx].char = leaf.char;
+                        buffer[ly][lx].fg = leaf.color;
+                    }
+                }
+            }
+            
+            if (currentTheme.birds) {
+                for(let i=0; i < sceneState.birds.length; i++) {
+                    let bird = sceneState.birds[i];
+                    let bx = Math.floor(bird.x + t * bird.speedX);
+                    bx = (bx % COLS + COLS) % COLS; // wrap x
+                    let by = Math.floor(bird.y + Math.sin(t * 1.5 + bird.phase) * 0.5);
+                    if (by >= 0 && by < ROWS && bx >= 0 && bx < COLS) {
+                        let isUp = Math.sin(t * 5 + bird.phase) > 0;
+                        buffer[by][bx].char = isUp ? 'v' : '-';
+                        buffer[by][bx].fg = '#000000';
+                    }
+                }
+            }
+
+            if (currentTheme.boats) {
+                for(let i=0; i < sceneState.boats.length; i++) {
+                    let boat = sceneState.boats[i];
+                    let bx = Math.floor(boat.x + t * boat.speedX);
+                    let by = boat.y;
+                    for (let c = 0; c < boat.chars.length; c++) {
+                        let drawX = (bx + c) % COLS;
+                        drawX = (drawX + COLS) % COLS; // wrap x
+                        if (by >= 0 && by < ROWS && drawX >= 0 && drawX < COLS) {
+                            buffer[by][drawX].char = boat.chars[c];
+                            buffer[by][drawX].fg = '#FFFFFF';
+                        }
+                    }
+                }
+            }
+        }
+
+        function renderFrame() {
+            let html = '';
+            for (let y = 0; y < ROWS; y++) {
+                let currentKey = null;
+                for (let x = 0; x < COLS; x++) {
+                    let cell = buffer[y][x];
+                    let key = `color:${cell.fg};background-color:${cell.bg}`;
+                    
+                    if (key !== currentKey) {
+                        if (currentKey !== null) html += '</span>';
+                        html += `<span style="${key}">`;
+                        currentKey = key;
+                    }
+                    
+                    let c = cell.char;
+                    if (c === '<') c = '&lt;';
+                    else if (c === '>') c = '&gt;';
+                    else if (c === '&') c = '&amp;';
+                    
+                    html += c;
+                }
+                if (currentKey !== null) html += '</span>';
+                html += '\n';
+            }
+            document.getElementById('canvas').innerHTML = html;
+        }
+
+        function startAnimation() {
+            if (animationInterval) clearInterval(animationInterval);
+            timeOffset = 0;
+            animationInterval = setInterval(() => {
+                timeOffset += 0.5;
+                fillBuffer(timeOffset);
+                renderFrame();
+            }, 100); // 10 FPS
+        }
+
+        // --- 2. APP CONTROL & UI ---
+        function generateNewScene() {
+            currentThemeKey = document.getElementById('themeSelect') ? document.getElementById('themeSelect').value : currentThemeKey;
+            initCanvasSize();
+            sceneState = generateScene(currentThemeKey);
+            startAnimation();
+            
+            let dlBtn = document.getElementById('downloadBtn');
+            if(dlBtn) dlBtn.style.display = 'flex';
+        }
+
+        // Handle resizing smoothly
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                generateNewScene();
+            }, 200);
+        });
+
+        // Prepare the payload for download
+        function downloadExport() {
+            // Bundle the core logic explicitly into a script block
+            const engineScripts = `
+                const DITHERS = ${JSON.stringify(DITHERS)};
+                let COLS = ${COLS};
+                let ROWS = ${ROWS};
+                let currentThemeKey = '${currentThemeKey}';
+                let currentTheme = ${JSON.stringify(currentTheme)};
+                let sceneState = ${JSON.stringify(sceneState)};
+                const THEMES = ${JSON.stringify(THEMES)};
+                let buffer = [];
+                let timeOffset = 0;
+                let animationInterval = null;
+
+                ${measureChar.toString()}
+                ${initCanvasSize.toString()}
+                ${applyDitheredColor.toString()}
+                ${generateHeights.toString()}
+                ${generateScene.toString()}
+                ${fillBuffer.toString()}
+                ${renderFrame.toString()}
+                ${startAnimation.toString()}
+
+                // Auto-start and handle resizes on exported view
+                window.onload = () => {
+                    initCanvasSize();
+                    sceneState = generateScene(currentThemeKey);
+                    startAnimation();
+                };
+                
+                let resizeTimeout;
+                window.addEventListener('resize', () => {
+                    clearTimeout(resizeTimeout);
+                    resizeTimeout = setTimeout(() => {
+                        initCanvasSize();
+                        sceneState = generateScene(currentThemeKey);
+                        startAnimation();
+                    }, 200);
+                });
+            `;
+
+            const htmlPayload = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${currentTheme.name} - VGA ASCII</title>
+    <style>
+        body, html { 
+            margin: 0; padding: 0; width: 100%; height: 100%; 
+            background: #000; overflow: hidden; 
+        }
+        pre#canvas { 
+            font-family: 'Courier New', Courier, monospace; 
+            font-size: 12px; 
+            line-height: 12px; 
+            letter-spacing: 0; 
+            font-weight: bold; 
+            user-select: none; 
+            background: #000; 
+            margin: 0; 
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <pre id="canvas"></pre>
+    <script>
+        ${engineScripts}
+    <\/script>
+</body>
+</html>`;
+
+            const blob = new Blob([htmlPayload], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `ascii_landscape_${currentThemeKey}.html`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // --- 3. INITIALIZE ---
+        window.onload = () => {
+            document.getElementById('themeSelect').value = 'autumn';
+            generateNewScene();
+        };
+
+    </script>
+</body>
+</html>
