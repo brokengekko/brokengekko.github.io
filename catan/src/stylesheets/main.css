@@ -1,0 +1,147 @@
+html, body, #root, #root>div, .player-container { height: 100%}
+
+body {
+	font-family: Minion, "Garamond MT Bold";
+	color: black;
+}
+
+.header-bar>.container {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	justify-content: space-between;
+}
+
+.header-bar>.container>div {
+	color: black;
+	padding: 10px;
+}
+
+.title {
+	font-size: 2em;
+	flex: 1 1 33.33%;
+	text-align: left;
+}
+
+.header-bar>.container>div>div {
+	padding: 10px;
+}
+
+.header-bar>.container>div>button {
+	font-size: 4em;
+	line-height: .5em;
+}
+
+.playerCount {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	justify-content: center;
+	flex: 1 1 33.33%;
+}
+
+.winPoint {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	justify-content: flex-end;
+	flex: 1 1 33.33%;
+}
+
+.player-container {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	justify-content: space-around;
+}
+
+.score-row {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	justify-content: space-around;
+}
+.score-button-row {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: space-around;
+}	
+
+.score-icons, .score-img{
+	height: 30px;
+	width: 30px;
+}
+
+.player-column .btn {
+	border: 0;
+	outline: 0;
+}
+
+.green{
+	color: green;
+	fill:green;
+	background-color: green;
+	border: 5px solid green;
+}
+.blue{
+	color: blue;
+	fill:blue;
+	background-color: blue;
+	border: 5px solid blue;
+
+}
+.red{
+	color: red;
+	fill:red;
+	background-color: red;
+	border: 5px solid red;
+
+}
+.orange{
+	color: orange;
+	fill:orange;
+	background-color: orange;
+	border: 5px solid orange;
+
+}
+.white{
+	color: black;
+	fill:black;
+	background-color:#bbbbbb;
+	border: 5px solid #bbbbbb;
+
+}
+.brown{
+	color: brown;
+	fill:brown;
+	background-color: brown;
+	border: 5px solid brown;
+
+}
+.grey {
+	opacity:  0.25;
+}
+.green, .blue, .red, .orange, .white, .brown {
+	width: 20px;
+	height: 20px;
+}
+
+.player-column{
+	display: flex;
+	flex-direction: column;
+	flex-wrap: nowrap;
+	justify-content: space-around;
+	border: 2px solid black;
+}
+
+.oneOffs {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	justify-content: space-around;
+}
+
+hr {
+	border-bottom-color: black;
+}
