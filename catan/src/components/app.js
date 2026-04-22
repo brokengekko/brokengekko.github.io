@@ -5,7 +5,7 @@ import Player from './player';
 import protoPlayer from '../proto/protoPlayer';
 import { mostOf, calcPlayerScore } from '../util/scoreCalcs';
 
-const colors = ['orange', 'blue', 'red', 'green', 'brown', 'white'];
+const colors = ['yellow', 'blue', 'red', 'green', 'brown', 'white'];
 
 
 class Default extends React.Component {
@@ -13,6 +13,7 @@ class Default extends React.Component {
     super();
     this.state = {
       players: [],
+      colorPool: [...colors],
       winPoint: 20,
       masters: {
         roads: '',
@@ -24,15 +25,29 @@ class Default extends React.Component {
         science: '',
       },
     };
-    for (let i = 0; i < 4; i += 1) this.state.players.push(protoPlayer(colors[i]));
+    for (let i = 0; i < 4; i += 1) this.state.players.push(protoPlayer(this.state.colorPool[i]));
   }
   changeTopLevelState(key, value) {
     this.setState({ [key]: value });
   }
   handleShiftPlayers(action) {
-    action > 0 ?
-		this.setState({ players: [...this.state.players, protoPlayer] }) :
-		this.setState({ players: this.state.players.slice(0, this.state.players.length - 1) });
+    if (action > 0) {
+      if (this.state.players.length >= this.state.colorPool.length) return;
+      this.setState({ players: [...this.state.players, protoPlayer(this.state.colorPool[this.state.players.length])] });
+    } else {
+      if (this.state.players.length <= 1) return;
+      this.setState({ players: this.state.players.slice(0, this.state.players.length - 1) });
+    }
+  }
+  reorderPlayerColors(newColors) {
+    let newColorPool = [...this.state.colorPool];
+    for (let i=0; i<newColors.length; i++) {
+        newColorPool[i] = newColors[i];
+    }
+    const newPlayers = this.state.players.map((item, i) => {
+      return Object.assign({}, item, { color: newColors[i] });
+    });
+    this.setState({ players: newPlayers, colorPool: newColorPool });
   }
   changeScoreButton(color, scoreItem, delta) {
     const newPlayers = this.state.players.map(item => item.color === color ?
@@ -84,6 +99,7 @@ class Default extends React.Component {
           winPoint={this.state.winPoint}
           onClick={(key, value) => this.changeTopLevelState(key, value)}
           onChange={action => this.handleShiftPlayers(action)}
+          onReorder={items => this.reorderPlayerColors(items)}
 		/>
         <div className="player-container">
           {this.state.players.map((item, idx) => <Player

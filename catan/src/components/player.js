@@ -4,20 +4,20 @@ import ScoreButtons from '../components/ScoreButtons';
 import meta from '../proto/meta';
 
 const Player = props => (
-  <div className="player-column">
-    <div className="score-row player-card">
+  <div className={`player-column bg-tint-${props.playerState.color}`}>
+    <div className={`score-row player-card badge-${props.playerState.color}`}>
       <h1>{props.score}</h1>
     </div>
 
     <div className="score-row gold">
-      <img className="score-icons" src="./src/images/gold.png" alt="gold" />
+      <div className={`icon-mask ${props.playerState.color}`} style={{WebkitMaskImage: "url('./src/images/star.svg')", maskImage: "url('./src/images/star.svg')"}} />
       <Button className="minus-btn" onClick={() => props.incrementerButton(props.playerState.color, 'gold', -1)}>-</Button>
       {props.playerState.gold}
       <Button className="plus-btn btn" onClick={() => props.incrementerButton(props.playerState.color, 'gold', 1)}>+</Button>
     </div>
     <hr />
     <div className="score-row roads">
-      <img className={`score-img ${props.playerState.color}`} src="./src/images/road.svg" alt="road" />
+      <div className={`icon-mask ${props.playerState.color}`} style={{WebkitMaskImage: "url('./src/images/road.svg')", maskImage: "url('./src/images/road.svg')"}} />
       <Button className="minus-btn" onClick={() => props.incrementerButton(props.playerState.color, 'roads', -1)}>-</Button>
       {props.playerState.roads}
       <Button className="plus-btn btn" onClick={() => props.incrementerButton(props.playerState.color, 'roads', 1)}>+</Button>
@@ -154,7 +154,7 @@ const Player = props => (
 	)}</div>
     <hr />
     <div className="score-row defenders">
-      <img className="score-icons" src="./src/images/defenders.svg" alt="defenders" />
+      <div className={`icon-mask ${props.playerState.color}`} style={{WebkitMaskImage: "url('./src/images/defenders.svg')", maskImage: "url('./src/images/defenders.svg')"}} />
       <Button className="minus-btn" onClick={() => props.incrementerButton(props.playerState.color, 'defenders', -1)}>-</Button>
       {props.playerState.defenders}
       <Button className="plus-btn btn" onClick={() => props.incrementerButton(props.playerState.color, 'defenders', 1)}>+</Button>

@@ -3,7 +3,10 @@ import { Button } from 'react-bootstrap';
 
 const ScoreButtons = props => {
 	return (
-		<img className={`score-img ${props.index < props.playerState[props.scoreItem] ? props.playerState.color : 'grey'}`} src={props.imgSrc } />
+		<div
+			className={`icon-mask ${props.index < props.playerState[props.scoreItem] ? props.playerState.color : 'grey'}`}
+			style={{ WebkitMaskImage: `url('${props.imgSrc}')`, maskImage: `url('${props.imgSrc}')` }}
+		/>
 		);
 };
 
