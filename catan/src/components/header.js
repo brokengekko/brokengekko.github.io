@@ -8,7 +8,7 @@ class HeaderBar extends React.Component {
   render() {
     return (
       <Navbar inverse collapseOnSelect className="header-bar">
-        <div className="title">Uber Katan</div>
+        <div className="title">KATANNN!!!</div>
         <div className="playerCount">
           <Button
             className="minus-btn"
@@ -21,7 +21,15 @@ class HeaderBar extends React.Component {
 				>+</Button>
         </div>
         <div className="winPoint">
+          <Button
+            className="minus-btn"
+            onClick={() => this.props.onClick('winPoint', this.props.winPoint - 1)}
+				>-</Button>
           <div>{`${this.props.winPoint} points`}</div>
+          <Button
+            className="plus-btn"
+            onClick={() => this.props.onClick('winPoint', this.props.winPoint + 1)}
+				>+</Button>
         </div>
       </Navbar>
     );
