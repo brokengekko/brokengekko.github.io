@@ -1,0 +1,40 @@
+{
+	"name": "template-react-wds",
+	"version": "1.0.0",
+	"description": "react project template",
+	"main": "main.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"start": "webpack-dev-server --inline --hot"
+	},
+	"author": "Trevor Davis",
+	"repository" :
+		{
+			"type" : "git",
+			"url" : "https://github.com/Dirk-tooth/Knights-A-Settlers-Story.git"
+		},
+	"license": "ISC",
+	"dependencies": {
+		"bootstrap": "^3.3.7",
+		"react": "^15.4.2",
+		"react-bootstrap": "^0.31.0",
+		"react-dom": "^15.4.2",
+		"webpack": "^2.3.0"
+	},
+	"devDependencies": {
+		"babel-cli": "^6.18.0",
+		"babel-core": "^6.21.0",
+		"babel-loader": "^6.2.10",
+		"babel-preset-env": "^1.1.8",
+		"babel-preset-es2015": "^6.18.0",
+		"babel-preset-react": "^6.16.0",
+		"eslint": "^3.11.1",
+		"eslint-config-airbnb": "^13.0.0",
+		"eslint-plugin-import": "^2.2.0",
+		"eslint-plugin-jsx-a11y": "^2.2.3",
+		"eslint-plugin-react": "^6.7.1",
+		"json-loader": "^0.5.4",
+		"webpack": "^2.2.1",
+		"webpack-dev-server": "^2.3.0"
+	}
+}
