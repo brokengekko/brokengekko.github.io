@@ -9,10 +9,11 @@
 html, body, #root, #root>div, .player-container { height: 100%; }
 
 :root {
-  --player-1: #f1c40f;
+  --player-1: #f39c12;
   --player-2: #3498db;
   --player-3: #e74c3c;
   --player-4: #2ecc71;
+  --player-5: #795548;
   --bg: #ffffff;
   --borders: #7f8c8d;
   --inactive: #7f8c8d;
@@ -125,10 +126,11 @@ body {
 }
 
 /* Background tints */
-.bg-tint-yellow { background-color: rgba(241, 196, 15, 0.05); }
+.bg-tint-yellow { background-color: rgba(243, 156, 18, 0.05); }
 .bg-tint-blue   { background-color: rgba(52, 152, 219, 0.05); }
 .bg-tint-red    { background-color: rgba(231, 76, 60, 0.05); }
 .bg-tint-green  { background-color: rgba(46, 204, 113, 0.05); }
+.bg-tint-brown  { background-color: rgba(121, 85, 72, 0.05); }
 
 /* Score badge */
 .player-card {
@@ -150,6 +152,7 @@ body {
 .badge-blue h1   { background-color: var(--player-2); }
 .badge-red h1    { background-color: var(--player-3); }
 .badge-green h1  { background-color: var(--player-4); }
+.badge-brown h1  { background-color: var(--player-5); }
 
 .score-row {
 	display: flex;
@@ -191,6 +194,7 @@ body {
 .blue   { background-color: var(--player-2); }
 .red    { background-color: var(--player-3); }
 .green  { background-color: var(--player-4); }
+.brown  { background-color: var(--player-5); }
 
 .grey {
 	background-color: var(--inactive);
@@ -266,6 +270,42 @@ hr {
     background-image: radial-gradient(circle, rgba(0,0,0,0.2) 2px, transparent 2px);
     background-size: 8px 8px;
     background-position: 0 0;
+}
+
+/* Mastery Notification Elements */
+.count {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    min-width: 30px;
+    height: 30px;
+    font-weight: 800;
+}
+
+.count.master-circle {
+	color: #ffffff;
+}
+
+.btn-with-badge {
+    position: relative;
+    overflow: visible;
+}
+
+.master-badge {
+	position: absolute;
+    top: -5px;
+    right: -5px;
+	display: inline-flex;
+	justify-content: center;
+	align-items: center;
+	border-radius: 50%;
+	min-width: 20px;
+	height: 20px;
+	color: #ffffff;
+	font-weight: 800;
+	font-size: 0.8em;
+	box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 	</style>
   </head>
@@ -18214,6 +18254,33 @@ var Default = function (_React$Component) {
       this.setState({ players: newPlayers });
     }
   }, {
+    key: 'getDelta',
+    value: function getDelta(color, scoreItem, payload, type) {
+      var newPlayers = void 0;
+      if (type === 'img') {
+        newPlayers = this.state.players.map(function (item) {
+          return item.color === color ? payload === item[scoreItem] ? Object.assign({}, item, _defineProperty({}, scoreItem, 0)) : Object.assign({}, item, _defineProperty({}, scoreItem, payload)) : item;
+        });
+      } else if (type === 'btn') {
+        newPlayers = this.state.players.map(function (item) {
+          return item.color === color ? Object.assign({}, item, _defineProperty({}, scoreItem, item[scoreItem] + payload)) : item;
+        });
+      } else if (type === 'oneOff') {
+        newPlayers = this.state.players.map(function (item) {
+          return item.color === color ? Object.assign({}, item, _defineProperty({}, scoreItem, item[scoreItem] > 0 ? 0 : 1)) : Object.assign({}, item, _defineProperty({}, scoreItem, 0));
+        });
+      }
+
+      var newMasters = this.state.masters.hasOwnProperty(scoreItem) ? Object.assign({}, this.state.masters, _defineProperty({}, scoreItem, (0, _scoreCalcs.mostOf)(newPlayers, scoreItem, this.state.masters))) : this.state.masters;
+
+      var currentPlayerIndex = newPlayers.findIndex(function (p) {
+        return p.color === color;
+      });
+      var newScore = (0, _scoreCalcs.calcPlayerScore)(newPlayers[currentPlayerIndex], newMasters, newPlayers);
+      var oldScore = (0, _scoreCalcs.calcPlayerScore)(this.state.players[currentPlayerIndex], this.state.masters, this.state.players);
+      return newScore - oldScore;
+    }
+  }, {
     key: 'render',
     value: function render() {
       var _this2 = this;
@@ -18244,6 +18311,8 @@ var Default = function (_React$Component) {
               score: (0, _scoreCalcs.calcPlayerScore)(item, _this2.state.masters, _this2.state.players),
               winPoint: _this2.state.winPoint,
               playerState: item,
+              masters: _this2.state.masters,
+              richest: (0, _scoreCalcs.getRichestColor)(_this2.state.players),
               incrementerButton: function incrementerButton(color, scoreItem, delta) {
                 return _this2.changeScoreButton(color, scoreItem, delta);
               },
@@ -18252,6 +18321,9 @@ var Default = function (_React$Component) {
               },
               oneOffButton: function oneOffButton(color, scoreItem) {
                 return _this2.changeScoreOneOffs(color, scoreItem);
+              },
+              getDelta: function getDelta(color, scoreItem, payload, type) {
+                return _this2.getDelta(color, scoreItem, payload, type);
               }
             });
           })
@@ -18560,6 +18632,10 @@ var _meta2 = _interopRequireDefault(_meta);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+var deltaTitle = function deltaTitle(delta) {
+  return delta > 0 ? '+' + delta + ' Point' + (delta > 1 ? 's' : '') : undefined;
+};
+
 var Player = function Player(props) {
   return _react2.default.createElement(
     'div',
@@ -18576,18 +18652,22 @@ var Player = function Player(props) {
     _react2.default.createElement(
       'div',
       { className: 'score-row gold' },
-      _react2.default.createElement('div', { className: 'icon-mask ' + props.playerState.color, style: { WebkitMaskImage: "url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgd2lkdGg9IjMwIiBoZWlnaHQ9IjMwIj4KICA8cGF0aCBkPSJNMTIgMiBMMTUuMDkgOC4yNiBMMjIgOS4yNyBMMTcgMTQuMTQgTDE4LjE4IDIxLjAyIEwxMiAxNy43NyBMNS44MiAyMS4wMiBMNyAxNC4xNCBMMiA5LjI3IEw4LjkxIDguMjYgWiIvPgo8L3N2Zz4K')", maskImage: "url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgd2lkdGg9IjMwIiBoZWlnaHQ9IjMwIj4KICA8cGF0aCBkPSJNMTIgMiBMMTUuMDkgOC4yNiBMMjIgOS4yNyBMMTcgMTQuMTQgTDE4LjE4IDIxLjAyIEwxMiAxNy43NyBMNS44MiAyMS4wMiBMNyAxNC4xNCBMMiA5LjI3IEw4LjkxIDguMjYgWiIvPgo8L3N2Zz4K')" } }),
+      _react2.default.createElement('div', { className: 'icon-mask ' + props.playerState.color, style: { WebkitMaskImage: "url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj4KICA8cGF0aCBkPSJNIDUyIDUgTCA1MiAxNSBDIDY4IDE1IDc4IDIyIDc4IDM1IEwgNjIgMzUgQyA2MiAyOCA1MiAyNSA0MiAyNSBDIDMyIDI1IDI4IDMyIDI4IDM4IEMgMjggNDggNjUgNTAgNjUgNjggQyA2NSA4MiA1MiA4OCA0MiA4OCBDIDI4IDg4IDIwIDc4IDIwIDY4IEwgMzUgNjggQyAzNSA3NSA0MiA3OCA1MiA3OCBDIDYyIDc4IDY4IDcyIDY4IDY1IEMgNjggNTUgMzIgNTIgMzIgMzUgQyAzMiAyMiA0MiAxNSA0OCAxNSBMIDQ4IDUgTCA1MiA1IFogTSA0OCA4OCBMIDQ4IDk1IEwgNTIgOTUgTCA1MiA4OCBMIDQ4IDg4IFoiIGZpbGw9IiMwMDAiIC8+Cjwvc3ZnPgo=')", maskImage: "url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj4KICA8cGF0aCBkPSJNIDUyIDUgTCA1MiAxNSBDIDY4IDE1IDc4IDIyIDc4IDM1IEwgNjIgMzUgQyA2MiAyOCA1MiAyNSA0MiAyNSBDIDMyIDI1IDI4IDMyIDI4IDM4IEMgMjggNDggNjUgNTAgNjUgNjggQyA2NSA4MiA1MiA4OCA0MiA4OCBDIDI4IDg4IDIwIDc4IDIwIDY4IEwgMzUgNjggQyAzNSA3NSA0MiA3OCA1MiA3OCBDIDYyIDc4IDY4IDcyIDY4IDY1IEMgNjggNTUgMzIgNTIgMzIgMzUgQyAzMiAyMiA0MiAxNSA0OCAxNSBMIDQ4IDUgTCA1MiA1IFogTSA0OCA4OCBMIDQ4IDk1IEwgNTIgOTUgTCA1MiA4OCBMIDQ4IDg4IFoiIGZpbGw9IiMwMDAiIC8+Cjwvc3ZnPgo=')" } }),
       _react2.default.createElement(
         _reactBootstrap.Button,
-        { className: 'minus-btn', onClick: function onClick() {
+        { className: 'minus-btn', title: deltaTitle(props.getDelta(props.playerState.color, 'gold', -1, 'btn')), onClick: function onClick() {
             return props.incrementerButton(props.playerState.color, 'gold', -1);
           } },
         '-'
       ),
-      props.playerState.gold,
+      _react2.default.createElement(
+        'div',
+        { className: 'count ' + (props.richest === props.playerState.color ? 'master-circle ' + props.playerState.color : '') },
+        props.playerState.gold
+      ),
       _react2.default.createElement(
         _reactBootstrap.Button,
-        { className: 'plus-btn btn', onClick: function onClick() {
+        { className: 'plus-btn btn', title: deltaTitle(props.getDelta(props.playerState.color, 'gold', 1, 'btn')), onClick: function onClick() {
             return props.incrementerButton(props.playerState.color, 'gold', 1);
           } },
         '+'
@@ -18600,15 +18680,19 @@ var Player = function Player(props) {
       _react2.default.createElement('div', { className: 'icon-mask ' + props.playerState.color, style: { WebkitMaskImage: "url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+PCFET0NUWVBFIHN2ZyBQVUJMSUMgIi0vL1czQy8vRFREIFNWRyAxLjEvL0VOIiAiaHR0cDovL3d3dy53My5vcmcvR3JhcGhpY3MvU1ZHLzEuMS9EVEQvc3ZnMTEuZHRkIj48c3ZnIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIHZpZXdCb3g9IjAgMCA0NTAgNDUwIiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHhtbDpzcGFjZT0icHJlc2VydmUiIHN0eWxlPSJmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtzdHJva2UtbGluZWpvaW46cm91bmQ7c3Ryb2tlLW1pdGVybGltaXQ6MS40MTQyMTsiPjxwYXRoIGQ9Ik0xMjIuMjg0LDIwNi4xMzdsLTEwNi4yNjIsNDcuNzU2bDguOTYxLDE1LjczMWwxMDYuMjYxLC00Ny43NTZsLTguOTYsLTE1LjczMVoiIHN0eWxlPSJmaWxsOiNlYmViZWI7Ii8+PHBhdGggZD0iTTE0My45MDYsMjAxLjU0M2wxNC40MTUsLTEwNS4wMDNsLTE5LjcwMiwtMi4xMzRsLTE0LjQxNSwxMDUuMDAzbDE5LjcwMiwyLjEzNFoiIHN0eWxlPSJmaWxsOiNlYmViZWI7Ii8+PHBhdGggZD0iTTI0OC40OTcsMTIuOTIybC05OC45NjEsNTguODQ1bDExLjA0MSwxNC42NTFsOTguOTYxLC01OC44NDZsLTExLjA0MSwtMTQuNjVaIiBzdHlsZT0iZmlsbDojZWJlYmViOyIvPjxnPjxyZWN0IHg9IjMyMS40OSIgeT0iMTk4Ljc2NCIgd2lkdGg9IjEwLjE3MiIgaGVpZ2h0PSIxODMuMDk2IiBzdHlsZT0iZmlsbDojZWJlYmViOyIvPjxwYXRoIGQ9Ik0zMzYuMTA5LDE5Ny43NzdsMTAxLjcyLDE1Mi41ODFsLTEwMS43MiwwbDAsLTE1Mi41ODFaIiBzdHlsZT0iZmlsbDojZWJlYmViOyIvPjxwYXRoIGQ9Ik0zMTguNjAzLDE5Ny43NDVsMCwxNTIuNTgxbC03MS4yMDQsMGw3MS4yMDQsLTE1Mi41ODFaIiBzdHlsZT0iZmlsbDojZWJlYmViOyIvPjxwYXRoIGQ9Ik00NDAuMTE2LDM3Ny4zNjhsLTIwMC44NzEsMGw1MC4yMTgsNjEuMjE3bDEwMC40MzUsMGw1MC4yMTgsLTYxLjIxN1oiIHN0eWxlPSJmaWxsOiNlYmViZWI7Ii8+PC9nPjxwYXRoIGQ9Ik00MDIuNTYyLDM3LjkwMmwtMzUzLjU1MywzNTMuNTU0bDEwLjYwNywxMC42MDZsMzUzLjU1MywtMzUzLjU1M2wtMTAuNjA3LC0xMC42MDdaIiBzdHlsZT0iZmlsbDojZWJlYmViOyIvPjwvc3ZnPg==')", maskImage: "url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+PCFET0NUWVBFIHN2ZyBQVUJMSUMgIi0vL1czQy8vRFREIFNWRyAxLjEvL0VOIiAiaHR0cDovL3d3dy53My5vcmcvR3JhcGhpY3MvU1ZHLzEuMS9EVEQvc3ZnMTEuZHRkIj48c3ZnIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIHZpZXdCb3g9IjAgMCA0NTAgNDUwIiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHhtbDpzcGFjZT0icHJlc2VydmUiIHN0eWxlPSJmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtzdHJva2UtbGluZWpvaW46cm91bmQ7c3Ryb2tlLW1pdGVybGltaXQ6MS40MTQyMTsiPjxwYXRoIGQ9Ik0xMjIuMjg0LDIwNi4xMzdsLTEwNi4yNjIsNDcuNzU2bDguOTYxLDE1LjczMWwxMDYuMjYxLC00Ny43NTZsLTguOTYsLTE1LjczMVoiIHN0eWxlPSJmaWxsOiNlYmViZWI7Ii8+PHBhdGggZD0iTTE0My45MDYsMjAxLjU0M2wxNC40MTUsLTEwNS4wMDNsLTE5LjcwMiwtMi4xMzRsLTE0LjQxNSwxMDUuMDAzbDE5LjcwMiwyLjEzNFoiIHN0eWxlPSJmaWxsOiNlYmViZWI7Ii8+PHBhdGggZD0iTTI0OC40OTcsMTIuOTIybC05OC45NjEsNTguODQ1bDExLjA0MSwxNC42NTFsOTguOTYxLC01OC44NDZsLTExLjA0MSwtMTQuNjVaIiBzdHlsZT0iZmlsbDojZWJlYmViOyIvPjxnPjxyZWN0IHg9IjMyMS40OSIgeT0iMTk4Ljc2NCIgd2lkdGg9IjEwLjE3MiIgaGVpZ2h0PSIxODMuMDk2IiBzdHlsZT0iZmlsbDojZWJlYmViOyIvPjxwYXRoIGQ9Ik0zMzYuMTA5LDE5Ny43NzdsMTAxLjcyLDE1Mi41ODFsLTEwMS43MiwwbDAsLTE1Mi41ODFaIiBzdHlsZT0iZmlsbDojZWJlYmViOyIvPjxwYXRoIGQ9Ik0zMTguNjAzLDE5Ny43NDVsMCwxNTIuNTgxbC03MS4yMDQsMGw3MS4yMDQsLTE1Mi41ODFaIiBzdHlsZT0iZmlsbDojZWJlYmViOyIvPjxwYXRoIGQ9Ik00NDAuMTE2LDM3Ny4zNjhsLTIwMC44NzEsMGw1MC4yMTgsNjEuMjE3bDEwMC40MzUsMGw1MC4yMTgsLTYxLjIxN1oiIHN0eWxlPSJmaWxsOiNlYmViZWI7Ii8+PC9nPjxwYXRoIGQ9Ik00MDIuNTYyLDM3LjkwMmwtMzUzLjU1MywzNTMuNTU0bDEwLjYwNywxMC42MDZsMzUzLjU1MywtMzUzLjU1M2wtMTAuNjA3LC0xMC42MDdaIiBzdHlsZT0iZmlsbDojZWJlYmViOyIvPjwvc3ZnPg==')" } }),
       _react2.default.createElement(
         _reactBootstrap.Button,
-        { className: 'minus-btn', onClick: function onClick() {
+        { className: 'minus-btn', title: deltaTitle(props.getDelta(props.playerState.color, 'roads', -1, 'btn')), onClick: function onClick() {
             return props.incrementerButton(props.playerState.color, 'roads', -1);
           } },
         '-'
       ),
-      props.playerState.roads,
+      _react2.default.createElement(
+        'div',
+        { className: 'count ' + (props.masters.roads === props.playerState.color ? 'master-circle ' + props.playerState.color : '') },
+        props.playerState.roads
+      ),
       _react2.default.createElement(
         _reactBootstrap.Button,
-        { className: 'plus-btn btn', onClick: function onClick() {
+        { className: 'plus-btn btn', title: deltaTitle(props.getDelta(props.playerState.color, 'roads', 1, 'btn')), onClick: function onClick() {
             return props.incrementerButton(props.playerState.color, 'roads', 1);
           } },
         '+'
@@ -18620,7 +18704,7 @@ var Player = function Player(props) {
       _meta2.default.settlements.max.map(function (item, idx) {
         return _react2.default.createElement(
           _reactBootstrap.Button,
-          { onClick: function onClick() {
+          { title: deltaTitle(props.getDelta(props.playerState.color, 'settlements', item, 'img')), onClick: function onClick() {
               return props.imgButton(props.playerState.color, 'settlements', item);
             } },
           _react2.default.createElement(_ScoreButtons2.default, {
@@ -18640,7 +18724,7 @@ var Player = function Player(props) {
       _meta2.default.cities.max.map(function (item, idx) {
         return _react2.default.createElement(
           _reactBootstrap.Button,
-          { onClick: function onClick() {
+          { title: deltaTitle(props.getDelta(props.playerState.color, 'cities', item, 'img')), onClick: function onClick() {
               return props.imgButton(props.playerState.color, 'cities', item);
             } },
           _react2.default.createElement(_ScoreButtons2.default, {
@@ -18660,17 +18744,21 @@ var Player = function Player(props) {
       _meta2.default.harbors.max.map(function (item, idx) {
         return _react2.default.createElement(
           _reactBootstrap.Button,
-          { onClick: function onClick() {
+          { className: 'btn-with-badge', key: idx, title: deltaTitle(props.getDelta(props.playerState.color, 'harbors', item, 'img')), onClick: function onClick() {
               return props.imgButton(props.playerState.color, 'harbors', item);
             } },
           _react2.default.createElement(_ScoreButtons2.default, {
             className: 'score-button',
             imgSrc: 'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTYuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+CjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiIHk9IjBweCIKCSB3aWR0aD0iNTExLjYyNnB4IiBoZWlnaHQ9IjUxMS42MjZweCIgdmlld0JveD0iMCAwIDUxMS42MjYgNTExLjYyNiIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgNTExLjYyNiA1MTEuNjI2OyIKCSB4bWw6c3BhY2U9InByZXNlcnZlIj4KPGc+Cgk8cGF0aCBkPSJNNTA5LjA1MywzMzMuNzUzYy0xLjcxMS0xLjcxMS0zLjkwMS0yLjU2Ni02LjU2My0yLjU2Nkg0MDEuOTkxYy00LjE4NiwwLTcuMDM5LDEuOTAyLTguNTY1LDUuNzExCgkJYy0xLjUyMywzLjYxNy0wLjg1NSw2Ljk1MSwxLjk5NSw5Ljk5NmwyOC41NTEsMjguNTQ4Yy0xMi43NTEsMTcuMzIzLTMwLjc4NSwzMS45MjktNTQuMTAxLDQzLjgyOAoJCWMtMjMuMzE1LDExLjg5OC00OS4xNTIsMTkuNzQ1LTc3LjUxNiwyMy41NTVWMjU4LjA5Nmg1NC44MTZjNC45NDgsMCw5LjIzNi0xLjgxMiwxMi44NTQtNS40MjQKCQljMy42MTMtMy42MTIsNS40MjQtNy44OTgsNS40MjQtMTIuODQ3di0zNi41NDdjMC00Ljk0Ny0xLjgxMS05LjIyOS01LjQyNC0xMi44NDdjLTMuNjE3LTMuNjE2LTcuOTA1LTUuNDI0LTEyLjg1NC01LjQyNGgtNTQuODE2CgkJdi00Ni41MzZjMTEuMDQtNi40NzMsMTkuODktMTUuMjc1LDI2LjU1My0yNi40MDljNi42NjMtMTEuMTM4LDkuOTk2LTIzLjM2Myw5Ljk5Ni0zNi42OTFjMC0yMC4xNzQtNy4xMzktMzcuNDAxLTIxLjQxMi01MS42NzMKCQlDMjkzLjIxNyw5LjQyMSwyNzUuOTk0LDIuMjgyLDI1NS44MTcsMi4yODJjLTIwLjE3NywwLTM3LjQwNCw3LjEzOS01MS42ODIsMjEuNDE2Yy0xNC4yNzIsMTQuMjcyLTIxLjQxMSwzMS40OTktMjEuNDExLDUxLjY3MwoJCWMwLDEzLjMyOCwzLjMzMywyNS41NTMsOS45OTQsMzYuNjkxYzYuNjYyLDExLjEzNCwxNS41MTMsMTkuOTM2LDI2LjU1MSwyNi40MDl2NDYuNTM2aC01NC44MTZjLTQuOTUyLDAtOS4yMzUsMS44MDktMTIuODUsNS40MjQKCQljLTMuNjE4LDMuNjE3LTUuNDI2LDcuOS01LjQyNiwxMi44NDd2MzYuNTQ3YzAsNC45NDksMS44MDksOS4yMzUsNS40MjYsMTIuODQ3YzMuNjE5LDMuNjE2LDcuOTAyLDUuNDI0LDEyLjg1LDUuNDI0aDU0LjgxNgoJCXYxODQuNzI5Yy0yOC4zNTktMy44MTItNTQuMi0xMS42NjMtNzcuNTE0LTIzLjU1OWMtMjMuMzE1LTExLjkwMi00MS4zNTItMjYuNTA4LTU0LjEwMy00My44MzFsMjguNTQ5LTI4LjU0MQoJCWMyLjg1My0zLjA1MywzLjUyMS02LjM3OSwxLjk5Ny05Ljk5OWMtMS41MjEtMy44MTItNC4zNzctNS43MTUtOC41NjQtNS43MTVIOS4xMzVjLTIuNjY2LDAtNC44NTYsMC44NTUtNi41NjcsMi41NzMKCQlDMC44NTksMzM1LjQ2NCwwLDMzNy42NTQsMCwzNDAuMzIzdjEwMC40OTVjMCw0LjE4MiwxLjkwMyw3LjA0Myw1LjcwOCw4LjU2MmMxLjUyNSwwLjM4LDIuNjY3LDAuNTY4LDMuNDI3LDAuNTY4CgkJYzIuNjY3LDAsNC44NTQtMC44NTYsNi41NjctMi41NjFsMjYuNTUyLTI2LjU1NmMyMi42NDgsMjcuMjE3LDUyLjk2LDQ4Ljc3Miw5MC45MzIsNjQuNjY1czc4Ljg0NywyMy44NDYsMTIyLjYyNiwyMy44NDYKCQljNDMuNzc2LDAsODQuNjUxLTcuOTUzLDEyMi42MjMtMjMuODQ2YzM3Ljk3My0xNS44OTMsNjguMjg2LTM3LjQ0NSw5MC45MzQtNjQuNjY1bDI2LjU1NiwyNi41NTYKCQljMS45MDMsMS43MDQsNC4wODYsMi41NjEsNi41NjQsMi41NjFjMC43NiwwLDEuOTAyLTAuMTkyLDMuNDI5LTAuNTY4YzMuODA2LTEuNTIsNS43MDgtNC4zODEsNS43MDgtOC41NjJWMzQwLjMyMwoJCUM1MTEuNjI2LDMzNy42NTQsNTEwLjc2NywzMzUuNDY0LDUwOS4wNTMsMzMzLjc1M3ogTTI2OC42Niw4OC4yMThjLTMuNjEzLDMuNjE3LTcuODk1LDUuNDMtMTIuODQ3LDUuNDMKCQljLTQuOTUyLDAtOS4yMzItMS44MTItMTIuODUtNS40M2MtMy42MTctMy42MTItNS40MjQtNy44OTgtNS40MjQtMTIuODQ3YzAtNC45NDcsMS44MDctOS4yMjksNS40MjQtMTIuODQ3CgkJYzMuNjIxLTMuNjE2LDcuOTAyLTUuNDI0LDEyLjg1LTUuNDI0czkuMjMzLDEuODA5LDEyLjg0Nyw1LjQyNGMzLjYxNCwzLjYxNyw1LjQyOCw3LjksNS40MjgsMTIuODQ3CgkJQzI3NC4wODcsODAuMzE5LDI3Mi4yNzQsODQuNjA2LDI2OC42Niw4OC4yMTh6Ii8+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPC9zdmc+Cg==',
-            key: idx,
             index: idx,
             playerState: props.playerState,
             scoreItem: 'harbors'
-          })
+          }),
+          props.masters.harbors === props.playerState.color && props.playerState.harbors === item && _react2.default.createElement(
+            'div',
+            { className: 'master-badge ' + props.playerState.color },
+            props.playerState.harbors
+          )
         );
       })
     ),
@@ -18680,17 +18768,21 @@ var Player = function Player(props) {
       _meta2.default.knights.max.map(function (item, idx) {
         return _react2.default.createElement(
           _reactBootstrap.Button,
-          { onClick: function onClick() {
+          { className: 'btn-with-badge', key: idx, title: deltaTitle(props.getDelta(props.playerState.color, 'knights', item, 'img')), onClick: function onClick() {
               return props.imgButton(props.playerState.color, 'knights', item);
             } },
           _react2.default.createElement(_ScoreButtons2.default, {
             className: 'score-button',
             imgSrc: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTIwIj4KICA8ZyBmaWxsPSIjMDAwIj4KICAgIDwhLS0gUGx1bWUgQnJ1c2ggLS0+CiAgICA8cGF0aCBkPSJNIDEwIDUwIEMgMTAgLTUgOTAgLTUgOTAgNTAgQyA4NSAyOCA2NSAxOCA1MCAxOCBDIDM1IDE4IDE1IDI4IDEwIDUwIFoiIC8+CiAgICA8IS0tIENvbm5lY3RvciBCYXNlIC0tPgogICAgPHBhdGggZD0iTSA0MiAxOCBMIDU4IDE4IEwgNTUgMzAgTCA0NSAzMCBaIiAvPgogICAgPCEtLSBIZWxtZXQgQmFzZSBTaGFwZSAtLT4KICAgIDxwYXRoIGQ9IgogICAgICBNIDUwIDMwIAogICAgICBDIDkwIDMwIDk1IDUwIDk1IDc1IAogICAgICBMIDkwIDExNSAKICAgICAgTCA2NSAxMTUgCiAgICAgIEwgNzUgNzUgCiAgICAgIEwgNTUgNjAgCiAgICAgIEwgNTUgMTA1IAogICAgICBMIDQ1IDEwNSAKICAgICAgTCA0NSA2MCAKICAgICAgTCAyNSA3NSAKICAgICAgTCAzNSAxMTUgCiAgICAgIEwgMTAgMTE1IAogICAgICBMIDUgNzUgCiAgICAgIEMgNSA1MCAxMCAzMCA1MCAzMCAKICAgICAgWiIgLz4KICA8L2c+Cjwvc3ZnPgo=',
-            key: idx,
             index: idx,
             playerState: props.playerState,
             scoreItem: 'knights'
-          })
+          }),
+          props.masters.knights === props.playerState.color && props.playerState.knights === item && _react2.default.createElement(
+            'div',
+            { className: 'master-badge ' + props.playerState.color },
+            props.playerState.knights
+          )
         );
       })
     ),
@@ -18701,7 +18793,7 @@ var Player = function Player(props) {
       _meta2.default.fish.max.map(function (item, idx) {
         return _react2.default.createElement(
           _reactBootstrap.Button,
-          { onClick: function onClick() {
+          { title: deltaTitle(props.getDelta(props.playerState.color, 'fish', item, 'img')), onClick: function onClick() {
               return props.imgButton(props.playerState.color, 'fish', item);
             } },
           _react2.default.createElement(_ScoreButtons2.default, {
@@ -18721,7 +18813,7 @@ var Player = function Player(props) {
       _meta2.default.spices.max.map(function (item, idx) {
         return _react2.default.createElement(
           _reactBootstrap.Button,
-          { onClick: function onClick() {
+          { title: deltaTitle(props.getDelta(props.playerState.color, 'spices', item, 'img')), onClick: function onClick() {
               return props.imgButton(props.playerState.color, 'spices', item);
             } },
           _react2.default.createElement(_ScoreButtons2.default, {
@@ -18741,7 +18833,7 @@ var Player = function Player(props) {
       _meta2.default.pirates.max.map(function (item, idx) {
         return _react2.default.createElement(
           _reactBootstrap.Button,
-          { onClick: function onClick() {
+          { title: deltaTitle(props.getDelta(props.playerState.color, 'pirates', item, 'img')), onClick: function onClick() {
               return props.imgButton(props.playerState.color, 'pirates', item);
             } },
           _react2.default.createElement(_ScoreButtons2.default, {
@@ -18762,7 +18854,7 @@ var Player = function Player(props) {
       _meta2.default.trade.max.map(function (item, idx) {
         return _react2.default.createElement(
           _reactBootstrap.Button,
-          { onClick: function onClick() {
+          { title: deltaTitle(props.getDelta(props.playerState.color, 'trade', item, 'img')), onClick: function onClick() {
               return props.imgButton(props.playerState.color, 'trade', item);
             } },
           _react2.default.createElement(_ScoreButtons2.default, {
@@ -18782,7 +18874,7 @@ var Player = function Player(props) {
       _meta2.default.politics.max.map(function (item, idx) {
         return _react2.default.createElement(
           _reactBootstrap.Button,
-          { onClick: function onClick() {
+          { title: deltaTitle(props.getDelta(props.playerState.color, 'politics', item, 'img')), onClick: function onClick() {
               return props.imgButton(props.playerState.color, 'politics', item);
             } },
           _react2.default.createElement(_ScoreButtons2.default, {
@@ -18802,7 +18894,7 @@ var Player = function Player(props) {
       _meta2.default.science.max.map(function (item, idx) {
         return _react2.default.createElement(
           _reactBootstrap.Button,
-          { onClick: function onClick() {
+          { title: deltaTitle(props.getDelta(props.playerState.color, 'science', item, 'img')), onClick: function onClick() {
               return props.imgButton(props.playerState.color, 'science', item);
             } },
           _react2.default.createElement(_ScoreButtons2.default, {
@@ -18823,7 +18915,7 @@ var Player = function Player(props) {
       _react2.default.createElement('div', { className: 'icon-mask ' + props.playerState.color, style: { WebkitMaskImage: "url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pg0KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDE2LjAuMCwgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPg0KPCFET0NUWVBFIHN2ZyBQVUJMSUMgIi0vL1czQy8vRFREIFNWRyAxLjEvL0VOIiAiaHR0cDovL3d3dy53My5vcmcvR3JhcGhpY3MvU1ZHLzEuMS9EVEQvc3ZnMTEuZHRkIj4NCjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiIHk9IjBweCINCgkgd2lkdGg9IjQzOC41NDNweCIgaGVpZ2h0PSI0MzguNTQzcHgiIHZpZXdCb3g9IjAgMCA0MzguNTQzIDQzOC41NDMiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDQzOC41NDMgNDM4LjU0MzsiDQoJIHhtbDpzcGFjZT0icHJlc2VydmUiPg0KPGc+DQoJPHBhdGggZD0iTTM5Ni41OCw1LjQyNEMzOTIuOTU5LDEuODA3LDM4OC42NzUsMCwzODMuNzI3LDBINTQuODI0Yy00Ljk1MiwwLTkuMjM1LDEuODA3LTEyLjg1Miw1LjQyNA0KCQljLTMuNjE1LDMuNjE1LTUuNDI0LDcuODk4LTUuNDI0LDEyLjg0N3YyMTkuMjY4YzAsMTYuMzcxLDMuMTg2LDMyLjU5Niw5LjU2Myw0OC42ODFjNi4zNzQsMTYuMDg0LDE0LjI3NCwzMC4zNjEsMjMuNjk3LDQyLjgyOA0KCQljOS40MjMsMTIuNDcsMjAuNjUxLDI0LjYwNSwzMy42ODksMzYuNDA1YzEzLjA0LDExLjgwNiwyNS4wNzgsMjEuNiwzNi4xMTYsMjkuNDA5YzExLjAzOCw3LjgwMywyMi41NTQsMTUuMTgxLDM0LjU0NSwyMi4xMjENCgkJYzExLjk5MSw2Ljk0MywyMC41MTEsMTEuNjYzLDI1LjU1MywxNC4xMzRjNS4wNDMsMi40NzgsOS4wODgsNC4zOCwxMi4xMzIsNS43MDhjMi4yODYsMS4xNDMsNC43NTgsMS43MTgsNy40MjYsMS43MTgNCgkJYzIuNjcxLDAsNS4xNC0wLjU3NSw3LjQyOC0xLjcxOGMzLjA0Mi0xLjMyOCw3LjA4Ny0zLjIzLDEyLjEyOC01LjcwOGM1LjA0MS0yLjQ3MSwxMy41NjUtNy4xOSwyNS41NTctMTQuMTM0DQoJCWMxMS45ODQtNi45NCwyMy41MDQtMTQuMzE4LDM0LjU0LTIyLjEyMWMxMS4wNDMtNy44MSwyMy4wNzktMTcuNjA0LDM2LjEyMS0yOS40MDljMTMuMDMxLTExLjgsMjQuMjYzLTIzLjkzNiwzMy42ODUtMzYuNDA1DQoJCWM5LjQyMS0xMi40NjcsMTcuMzE5LTI2Ljc0NCwyMy43MDUtNDIuODI4YzYuMzc5LTE2LjA4NSw5LjU2Mi0zMi4zMSw5LjU2Mi00OC42ODFWMTguMjcxDQoJCUM0MDEuOTk0LDEzLjMxOSw0MDAuMTg3LDkuMDQsMzk2LjU4LDUuNDI0eiBNMzQ3LjE3OCwyMzcuNTM5YzAsMzMuNS0yMi4zNjcsNjcuNzU5LTY3LjA5NSwxMDIuNzgxDQoJCWMtMTcuODkyLDE0LjA4Mi0zOC4xNjQsMjcuMTI0LTYwLjgxMywzOS4xMTVWNTQuODEzaDEyNy45MDhWMjM3LjUzOXoiLz4NCjwvZz4NCjwvc3ZnPg0K')", maskImage: "url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pg0KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDE2LjAuMCwgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPg0KPCFET0NUWVBFIHN2ZyBQVUJMSUMgIi0vL1czQy8vRFREIFNWRyAxLjEvL0VOIiAiaHR0cDovL3d3dy53My5vcmcvR3JhcGhpY3MvU1ZHLzEuMS9EVEQvc3ZnMTEuZHRkIj4NCjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiIHk9IjBweCINCgkgd2lkdGg9IjQzOC41NDNweCIgaGVpZ2h0PSI0MzguNTQzcHgiIHZpZXdCb3g9IjAgMCA0MzguNTQzIDQzOC41NDMiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDQzOC41NDMgNDM4LjU0MzsiDQoJIHhtbDpzcGFjZT0icHJlc2VydmUiPg0KPGc+DQoJPHBhdGggZD0iTTM5Ni41OCw1LjQyNEMzOTIuOTU5LDEuODA3LDM4OC42NzUsMCwzODMuNzI3LDBINTQuODI0Yy00Ljk1MiwwLTkuMjM1LDEuODA3LTEyLjg1Miw1LjQyNA0KCQljLTMuNjE1LDMuNjE1LTUuNDI0LDcuODk4LTUuNDI0LDEyLjg0N3YyMTkuMjY4YzAsMTYuMzcxLDMuMTg2LDMyLjU5Niw5LjU2Myw0OC42ODFjNi4zNzQsMTYuMDg0LDE0LjI3NCwzMC4zNjEsMjMuNjk3LDQyLjgyOA0KCQljOS40MjMsMTIuNDcsMjAuNjUxLDI0LjYwNSwzMy42ODksMzYuNDA1YzEzLjA0LDExLjgwNiwyNS4wNzgsMjEuNiwzNi4xMTYsMjkuNDA5YzExLjAzOCw3LjgwMywyMi41NTQsMTUuMTgxLDM0LjU0NSwyMi4xMjENCgkJYzExLjk5MSw2Ljk0MywyMC41MTEsMTEuNjYzLDI1LjU1MywxNC4xMzRjNS4wNDMsMi40NzgsOS4wODgsNC4zOCwxMi4xMzIsNS43MDhjMi4yODYsMS4xNDMsNC43NTgsMS43MTgsNy40MjYsMS43MTgNCgkJYzIuNjcxLDAsNS4xNC0wLjU3NSw3LjQyOC0xLjcxOGMzLjA0Mi0xLjMyOCw3LjA4Ny0zLjIzLDEyLjEyOC01LjcwOGM1LjA0MS0yLjQ3MSwxMy41NjUtNy4xOSwyNS41NTctMTQuMTM0DQoJCWMxMS45ODQtNi45NCwyMy41MDQtMTQuMzE4LDM0LjU0LTIyLjEyMWMxMS4wNDMtNy44MSwyMy4wNzktMTcuNjA0LDM2LjEyMS0yOS40MDljMTMuMDMxLTExLjgsMjQuMjYzLTIzLjkzNiwzMy42ODUtMzYuNDA1DQoJCWM5LjQyMS0xMi40NjcsMTcuMzE5LTI2Ljc0NCwyMy43MDUtNDIuODI4YzYuMzc5LTE2LjA4NSw5LjU2Mi0zMi4zMSw5LjU2Mi00OC42ODFWMTguMjcxDQoJCUM0MDEuOTk0LDEzLjMxOSw0MDAuMTg3LDkuMDQsMzk2LjU4LDUuNDI0eiBNMzQ3LjE3OCwyMzcuNTM5YzAsMzMuNS0yMi4zNjcsNjcuNzU5LTY3LjA5NSwxMDIuNzgxDQoJCWMtMTcuODkyLDE0LjA4Mi0zOC4xNjQsMjcuMTI0LTYwLjgxMywzOS4xMTVWNTQuODEzaDEyNy45MDhWMjM3LjUzOXoiLz4NCjwvZz4NCjwvc3ZnPg0K')" } }),
       _react2.default.createElement(
         _reactBootstrap.Button,
-        { className: 'minus-btn', onClick: function onClick() {
+        { className: 'minus-btn', title: deltaTitle(props.getDelta(props.playerState.color, 'defenders', -1, 'btn')), onClick: function onClick() {
             return props.incrementerButton(props.playerState.color, 'defenders', -1);
           } },
         '-'
@@ -18831,7 +18923,7 @@ var Player = function Player(props) {
       props.playerState.defenders,
       _react2.default.createElement(
         _reactBootstrap.Button,
-        { className: 'plus-btn btn', onClick: function onClick() {
+        { className: 'plus-btn btn', title: deltaTitle(props.getDelta(props.playerState.color, 'defenders', 1, 'btn')), onClick: function onClick() {
             return props.incrementerButton(props.playerState.color, 'defenders', 1);
           } },
         '+'
@@ -18845,7 +18937,7 @@ var Player = function Player(props) {
         { className: 'score-row merchant' },
         _react2.default.createElement(
           _reactBootstrap.Button,
-          { onClick: function onClick() {
+          { title: deltaTitle(props.getDelta(props.playerState.color, 'merchant', null, 'oneOff')), onClick: function onClick() {
               return props.oneOffButton(props.playerState.color, 'merchant');
             } },
           _react2.default.createElement(_ScoreButtons2.default, {
@@ -18862,7 +18954,7 @@ var Player = function Player(props) {
         { className: 'score-row constitution' },
         _react2.default.createElement(
           _reactBootstrap.Button,
-          { onClick: function onClick() {
+          { title: deltaTitle(props.getDelta(props.playerState.color, 'constitution', null, 'oneOff')), onClick: function onClick() {
               return props.oneOffButton(props.playerState.color, 'constitution');
             } },
           _react2.default.createElement(_ScoreButtons2.default, {
@@ -18879,7 +18971,7 @@ var Player = function Player(props) {
         { className: 'score-row printer' },
         _react2.default.createElement(
           _reactBootstrap.Button,
-          { onClick: function onClick() {
+          { title: deltaTitle(props.getDelta(props.playerState.color, 'printer', null, 'oneOff')), onClick: function onClick() {
               return props.oneOffButton(props.playerState.color, 'printer');
             } },
           _react2.default.createElement(_ScoreButtons2.default, {
@@ -18896,7 +18988,7 @@ var Player = function Player(props) {
         { className: 'score-row boot' },
         _react2.default.createElement(
           _reactBootstrap.Button,
-          { onClick: function onClick() {
+          { title: deltaTitle(props.getDelta(props.playerState.color, 'boot', null, 'oneOff')), onClick: function onClick() {
               return props.oneOffButton(props.playerState.color, 'boot');
             } },
           _react2.default.createElement(_ScoreButtons2.default, {
@@ -18973,7 +19065,7 @@ exports.default = protoPlayer;
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports.calcPlayerScore = exports.checkCards = exports.checkGold = exports.checkThreshold = exports.mostOf = undefined;
+exports.calcPlayerScore = exports.checkCards = exports.checkGold = exports.getRichestColor = exports.checkThreshold = exports.mostOf = undefined;
 
 var _meta = __webpack_require__(127);
 
@@ -18997,6 +19089,17 @@ var mostOf = function mostOf(ourArray, ourItem, masters) {
 
 var checkThreshold = function checkThreshold(item, max) {
 	return _meta2.default[item].threshold && max >= _meta2.default[item].threshold;
+};
+
+var getRichestColor = function getRichestColor(players) {
+	var most = players.reduce(function (acc, player) {
+		return player.gold > acc ? player.gold : acc;
+	}, 0);
+	return players.filter(function (player) {
+		return player.gold === most && most > 0;
+	}).length === 1 ? players.find(function (player) {
+		return player.gold === most;
+	}).color : '';
 };
 
 var checkGold = function checkGold(players, color) {
@@ -19031,6 +19134,7 @@ var calcPlayerScore = function calcPlayerScore(playerState, masters, players) {
 
 exports.mostOf = mostOf;
 exports.checkThreshold = checkThreshold;
+exports.getRichestColor = getRichestColor;
 exports.checkGold = checkGold;
 exports.checkCards = checkCards;
 exports.calcPlayerScore = calcPlayerScore;
