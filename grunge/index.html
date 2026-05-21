@@ -1,0 +1,2171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VINTAGE RECALL — Procedural Grunge Photo Studio</title>
+  <meta name="description" content="A premium, procedural photo editor for applying authentic film grain, tears, scratches, yellowing, fading, warmth, and paper crumples.">
+  
+  <!-- Premium Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    /* CSS Design System */
+    :root {
+      --bg: #09090b;
+      --bg-gradient: radial-gradient(circle at 50% 50%, #15151a 0%, #09090b 100%);
+      --panel-bg: rgba(18, 18, 24, 0.75);
+      --panel-border: rgba(255, 255, 255, 0.08);
+      --panel-border-hover: rgba(255, 255, 255, 0.16);
+      
+      --accent: #e59866; /* Warm Terracotta */
+      --accent-glow: rgba(229, 152, 102, 0.35);
+      --accent-rgb: 229, 152, 102;
+      
+      --text: #f3f4f6;
+      --text-muted: #9ca3af;
+      --text-dark: #4b5563;
+      
+      --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      --sidebar-width: 420px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg);
+      background-image: var(--bg-gradient);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Custom Scrollbars */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.2);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.25);
+    }
+
+    /* Layout Components */
+    header {
+      background: rgba(9, 9, 11, 0.8);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--panel-border);
+      padding: 0.85rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .brand {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand-title {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: 2.2rem;
+      font-style: italic;
+      line-height: 1;
+      font-weight: 400;
+      color: #fff;
+      letter-spacing: -0.02em;
+      text-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+    }
+
+    .brand-subtitle {
+      font-size: 0.65rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-top: 0.2rem;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    /* Main Container Grid */
+    .app-container {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr var(--sidebar-width);
+      height: calc(100vh - 65px);
+      position: relative;
+    }
+
+    /* Workspace Viewport */
+    .viewport {
+      display: flex;
+      flex-direction: column;
+      padding: 2rem;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .title-area {
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      z-index: 10;
+    }
+
+    .title-input-container {
+      position: relative;
+      display: inline-block;
+    }
+
+    .title-input {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-style: italic;
+      font-size: 2.2rem;
+      background: transparent;
+      border: none;
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.25);
+      color: #fff;
+      text-align: center;
+      outline: none;
+      padding: 0.1rem 0.5rem;
+      min-width: 250px;
+      max-width: 450px;
+      transition: var(--transition);
+    }
+
+    .title-input:hover, .title-input:focus {
+      border-bottom-color: var(--accent);
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .edit-icon {
+      color: var(--text-muted);
+      opacity: 0.6;
+      pointer-events: none;
+      transition: var(--transition);
+    }
+
+    .title-input-container:hover .edit-icon {
+      opacity: 1;
+      color: var(--accent);
+      transform: scale(1.05);
+    }
+
+    /* Editor Viewer Card */
+    .viewer-card {
+      flex: 1;
+      width: 100%;
+      max-height: 80%;
+      border-radius: 12px;
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-border);
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: auto;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      transition: var(--transition);
+    }
+
+    .viewer-card.drag-over {
+      border-color: var(--accent);
+      box-shadow: 0 0 25px var(--accent-glow);
+      transform: scale(1.01);
+    }
+
+    .canvas-container {
+      position: relative;
+      margin: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    canvas {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      border-radius: 4px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      display: none;
+    }
+
+    /* Dropzone Empty State */
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 3rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 5;
+      transition: var(--transition);
+    }
+
+    .empty-state:hover {
+      color: #fff;
+    }
+
+    .empty-state-icon {
+      margin-bottom: 1.5rem;
+      color: var(--accent);
+      background: rgba(229, 152, 102, 0.1);
+      padding: 1.25rem;
+      border-radius: 50%;
+      border: 1px solid var(--accent-glow);
+      transition: var(--transition);
+    }
+
+    .empty-state:hover .empty-state-icon {
+      transform: scale(1.1) rotate(5deg);
+      background: rgba(229, 152, 102, 0.18);
+      box-shadow: 0 0 20px var(--accent-glow);
+    }
+
+    .empty-state-title {
+      font-size: 1.25rem;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+    }
+
+    .empty-state-desc {
+      font-size: 0.85rem;
+      max-width: 280px;
+      line-height: 1.5;
+    }
+
+    /* Buttons & Controls */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--panel-border);
+      color: var(--text);
+      padding: 0.6rem 1.1rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: var(--panel-border-hover);
+      transform: translateY(-1px);
+    }
+
+    .btn:active {
+      transform: translateY(1px);
+    }
+
+    .btn-accent {
+      background: var(--accent);
+      color: #121215;
+      border: 1px solid transparent;
+      font-weight: 600;
+      box-shadow: 0 4px 14px var(--accent-glow);
+    }
+
+    .btn-accent:hover {
+      background: #f4a261;
+      border-color: transparent;
+      box-shadow: 0 6px 20px rgba(244, 162, 97, 0.45);
+    }
+
+    .btn-file-input {
+      display: none;
+    }
+
+    /* Sidebar Panel */
+    .sidebar {
+      background: rgba(14, 14, 18, 0.95);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-left: 1px solid var(--panel-border);
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      padding: 1.75rem;
+    }
+
+    .sidebar-header {
+      margin-bottom: 2rem;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      padding-bottom: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .sidebar-title {
+      font-size: 1.1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .global-controls {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .btn-sm {
+      padding: 0.4rem 0.65rem;
+      font-size: 0.75rem;
+      border-radius: 6px;
+    }
+
+    /* Sliders List */
+    .effects-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1.75rem;
+      margin-bottom: 2rem;
+    }
+
+    .slider-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .slider-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+    }
+
+    .slider-label {
+      color: var(--text);
+      text-transform: uppercase;
+      font-size: 0.8rem;
+      letter-spacing: 0.05em;
+    }
+
+    .slider-value {
+      font-family: monospace;
+      color: var(--accent);
+      background: rgba(229, 152, 102, 0.08);
+      padding: 0.1rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+    }
+
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    /* Reset / Randomize Circular Buttons */
+    .icon-btn {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--panel-border);
+      color: var(--text-muted);
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .icon-btn:hover {
+      color: var(--accent);
+      background: rgba(229, 152, 102, 0.1);
+      border-color: var(--accent-glow);
+      transform: scale(1.08);
+    }
+
+    .icon-btn:active {
+      transform: scale(0.95);
+    }
+
+    .icon-btn svg {
+      transition: transform 0.4s ease;
+    }
+
+    .icon-btn:hover svg {
+      transform: rotate(-45deg);
+    }
+
+    .icon-btn.btn-randomize:hover svg {
+      transform: rotate(30deg) scale(1.1);
+    }
+
+    /* Custom Range Sliders styling */
+    .custom-range {
+      flex: 1;
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 5px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+      outline: none;
+      transition: background 0.3s;
+    }
+
+    .custom-range::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+      box-shadow: 0 0 10px var(--accent-glow);
+      transition: transform 0.15s ease, background-color 0.15s;
+    }
+
+    .custom-range::-webkit-slider-thumb:hover {
+      transform: scale(1.25);
+      background: #fff;
+    }
+
+    .custom-range::-moz-range-thumb {
+      width: 14px;
+      height: 14px;
+      border: none;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+      box-shadow: 0 0 10px var(--accent-glow);
+      transition: transform 0.15s ease, background-color 0.15s;
+    }
+
+    .custom-range::-moz-range-thumb:hover {
+      transform: scale(1.25);
+      background: #fff;
+    }
+
+    /* Stats & Metadata display in sidebar */
+    .metadata-panel {
+      margin-top: auto;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      border-radius: 8px;
+      padding: 0.85rem;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .meta-row {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .meta-row span:last-child {
+      color: #fff;
+      font-family: monospace;
+    }
+
+    /* Notification Toast */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translate(-50%, 100px);
+      background: rgba(22, 22, 28, 0.95);
+      border: 1px solid var(--accent);
+      color: #fff;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s;
+    }
+
+    .toast.show {
+      transform: translate(-50%, 0);
+      opacity: 1;
+    }
+
+    /* Zoom Controls Toolbar */
+    .zoom-control-bar {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: rgba(18, 18, 24, 0.75);
+      border: 1px solid var(--panel-border);
+      padding: 0.5rem 1.25rem;
+      border-radius: 30px;
+      margin-top: 1.25rem;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      z-index: 10;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(10px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    .zoom-control-bar.visible {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+
+    .zoom-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+    }
+
+    .zoom-btn:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .zoom-btn:active {
+      transform: scale(0.9);
+    }
+
+    .zoom-slider {
+      width: 140px;
+      -webkit-appearance: none;
+      appearance: none;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 2px;
+      outline: none;
+    }
+
+    .zoom-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+      box-shadow: 0 0 8px var(--accent-glow);
+      transition: transform 0.1s ease;
+    }
+
+    .zoom-slider::-webkit-slider-thumb:hover {
+      transform: scale(1.3);
+      background: #fff;
+    }
+
+    .zoom-value {
+      font-family: monospace;
+      font-size: 0.8rem;
+      color: var(--accent);
+      min-width: 42px;
+      text-align: right;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 980px) {
+      .app-container {
+        grid-template-columns: 1fr;
+        height: auto;
+      }
+      .sidebar {
+        border-left: none;
+        border-top: 1px solid var(--panel-border);
+        height: auto;
+        overflow-y: visible;
+      }
+      header {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1rem;
+        text-align: center;
+      }
+      .header-actions {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      .viewer-card {
+        min-height: 400px;
+        height: 60vh;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Hidden File Input Controls -->
+  <input type="file" id="image-upload" class="btn-file-input" accept="image/png, image/jpeg, image/svg+xml">
+  <input type="file" id="style-upload" class="btn-file-input" accept=".json">
+
+  <!-- Header Bar -->
+  <header>
+    <div class="brand">
+      <h1 class="brand-title">Vintage Recall</h1>
+      <span class="brand-subtitle">Grunge &amp; Fading Studio</span>
+    </div>
+    
+    <div class="header-actions">
+      <!-- 2 Upload Buttons -->
+      <button class="btn btn-accent" id="btn-upload-image" title="Upload JPEG, PNG or SVG photo">
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        Upload Photo
+      </button>
+      <button class="btn" id="btn-upload-style" title="Load styled slider settings (.json)">
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        Load Style
+      </button>
+      
+      <!-- 2 Download Buttons -->
+      <button class="btn" id="btn-download-style" title="Save slider parameters as JSON config">
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Save Style
+      </button>
+      <button class="btn btn-accent" id="btn-download-image" title="Export processed image in full high-resolution">
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Export Image
+      </button>
+    </div>
+  </header>
+
+  <!-- App Content Grid -->
+  <main class="app-container">
+    
+    <!-- Viewport (Main Center Display) -->
+    <section class="viewport">
+      <div class="title-area">
+        <div class="title-input-container">
+          <input type="text" id="filename-input" class="title-input" value="untitled-grunge" title="Click to edit export file name" placeholder="name your file...">
+        </div>
+        <svg class="edit-icon" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      </div>
+
+      <div class="viewer-card" id="drop-zone">
+        <!-- Canvas wrapper -->
+        <div class="canvas-container">
+          <canvas id="preview-canvas"></canvas>
+        </div>
+
+        <!-- Drag & Drop empty state overlay -->
+        <div class="empty-state" id="empty-prompt">
+          <div class="empty-state-icon">
+            <svg viewBox="0 0 24 24" width="40" height="40" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          </div>
+          <h2 class="empty-state-title">Drop your image here</h2>
+          <p class="empty-state-desc">Drag and drop your photo or click to browse. Supports JPEG, PNG, and SVG vector formats.</p>
+        </div>
+      </div>
+
+      <!-- Zoom Controls Toolbar -->
+      <div class="zoom-control-bar" id="zoom-controls">
+        <button class="zoom-btn" id="btn-zoom-out" title="Zoom Out">
+          <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+        <input type="range" id="zoom-slider" class="zoom-slider" min="0.5" max="2.0" step="0.05" value="1.0" title="Zoom level">
+        <button class="zoom-btn" id="btn-zoom-in" title="Zoom In">
+          <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+        <span class="zoom-value" id="zoom-value">100%</span>
+        <button class="btn btn-sm" id="btn-zoom-fit" style="padding: 0.25rem 0.6rem; text-transform: none; letter-spacing: 0; font-size: 0.75rem;" title="Fit to Viewport">Fit</button>
+      </div>
+    </section>
+
+    <!-- Sidebar Controls -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h2 class="sidebar-title">Grunge Effects</h2>
+        <div class="global-controls">
+          <button class="btn btn-sm" id="btn-reset-all" title="Reset all adjustments to zero">Reset All</button>
+          <button class="btn btn-sm btn-accent" id="btn-randomize-all" title="Randomize all slider values">Randomize All</button>
+        </div>
+      </div>
+
+      <!-- Effects Sliders List -->
+      <div class="effects-list">
+        
+        <!-- Slider 1: Noise -->
+        <div class="slider-group">
+          <div class="slider-header">
+            <span class="slider-label">Noise (Film Grain)</span>
+            <span class="slider-value" id="val-noise">0.00</span>
+          </div>
+          <div class="slider-row">
+            <button class="icon-btn btn-reset" data-slider="noise" title="Reset noise">
+              <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+            </button>
+            <input type="range" id="slider-noise" min="0" max="1.2" step="0.01" value="0" class="custom-range">
+            <button class="icon-btn btn-randomize" data-slider="noise" title="Randomize noise">
+              <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Slider 2: Rips -->
+        <div class="slider-group">
+          <div class="slider-header">
+            <span class="slider-label">Rips &amp; Tears</span>
+            <span class="slider-value" id="val-rips">0.00</span>
+          </div>
+          <div class="slider-row">
+            <button class="icon-btn btn-reset" data-slider="rips" title="Reset rips">
+              <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+            </button>
+            <input type="range" id="slider-rips" min="0" max="1.2" step="0.01" value="0" class="custom-range">
+            <button class="icon-btn btn-randomize" data-slider="rips" title="Randomize rips">
+              <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Slider 3: Side Scratches -->
+        <div class="slider-group">
+          <div class="slider-header">
+            <span class="slider-label">Side Scratches</span>
+            <span class="slider-value" id="val-sideScratches">0.00</span>
+          </div>
+          <div class="slider-row">
+            <button class="icon-btn btn-reset" data-slider="sideScratches" title="Reset side scratches">
+              <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+            </button>
+            <input type="range" id="slider-sideScratches" min="0" max="1.2" step="0.01" value="0" class="custom-range">
+            <button class="icon-btn btn-randomize" data-slider="sideScratches" title="Randomize side scratches">
+              <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Slider 4: Central Scratches -->
+        <div class="slider-group">
+          <div class="slider-header">
+            <span class="slider-label">Central Scratches</span>
+            <span class="slider-value" id="val-centralScratches">0.00</span>
+          </div>
+          <div class="slider-row">
+            <button class="icon-btn btn-reset" data-slider="centralScratches" title="Reset central scratches">
+              <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+            </button>
+            <input type="range" id="slider-centralScratches" min="0" max="1.2" step="0.01" value="0" class="custom-range">
+            <button class="icon-btn btn-randomize" data-slider="centralScratches" title="Randomize central scratches">
+              <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Slider 5: Age -->
+        <div class="slider-group">
+          <div class="slider-header">
+            <span class="slider-label">Age (Yellowing / Fading)</span>
+            <span class="slider-value" id="val-age">0.00</span>
+          </div>
+          <div class="slider-row">
+            <button class="icon-btn btn-reset" data-slider="age" title="Reset age">
+              <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+            </button>
+            <input type="range" id="slider-age" min="0" max="1.2" step="0.01" value="0" class="custom-range">
+            <button class="icon-btn btn-randomize" data-slider="age" title="Randomize age">
+              <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Slider 6: Fade to Black -->
+        <div class="slider-group">
+          <div class="slider-header">
+            <span class="slider-label">Fade to Black</span>
+            <span class="slider-value" id="val-fadeToBlack">0.00</span>
+          </div>
+          <div class="slider-row">
+            <button class="icon-btn btn-reset" data-slider="fadeToBlack" title="Reset Fade to Black">
+              <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+            </button>
+            <input type="range" id="slider-fadeToBlack" min="0" max="1.2" step="0.01" value="0" class="custom-range">
+            <button class="icon-btn btn-randomize" data-slider="fadeToBlack" title="Randomize Fade to Black">
+              <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Slider 7: Fade to White -->
+        <div class="slider-group">
+          <div class="slider-header">
+            <span class="slider-label">Fade to White</span>
+            <span class="slider-value" id="val-fadeToWhite">0.00</span>
+          </div>
+          <div class="slider-row">
+            <button class="icon-btn btn-reset" data-slider="fadeToWhite" title="Reset Fade to White">
+              <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+            </button>
+            <input type="range" id="slider-fadeToWhite" min="0" max="1.2" step="0.01" value="0" class="custom-range">
+            <button class="icon-btn btn-randomize" data-slider="fadeToWhite" title="Randomize Fade to White">
+              <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Slider 8: Warmth -->
+        <div class="slider-group">
+          <div class="slider-header">
+            <span class="slider-label">Warmth (Cool vs. Warm)</span>
+            <span class="slider-value" id="val-warmth">0.50</span>
+          </div>
+          <div class="slider-row">
+            <button class="icon-btn btn-reset" data-slider="warmth" title="Reset warmth">
+              <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+            </button>
+            <input type="range" id="slider-warmth" min="0" max="1.2" step="0.01" value="0.5" class="custom-range">
+            <button class="icon-btn btn-randomize" data-slider="warmth" title="Randomize warmth">
+              <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Slider 9: Crumples -->
+        <div class="slider-group">
+          <div class="slider-header">
+            <span class="slider-label">Crumples &amp; Creases</span>
+            <span class="slider-value" id="val-crumples">0.00</span>
+          </div>
+          <div class="slider-row">
+            <button class="icon-btn btn-reset" data-slider="crumples" title="Reset crumples">
+              <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+            </button>
+            <input type="range" id="slider-crumples" min="0" max="1.2" step="0.01" value="0" class="custom-range">
+            <button class="icon-btn btn-randomize" data-slider="crumples" title="Randomize crumples">
+              <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Stats Panel -->
+      <div class="metadata-panel">
+        <div class="meta-row">
+          <span>Active Photo:</span>
+          <span id="meta-filename">None</span>
+        </div>
+        <div class="meta-row">
+          <span>Dimensions:</span>
+          <span id="meta-dims">0 × 0 px</span>
+        </div>
+        <div class="meta-row">
+          <span>Torn Edges:</span>
+          <span id="meta-rips-status">Off</span>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <!-- Notification Toast -->
+  <div class="toast" id="toast">Notification text</div>
+
+  <!-- SVG Filter definitions for hardware-accelerated color matrices -->
+  <svg style="position: absolute; width: 0; height: 0; overflow: hidden;" aria-hidden="true">
+    <filter id="grunge-color-filter">
+      <feColorMatrix id="color-matrix" type="matrix" 
+        values="1 0 0 0 0
+                0 1 0 0 0
+                0 0 1 0 0
+                0 0 0 1 0"/>
+    </filter>
+  </svg>
+
+  <!-- JavaScript Application Logic -->
+  <script>
+    // State management
+    const state = {
+      image: null,
+      originalFilename: 'untitled-grunge',
+      originalExtension: 'jpg',
+      sliders: {
+        noise: 0.0,
+        rips: 0.0,
+        sideScratches: 0.0,
+        centralScratches: 0.0,
+        age: 0.0,
+        fadeToBlack: 0.0,
+        fadeToWhite: 0.0,
+        warmth: 0.5,
+        crumples: 0.0
+      },
+      // Procedural Asset DBs (generated deterministically on image load)
+      scratchDb: [],
+      creaseDb: [],
+      ripDb: {
+        top: [],
+        right: [],
+        bottom: [],
+        left: []
+      },
+      ripHoles: [],
+      moldDb: [],
+      // Preview limits
+      maxPreviewSize: 1200,
+      zoom: 1.0
+    };
+
+    // DOM Elements
+    const elements = {
+      imageUpload: document.getElementById('image-upload'),
+      styleUpload: document.getElementById('style-upload'),
+      btnUploadImage: document.getElementById('btn-upload-image'),
+      btnUploadStyle: document.getElementById('btn-upload-style'),
+      btnDownloadImage: document.getElementById('btn-download-image'),
+      btnDownloadStyle: document.getElementById('btn-download-style'),
+      btnResetAll: document.getElementById('btn-reset-all'),
+      btnRandomizeAll: document.getElementById('btn-randomize-all'),
+      filenameInput: document.getElementById('filename-input'),
+      dropZone: document.getElementById('drop-zone'),
+      viewerCard: document.getElementById('drop-zone'),
+      emptyPrompt: document.getElementById('empty-prompt'),
+      canvas: document.getElementById('preview-canvas'),
+      ctx: document.getElementById('preview-canvas').getContext('2d'),
+      toast: document.getElementById('toast'),
+      // Stats Panel
+      metaFilename: document.getElementById('meta-filename'),
+      metaDims: document.getElementById('meta-dims'),
+      metaRipsStatus: document.getElementById('meta-rips-status'),
+      // Zoom Controls
+      zoomControls: document.getElementById('zoom-controls'),
+      zoomSlider: document.getElementById('zoom-slider'),
+      zoomValue: document.getElementById('zoom-value'),
+      btnZoomIn: document.getElementById('btn-zoom-in'),
+      btnZoomOut: document.getElementById('btn-zoom-out'),
+      btnZoomFit: document.getElementById('btn-zoom-fit')
+    };
+
+    // Default slider positions for reset
+    const defaultSliders = {
+      noise: 0.0,
+      rips: 0.0,
+      sideScratches: 0.0,
+      centralScratches: 0.0,
+      age: 0.0,
+      fadeToBlack: 0.0,
+      fadeToWhite: 0.0,
+      warmth: 0.5,
+      crumples: 0.0
+    };
+
+    // Noise Cache Canvas (Singleton)
+    let noiseCanvas = null;
+
+    // Helper: Show custom toast message
+    function showToast(message) {
+      elements.toast.textContent = message;
+      elements.toast.classList.add('show');
+      setTimeout(() => {
+        elements.toast.classList.remove('show');
+      }, 2500);
+    }
+
+    // Helper: 1D Smooth Noise generator (fractal combination of simple linear interpolation)
+    function generateSmoothNoise(length, octaves = 3) {
+      const noise = new Array(length).fill(0);
+      for (let oct = 0; oct < octaves; oct++) {
+        const freq = Math.pow(2, oct + 1);
+        const amp = 1.0 / freq;
+        const anchors = Array.from({length: freq + 1}, () => Math.random());
+        
+        for (let i = 0; i < length; i++) {
+          const t = i / (length - 1);
+          const pos = t * freq;
+          const idx = Math.floor(pos);
+          const localT = pos - idx;
+          // Cosine interpolation for smoother transitions
+          const ft = localT * Math.PI;
+          const f = (1 - Math.cos(ft)) * 0.5;
+          
+          const nextIdx = Math.min(anchors.length - 1, idx + 1);
+          const val = anchors[idx] * (1 - f) + anchors[nextIdx] * f;
+          noise[i] += val * amp;
+        }
+      }
+      
+      // Normalize values to [0, 1]
+      const min = Math.min(...noise);
+      const max = Math.max(...noise);
+      return noise.map(v => (v - min) / (max - min || 1));
+    }
+
+    // Procedural DB Builders (Stable coordinates for changes)
+    function buildProceduralDbs() {
+      // 1. Scratches Database (120 elements)
+      state.scratchDb = [];
+      for (let i = 0; i < 120; i++) {
+        const isSide = Math.random() < 0.45;
+        const points = [];
+        const numSegments = 3 + Math.floor(Math.random() * 4); // 3-6 line points
+        
+        let cx, cy;
+        if (isSide) {
+          const margin = 0.15;
+          const side = Math.floor(Math.random() * 4); // top, right, bottom, left
+          if (side === 0) {
+            cx = Math.random(); cy = Math.random() * margin;
+          } else if (side === 1) {
+            cx = 1.0 - Math.random() * margin; cy = Math.random();
+          } else if (side === 2) {
+            cx = Math.random(); cy = 1.0 - Math.random() * margin;
+          } else {
+            cx = Math.random() * margin; cy = Math.random();
+          }
+        } else {
+          cx = 0.15 + Math.random() * 0.7;
+          cy = 0.15 + Math.random() * 0.7;
+        }
+        
+        points.push({x: cx, y: cy});
+        
+        const totalLength = 0.04 + Math.random() * 0.14; // normalized path length
+        const angle = Math.random() * Math.PI * 2;
+        const stepX = Math.cos(angle) * totalLength / numSegments;
+        const stepY = Math.sin(angle) * totalLength / numSegments;
+        
+        for (let j = 1; j < numSegments; j++) {
+          const jitter = 0.004;
+          cx += stepX + (Math.random() - 0.5) * jitter;
+          cy += stepY + (Math.random() - 0.5) * jitter;
+          points.push({
+            x: Math.max(0, Math.min(1, cx)), 
+            y: Math.max(0, Math.min(1, cy))
+          });
+        }
+        
+        state.scratchDb.push({
+          isSide: isSide,
+          points: points,
+          width: 0.35 + Math.random() * 1.15,
+          isDark: Math.random() < 0.22,
+          maxOpacity: 0.15 + Math.random() * 0.4
+        });
+      }
+
+      // 2. Creases/Crumples Database (16 major folds)
+      state.creaseDb = [];
+      const numCreases = 16;
+      for (let i = 0; i < numCreases; i++) {
+        const points = [];
+        const isHorizontal = Math.random() < 0.5;
+        
+        let cx = isHorizontal ? 0 : Math.random();
+        let cy = isHorizontal ? Math.random() : 0;
+        points.push({x: cx, y: cy});
+        
+        const numSegments = 4 + Math.floor(Math.random() * 4);
+        const segmentSize = 1.0 / numSegments;
+        
+        for (let j = 1; j <= numSegments; j++) {
+          if (isHorizontal) {
+            cx = j * segmentSize;
+            cy = cy + (Math.random() - 0.5) * 0.12;
+          } else {
+            cx = cx + (Math.random() - 0.5) * 0.12;
+            cy = j * segmentSize;
+          }
+          points.push({
+            x: Math.max(0, Math.min(1, cx)),
+            y: Math.max(0, Math.min(1, cy))
+          });
+        }
+        
+        state.creaseDb.push({
+          points: points,
+          width: 1.2 + Math.random() * 2.8,
+          maxOpacity: 0.2 + Math.random() * 0.3,
+          angle: isHorizontal ? 0 : Math.PI / 2
+        });
+      }
+
+      // 3. Torn Edges Database
+      const HPoints = 120;
+      const VPoints = 95;
+      state.ripDb.top = generateSmoothNoise(HPoints, 4);
+      state.ripDb.bottom = generateSmoothNoise(HPoints, 4);
+      state.ripDb.left = generateSmoothNoise(VPoints, 4);
+      state.ripDb.right = generateSmoothNoise(VPoints, 4);
+
+      // 4. Inner Rip Holes Database (for extreme rips)
+      state.ripHoles = [];
+      const numHoles = 3;
+      for (let i = 0; i < numHoles; i++) {
+        const cx = 0.25 + Math.random() * 0.5;
+        const cy = 0.25 + Math.random() * 0.5;
+        const radius = 0.04 + Math.random() * 0.05;
+        const numPoints = 12 + Math.floor(Math.random() * 8);
+        const points = [];
+        const holeNoise = generateSmoothNoise(numPoints, 2);
+        for (let j = 0; j < numPoints; j++) {
+          const angle = (j / numPoints) * Math.PI * 2;
+          const r = radius * (1.0 + (holeNoise[j] - 0.5) * 0.5);
+          points.push({
+            x: cx + Math.cos(angle) * r,
+            y: cy + Math.sin(angle) * r
+          });
+        }
+        state.ripHoles.push(points);
+      }
+
+      // 5. Mold Decay Spots Database (for extreme age)
+      state.moldDb = [];
+      const numMold = 5;
+      for (let i = 0; i < numMold; i++) {
+        state.moldDb.push({
+          x: 0.15 + Math.random() * 0.7,
+          y: 0.15 + Math.random() * 0.7,
+          r: 0.06 + Math.random() * 0.08,
+          opacity: 0.3 + Math.random() * 0.35
+        });
+      }
+    }
+
+    // Build the tileable grain/noise pattern once to prevent frame stutter
+    function getNoisePattern() {
+      if (noiseCanvas) return noiseCanvas;
+      
+      const size = 512;
+      noiseCanvas = document.createElement('canvas');
+      noiseCanvas.width = size;
+      noiseCanvas.height = size;
+      const nCtx = noiseCanvas.getContext('2d');
+      const imgData = nCtx.createImageData(size, size);
+      const data = imgData.data;
+      
+      for (let i = 0; i < data.length; i += 4) {
+        const val = Math.floor(Math.random() * 255);
+        data[i] = val;     // R
+        data[i+1] = val;   // G
+        data[i+2] = val;   // B
+        data[i+3] = 255;   // Fully opaque for canvas overlays
+      }
+      nCtx.putImageData(imgData, 0, 0);
+      return noiseCanvas;
+    }
+
+    // Helper: Calculate standard fit size of preview canvas inside viewport
+    function getFittedSize() {
+      const pad = 40; // padding inside viewer card
+      const maxW = Math.max(200, elements.viewerCard.clientWidth - pad);
+      const maxH = Math.max(200, elements.viewerCard.clientHeight - pad);
+      
+      const canvasW = elements.canvas.width;
+      const canvasH = elements.canvas.height;
+      
+      if (!canvasW || !canvasH) return { width: 0, height: 0 };
+      
+      const ratio = canvasW / canvasH;
+      let targetW = canvasW;
+      let targetH = canvasH;
+      
+      if (targetW > maxW || targetH > maxH) {
+        if (targetW / maxW > targetH / maxH) {
+          targetW = maxW;
+          targetH = Math.floor(targetW / ratio);
+        } else {
+          targetH = maxH;
+          targetW = Math.floor(targetH * ratio);
+        }
+      }
+      return { width: targetW, height: targetH };
+    }
+
+    // Helper: Update zoom scale in CSS and UI indicators
+    function updateZoom() {
+      if (!state.image) return;
+      
+      // Set text percentage
+      elements.zoomValue.textContent = `${Math.round(state.zoom * 100)}%`;
+      elements.zoomSlider.value = state.zoom;
+      
+      const fit = getFittedSize();
+      const displayWidth = fit.width * state.zoom;
+      const displayHeight = fit.height * state.zoom;
+      
+      // Apply styles to preview canvas
+      elements.canvas.style.width = `${displayWidth}px`;
+      elements.canvas.style.height = `${displayHeight}px`;
+      elements.canvas.style.maxWidth = 'none';
+      elements.canvas.style.maxHeight = 'none';
+    }
+
+    // Helper to sync slider value to UI and state
+    function updateSliderUI(key, value) {
+      state.sliders[key] = value;
+      const slider = document.getElementById(`slider-${key}`);
+      if (slider) slider.value = value;
+      
+      const valDisplay = document.getElementById(`val-${key}`);
+      if (valDisplay) {
+        if (value > 1.1) {
+          valDisplay.textContent = `${value.toFixed(2)} [💀 DESTRUCTIVE]`;
+        } else if (value > 1.0) {
+          valDisplay.textContent = `${value.toFixed(2)} [🔥 EXTREME]`;
+        } else {
+          valDisplay.textContent = value.toFixed(2);
+        }
+      }
+    }
+
+    // Setup input slider bindings
+    function initSliders() {
+      Object.keys(state.sliders).forEach(key => {
+        const slider = document.getElementById(`slider-${key}`);
+        
+        // Handle input events
+        slider.addEventListener('input', (e) => {
+          const value = parseFloat(e.target.value);
+          updateSliderUI(key, value);
+          renderPreview();
+        });
+      });
+
+      // Individual reset and randomize button event delegation
+      document.querySelectorAll('.btn-reset').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const key = btn.dataset.slider;
+          const defaultValue = defaultSliders[key];
+          
+          updateSliderUI(key, defaultValue);
+          showToast(`Reset ${key}`);
+          renderPreview();
+        });
+      });
+
+      document.querySelectorAll('.btn-randomize').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const key = btn.dataset.slider;
+          let randomVal;
+          
+          if (key === 'warmth') {
+            // Warmth centered around 0.5, randomize inside [0.15, 1.2]
+            randomVal = 0.15 + Math.random() * 1.05;
+          } else if (key === 'rips') {
+            // Rips can eat holes; restrict random slightly to [0, 1.1]
+            randomVal = Math.random() * 1.1;
+          } else {
+            // Randomize up to 1.2
+            randomVal = Math.random() * 1.2;
+          }
+          
+          updateSliderUI(key, randomVal);
+          renderPreview();
+        });
+      });
+
+      // Global Reset
+      elements.btnResetAll.addEventListener('click', () => {
+        Object.keys(state.sliders).forEach(key => {
+          const defaultVal = defaultSliders[key];
+          updateSliderUI(key, defaultVal);
+        });
+        showToast("Reset all sliders");
+        renderPreview();
+      });
+
+      // Global Randomize
+      elements.btnRandomizeAll.addEventListener('click', () => {
+        Object.keys(state.sliders).forEach(key => {
+          let val;
+          if (key === 'warmth') val = 0.2 + Math.random() * 0.9;
+          else if (key === 'rips') val = Math.random() * 0.9; // don't make it completely empty
+          else if (key === 'fadeToWhite' || key === 'fadeToBlack') val = Math.random() * 0.9;
+          else val = Math.random() * 1.2;
+          
+          updateSliderUI(key, val);
+        });
+        showToast("Randomized effects");
+        renderPreview();
+      });
+    }
+
+    // Dynamic Color Matrix Update (Warmth + Age Sepia)
+    function updateSvgColorMatrix(warmth, age) {
+      const matrixEl = document.getElementById('color-matrix');
+      if (!matrixEl) return;
+      
+      // Warmth shift values (0.5 is neutral)
+      let rMult = 1.0, gMult = 1.0, bMult = 1.0;
+      let rAdd = 0, gAdd = 0, bAdd = 0;
+      
+      if (warmth > 1.0) {
+        const intensity = (warmth - 1.0) * 5.0; // 0 to 1
+        rMult = 1.16 * (1 - intensity) + 1.85 * intensity;
+        gMult = 1.05 * (1 - intensity) + 0.40 * intensity;
+        bMult = 0.82 * (1 - intensity) + 0.02 * intensity;
+        rAdd = 0.04 * (1 - intensity) + 0.28 * intensity;
+      } else if (warmth > 0.5) {
+        const factor = (warmth - 0.5) * 2.0; // [0, 1]
+        rMult += factor * 0.16;
+        gMult += factor * 0.05;
+        bMult -= factor * 0.18;
+        rAdd += factor * 0.04;
+      } else if (warmth < 0.5) {
+        const factor = (0.5 - warmth) * 2.0; // [0, 1]
+        rMult -= factor * 0.18;
+        gMult -= factor * 0.02;
+        bMult += factor * 0.20;
+        bAdd += factor * 0.05;
+      }
+      
+      // Age yellowing / sepia tinting values
+      // Standard Sepia:
+      // R' = 0.393R + 0.769G + 0.189B
+      // G' = 0.349R + 0.686G + 0.168B
+      // B' = 0.272R + 0.534G + 0.131B
+      const rr = (1 - age) + age * 0.393;
+      const rg = age * 0.769;
+      const rb = age * 0.189;
+      
+      const gr = age * 0.349;
+      const gg = (1 - age) + age * 0.686;
+      const gb = age * 0.168;
+      
+      const br = age * 0.272;
+      const bg = age * 0.534;
+      const bb = (1 - age) + age * 0.131;
+      
+      // Combine Warmth and Sepia matrices via multiplication
+      const m00 = rr * rMult;
+      const m01 = rg * rMult;
+      const m02 = rb * rMult;
+      
+      const m10 = gr * gMult;
+      const m11 = gg * gMult;
+      const m12 = gb * gMult;
+      
+      const m20 = br * bMult;
+      const m21 = bg * bMult;
+      const m22 = bb * bMult;
+
+      // In SVG <feColorMatrix>, offsets are normalized (0 to 1) rather than 0 to 255
+      const offsetR = rAdd;
+      const offsetG = gAdd;
+      const offsetB = bAdd;
+      
+      matrixEl.setAttribute('values', [
+        m00, m01, m02, 0, offsetR,
+        m10, m11, m12, 0, offsetG,
+        m20, m21, m22, 0, offsetB,
+        0, 0, 0, 1, 0
+      ].join(' '));
+    }
+
+    // Construct the Edge Rips polygon path (clean, non-self-intersecting)
+    function buildRipsPath(ctx, w, h, ripsVal) {
+      const effectiveVal = ripsVal > 1.0 ? 1.0 + (ripsVal - 1.0) * 3.5 : ripsVal;
+      const maxDepth = effectiveVal * (Math.min(w, h) * 0.045);
+      if (maxDepth <= 0) {
+        ctx.beginPath();
+        ctx.rect(0, 0, w, h);
+        return;
+      }
+      
+      ctx.beginPath();
+      
+      const topPts = state.ripDb.top;
+      const rightPts = state.ripDb.right;
+      const bottomPts = state.ripDb.bottom;
+      const leftPts = state.ripDb.left;
+      
+      // Calculate corner coordinate offsets to prevent gaps and self-intersections
+      const tlX = maxDepth * leftPts[leftPts.length - 1];
+      const tlY = maxDepth * topPts[0];
+      
+      const trX = w - (maxDepth * rightPts[0]);
+      const trY = maxDepth * topPts[topPts.length - 1];
+      
+      const brX = w - (maxDepth * rightPts[rightPts.length - 1]);
+      const brY = h - (maxDepth * bottomPts[0]);
+      
+      const blX = maxDepth * leftPts[0];
+      const blY = h - (maxDepth * bottomPts[bottomPts.length - 1]);
+      
+      // 1. Top Edge (Left to Right, interpolating from tlX to trX)
+      ctx.moveTo(tlX, tlY);
+      for (let i = 1; i < topPts.length; i++) {
+        const t = i / (topPts.length - 1);
+        const x = tlX + t * (trX - tlX);
+        const y = maxDepth * topPts[i];
+        ctx.lineTo(x, y);
+      }
+      
+      // 2. Right Edge (Top to Bottom, interpolating from trY to brY)
+      for (let i = 1; i < rightPts.length; i++) {
+        const t = i / (rightPts.length - 1);
+        const x = w - (maxDepth * rightPts[i]);
+        const y = trY + t * (brY - trY);
+        ctx.lineTo(x, y);
+      }
+      
+      // 3. Bottom Edge (Right to Left, interpolating from brX to blX)
+      for (let i = 1; i < bottomPts.length; i++) {
+        const t = i / (bottomPts.length - 1);
+        const x = brX + t * (blX - brX);
+        const y = h - (maxDepth * bottomPts[i]);
+        ctx.lineTo(x, y);
+      }
+      
+      // 4. Left Edge (Bottom to Top, interpolating from blY to tlY)
+      for (let i = 1; i < leftPts.length; i++) {
+        const t = i / (leftPts.length - 1);
+        const x = maxDepth * leftPts[i];
+        const y = blY + t * (tlY - blY);
+        ctx.lineTo(x, y);
+      }
+      
+      ctx.closePath();
+    }
+
+    // Draw jagged paper rips inside the image for extreme rips values
+    function drawTornHoles(targetCtx, w, h, sRips) {
+      const holeScale = (sRips - 1.0) * 5.0; // scales 0 to 1
+      if (holeScale <= 0) return;
+
+      targetCtx.save();
+
+      state.ripHoles.forEach(hole => {
+        targetCtx.save();
+        // Determine hole center
+        let cx = 0, cy = 0;
+        hole.forEach(p => { cx += p.x; cy += p.y; });
+        cx /= hole.length;
+        cy /= hole.length;
+
+        targetCtx.beginPath();
+        hole.forEach((p, idx) => {
+          const px = cx + (p.x - cx) * holeScale;
+          const py = cy + (p.y - cy) * holeScale;
+          if (idx === 0) targetCtx.moveTo(px * w, py * h);
+          else targetCtx.lineTo(px * w, py * h);
+        });
+        targetCtx.closePath();
+
+        // 1. Fill with backing color
+        targetCtx.fillStyle = '#08080a';
+        targetCtx.fill();
+
+        // 2. Shadow inside the hole border
+        targetCtx.shadowColor = 'rgba(0, 0, 0, 0.6)';
+        targetCtx.shadowBlur = 8 * (w / 1000);
+        targetCtx.shadowOffsetY = 3 * (w / 1000);
+
+        // 3. Creamy torn paper border
+        targetCtx.strokeStyle = '#f5f1e8';
+        targetCtx.lineWidth = 1.5 * (w / 1000) + (sRips * 4 * (w / 1000));
+        targetCtx.lineCap = 'round';
+        targetCtx.lineJoin = 'round';
+        targetCtx.stroke();
+
+        targetCtx.restore();
+      });
+
+      targetCtx.restore();
+    }
+
+    // Core Procedural Rendering Engine
+    function renderPipeline(targetCanvas, targetCtx, srcImage, s, isFullRes = false) {
+      const w = targetCanvas.width;
+      const h = targetCanvas.height;
+      
+      // 1. Clear background
+      targetCtx.clearRect(0, 0, w, h);
+      
+      // If rips are active, we draw a dark slate backing under the photo area
+      if (s.rips > 0) {
+        targetCtx.save();
+        targetCtx.fillStyle = '#08080a';
+        targetCtx.fillRect(0, 0, w, h);
+        targetCtx.restore();
+      }
+      
+      // 2. Setup the Clip for Rips
+      targetCtx.save();
+      if (s.rips > 0) {
+        buildRipsPath(targetCtx, w, h, s.rips);
+        targetCtx.clip();
+      }
+      
+      // 3. Draw Base Photo with Warmth and Age color filters applied
+      targetCtx.save();
+      updateSvgColorMatrix(s.warmth, s.age);
+      
+      // Apply filters (SVG filter + brightness/contrast modifications for age/wash)
+      let contrastAdjust = 1.0 - (s.age * 0.1) - (s.fadeToBlack * 0.15) - (s.fadeToWhite * 0.15);
+      let brightnessAdjust = 1.0 - (s.fadeToBlack * 0.15) + (s.fadeToWhite * 0.15);
+      
+      if (s.fadeToBlack > 1.0) {
+        const intensity = (s.fadeToBlack - 1.0) * 5.0; // 0 to 1
+        contrastAdjust = (0.7) * (1 - intensity) + 4.5 * intensity;
+        brightnessAdjust = (0.85) * (1 - intensity) + 0.35 * intensity;
+      } else if (s.fadeToWhite > 1.0) {
+        const intensity = (s.fadeToWhite - 1.0) * 5.0; // 0 to 1
+        contrastAdjust = (0.7) * (1 - intensity) + 5.0 * intensity;
+        brightnessAdjust = (1.15) * (1 - intensity) + 2.4 * intensity;
+      }
+      
+      targetCtx.filter = `url(#grunge-color-filter) brightness(${brightnessAdjust}) contrast(${contrastAdjust})`;
+      targetCtx.drawImage(srcImage, 0, 0, w, h);
+      targetCtx.restore();
+      
+      // 3.5. Draw torn holes inside photo (Extreme Rips)
+      if (s.rips > 1.0) {
+        drawTornHoles(targetCtx, w, h, s.rips);
+      }
+      
+      // 4. Draw Radial Vintage Vignette (Age-based)
+      if (s.age > 0) {
+        targetCtx.save();
+        targetCtx.globalCompositeOperation = 'multiply';
+        
+        const grad = targetCtx.createRadialGradient(w/2, h/2, Math.min(w, h) * 0.2, w/2, h/2, Math.max(w, h) * 0.7);
+        // Vintage vignette shifts from warm light-gold in center to deep amber/black at edges
+        const ageVal = Math.min(1.0, s.age);
+        grad.addColorStop(0, 'rgba(255, 255, 255, 1)');
+        grad.addColorStop(0.5, `rgba(235, 215, 190, ${1 - ageVal * 0.25})`);
+        grad.addColorStop(0.8, `rgba(80, 50, 20, ${ageVal * 0.7})`);
+        grad.addColorStop(1, `rgba(10, 5, 0, ${ageVal * 0.95})`);
+        
+        targetCtx.fillStyle = grad;
+        targetCtx.fillRect(0, 0, w, h);
+        targetCtx.restore();
+      }
+
+      // 4.5. Mold / Rot decay stains (Extreme Age)
+      if (s.age > 1.0) {
+        targetCtx.save();
+        const moldIntensity = (s.age - 1.0) * 5.0; // 0 to 1
+        targetCtx.globalCompositeOperation = 'multiply';
+        
+        state.moldDb.forEach(mold => {
+          const mx = mold.x * w;
+          const my = mold.y * h;
+          const mr = mold.r * Math.min(w, h) * (1.0 + moldIntensity * 0.4);
+          const mOpacity = mold.opacity * moldIntensity;
+          
+          const moldGrad = targetCtx.createRadialGradient(mx, my, 0, mx, my, mr);
+          moldGrad.addColorStop(0, `rgba(48, 52, 35, ${mOpacity * 0.95})`); // mold core (olive green)
+          moldGrad.addColorStop(0.3, `rgba(65, 55, 40, ${mOpacity * 0.7})`);  // decaying brown edge
+          moldGrad.addColorStop(0.7, `rgba(90, 85, 70, ${mOpacity * 0.3})`);
+          moldGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+          
+          targetCtx.fillStyle = moldGrad;
+          targetCtx.beginPath();
+          targetCtx.arc(mx, my, mr, 0, Math.PI * 2);
+          targetCtx.fill();
+        });
+        targetCtx.restore();
+      }
+      
+      // 5. Draw Fades (Fade to Black / White overlays)
+      if (s.fadeToBlack > 0) {
+        targetCtx.save();
+        targetCtx.globalCompositeOperation = 'source-over';
+        // Fade out solid wash if s.fadeToBlack > 1.0 to reveal photocopy high-contrast image
+        const opacity = s.fadeToBlack > 1.0 
+          ? 0.85 * (1.0 - (s.fadeToBlack - 1.0) * 5.0) 
+          : s.fadeToBlack * 0.85;
+        targetCtx.fillStyle = `rgba(0, 0, 0, ${opacity})`;
+        targetCtx.fillRect(0, 0, w, h);
+        targetCtx.restore();
+      }
+      if (s.fadeToWhite > 0) {
+        targetCtx.save();
+        targetCtx.globalCompositeOperation = 'source-over';
+        // Fade out solid wash if s.fadeToWhite > 1.0 to reveal solarized high-contrast image
+        const opacity = s.fadeToWhite > 1.0 
+          ? 0.85 * (1.0 - (s.fadeToWhite - 1.0) * 5.0) 
+          : s.fadeToWhite * 0.85;
+        targetCtx.fillStyle = `rgba(255, 255, 255, ${opacity})`;
+        targetCtx.fillRect(0, 0, w, h);
+        targetCtx.restore();
+      }
+      
+      // 6. Draw Scratches (Baked on top of image and fades)
+      if (s.sideScratches > 0 || s.centralScratches > 0) {
+        targetCtx.save();
+        
+        const sideVal = Math.min(1.0, s.sideScratches);
+        const centralVal = Math.min(1.0, s.centralScratches);
+        
+        const maxSideDrawCount = Math.floor(sideVal * 60);
+        const maxCentralDrawCount = Math.floor(centralVal * 60);
+        let sideDrawn = 0;
+        let centralDrawn = 0;
+        
+        for (const scratch of state.scratchDb) {
+          if (scratch.isSide) {
+            if (sideDrawn >= maxSideDrawCount) continue;
+            sideDrawn++;
+          } else {
+            if (centralDrawn >= maxCentralDrawCount) continue;
+            centralDrawn++;
+          }
+          
+          const opacity = (scratch.isSide ? sideVal : centralVal) * scratch.maxOpacity;
+          if (opacity <= 0) continue;
+          
+          targetCtx.beginPath();
+          const pts = scratch.points;
+          targetCtx.moveTo(pts[0].x * w, pts[0].y * h);
+          for (let i = 1; i < pts.length; i++) {
+            targetCtx.lineTo(pts[i].x * w, pts[i].y * h);
+          }
+          
+          targetCtx.strokeStyle = scratch.isDark 
+            ? `rgba(15, 10, 5, ${opacity * 0.85})` 
+            : `rgba(248, 246, 240, ${opacity})`;
+            
+          // Width scaled to resolution to maintain consistent visual size
+          const scale = isFullRes ? (w / 1000) : (w / 1000);
+          targetCtx.lineWidth = scratch.width * scale;
+          targetCtx.lineCap = 'round';
+          targetCtx.lineJoin = 'round';
+          targetCtx.stroke();
+        }
+        targetCtx.restore();
+
+        // 6.5. Extreme Side Scratches: Acid Burn & Emulsion Decay
+        if (s.sideScratches > 1.0) {
+          targetCtx.save();
+          const decayIntensity = (s.sideScratches - 1.0) * 5.0; // 0 to 1
+          
+          const grad = targetCtx.createRadialGradient(w/2, h/2, Math.min(w, h) * 0.35, w/2, h/2, Math.max(w, h) * 0.7);
+          grad.addColorStop(0, 'rgba(0, 0, 0, 0)');
+          grad.addColorStop(0.5, `rgba(45, 20, 5, ${decayIntensity * 0.4})`);
+          grad.addColorStop(0.8, `rgba(18, 6, 2, ${decayIntensity * 0.8})`);
+          grad.addColorStop(1, `rgba(5, 1, 0, ${decayIntensity * 0.98})`);
+          targetCtx.fillStyle = grad;
+          targetCtx.fillRect(0, 0, w, h);
+          
+          targetCtx.globalCompositeOperation = 'multiply';
+          const borderPoints = [
+            {x: 0, y: 0}, {x: w, y: 0}, {x: 0, y: h}, {x: w, y: h},
+            {x: w/2, y: 0}, {x: 0, y: h/2}, {x: w, y: h/2}, {x: w/2, y: h}
+          ];
+          borderPoints.forEach((pt, i) => {
+            const r = (0.08 + (i % 3) * 0.08) * Math.min(w, h) * (1.0 + decayIntensity * 0.5);
+            const gradSpot = targetCtx.createRadialGradient(pt.x, pt.y, 0, pt.x, pt.y, r);
+            gradSpot.addColorStop(0, `rgba(35, 15, 5, ${decayIntensity * 0.9})`);
+            gradSpot.addColorStop(0.5, `rgba(50, 25, 8, ${decayIntensity * 0.5})`);
+            gradSpot.addColorStop(1, 'rgba(0, 0, 0, 0)');
+            targetCtx.fillStyle = gradSpot;
+            targetCtx.beginPath();
+            targetCtx.arc(pt.x, pt.y, r, 0, Math.PI * 2);
+            targetCtx.fill();
+          });
+          targetCtx.restore();
+        }
+
+        // 6.6. Extreme Central Scratches: Razor cuts/slashes
+        if (s.centralScratches > 1.0) {
+          targetCtx.save();
+          const slashIntensity = (s.centralScratches - 1.0) * 5.0; // 0 to 1
+          
+          const slashes = [
+            { x1: 0.15, y1: 0.25, x2: 0.85, y2: 0.75, w: 4 },
+            { x1: 0.80, y1: 0.20, x2: 0.20, y2: 0.80, w: 3.5 },
+            { x1: 0.10, y1: 0.50, x2: 0.90, y2: 0.55, w: 5 }
+          ];
+          
+          slashes.forEach((sl, idx) => {
+            const x1 = sl.x1 * w;
+            const y1 = sl.y1 * h;
+            const x2 = sl.x2 * w;
+            const y2 = sl.y2 * h;
+            const cx = ((sl.x1 + sl.x2) / 2) * w + (idx === 0 ? 25 : -25) * (w / 1000);
+            const cy = ((sl.y1 + sl.y2) / 2) * h + (idx === 1 ? 30 : -15) * (h / 1000);
+            
+            // Incision depth/shadow
+            targetCtx.save();
+            targetCtx.strokeStyle = 'rgba(0, 0, 0, 0.9)';
+            targetCtx.lineWidth = sl.w * (w / 1000) * (1.0 + slashIntensity * 0.4);
+            targetCtx.lineCap = 'round';
+            targetCtx.beginPath();
+            targetCtx.moveTo(x1, y1);
+            targetCtx.quadraticCurveTo(cx, cy, x2, y2);
+            targetCtx.stroke();
+            targetCtx.restore();
+            
+            // White core slash
+            targetCtx.save();
+            targetCtx.strokeStyle = 'rgba(255, 255, 255, 0.95)';
+            targetCtx.lineWidth = (sl.w * 0.35) * (w / 1000);
+            targetCtx.lineCap = 'round';
+            targetCtx.shadowColor = 'rgba(255, 255, 255, 0.8)';
+            targetCtx.shadowBlur = 4 * (w / 1000);
+            targetCtx.beginPath();
+            targetCtx.moveTo(x1, y1);
+            targetCtx.quadraticCurveTo(cx, cy, x2, y2);
+            targetCtx.stroke();
+            targetCtx.restore();
+          });
+          targetCtx.restore();
+        }
+      }
+      
+      // 7. Draw Crumples & Wrinkles (Procedural heightmap simulation)
+      if (s.crumples > 0) {
+        targetCtx.save();
+        
+        const cCanvas = document.createElement('canvas');
+        cCanvas.width = w;
+        cCanvas.height = h;
+        const cCtx = cCanvas.getContext('2d');
+        
+        const scale = w / 1000;
+        const crumplesVal = Math.min(1.0, s.crumples);
+        
+        for (const crease of state.creaseDb) {
+          const opacity = crumplesVal * crease.maxOpacity;
+          const strokeWidth = crease.width * scale * (1.0 + crumplesVal * 1.5);
+          const pts = crease.points;
+          
+          const shiftX = Math.cos(crease.angle + Math.PI / 2) * strokeWidth * 0.45;
+          const shiftY = Math.sin(crease.angle + Math.PI / 2) * strokeWidth * 0.45;
+          
+          // Highlights (White)
+          cCtx.save();
+          cCtx.strokeStyle = `rgba(255, 255, 255, ${opacity * 0.65})`;
+          cCtx.lineWidth = strokeWidth;
+          cCtx.shadowColor = `rgba(255, 255, 255, ${opacity * 0.55})`;
+          cCtx.shadowBlur = strokeWidth * 2.5;
+          cCtx.beginPath();
+          cCtx.moveTo(pts[0].x * w + shiftX, pts[0].y * h + shiftY);
+          for (let i = 1; i < pts.length; i++) {
+            cCtx.lineTo(pts[i].x * w + shiftX, pts[i].y * h + shiftY);
+          }
+          cCtx.stroke();
+          cCtx.restore();
+          
+          // Shadows (Black)
+          cCtx.save();
+          cCtx.strokeStyle = `rgba(0, 0, 0, ${opacity * 0.8})`;
+          cCtx.lineWidth = strokeWidth;
+          cCtx.shadowColor = `rgba(0, 0, 0, ${opacity * 0.65})`;
+          cCtx.shadowBlur = strokeWidth * 2.5;
+          cCtx.beginPath();
+          cCtx.moveTo(pts[0].x * w - shiftX, pts[0].y * h - shiftY);
+          for (let i = 1; i < pts.length; i++) {
+            cCtx.lineTo(pts[i].x * w - shiftX, pts[i].y * h - shiftY);
+          }
+          cCtx.stroke();
+          cCtx.restore();
+          
+          // Cracked paper fibers (Thin white crease core)
+          cCtx.save();
+          cCtx.strokeStyle = `rgba(252, 250, 244, ${opacity * 1.25})`;
+          cCtx.lineWidth = 0.5 * scale + (crumplesVal * 1.0 * scale);
+          cCtx.beginPath();
+          cCtx.moveTo(pts[0].x * w, pts[0].y * h);
+          for (let i = 1; i < pts.length; i++) {
+            cCtx.lineTo(pts[i].x * w, pts[i].y * h);
+          }
+          cCtx.stroke();
+          cCtx.restore();
+
+          // 7.5. Paperboard fracture splits (Extreme Crumples)
+          if (s.crumples > 1.0) {
+            const intensity = (s.crumples - 1.0) * 5.0; // 0 to 1
+            cCtx.save();
+            cCtx.strokeStyle = `rgba(20, 10, 5, ${opacity * 1.7})`;
+            cCtx.lineWidth = (0.75 * scale) * (1.0 + intensity * 1.5);
+            cCtx.beginPath();
+            cCtx.moveTo(pts[0].x * w, pts[0].y * h);
+            for (let i = 1; i < pts.length; i++) {
+              cCtx.lineTo(pts[i].x * w, pts[i].y * h);
+            }
+            cCtx.stroke();
+            cCtx.restore();
+          }
+        }
+        
+        targetCtx.globalCompositeOperation = 'overlay';
+        targetCtx.drawImage(cCanvas, 0, 0);
+        targetCtx.restore();
+      }
+      
+      // 8. Draw Film Grain (Noise Overlay)
+      if (s.noise > 0) {
+        targetCtx.save();
+        targetCtx.globalCompositeOperation = 'overlay';
+        
+        const pattern = getNoisePattern();
+        if (s.noise > 1.0) {
+          const intensity = (s.noise - 1.0) * 5.0; // 0 to 1
+          const patternScale = 1.0 + intensity * 2.2;
+          const size = Math.floor(512 * patternScale);
+          targetCtx.globalAlpha = 0.48 + intensity * 0.22; // up to 70% opacity
+          for (let x = 0; x < w; x += size) {
+            for (let y = 0; y < h; y += size) {
+              targetCtx.drawImage(pattern, x, y, size, size);
+            }
+          }
+        } else {
+          targetCtx.globalAlpha = s.noise * 0.48;
+          for (let x = 0; x < w; x += 512) {
+            for (let y = 0; y < h; y += 512) {
+              targetCtx.drawImage(pattern, x, y);
+            }
+          }
+        }
+        targetCtx.restore();
+      }
+      
+      // Restore Rip path context
+      targetCtx.restore();
+      
+      // 9. Draw White Torn Border along the cut boundary (Overlay on top of clip)
+      if (s.rips > 0) {
+        targetCtx.save();
+        buildRipsPath(targetCtx, w, h, s.rips);
+        
+        // Paper Edge Shadow (adds thickness depth to paper rips)
+        targetCtx.shadowColor = 'rgba(0, 0, 0, 0.4)';
+        targetCtx.shadowBlur = 8 * (w / 1000);
+        targetCtx.shadowOffsetY = 3 * (w / 1000);
+        
+        // Creamy rough paper fiber border
+        targetCtx.strokeStyle = '#f5f1e8';
+        targetCtx.lineWidth = 1.5 * (w / 1000) + (s.rips * 7 * (w / 1000));
+        targetCtx.lineCap = 'round';
+        targetCtx.lineJoin = 'round';
+        targetCtx.stroke();
+        targetCtx.restore();
+      }
+    }
+
+    // Triggers rendering on requestAnimationFrame to protect UI thread
+    let isRenderPending = false;
+    function renderPreview() {
+      if (!state.image) return;
+      if (isRenderPending) return;
+      
+      isRenderPending = true;
+      requestAnimationFrame(() => {
+        renderPipeline(elements.canvas, elements.ctx, state.image, state.sliders, false);
+        isRenderPending = false;
+      });
+    }
+
+    // Handles Photo Import
+    function handleImageFile(file) {
+      if (!file) return;
+      
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          state.image = img;
+          
+          // Parse original name and extension
+          const lastDot = file.name.lastIndexOf('.');
+          if (lastDot !== -1) {
+            state.originalFilename = file.name.substring(0, lastDot);
+            state.originalExtension = file.name.substring(lastDot + 1).toLowerCase();
+          } else {
+            state.originalFilename = file.name;
+            state.originalExtension = 'jpg';
+          }
+          elements.filenameInput.value = state.originalFilename;
+          
+          // Setup canvas size matching aspect ratio (constrained to max preview width)
+          let w = img.width;
+          let h = img.height;
+          if (w > state.maxPreviewSize || h > state.maxPreviewSize) {
+            const ratio = w / h;
+            if (w > h) {
+              w = state.maxPreviewSize;
+              h = Math.floor(w / ratio);
+            } else {
+              h = state.maxPreviewSize;
+              w = Math.floor(h * ratio);
+            }
+          }
+          
+          elements.canvas.width = w;
+          elements.canvas.height = h;
+          elements.canvas.style.display = 'block';
+          elements.emptyPrompt.style.display = 'none';
+          
+          // Refresh procedural databases to fit new aspect ratios
+          buildProceduralDbs();
+          
+          // Update details dashboard
+          elements.metaFilename.textContent = file.name;
+          elements.metaDims.textContent = `${img.width} × ${img.height} px`;
+          elements.metaRipsStatus.textContent = state.sliders.rips > 0 ? "Active" : "Off";
+          
+          showToast("Loaded photo successfully");
+          renderPreview();
+          
+          // Reset zoom and show zoom bar
+          state.zoom = 1.0;
+          updateZoom();
+          elements.zoomControls.classList.add('visible');
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // Drag and Drop Event listeners
+    function initDragAndDrop() {
+      const dropZone = elements.dropZone;
+      
+      ['dragenter', 'dragover'].forEach(eventName => {
+        dropZone.addEventListener(eventName, (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          dropZone.classList.add('drag-over');
+        }, false);
+      });
+
+      ['dragleave', 'drop'].forEach(eventName => {
+        dropZone.addEventListener(eventName, (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          dropZone.classList.remove('drag-over');
+        }, false);
+      });
+
+      dropZone.addEventListener('drop', (e) => {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        if (files.length > 0) {
+          const file = files[0];
+          const fileType = file.type || '';
+          const fileName = file.name || '';
+          const isImage = fileType.match('image.*') || /\.(jpg|jpeg|png|gif|svg|webp)$/i.test(fileName);
+          const isStyle = fileName.endsWith('.json') || fileType === 'application/json' || fileType === 'text/json';
+          
+          if (isImage) {
+            handleImageFile(file);
+          } else if (isStyle) {
+            handleStyleFile(file);
+          } else {
+            showToast("Invalid file format. Drop an image or style JSON.");
+          }
+        }
+      });
+
+      dropZone.addEventListener('click', () => {
+        if (!state.image) {
+          elements.imageUpload.click();
+        }
+      });
+    }
+
+    // Handles Style JSON upload file
+    function handleStyleFile(file) {
+      if (!file) return;
+      
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const style = JSON.parse(e.target.result);
+          
+          // Verify configuration has required properties
+          let matchedCount = 0;
+          Object.keys(state.sliders).forEach(key => {
+            if (style[key] !== undefined) {
+              const val = parseFloat(style[key]);
+              if (!isNaN(val)) {
+                const clampedVal = Math.max(0, Math.min(1.2, val));
+                updateSliderUI(key, clampedVal);
+                matchedCount++;
+              }
+            }
+          });
+          
+          if (matchedCount > 0) {
+            showToast("Style loaded and applied");
+            renderPreview();
+          } else {
+            showToast("Could not find sliders config inside file.");
+          }
+        } catch(err) {
+          showToast("Error parsing Style JSON");
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    // High-Resolution Image Export Download
+    function exportHighResImage() {
+      if (!state.image) {
+        showToast("Please upload a photo first");
+        return;
+      }
+      
+      showToast("Rendering high-res photo...");
+      
+      // Use set timeout to ensure browser paints rendering toast before thread blocks
+      setTimeout(() => {
+        const fullCanvas = document.createElement('canvas');
+        fullCanvas.width = state.image.width;
+        fullCanvas.height = state.image.height;
+        const fullCtx = fullCanvas.getContext('2d');
+        
+        // Execute rendering engine on full-res
+        renderPipeline(fullCanvas, fullCtx, state.image, state.sliders, true);
+        
+        // Generate download action
+        const filename = elements.filenameInput.value.trim() || 'untitled-grunge';
+        const extension = state.originalExtension === 'svg' ? 'png' : state.originalExtension;
+        const mimeType = (extension === 'png') ? 'image/png' : 'image/jpeg';
+        
+        // Triggers binary file download
+        const link = document.createElement('a');
+        link.download = `${filename}.${extension}`;
+        
+        try {
+          fullCanvas.toBlob((blob) => {
+            if (!blob) {
+              showToast("Failed to compile image blob");
+              return;
+            }
+            const url = URL.createObjectURL(blob);
+            link.href = url;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            showToast("Image exported successfully!");
+          }, mimeType, 0.92);
+        } catch (e) {
+          // Fallback if toBlob throws security errors on local origins
+          const url = fullCanvas.toDataURL(mimeType, 0.92);
+          link.href = url;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          showToast("Image exported successfully!");
+        }
+      }, 50);
+    }
+
+    // Export Style JSON Download
+    function exportStyleJson() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state.sliders, null, 2));
+      const filename = elements.filenameInput.value.trim() || 'untitled-grunge';
+      
+      const link = document.createElement('a');
+      link.setAttribute("href", dataStr);
+      link.setAttribute("download", `${filename}.json`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showToast("Style downloaded");
+    }
+
+    // Init Page setup
+    window.addEventListener('DOMContentLoaded', () => {
+      // Event bindings for Action buttons
+      elements.btnUploadImage.addEventListener('click', () => elements.imageUpload.click());
+      elements.btnUploadStyle.addEventListener('click', () => elements.styleUpload.click());
+      
+      elements.imageUpload.addEventListener('change', (e) => {
+        if (e.target.files.length > 0) handleImageFile(e.target.files[0]);
+      });
+      
+      elements.styleUpload.addEventListener('change', (e) => {
+        if (e.target.files.length > 0) handleStyleFile(e.target.files[0]);
+      });
+
+      elements.btnDownloadImage.addEventListener('click', exportHighResImage);
+      elements.btnDownloadStyle.addEventListener('click', exportStyleJson);
+      
+      // Update metadata on slider input
+      document.getElementById('slider-rips').addEventListener('input', (e) => {
+        elements.metaRipsStatus.textContent = parseFloat(e.target.value) > 0 ? "Active" : "Off";
+      });
+
+      // Bind input elements
+      initSliders();
+      initDragAndDrop();
+
+      // Zoom Control Event listeners
+      elements.zoomSlider.addEventListener('input', (e) => {
+        state.zoom = parseFloat(e.target.value);
+        updateZoom();
+      });
+      
+      elements.btnZoomIn.addEventListener('click', () => {
+        state.zoom = Math.min(2.0, state.zoom + 0.1);
+        updateZoom();
+      });
+      
+      elements.btnZoomOut.addEventListener('click', () => {
+        state.zoom = Math.max(0.5, state.zoom - 0.1);
+        updateZoom();
+      });
+      
+      elements.btnZoomFit.addEventListener('click', () => {
+        state.zoom = 1.0;
+        updateZoom();
+      });
+      
+      window.addEventListener('resize', () => {
+        if (state.image) {
+          updateZoom();
+        }
+      });
+    });
+  </script>
+</body>
+</html>
