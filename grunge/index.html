@@ -2542,14 +2542,6 @@
                 const base64URI = uploadCanv.toDataURL('image/png');
                 const base64Clean = base64URI.split(',')[1];
 
-                let attempts = 0;
-                let maxRetries = 5;
-                let delay = 1000;
-                let success = false;
-                let base64Result = null;
-
-                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image-preview:generateContent?key=${apiKey}`;
-
                 const payload = {
                     contents: [{
                         parts: [
@@ -2562,32 +2554,58 @@
                     }
                 };
 
-                while (attempts < maxRetries && !success) {
-                    try {
-                        const response = await fetch(url, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(payload)
-                        });
+                // Model Fallback Chain: Handles 404s dynamically for live public API keys
+                const modelsToTry = [
+                    'gemini-2.5-flash-image-preview', // Internal Canvas Preview
+                    'gemini-2.5-flash',               // Standard Public Release
+                    'gemini-2.0-flash-exp',           // Experimental Public
+                    'gemini-2.0-flash'                // Stable Public
+                ];
 
-                        if (response.ok) {
-                            const data = await response.json();
-                            base64Result = data.candidates?.[0]?.content?.parts?.find(p => p.inlineData)?.inlineData?.data;
-                            if (base64Result) {
-                                success = true;
+                let success = false;
+                let base64Result = null;
+                let lastError = "Could not connect to any AI models.";
+
+                for (const modelName of modelsToTry) {
+                    if (success) break;
+                    
+                    let attempts = 0;
+                    let maxRetries = 2; // Lower retries per model to speed up fallback chain
+                    let delay = 1000;
+                    const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
+
+                    while (attempts < maxRetries && !success) {
+                        try {
+                            const response = await fetch(url, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify(payload)
+                            });
+
+                            if (response.ok) {
+                                const data = await response.json();
+                                base64Result = data.candidates?.[0]?.content?.parts?.find(p => p.inlineData)?.inlineData?.data;
+                                if (base64Result) {
+                                    success = true;
+                                    break;
+                                } else {
+                                    throw new Error("Image wasn't returned in the response parts.");
+                                }
+                            } else if (response.status === 404) {
+                                // 404 means your API key lacks access to this specific model name.
+                                // Break immediately to fallback to the next model in the list.
+                                lastError = `Model ${modelName} returned 404 Not Found.`;
+                                break;
                             } else {
-                                throw new Error("Image wasn't returned in the response parts.");
+                                throw new Error(`API returned HTTP Status ${response.status}`);
                             }
-                        } else {
-                            throw new Error(`API returned HTTP Status ${response.status}`);
+                        } catch (err) {
+                            lastError = err.message || 'Server error';
+                            attempts++;
+                            if (attempts >= maxRetries) break;
+                            await new Promise(res => setTimeout(res, delay));
+                            delay *= 2;
                         }
-                    } catch (err) {
-                        attempts++;
-                        if (attempts >= maxRetries) {
-                            throw err;
-                        }
-                        await new Promise(res => setTimeout(res, delay));
-                        delay *= 2;
                     }
                 }
 
@@ -2607,7 +2625,7 @@
                     };
                     aiImage.src = `data:image/png;base64,${base64Result}`;
                 } else {
-                    throw new Error("Could not fetch output generated image.");
+                    throw new Error(lastError); // Throw the most recent error if all models fail
                 }
 
             } catch (error) {
