@@ -63,6 +63,14 @@
             </div>
         </div>
 
+        <!-- Centered Zoom Slider (Hidden initially) -->
+        <div id="zoomContainer" class="hidden flex items-center gap-3 bg-black/60 border border-zinc-800/80 px-4 py-2.5 rounded-xl shrink-0 shadow-inner">
+            <i class="fa-solid fa-magnifying-glass-minus text-zinc-500 text-xs"></i>
+            <input type="range" id="zoomSlider" min="50" max="200" value="100" class="w-24 sm:w-36 h-1 bg-zinc-850 rounded-lg appearance-none cursor-pointer accent-[#d4af37]">
+            <i class="fa-solid fa-magnifying-glass-plus text-[#d4af37] text-xs"></i>
+            <span id="zoomValue" class="text-xs text-[#d4af37] font-bold code-font min-w-[36px] text-right">100%</span>
+        </div>
+
         <!-- Consolidated Action Buttons -->
         <div class="flex flex-wrap items-center gap-3">
             <!-- Upload & Download Image Group -->
@@ -101,7 +109,7 @@
         <!-- Canvas Viewer Area -->
         <div class="flex-1 bg-black p-6 flex flex-col items-center justify-center relative overflow-hidden select-none min-h-0">
             <!-- Canvas Wrapper for Drop Shadow / Styling -->
-            <div id="canvasContainer" class="relative max-w-full max-h-full flex items-center justify-center bg-zinc-950 border border-zinc-800/60 rounded-xl overflow-hidden shadow-2xl transition-all duration-300 min-h-0">
+            <div id="canvasContainer" class="relative max-w-full max-h-full flex items-center justify-center bg-zinc-950 border border-zinc-800/60 rounded-xl overflow-auto shadow-2xl transition-all duration-300 min-h-0">
                 <!-- Fallback empty state -->
                 <div id="canvasPlaceholder" class="p-12 text-center flex flex-col items-center max-w-md">
                     <div class="w-16 h-16 rounded-full bg-zinc-900 flex items-center justify-center mb-4 border border-zinc-800">
@@ -115,7 +123,7 @@
                 </div>
                 
                 <!-- Main Processing Canvas -->
-                <canvas id="editorCanvas" class="max-w-full max-h-full cursor-crosshair hidden"></canvas>
+                <canvas id="editorCanvas" class="cursor-crosshair hidden flex-shrink-0"></canvas>
             </div>
 
             <!-- Active Tool Floating Bar -->
@@ -161,6 +169,10 @@
                         <button class="menu-opt w-full flex items-center gap-3 px-4 py-3 text-sm font-semibold hover:bg-zinc-900 text-slate-300 hover:text-white transition" data-panel="ai">
                             <i class="fa-solid fa-wand-magic-sparkles"></i>
                             <span>AI Magic & FX</span>
+                        </button>
+                        <button class="menu-opt w-full flex items-center gap-3 px-4 py-3 text-sm font-semibold hover:bg-zinc-900 text-slate-300 hover:text-white transition" data-panel="glitch">
+                            <i class="fa-solid fa-ghost"></i>
+                            <span>Glitch Studio</span>
                         </button>
                     </div>
                 </div>
@@ -516,7 +528,63 @@
                             <i class="fa-solid fa-sparkles"></i> Generate AI Edit
                         </button>
                     </div>
+                </div>
 
+                <!-- SECTION 6: GLITCH & DISTORTIONS STUDIO -->
+                <div id="glitchPanel" class="panel-section flex flex-col gap-6 hidden">
+                    <!-- RGB Split -->
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-sm font-semibold text-slate-200 flex items-center gap-2">
+                                <i class="fa-solid fa-ghost text-[#d4af37]"></i> RGB Split (Chroma)
+                            </span>
+                            <span id="val-rgbSplit" class="text-xs text-[#d4af37] code-font">0px</span>
+                        </div>
+                        <input type="range" id="slider-rgbSplit" min="0" max="40" value="0" class="w-full h-1 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-[#d4af37]">
+                    </div>
+
+                    <!-- Scanlines -->
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-sm font-semibold text-slate-200 flex items-center gap-2">
+                                <i class="fa-solid fa-border-all text-[#d4af37]"></i> Retro Scanlines
+                            </span>
+                            <span id="val-scanlines" class="text-xs text-[#d4af37] code-font">0%</span>
+                        </div>
+                        <input type="range" id="slider-scanlines" min="0" max="100" value="0" class="w-full h-1 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-[#d4af37]">
+                    </div>
+
+                    <!-- Wave Distortion -->
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-sm font-semibold text-slate-200 flex items-center gap-2">
+                                <i class="fa-solid fa-wave-square text-[#d4af37]"></i> Wave Glitch
+                            </span>
+                            <span id="val-waveGlitch" class="text-xs text-[#d4af37] code-font">0%</span>
+                        </div>
+                        <input type="range" id="slider-waveGlitch" min="0" max="100" value="0" class="w-full h-1 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-[#d4af37]">
+                    </div>
+
+                    <!-- VHS Static -->
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-sm font-semibold text-slate-200 flex items-center gap-2">
+                                <i class="fa-solid fa-tv text-[#d4af37]"></i> VCR Noise Static
+                            </span>
+                            <span id="val-vhsStatic" class="text-xs text-[#d4af37] code-font">0%</span>
+                        </div>
+                        <input type="range" id="slider-vhsStatic" min="0" max="100" value="0" class="w-full h-1 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-[#d4af37]">
+                    </div>
+
+                    <!-- Action controls -->
+                    <div class="grid grid-cols-2 gap-3 border-t border-zinc-800 pt-6 mt-2">
+                        <button class="randomize-btn flex items-center justify-center gap-2 py-3 bg-[#d4af37] hover:bg-[#e6ca65] rounded-xl text-sm font-bold text-black transition duration-150 shadow-lg shadow-[#d4af37]/10">
+                            <i class="fa-solid fa-dice"></i> Randomize
+                        </button>
+                        <button class="reset-btn flex items-center justify-center gap-2 py-3 bg-black border border-zinc-800 hover:border-red-500/40 rounded-xl text-sm font-semibold text-slate-300 hover:text-red-400 transition duration-150">
+                            <i class="fa-solid fa-rotate-left"></i> Reset
+                        </button>
+                    </div>
                 </div>
 
             </div>
@@ -535,6 +603,36 @@
             </div>
             <h3 id="loadingText" class="text-base font-bold mb-1">Applying AI Magic</h3>
             <p class="text-xs text-slate-400">Generating artistic adjustments. Please hold on...</p>
+        </div>
+    </div>
+
+    <!-- Export Filename Custom Modal -->
+    <div id="saveModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-zinc-950 border border-zinc-800 p-6 rounded-2xl w-full max-w-md shadow-2xl transform scale-95 transition-all duration-300">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="h-11 w-11 bg-[#d4af37]/10 rounded-xl flex items-center justify-center text-[#d4af37]">
+                    <i class="fa-solid fa-file-signature text-lg"></i>
+                </div>
+                <div>
+                    <h3 class="text-base font-extrabold text-slate-100">Export Gekko Edit</h3>
+                    <p class="text-xs text-slate-400">Specify a filename for your masterpiece</p>
+                </div>
+            </div>
+            <div class="mb-6">
+                <label for="filenameInput" class="block text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-2">Filename</label>
+                <div class="relative">
+                    <input type="text" id="filenameInput" placeholder="gekko-edit-export" class="w-full bg-black border border-zinc-800 hover:border-zinc-700 focus:border-[#d4af37] rounded-xl px-4 py-3 text-sm text-white placeholder-slate-600 outline-none transition">
+                    <span class="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-zinc-500 font-bold code-font">.png</span>
+                </div>
+            </div>
+            <div class="flex items-center justify-end gap-3">
+                <button id="cancelSaveBtn" class="px-4 py-2.5 rounded-xl border border-zinc-800 hover:bg-zinc-900 text-xs font-bold text-slate-300 transition">
+                    Cancel
+                </button>
+                <button id="confirmSaveBtn" class="px-5 py-2.5 bg-[#d4af37] hover:bg-[#e6ca65] text-black font-extrabold text-xs rounded-xl transition shadow-lg shadow-[#d4af37]/20">
+                    Save Image
+                </button>
+            </div>
         </div>
     </div>
 
@@ -598,6 +696,13 @@
             grain: 0,
             fading: 0,
             tintColor: '#b08c6a',
+            // Glitch Panel Settings
+            rgbSplit: 0,
+            scanlines: 0,
+            waveGlitch: 0,
+            vhsStatic: 0,
+            // Zoom Settings
+            zoom: 100, // Range 50 to 200
             // Text Edits Parameters
             textState: {
                 text: '',
@@ -631,8 +736,17 @@
             wrinkles: { el: document.getElementById('slider-wrinkles'), valEl: document.getElementById('val-wrinkles'), suffix: '%' },
             scratchDensity: { el: document.getElementById('slider-scratchDensity'), valEl: document.getElementById('val-scratchDensity'), suffix: '%' },
             grain: { el: document.getElementById('slider-grain'), valEl: document.getElementById('val-grain'), suffix: '%' },
-            fading: { el: document.getElementById('slider-fading'), valEl: document.getElementById('val-fading'), suffix: '%' }
+            fading: { el: document.getElementById('slider-fading'), valEl: document.getElementById('val-fading'), suffix: '%' },
+
+            rgbSplit: { el: document.getElementById('slider-rgbSplit'), valEl: document.getElementById('val-rgbSplit'), suffix: 'px' },
+            scanlines: { el: document.getElementById('slider-scanlines'), valEl: document.getElementById('val-scanlines'), suffix: '%' },
+            waveGlitch: { el: document.getElementById('slider-waveGlitch'), valEl: document.getElementById('val-waveGlitch'), suffix: '%' },
+            vhsStatic: { el: document.getElementById('slider-vhsStatic'), valEl: document.getElementById('val-vhsStatic'), suffix: '%' }
         };
+
+        // Zoom Elements
+        const zoomSlider = document.getElementById('zoomSlider');
+        const zoomValue = document.getElementById('zoomValue');
 
         // Text Slider Elements
         const textInputEl = document.getElementById('text-input');
@@ -645,6 +759,12 @@
         const textSizeVal = document.getElementById('val-textSize');
         const textGlowVal = document.getElementById('val-textGlow');
         const textShadowVal = document.getElementById('val-textShadow');
+
+        // Save Modal Elements
+        const saveModal = document.getElementById('saveModal');
+        const filenameInput = document.getElementById('filenameInput');
+        const cancelSaveBtn = document.getElementById('cancelSaveBtn');
+        const confirmSaveBtn = document.getElementById('confirmSaveBtn');
 
         // Custom Toast Notifications
         function showToast(message, type = 'warning') {
@@ -812,6 +932,14 @@
             }
         });
 
+        // Zoom Slider adjustments
+        zoomSlider.addEventListener('input', (e) => {
+            const val = parseInt(e.target.value);
+            state.zoom = val;
+            zoomValue.textContent = `${val}%`;
+            scheduleRender();
+        });
+
         // Warm tint color selector changes
         const tintColorInput = document.getElementById('tintColor');
         const tintColorHex = document.getElementById('tintColorHex');
@@ -894,6 +1022,23 @@
                     
                     sliders.fading.el.value = state.fading;
                     sliders.fading.valEl.textContent = `${state.fading}%`;
+                } else if (parentPanel === 'glitchPanel') {
+                    state.rgbSplit = Math.floor(Math.random() * 25);
+                    state.scanlines = Math.floor(Math.random() * 60);
+                    state.waveGlitch = Math.floor(Math.random() * 45);
+                    state.vhsStatic = Math.floor(Math.random() * 50);
+                    
+                    sliders.rgbSplit.el.value = state.rgbSplit;
+                    sliders.rgbSplit.valEl.textContent = `${state.rgbSplit}px`;
+                    
+                    sliders.scanlines.el.value = state.scanlines;
+                    sliders.scanlines.valEl.textContent = `${state.scanlines}%`;
+                    
+                    sliders.waveGlitch.el.value = state.waveGlitch;
+                    sliders.waveGlitch.valEl.textContent = `${state.waveGlitch}%`;
+                    
+                    sliders.vhsStatic.el.value = state.vhsStatic;
+                    sliders.vhsStatic.valEl.textContent = `${state.vhsStatic}%`;
                 }
                 scheduleRender();
                 showToast("Applied random aesthetic adjustments!", "success");
@@ -944,6 +1089,18 @@
                         sliders[key].valEl.textContent = '0%';
                     }
                 });
+            } else if (sectionId === 'glitchPanel') {
+                state.rgbSplit = 0;
+                state.scanlines = 0;
+                state.waveGlitch = 0;
+                state.vhsStatic = 0;
+
+                Object.keys(sliders).forEach(key => {
+                    if (['rgbSplit', 'scanlines', 'waveGlitch', 'vhsStatic'].includes(key)) {
+                        sliders[key].el.value = 0;
+                        sliders[key].valEl.textContent = key === 'rgbSplit' ? '0px' : '0%';
+                    }
+                });
             }
             scheduleRender();
             showToast("Reset section parameters to default.", "success");
@@ -985,6 +1142,12 @@
                     imageLoaded = true;
                     canvasPlaceholder.classList.add('hidden');
                     canvas.classList.remove('hidden');
+
+                    // Set zoom slider value to 100% and show container
+                    state.zoom = 100;
+                    zoomSlider.value = 100;
+                    zoomValue.textContent = '100%';
+                    document.getElementById('zoomContainer').classList.remove('hidden');
                     
                     scheduleRender();
                     showToast("Loaded image successfully!", "success");
@@ -1129,8 +1292,30 @@
             // Run Core Pixel Filters (Brightness, Contrast, Saturation, Vignette, Sharpness, Dust, Scratches)
             applyFiltersPipeline();
 
+            // Apply Glitch Distortions Studio Filters (RGB Split, Scanlines, Wave Glitch, VHS Static)
+            applyGlitchFilters();
+
             // Render active selection lines atop workspace
             renderSelectionIndicators();
+
+            // Handle Zoom and Display Dimensions Scaling
+            const containerWidth = canvasContainer.clientWidth - 32;
+            const containerHeight = canvasContainer.clientHeight - 32;
+
+            let fitScale = 1.0;
+            if (rotatedWidth > 0 && rotatedHeight > 0) {
+                const scaleX = containerWidth / rotatedWidth;
+                const scaleY = containerHeight / rotatedHeight;
+                fitScale = Math.min(scaleX, scaleY);
+                if (fitScale <= 0) fitScale = 1.0;
+            }
+
+            const zoomFactor = state.zoom / 100;
+            const displayWidth = rotatedWidth * fitScale * zoomFactor;
+            const displayHeight = rotatedHeight * fitScale * zoomFactor;
+
+            canvas.style.width = `${displayWidth}px`;
+            canvas.style.height = `${displayHeight}px`;
         }
 
         // Image Processing Pixel Engine
@@ -1412,6 +1597,134 @@
             }
 
             ctx.restore();
+        }
+
+        // ==========================================
+        // DYNAMIC RETRO GLITCH FILTERS ENGINE
+        // ==========================================
+        function applyGlitchFilters() {
+            // A: RGB Split (Chromatic Aberration)
+            if (state.rgbSplit > 0) {
+                const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                const src = new Uint8ClampedArray(imgData.data);
+                const dst = imgData.data;
+                const w = imgData.width;
+                const h = imgData.height;
+                const offset = Math.round(state.rgbSplit);
+
+                for (let y = 0; y < h; y++) {
+                    for (let x = 0; x < w; x++) {
+                        const idx = (y * w + x) * 4;
+                        
+                        // Red channel shifted from left
+                        const rX = Math.max(0, x - offset);
+                        const rIdx = (y * w + rX) * 4;
+                        dst[idx] = src[rIdx];
+
+                        // Blue channel shifted from right
+                        const bX = Math.min(w - 1, x + offset);
+                        const bIdx = (y * w + bX) * 4;
+                        dst[idx+2] = src[bIdx+2];
+                    }
+                }
+                ctx.putImageData(imgData, 0, 0);
+            }
+
+            // B: Retro VHS Scanlines
+            if (state.scanlines > 0) {
+                const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                const d = imgData.data;
+                const w = imgData.width;
+                const h = imgData.height;
+                const intensity = state.scanlines / 100;
+
+                for (let y = 0; y < h; y++) {
+                    // Generates oscillating horizontal lines pattern
+                    const factor = 1 - (intensity * (0.45 + 0.45 * Math.sin(y * 1.5)));
+                    for (let x = 0; x < w; x++) {
+                        const idx = (y * w + x) * 4;
+                        d[idx] *= factor;
+                        d[idx+1] *= factor;
+                        d[idx+2] *= factor;
+                    }
+                }
+                ctx.putImageData(imgData, 0, 0);
+            }
+
+            // C: Wave Glitch Distortion
+            if (state.waveGlitch > 0) {
+                const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                const src = new Uint8ClampedArray(imgData.data);
+                const dst = imgData.data;
+                const w = imgData.width;
+                const h = imgData.height;
+                const maxAmp = (state.waveGlitch / 100) * 35;
+
+                for (let y = 0; y < h; y++) {
+                    // Create horizontal liquid waves
+                    const offset = Math.sin(y * 0.05) * maxAmp + Math.cos(y * 0.015) * (maxAmp * 0.35);
+                    const shift = Math.round(offset);
+
+                    for (let x = 0; x < w; x++) {
+                        const srcX = Math.min(w - 1, Math.max(0, x + shift));
+                        const idx = (y * w + x) * 4;
+                        const srcIdx = (y * w + srcX) * 4;
+
+                        dst[idx] = src[srcIdx];
+                        dst[idx+1] = src[srcIdx+1];
+                        dst[idx+2] = src[srcIdx+2];
+                        dst[idx+3] = src[srcIdx+3];
+                    }
+                }
+                ctx.putImageData(imgData, 0, 0);
+            }
+
+            // D: VCR Static Noise Streaks
+            if (state.vhsStatic > 0) {
+                const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                const d = imgData.data;
+                const w = imgData.width;
+                const h = imgData.height;
+                const amount = state.vhsStatic / 100;
+
+                let seed = 9876;
+                function srandom() {
+                    let x = Math.sin(seed++) * 10000;
+                    return x - Math.floor(x);
+                }
+
+                // 1. Pixel high frequency static
+                for (let i = 0; i < d.length; i += 4) {
+                    if (srandom() < (amount * 0.04)) {
+                        const noise = (srandom() - 0.5) * 160;
+                        d[i] = Math.min(255, Math.max(0, d[i] + noise));
+                        d[i+1] = Math.min(255, Math.max(0, d[i+1] + noise));
+                        d[i+2] = Math.min(255, Math.max(0, d[i+2] + noise));
+                    }
+                }
+
+                // 2. Horizontal tear bands
+                const bandsCount = Math.floor(amount * 8);
+                for (let b = 0; b < bandsCount; b++) {
+                    const startY = Math.floor(srandom() * h);
+                    const bandHeight = Math.floor(srandom() * 6) + 2;
+                    const shift = Math.floor((srandom() - 0.5) * 40 * amount);
+
+                    for (let y = startY; y < Math.min(h, startY + bandHeight); y++) {
+                        const rowOffset = y * w * 4;
+                        const rowBackup = new Uint8ClampedArray(d.subarray(rowOffset, rowOffset + w * 4));
+                        for (let x = 0; x < w; x++) {
+                            const srcX = Math.min(w - 1, Math.max(0, x + shift));
+                            const idx = rowOffset + x * 4;
+                            const srcIdx = srcX * 4;
+                            d[idx] = rowBackup[srcIdx];
+                            d[idx+1] = rowBackup[srcIdx+1];
+                            d[idx+2] = rowBackup[srcIdx+2];
+                        }
+                    }
+                }
+                ctx.putImageData(imgData, 0, 0);
+            }
         }
 
         // ==========================================
@@ -2022,7 +2335,7 @@
         }
 
         // ==========================================
-        // SECTION 4: ARTISTIC STUDIO FILTERS
+        // SECTION 5: ARTISTIC Preset STUDIO FILTERS
         // ==========================================
         const fxButtons = document.querySelectorAll('.fx-preset-btn');
         fxButtons.forEach(btn => {
@@ -2322,27 +2635,95 @@
         });
 
         // ==========================================
-        // EXPORT / DOWNLOAD IMAGE
+        // WINDOW & CANVAS RESIZE EVENT
+        // ==========================================
+        window.addEventListener('resize', () => {
+            if (imageLoaded) {
+                scheduleRender();
+            }
+        });
+
+        // ==========================================
+        // EXPORT / DOWNLOAD IMAGE MODAL
         // ==========================================
         downloadBtn.addEventListener('click', () => {
             if (!imageLoaded) return showToast("Upload an image first!");
+            
+            // Build simple dynamic date-timestamp for export suggestion
+            const d = new Date();
+            const year = d.getFullYear();
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            const hours = String(d.getHours()).padStart(2, '0');
+            const minutes = String(d.getMinutes()).padStart(2, '0');
+            filenameInput.value = `gekko-edit-${year}${month}${day}-${hours}${minutes}`;
+
+            // Open custom save modal
+            saveModal.classList.remove('hidden');
+            setTimeout(() => {
+                saveModal.classList.remove('opacity-0');
+                saveModal.querySelector('.scale-95')?.classList.remove('scale-95');
+                saveModal.querySelector('.scale-95')?.classList.add('scale-100');
+                filenameInput.focus();
+                filenameInput.select();
+            }, 10);
+        });
+
+        function closeSaveModal() {
+            saveModal.classList.add('opacity-0');
+            const innerModal = saveModal.querySelector('.scale-100') || saveModal.querySelector('.scale-95');
+            innerModal?.classList.remove('scale-100');
+            innerModal?.classList.add('scale-95');
+            setTimeout(() => {
+                saveModal.classList.add('hidden');
+            }, 300);
+        }
+
+        cancelSaveBtn.addEventListener('click', closeSaveModal);
+
+        saveModal.addEventListener('click', (e) => {
+            if (e.target === saveModal) {
+                closeSaveModal();
+            }
+        });
+
+        function triggerImageDownload() {
+            let name = filenameInput.value.trim();
+            if (!name) {
+                name = 'gekko-edit-export';
+            }
+            // Strip any user-typed extension to prevent double extensions
+            if (name.toLowerCase().endsWith('.png')) {
+                name = name.substring(0, name.length - 4);
+            }
+            
+            closeSaveModal();
 
             const wasSelectionActive = selectionActive;
             selectionActive = false;
             
-            // Re-render immediately to clear dashboard selection bounding indicators during export
+            // Re-render immediately to clear workspace selection bounding lines during export
             render();
 
             const imageURL = canvas.toDataURL('image/png');
             const link = document.createElement('a');
             link.href = imageURL;
-            link.download = 'gekko-edit-export.png';
+            link.download = `${name}.png`;
             link.click();
 
             selectionActive = wasSelectionActive;
             render();
 
-            showToast("Exported image downloaded successfully!", "success");
+            showToast(`Exported "${name}.png" downloaded successfully!`, "success");
+        }
+
+        confirmSaveBtn.addEventListener('click', triggerImageDownload);
+
+        filenameInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                triggerImageDownload();
+            }
         });
     </script>
 </body>
