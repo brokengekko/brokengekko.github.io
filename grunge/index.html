@@ -1,2171 +1,2349 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full bg-black text-slate-100">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VINTAGE RECALL — Procedural Grunge Photo Studio</title>
-  <meta name="description" content="A premium, procedural photo editor for applying authentic film grain, tears, scratches, yellowing, fading, warmth, and paper crumples.">
-  
-  <!-- Premium Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  
-  <style>
-    /* CSS Design System */
-    :root {
-      --bg: #09090b;
-      --bg-gradient: radial-gradient(circle at 50% 50%, #15151a 0%, #09090b 100%);
-      --panel-bg: rgba(18, 18, 24, 0.75);
-      --panel-border: rgba(255, 255, 255, 0.08);
-      --panel-border-hover: rgba(255, 255, 255, 0.16);
-      
-      --accent: #e59866; /* Warm Terracotta */
-      --accent-glow: rgba(229, 152, 102, 0.35);
-      --accent-rgb: 229, 152, 102;
-      
-      --text: #f3f4f6;
-      --text-muted: #9ca3af;
-      --text-dark: #4b5563;
-      
-      --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-      --sidebar-width: 420px;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background-color: var(--bg);
-      background-image: var(--bg-gradient);
-      color: var(--text);
-      min-height: 100vh;
-      overflow-x: hidden;
-      display: flex;
-      flex-direction: column;
-    }
-
-    /* Custom Scrollbars */
-    ::-webkit-scrollbar {
-      width: 8px;
-      height: 8px;
-    }
-    ::-webkit-scrollbar-track {
-      background: rgba(0, 0, 0, 0.2);
-    }
-    ::-webkit-scrollbar-thumb {
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 4px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: rgba(255, 255, 255, 0.25);
-    }
-
-    /* Layout Components */
-    header {
-      background: rgba(9, 9, 11, 0.8);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--panel-border);
-      padding: 0.85rem 2rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-
-    .brand {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .brand-title {
-      font-family: 'Instrument Serif', Georgia, serif;
-      font-size: 2.2rem;
-      font-style: italic;
-      line-height: 1;
-      font-weight: 400;
-      color: #fff;
-      letter-spacing: -0.02em;
-      text-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
-    }
-
-    .brand-subtitle {
-      font-size: 0.65rem;
-      letter-spacing: 0.35em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-top: 0.2rem;
-    }
-
-    .header-actions {
-      display: flex;
-      gap: 0.75rem;
-      align-items: center;
-    }
-
-    /* Main Container Grid */
-    .app-container {
-      flex: 1;
-      display: grid;
-      grid-template-columns: 1fr var(--sidebar-width);
-      height: calc(100vh - 65px);
-      position: relative;
-    }
-
-    /* Workspace Viewport */
-    .viewport {
-      display: flex;
-      flex-direction: column;
-      padding: 2rem;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .title-area {
-      margin-bottom: 1.5rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      z-index: 10;
-    }
-
-    .title-input-container {
-      position: relative;
-      display: inline-block;
-    }
-
-    .title-input {
-      font-family: 'Instrument Serif', Georgia, serif;
-      font-style: italic;
-      font-size: 2.2rem;
-      background: transparent;
-      border: none;
-      border-bottom: 1px dashed rgba(255, 255, 255, 0.25);
-      color: #fff;
-      text-align: center;
-      outline: none;
-      padding: 0.1rem 0.5rem;
-      min-width: 250px;
-      max-width: 450px;
-      transition: var(--transition);
-    }
-
-    .title-input:hover, .title-input:focus {
-      border-bottom-color: var(--accent);
-      background: rgba(255, 255, 255, 0.03);
-    }
-
-    .edit-icon {
-      color: var(--text-muted);
-      opacity: 0.6;
-      pointer-events: none;
-      transition: var(--transition);
-    }
-
-    .title-input-container:hover .edit-icon {
-      opacity: 1;
-      color: var(--accent);
-      transform: scale(1.05);
-    }
-
-    /* Editor Viewer Card */
-    .viewer-card {
-      flex: 1;
-      width: 100%;
-      max-height: 80%;
-      border-radius: 12px;
-      background: var(--panel-bg);
-      border: 1px solid var(--panel-border);
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: auto;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      transition: var(--transition);
-    }
-
-    .viewer-card.drag-over {
-      border-color: var(--accent);
-      box-shadow: 0 0 25px var(--accent-glow);
-      transform: scale(1.01);
-    }
-
-    .canvas-container {
-      position: relative;
-      margin: auto;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    canvas {
-      max-width: 100%;
-      max-height: 100%;
-      object-fit: contain;
-      border-radius: 4px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-      display: none;
-    }
-
-    /* Dropzone Empty State */
-    .empty-state {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 3rem;
-      color: var(--text-muted);
-      cursor: pointer;
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      z-index: 5;
-      transition: var(--transition);
-    }
-
-    .empty-state:hover {
-      color: #fff;
-    }
-
-    .empty-state-icon {
-      margin-bottom: 1.5rem;
-      color: var(--accent);
-      background: rgba(229, 152, 102, 0.1);
-      padding: 1.25rem;
-      border-radius: 50%;
-      border: 1px solid var(--accent-glow);
-      transition: var(--transition);
-    }
-
-    .empty-state:hover .empty-state-icon {
-      transform: scale(1.1) rotate(5deg);
-      background: rgba(229, 152, 102, 0.18);
-      box-shadow: 0 0 20px var(--accent-glow);
-    }
-
-    .empty-state-title {
-      font-size: 1.25rem;
-      font-weight: 500;
-      margin-bottom: 0.5rem;
-    }
-
-    .empty-state-desc {
-      font-size: 0.85rem;
-      max-width: 280px;
-      line-height: 1.5;
-    }
-
-    /* Buttons & Controls */
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--panel-border);
-      color: var(--text);
-      padding: 0.6rem 1.1rem;
-      border-radius: 8px;
-      font-size: 0.85rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: var(--transition);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    .btn:hover {
-      background: rgba(255, 255, 255, 0.1);
-      border-color: var(--panel-border-hover);
-      transform: translateY(-1px);
-    }
-
-    .btn:active {
-      transform: translateY(1px);
-    }
-
-    .btn-accent {
-      background: var(--accent);
-      color: #121215;
-      border: 1px solid transparent;
-      font-weight: 600;
-      box-shadow: 0 4px 14px var(--accent-glow);
-    }
-
-    .btn-accent:hover {
-      background: #f4a261;
-      border-color: transparent;
-      box-shadow: 0 6px 20px rgba(244, 162, 97, 0.45);
-    }
-
-    .btn-file-input {
-      display: none;
-    }
-
-    /* Sidebar Panel */
-    .sidebar {
-      background: rgba(14, 14, 18, 0.95);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-left: 1px solid var(--panel-border);
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      padding: 1.75rem;
-    }
-
-    .sidebar-header {
-      margin-bottom: 2rem;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-      padding-bottom: 1rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .sidebar-title {
-      font-size: 1.1rem;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      font-weight: 600;
-      color: #fff;
-    }
-
-    .global-controls {
-      display: flex;
-      gap: 0.5rem;
-    }
-
-    .btn-sm {
-      padding: 0.4rem 0.65rem;
-      font-size: 0.75rem;
-      border-radius: 6px;
-    }
-
-    /* Sliders List */
-    .effects-list {
-      display: flex;
-      flex-direction: column;
-      gap: 1.75rem;
-      margin-bottom: 2rem;
-    }
-
-    .slider-group {
-      display: flex;
-      flex-direction: column;
-      gap: 0.6rem;
-    }
-
-    .slider-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 0.85rem;
-      font-weight: 500;
-      letter-spacing: 0.02em;
-    }
-
-    .slider-label {
-      color: var(--text);
-      text-transform: uppercase;
-      font-size: 0.8rem;
-      letter-spacing: 0.05em;
-    }
-
-    .slider-value {
-      font-family: monospace;
-      color: var(--accent);
-      background: rgba(229, 152, 102, 0.08);
-      padding: 0.1rem 0.4rem;
-      border-radius: 4px;
-      font-size: 0.8rem;
-    }
-
-    .slider-row {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-
-    /* Reset / Randomize Circular Buttons */
-    .icon-btn {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid var(--panel-border);
-      color: var(--text-muted);
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: var(--transition);
-    }
-
-    .icon-btn:hover {
-      color: var(--accent);
-      background: rgba(229, 152, 102, 0.1);
-      border-color: var(--accent-glow);
-      transform: scale(1.08);
-    }
-
-    .icon-btn:active {
-      transform: scale(0.95);
-    }
-
-    .icon-btn svg {
-      transition: transform 0.4s ease;
-    }
-
-    .icon-btn:hover svg {
-      transform: rotate(-45deg);
-    }
-
-    .icon-btn.btn-randomize:hover svg {
-      transform: rotate(30deg) scale(1.1);
-    }
-
-    /* Custom Range Sliders styling */
-    .custom-range {
-      flex: 1;
-      -webkit-appearance: none;
-      appearance: none;
-      width: 100%;
-      height: 5px;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 3px;
-      outline: none;
-      transition: background 0.3s;
-    }
-
-    .custom-range::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 14px;
-      height: 14px;
-      border-radius: 50%;
-      background: var(--accent);
-      cursor: pointer;
-      box-shadow: 0 0 10px var(--accent-glow);
-      transition: transform 0.15s ease, background-color 0.15s;
-    }
-
-    .custom-range::-webkit-slider-thumb:hover {
-      transform: scale(1.25);
-      background: #fff;
-    }
-
-    .custom-range::-moz-range-thumb {
-      width: 14px;
-      height: 14px;
-      border: none;
-      border-radius: 50%;
-      background: var(--accent);
-      cursor: pointer;
-      box-shadow: 0 0 10px var(--accent-glow);
-      transition: transform 0.15s ease, background-color 0.15s;
-    }
-
-    .custom-range::-moz-range-thumb:hover {
-      transform: scale(1.25);
-      background: #fff;
-    }
-
-    /* Stats & Metadata display in sidebar */
-    .metadata-panel {
-      margin-top: auto;
-      background: rgba(0, 0, 0, 0.2);
-      border: 1px solid rgba(255, 255, 255, 0.04);
-      border-radius: 8px;
-      padding: 0.85rem;
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      display: flex;
-      flex-direction: column;
-      gap: 0.4rem;
-    }
-
-    .meta-row {
-      display: flex;
-      justify-content: space-between;
-    }
-
-    .meta-row span:last-child {
-      color: #fff;
-      font-family: monospace;
-    }
-
-    /* Notification Toast */
-    .toast {
-      position: fixed;
-      bottom: 2rem;
-      left: 50%;
-      transform: translate(-50%, 100px);
-      background: rgba(22, 22, 28, 0.95);
-      border: 1px solid var(--accent);
-      color: #fff;
-      padding: 0.75rem 1.5rem;
-      border-radius: 8px;
-      font-size: 0.85rem;
-      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
-      z-index: 1000;
-      opacity: 0;
-      pointer-events: none;
-      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s;
-    }
-
-    .toast.show {
-      transform: translate(-50%, 0);
-      opacity: 1;
-    }
-
-    /* Zoom Controls Toolbar */
-    .zoom-control-bar {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      background: rgba(18, 18, 24, 0.75);
-      border: 1px solid var(--panel-border);
-      padding: 0.5rem 1.25rem;
-      border-radius: 30px;
-      margin-top: 1.25rem;
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-      z-index: 10;
-      opacity: 0;
-      pointer-events: none;
-      transform: translateY(10px);
-      transition: opacity 0.3s ease, transform 0.3s ease;
-    }
-
-    .zoom-control-bar.visible {
-      opacity: 1;
-      pointer-events: auto;
-      transform: translateY(0);
-    }
-
-    .zoom-btn {
-      background: transparent;
-      border: none;
-      color: var(--text-muted);
-      cursor: pointer;
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: var(--transition);
-    }
-
-    .zoom-btn:hover {
-      color: #fff;
-      background: rgba(255, 255, 255, 0.08);
-    }
-
-    .zoom-btn:active {
-      transform: scale(0.9);
-    }
-
-    .zoom-slider {
-      width: 140px;
-      -webkit-appearance: none;
-      appearance: none;
-      height: 4px;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 2px;
-      outline: none;
-    }
-
-    .zoom-slider::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background: var(--accent);
-      cursor: pointer;
-      box-shadow: 0 0 8px var(--accent-glow);
-      transition: transform 0.1s ease;
-    }
-
-    .zoom-slider::-webkit-slider-thumb:hover {
-      transform: scale(1.3);
-      background: #fff;
-    }
-
-    .zoom-value {
-      font-family: monospace;
-      font-size: 0.8rem;
-      color: var(--accent);
-      min-width: 42px;
-      text-align: right;
-    }
-
-    /* Responsive adjustments */
-    @media (max-width: 980px) {
-      .app-container {
-        grid-template-columns: 1fr;
-        height: auto;
-      }
-      .sidebar {
-        border-left: none;
-        border-top: 1px solid var(--panel-border);
-        height: auto;
-        overflow-y: visible;
-      }
-      header {
-        flex-direction: column;
-        gap: 1rem;
-        padding: 1rem;
-        text-align: center;
-      }
-      .header-actions {
-        width: 100%;
-        justify-content: center;
-        flex-wrap: wrap;
-      }
-      .viewer-card {
-        min-height: 400px;
-        height: 60vh;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gekko Editz - AI Grunge Studio</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Premium Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts including Creative Styles for Text Edits -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Cinzel:wght@700&family=Lobster&family=Rye&family=Berkshire+Swash&family=Playfair+Display:ital,wght@1,700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #030303;
+        }
+        .code-font {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        /* Custom styled gold scrollbars */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #050505;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2a2518;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #d4af37;
+        }
+        /* Color input styling override */
+        input[type="color"]::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+        input[type="color"]::-webkit-color-swatch {
+            border: none;
+            border-radius: 0.375rem;
+        }
+    </style>
 </head>
-<body>
+<body class="h-screen w-screen flex flex-col overflow-hidden bg-[#030303]">
 
-  <!-- Hidden File Input Controls -->
-  <input type="file" id="image-upload" class="btn-file-input" accept="image/png, image/jpeg, image/svg+xml">
-  <input type="file" id="style-upload" class="btn-file-input" accept=".json">
+    <!-- Header / Nav -->
+    <header class="border-b border-zinc-800 bg-zinc-950/85 backdrop-blur-md px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4 z-10 shrink-0">
+        <div class="flex items-center gap-3">
+            <!-- Left Header Icon: Gecko Silhouette climbing upwards -->
+            <div class="h-10 w-10 bg-[#d4af37] rounded-xl flex items-center justify-center shadow-lg shadow-[#d4af37]/20 p-1.5">
+                <svg class="h-7 w-7 text-slate-950" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M14.11,13.63L15.5,12.24C16,12.55 16.59,12.75 17.22,12.75A3.25,3.25 0 0,0 20.47,9.5C20.47,8.27 19.78,7.21 18.77,6.67L19.8,5.64C20.19,5.25 20.19,4.61 19.8,4.22C19.41,3.83 18.77,3.83 18.38,4.22L17.35,5.25C16.81,4.24 15.75,3.55 14.52,3.55A3.25,3.25 0 0,0 11.27,6.8C11.27,7.43 11.47,8.02 11.78,8.53L10.39,9.92C9.5,9.45 8.43,9.25 7.37,9.44L4.85,6.92C4.46,6.53 3.82,6.53 3.43,6.92C3.04,7.31 3.04,7.95 3.43,8.34L5.95,10.86C5.76,11.92 5.96,12.99 6.43,13.88L5.04,15.27C4.53,14.96 3.94,14.76 3.31,14.76A3.25,3.25 0 0,0 0.06,18.01C0.06,19.24 0.75,20.3 1.76,20.84L0.73,21.87C0.34,22.26 0.34,22.9 0.73,23.29C1.12,23.68 1.76,23.68 2.15,23.29L3.18,22.26C3.72,23.27 4.78,23.96 6.01,23.96A3.25,3.25 0 0,0 9.26,20.71C9.26,20.08 9.06,19.49 8.75,18.98L10.14,17.59C11.03,18.06 12.1,18.26 13.16,18.07L15.68,20.59C16.07,20.98 16.71,20.98 17.1,20.59C17.49,20.2 17.49,19.56 17.1,19.17L14.58,16.65C14.77,15.59 14.57,14.52 14.11,13.63M15.89,10.11A1.25,1.25 0 1,1 17.14,8.86A1.25,1.25 0 0,1 15.89,10.11M4.64,18.89A1.25,1.25 0 1,1 5.89,17.64A1.25,1.25 0 0,1 4.64,18.89Z" />
+                </svg>
+            </div>
+            <div>
+                <h1 class="text-xl font-extrabold tracking-tight bg-gradient-to-r from-[#f3e5ab] via-[#d4af37] to-[#b8972f] bg-clip-text text-transparent">Gekko Editz</h1>
+                <p class="text-xs text-[#c0c0c0] font-medium tracking-widest uppercase">AI Grunge Studio</p>
+            </div>
+        </div>
 
-  <!-- Header Bar -->
-  <header>
-    <div class="brand">
-      <h1 class="brand-title">Vintage Recall</h1>
-      <span class="brand-subtitle">Grunge &amp; Fading Studio</span>
+        <!-- Consolidated Action Buttons -->
+        <div class="flex flex-wrap items-center gap-3">
+            <!-- Upload & Download Image Group -->
+            <div class="flex items-center bg-black p-1 rounded-xl border border-zinc-850">
+                <button id="uploadBtn" class="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-lg text-[#d4af37] hover:text-white hover:bg-[#d4af37]/10 transition">
+                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                    <span>Upload Image</span>
+                </button>
+                <input type="file" id="imageInput" accept="image/*" class="hidden">
+                <div class="h-6 w-px bg-zinc-800"></div>
+                <button id="downloadBtn" class="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-lg text-slate-200 hover:text-[#d4af37] hover:bg-[#d4af37]/5 transition">
+                    <i class="fa-solid fa-download"></i>
+                    <span>Download Image</span>
+                </button>
+            </div>
+
+            <!-- Styles (JSON) Group -->
+            <div class="flex items-center bg-black p-1 rounded-xl border border-zinc-850">
+                <button id="loadStyleBtn" class="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-900 transition">
+                    <i class="fa-solid fa-file-import"></i>
+                    <span>Load Style</span>
+                </button>
+                <input type="file" id="styleInput" accept=".json" class="hidden">
+                <div class="h-6 w-px bg-zinc-800"></div>
+                <button id="saveStyleBtn" class="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-900 transition">
+                    <i class="fa-solid fa-file-export"></i>
+                    <span>Save Style</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="flex-1 flex flex-col lg:flex-row min-h-0 overflow-hidden relative">
+        
+        <!-- Canvas Viewer Area -->
+        <div class="flex-1 bg-black p-6 flex flex-col items-center justify-center relative overflow-hidden select-none min-h-0">
+            <!-- Canvas Wrapper for Drop Shadow / Styling -->
+            <div id="canvasContainer" class="relative max-w-full max-h-full flex items-center justify-center bg-zinc-950 border border-zinc-800/60 rounded-xl overflow-hidden shadow-2xl transition-all duration-300 min-h-0">
+                <!-- Fallback empty state -->
+                <div id="canvasPlaceholder" class="p-12 text-center flex flex-col items-center max-w-md">
+                    <div class="w-16 h-16 rounded-full bg-zinc-900 flex items-center justify-center mb-4 border border-zinc-800">
+                        <i class="fa-solid fa-images text-2xl text-[#d4af37] animate-pulse"></i>
+                    </div>
+                    <h3 class="text-lg font-bold mb-1 text-slate-100">No Image Imported</h3>
+                    <p class="text-sm text-slate-400 mb-6">Import a file or drag & drop one here to unleash Gekko's Gold Grunge tools.</p>
+                    <button onclick="document.getElementById('imageInput').click()" class="px-5 py-2.5 bg-[#d4af37] hover:bg-[#e6ca65] text-black font-bold rounded-xl transition duration-150 shadow-lg shadow-[#d4af37]/20">
+                        Browse Image
+                    </button>
+                </div>
+                
+                <!-- Main Processing Canvas -->
+                <canvas id="editorCanvas" class="max-w-full max-h-full cursor-crosshair hidden"></canvas>
+            </div>
+
+            <!-- Active Tool Floating Bar -->
+            <div id="activeToolIndicator" class="absolute bottom-6 bg-zinc-900/95 border border-[#d4af37]/30 px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 shadow-xl opacity-0 transform translate-y-4 transition duration-300 pointer-events-none">
+                <span class="inline-block w-2.5 h-2.5 rounded-full bg-[#d4af37] animate-ping"></span>
+                <span class="text-slate-400">Tool Active: </span>
+                <span id="activeToolName" class="text-[#d4af37] uppercase tracking-wider">None</span>
+            </div>
+        </div>
+
+        <!-- Sidebar Panel Controls -->
+        <aside class="w-full lg:w-[420px] bg-zinc-950 border-t lg:border-t-0 lg:border-l border-zinc-850 flex flex-col shrink-0 overflow-y-auto">
+            
+            <!-- Custom Styled Expandable Dropdown Menu -->
+            <div class="p-6 border-b border-zinc-850 bg-zinc-950/40">
+                <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Edit Mode</label>
+                <div class="relative">
+                    <button id="menuDropdownBtn" class="w-full flex items-center justify-between bg-black border border-zinc-800 rounded-xl px-4 py-3.5 text-left font-semibold text-sm hover:border-[#d4af37]/50 hover:bg-black/80 transition duration-150">
+                        <span id="menuDropdownLabel" class="flex items-center gap-3">
+                            <i class="fa-solid fa-sliders text-[#d4af37] text-base"></i>
+                            <span class="text-[#d4af37]">Basic Edits</span>
+                        </span>
+                        <i class="fa-solid fa-chevron-down text-slate-400 transition-transform duration-200" id="menuChevron"></i>
+                    </button>
+                    <!-- Floating Dropdown list -->
+                    <div id="menuDropdownList" class="absolute left-0 right-0 mt-2 bg-[#0d0d0d] border border-zinc-800 rounded-xl overflow-hidden shadow-2xl z-20 hidden">
+                        <button class="menu-opt w-full flex items-center gap-3 px-4 py-3 text-sm font-semibold hover:bg-zinc-900 text-[#d4af37] transition" data-panel="basic">
+                            <i class="fa-solid fa-sliders"></i>
+                            <span>Basic Edits</span>
+                        </button>
+                        <button class="menu-opt w-full flex items-center gap-3 px-4 py-3 text-sm font-semibold hover:bg-zinc-900 text-slate-300 hover:text-white transition" data-panel="grunge">
+                            <i class="fa-solid fa-masks-theater"></i>
+                            <span>Grunge Effects</span>
+                        </button>
+                        <button class="menu-opt w-full flex items-center gap-3 px-4 py-3 text-sm font-semibold hover:bg-zinc-900 text-slate-300 hover:text-white transition" data-panel="paint">
+                            <i class="fa-solid fa-palette"></i>
+                            <span>Finger Paints</span>
+                        </button>
+                        <button class="menu-opt w-full flex items-center gap-3 px-4 py-3 text-sm font-semibold hover:bg-zinc-900 text-slate-300 hover:text-white transition" data-panel="text">
+                            <i class="fa-solid fa-font"></i>
+                            <span>Text Edits</span>
+                        </button>
+                        <button class="menu-opt w-full flex items-center gap-3 px-4 py-3 text-sm font-semibold hover:bg-zinc-900 text-slate-300 hover:text-white transition" data-panel="ai">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                            <span>AI Magic & FX</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel Contents Container -->
+            <div id="panelsContainer" class="p-6 flex-1 flex flex-col gap-6">
+                
+                <!-- SECTION 1: BASIC EDITS (Default) -->
+                <div id="basicPanel" class="panel-section flex flex-col gap-6">
+                    <!-- Rotate Slider -->
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-sm font-semibold text-slate-200 flex items-center gap-2">
+                                <i class="fa-solid fa-rotate text-[#d4af37]"></i> Rotate
+                            </span>
+                            <span id="val-rotate" class="text-xs text-[#d4af37] code-font">0°</span>
+                        </div>
+                        <input type="range" id="slider-rotate" min="0" max="23" value="0" class="w-full h-1 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-[#d4af37]">
+                    </div>
+
+                    <!-- Vignette Slider -->
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-sm font-semibold text-slate-200 flex items-center gap-2">
+                                <i class="fa-solid fa-circle-radiation text-[#d4af37]"></i> Vignette
+                            </span>
+                            <span id="val-vignette" class="text-xs text-[#d4af37] code-font">0%</span>
+                        </div>
+                        <input type="range" id="slider-vignette" min="0" max="100" value="0" class="w-full h-1 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-[#d4af37]">
+                    </div>
+
+                    <!-- Sharpness Slider -->
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-sm font-semibold text-slate-200 flex items-center gap-2">
+                                <i class="fa-solid fa-bullseye text-[#d4af37]"></i> Sharpness & Blur
+                            </span>
+                            <span id="val-sharpness" class="text-xs text-[#d4af37] code-font">0%</span>
+                        </div>
+                        <input type="range" id="slider-sharpness" min="-100" max="100" value="0" class="w-full h-1 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-[#d4af37]">
+                    </div>
+
+                    <!-- Contrast Slider -->
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-sm font-semibold text-slate-200 flex items-center gap-2">
+                                <i class="fa-solid fa-circle-half-stroke text-[#d4af37]"></i> Contrast
+                            </span>
+                            <span id="val-contrast" class="text-xs text-[#d4af37] code-font">0%</span>
+                        </div>
+                        <input type="range" id="slider-contrast" min="-100" max="100" value="0" class="w-full h-1 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-[#d4af37]">
+                    </div>
+
+                    <!-- Saturation Slider -->
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-sm font-semibold text-slate-200 flex items-center gap-2">
+                                <i class="fa-solid fa-droplet text-[#d4af37]"></i> Saturation
+                            </span>
+                            <span id="val-saturation" class="text-xs text-[#d4af37] code-font">0%</span>
+                        </div>
+                        <input type="range" id="slider-saturation" min="-100" max="100" value="0" class="w-full h-1 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-[#d4af37]">
+                    </div>
+
+                    <!-- Brightness Slider -->
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-sm font-semibold text-slate-200 flex items-center gap-2">
+                                <i class="fa-solid fa-sun text-[#d4af37]"></i> Brightness
+                            </span>
+                            <span id="val-brightness" class="text-xs text-[#d4af37] code-font">0%</span>
+                        </div>
+                        <input type="range" id="slider-brightness" min="-100" max="100" value="0" class="w-full h-1 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-[#d4af37]">
+                    </div>
+
+                    <!-- Flip buttons -->
+                    <div class="grid grid-cols-2 gap-3 pt-2">
+                        <button id="flipHBtn" class="flex items-center justify-center gap-2 py-3 bg-black border border-zinc-800 hover:border-[#d4af37]/40 rounded-xl text-sm font-semibold text-slate-300 hover:text-[#d4af37] transition duration-150">
+                            <i class="fa-solid fa-arrows-left-right"></i> Flip H
+                        </button>
+                        <button id="flipVBtn" class="flex items-center justify-center gap-2 py-3 bg-black border border-zinc-800 hover:border-[#d4af37]/40 rounded-xl text-sm font-semibold text-slate-300 hover:text-[#d4af37] transition duration-150">
+                            <i class="fa-solid fa-arrows-up-down"></i> Flip V
+                        </button>
+                    </div>
+
+                    <!-- Action controls -->
+                    <div class="grid grid-cols-2 gap-3 border-t border-zinc-800 pt-6 mt-2">
+                        <button class="randomize-btn flex items-center justify-center gap-2 py-3 bg-[#d4af37] hover:bg-[#e6ca65] rounded-xl text-sm font-bold text-black transition duration-150 shadow-lg shadow-[#d4af37]/10">
+                            <i class="fa-solid fa-dice"></i> Randomize
+                        </button>
+                        <button class="reset-btn flex items-center justify-center gap-2 py-3 bg-black border border-zinc-800 hover:border-red-500/40 rounded-xl text-sm font-semibold text-slate-300 hover:text-red-400 transition duration-150">
+                            <i class="fa-solid fa-rotate-left"></i> Reset
+                        </button>
+                    </div>
+                </div>
+
+                <!-- SECTION 2: GRUNGE EFFECTS -->
+                <div id="grungePanel" class="panel-section flex flex-col gap-6 hidden">
+                    <!-- Crumple Wrinkles -->
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-sm font-semibold text-slate-200 flex items-center gap-2">
+                                <i class="fa-solid fa-scroll text-[#d4af37]"></i> Wrinkles (Crumpled Paper)
+                            </span>
+                            <span id="val-wrinkles" class="text-xs text-[#d4af37] code-font">0%</span>
+                        </div>
+                        <input type="range" id="slider-wrinkles" min="0" max="100" value="0" class="w-full h-1 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-[#d4af37]">
+                    </div>
+
+                    <!-- Scratch Density -->
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-sm font-semibold text-slate-200 flex items-center gap-2">
+                                <i class="fa-solid fa-hashtag text-[#d4af37]"></i> Scratch Density
+                            </span>
+                            <span id="val-scratchDensity" class="text-xs text-[#d4af37] code-font">0%</span>
+                        </div>
+                        <input type="range" id="slider-scratchDensity" min="0" max="100" value="0" class="w-full h-1 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-[#d4af37]">
+                    </div>
+
+                    <!-- Dust / Noise -->
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-sm font-semibold text-slate-200 flex items-center gap-2">
+                                <i class="fa-solid fa-burst text-[#d4af37]"></i> Dust & Grain
+                            </span>
+                            <span id="val-grain" class="text-xs text-[#d4af37] code-font">0%</span>
+                        </div>
+                        <input type="range" id="slider-grain" min="0" max="100" value="0" class="w-full h-1 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-[#d4af37]">
+                    </div>
+
+                    <!-- Fading amount -->
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-sm font-semibold text-slate-200 flex items-center gap-2">
+                                <i class="fa-solid fa-spray-can-sparkles text-[#d4af37]"></i> Vintage Fade
+                            </span>
+                            <span id="val-fading" class="text-xs text-[#d4af37] code-font">0%</span>
+                        </div>
+                        <input type="range" id="slider-fading" min="0" max="100" value="0" class="w-full h-1 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-[#d4af37]">
+                    </div>
+
+                    <!-- Warm Tint Color -->
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-sm font-semibold text-slate-200 flex items-center gap-2">
+                                <i class="fa-solid fa-palette text-[#d4af37]"></i> Tint Tone
+                            </span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <input type="color" id="tintColor" value="#b08c6a" class="w-12 h-10 rounded-xl bg-transparent border border-zinc-800 cursor-pointer">
+                            <span id="tintColorHex" class="text-xs text-slate-400 code-font uppercase">#B08C6A</span>
+                            <button id="clearTintBtn" class="ml-auto text-xs text-[#c0c0c0] hover:text-[#d4af37] border border-zinc-800 hover:border-[#d4af37]/30 px-3 py-2 rounded-lg bg-black transition">
+                                Reset Tint
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Action controls -->
+                    <div class="grid grid-cols-2 gap-3 border-t border-zinc-800 pt-6 mt-2">
+                        <button class="randomize-btn flex items-center justify-center gap-2 py-3 bg-[#d4af37] hover:bg-[#e6ca65] rounded-xl text-sm font-bold text-black transition duration-150 shadow-lg shadow-[#d4af37]/10">
+                            <i class="fa-solid fa-dice"></i> Randomize
+                        </button>
+                        <button class="reset-btn flex items-center justify-center gap-2 py-3 bg-black border border-zinc-800 hover:border-red-500/40 rounded-xl text-sm font-semibold text-slate-300 hover:text-red-400 transition duration-150">
+                            <i class="fa-solid fa-rotate-left"></i> Reset
+                        </button>
+                    </div>
+                </div>
+
+                <!-- SECTION 3: FINGER PAINTS -->
+                <div id="paintPanel" class="panel-section flex flex-col gap-5 hidden">
+                    <div class="bg-black p-4 rounded-xl border border-zinc-800/80">
+                        <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Drawing & Selection Tools</h4>
+                        <div class="grid grid-cols-2 gap-2">
+                            <!-- Rect Select -->
+                            <button id="btn-tool-rect" class="tool-btn flex items-center gap-2.5 px-3.5 py-3 rounded-lg bg-zinc-900 border border-zinc-800 text-slate-300 text-xs font-bold hover:border-[#d4af37]/40 transition">
+                                <i class="fa-regular fa-square-full text-sm"></i> Rec Select
+                            </button>
+                            <!-- Free Select -->
+                            <button id="btn-tool-free" class="tool-btn flex items-center gap-2.5 px-3.5 py-3 rounded-lg bg-zinc-900 border border-zinc-800 text-slate-300 text-xs font-bold hover:border-[#d4af37]/40 transition">
+                                <i class="fa-solid fa-bezier-curve text-sm"></i> Free Select
+                            </button>
+                            <!-- Paint Brush -->
+                            <button id="btn-tool-paint" class="tool-btn flex items-center gap-2.5 px-3.5 py-3 rounded-lg bg-zinc-900 border border-zinc-800 text-slate-300 text-xs font-bold hover:border-[#d4af37]/40 transition col-span-2">
+                                <i class="fa-solid fa-paintbrush text-sm"></i> Paint Brush
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Selected Brush Controls -->
+                    <div id="paintSettings" class="bg-black p-4 rounded-xl border border-zinc-800/80 hidden flex flex-col gap-3">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Brush Settings</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <input type="color" id="paintColor" value="#d4af37" class="w-10 h-10 rounded-xl bg-transparent border border-zinc-800 cursor-pointer">
+                            <div class="flex-1">
+                                <label class="block text-slate-400 text-xs mb-1">Brush Size (px)</label>
+                                <input type="number" id="paintSize" value="15" min="1" max="200" class="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-1.5 text-xs text-white code-font outline-none focus:border-[#d4af37]">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Region Actions (Heal, Fill) -->
+                    <div class="bg-black p-4 rounded-xl border border-zinc-800/80">
+                        <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Actions</h4>
+                        <div class="flex flex-col gap-2">
+                            <!-- Heal Tool -->
+                            <button id="btn-action-heal" class="action-btn flex items-center justify-between w-full px-4 py-3 rounded-lg bg-zinc-900 border border-zinc-800 hover:border-[#d4af37]/30 text-xs font-bold text-slate-300 hover:text-white transition">
+                                <span class="flex items-center gap-2.5">
+                                    <i class="fa-solid fa-hand-holding-medical text-[#d4af37] text-sm"></i>
+                                    <span>Inpaint / Spot Heal</span>
+                                </span>
+                                <span class="text-[10px] text-slate-500 font-normal">Selection required</span>
+                            </button>
+                            <!-- Fill Tool -->
+                            <button id="btn-action-fill" class="action-btn flex items-center justify-between w-full px-4 py-3 rounded-lg bg-zinc-900 border border-zinc-800 hover:border-[#d4af37]/30 text-xs font-bold text-slate-300 hover:text-white transition">
+                                <span class="flex items-center gap-2.5">
+                                    <i class="fa-solid fa-fill-drip text-slate-300 text-sm animate-pulse"></i>
+                                    <span>Color Fill</span>
+                                </span>
+                                <span class="text-[10px] text-slate-500 font-normal">Selection required</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Additional Selection Utilities -->
+                    <div class="grid grid-cols-2 gap-2 mt-2">
+                        <button id="deselectBtn" class="flex items-center justify-center gap-2 py-3 bg-black border border-zinc-800 hover:border-[#d4af37]/40 rounded-xl text-xs font-bold text-slate-400 hover:text-[#d4af37] transition">
+                            <i class="fa-solid fa-square-minus"></i> Deselect
+                        </button>
+                        <button id="cropBtn" class="flex items-center justify-center gap-2 py-3 bg-black border border-zinc-800 hover:border-[#d4af37]/40 rounded-xl text-xs font-bold text-slate-400 hover:text-[#d4af37] transition">
+                            <i class="fa-solid fa-crop-simple"></i> Crop Selected
+                        </button>
+                    </div>
+                </div>
+
+                <!-- SECTION 4: TEXT EDITS -->
+                <div id="textPanel" class="panel-section flex flex-col gap-6 hidden">
+                    <div class="bg-black p-4 rounded-xl border border-zinc-800/80">
+                        <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Add Custom Text Overlay</h4>
+                        <div class="flex flex-col gap-3">
+                            <div>
+                                <label class="block text-slate-400 text-xs mb-1">Enter Text Lines</label>
+                                <textarea id="text-input" placeholder="Type here... Drag on canvas to reposition" class="w-full bg-zinc-900 border border-zinc-800 hover:border-zinc-700 focus:border-[#d4af37] rounded-xl p-3 text-xs text-white placeholder-slate-500 outline-none transition resize-none h-20"></textarea>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-slate-400 text-xs mb-1">Font Family</label>
+                                    <select id="text-font" class="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-2.5 py-2 text-xs text-slate-100 outline-none focus:border-[#d4af37]">
+                                        <option value="system-ui, sans-serif">Modern Sans</option>
+                                        <option value="Georgia, serif">Classic Serif</option>
+                                        <option value="JetBrains Mono, monospace">Monospace</option>
+                                        <option value="'Berkshire Swash', cursive">Vintage Script</option>
+                                        <option value="'Rye', cursive">Western Grunge</option>
+                                        <option value="'Lobster', cursive">Playful Script</option>
+                                        <option value="'Cinzel', serif">Cinematic Gold</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-slate-400 text-xs mb-1">Text Color</label>
+                                    <div class="flex items-center gap-2">
+                                        <input type="color" id="text-color" value="#ffffff" class="w-full h-8 rounded-lg bg-transparent border border-zinc-800 cursor-pointer">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Size, Glow, Drop Shadow Sliders -->
+                    <div class="flex flex-col gap-5 bg-black p-4 rounded-xl border border-zinc-800/80">
+                        <!-- Size Slider -->
+                        <div>
+                            <div class="flex justify-between items-center mb-1.5">
+                                <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Font Size</span>
+                                <span id="val-textSize" class="text-xs text-[#d4af37] code-font">40px</span>
+                            </div>
+                            <input type="range" id="slider-textSize" min="10" max="150" value="40" class="w-full h-1 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-[#d4af37]">
+                        </div>
+
+                        <!-- Glow Slider -->
+                        <div>
+                            <div class="flex justify-between items-center mb-1.5">
+                                <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">White Glow Blur</span>
+                                <span id="val-textGlow" class="text-xs text-[#d4af37] code-font">0px</span>
+                            </div>
+                            <input type="range" id="slider-textGlow" min="0" max="50" value="0" class="w-full h-1 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-[#d4af37]">
+                        </div>
+
+                        <!-- Drop Shadow Slider -->
+                        <div>
+                            <div class="flex justify-between items-center mb-1.5">
+                                <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Drop Shadow</span>
+                                <span id="val-textShadow" class="text-xs text-[#d4af37] code-font">0px</span>
+                            </div>
+                            <input type="range" id="slider-textShadow" min="0" max="50" value="0" class="w-full h-1 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-[#d4af37]">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION 5: AI MAGIC & FX -->
+                <div id="aiPanel" class="panel-section flex flex-col gap-6 hidden">
+                    
+                    <!-- Pre-Designed Filters -->
+                    <div class="bg-black p-4 rounded-xl border border-zinc-800/80">
+                        <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Artistic Studio Filters</h4>
+                        <div class="grid grid-cols-2 gap-2">
+                            <!-- Oil Painting -->
+                            <button class="fx-preset-btn flex flex-col items-center justify-center p-3.5 rounded-lg bg-zinc-900 border border-zinc-800 hover:border-[#d4af37]/40 hover:bg-zinc-900/50 transition group" data-fx="oil">
+                                <div class="w-8 h-8 rounded-full bg-amber-500/10 flex items-center justify-center mb-2 text-[#d4af37] group-hover:scale-110 transition">
+                                    <i class="fa-solid fa-palette"></i>
+                                </div>
+                                <span class="text-xs font-bold text-slate-200">Oil Paint</span>
+                            </button>
+                            <!-- Retro Pixel -->
+                            <button class="fx-preset-btn flex flex-col items-center justify-center p-3.5 rounded-lg bg-zinc-900 border border-zinc-800 hover:border-[#d4af37]/40 hover:bg-zinc-900/50 transition group" data-fx="pixel">
+                                <div class="w-8 h-8 rounded-full bg-slate-500/10 flex items-center justify-center mb-2 text-slate-300 group-hover:scale-110 transition">
+                                    <i class="fa-solid fa-table-cells"></i>
+                                </div>
+                                <span class="text-xs font-bold text-slate-200">Retro Pixel</span>
+                            </button>
+                            <!-- Neon Cyber -->
+                            <button class="fx-preset-btn flex flex-col items-center justify-center p-3.5 rounded-lg bg-zinc-900 border border-zinc-800 hover:border-[#d4af37]/40 hover:bg-zinc-900/50 transition group" data-fx="cyber">
+                                <div class="w-8 h-8 rounded-full bg-yellow-600/10 flex items-center justify-center mb-2 text-yellow-500 group-hover:scale-110 transition">
+                                    <i class="fa-solid fa-bolt"></i>
+                                </div>
+                                <span class="text-xs font-bold text-slate-200">Neon Cyber</span>
+                            </button>
+                            <!-- Vintage Sepia -->
+                            <button class="fx-preset-btn flex flex-col items-center justify-center p-3.5 rounded-lg bg-zinc-900 border border-zinc-800 hover:border-[#d4af37]/40 hover:bg-zinc-900/50 transition group" data-fx="sepia">
+                                <div class="w-8 h-8 rounded-full bg-zinc-500/10 flex items-center justify-center mb-2 text-zinc-400 group-hover:scale-110 transition">
+                                    <i class="fa-solid fa-camera-retro"></i>
+                                </div>
+                                <span class="text-xs font-bold text-slate-200">Sepia Retro</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- AI Magic Generator -->
+                    <div class="bg-black p-4 rounded-xl border border-zinc-800/80">
+                        <div class="flex items-center gap-2 mb-3">
+                            <i class="fa-solid fa-wand-magic-sparkles text-[#d4af37]"></i>
+                            <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest">AI Generative Edit</h4>
+                        </div>
+                        <p class="text-[11px] text-slate-400 mb-3 leading-relaxed">
+                            Describe how you want to transform this image. Our integrated AI will reimagine it for you.
+                        </p>
+                        <textarea id="aiPrompt" placeholder="e.g., Turn this landscape into a vibrant post-apocalyptic sunset style with green toxic fog..." class="w-full bg-zinc-900 border border-zinc-800 hover:border-zinc-700 focus:border-[#d4af37] rounded-xl p-3 text-xs text-white placeholder-slate-500 outline-none transition resize-none h-24 mb-3"></textarea>
+                        
+                        <button id="aiGenerateBtn" class="w-full flex items-center justify-center gap-2 py-3 bg-[#d4af37] hover:bg-[#e6ca65] rounded-xl text-xs font-bold text-black transition duration-150 shadow-lg shadow-[#d4af37]/10">
+                            <i class="fa-solid fa-sparkles"></i> Generate AI Edit
+                        </button>
+                    </div>
+
+                </div>
+
+            </div>
+        </aside>
+    </main>
+
+    <!-- Custom Toasts container -->
+    <div id="toastContainer" class="fixed bottom-6 right-6 flex flex-col gap-2 z-50 pointer-events-none"></div>
+
+    <!-- API / Config Modal -->
+    <div id="loadingOverlay" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center pointer-events-none opacity-0 transition duration-300">
+        <div class="bg-zinc-950 border border-zinc-850 p-8 rounded-2xl flex flex-col items-center max-w-sm text-center shadow-2xl scale-95 transition-transform duration-300">
+            <div class="relative w-16 h-16 mb-4 flex items-center justify-center">
+                <div class="absolute inset-0 border-4 border-[#d4af37]/20 border-t-[#d4af37] rounded-full animate-spin"></div>
+                <i class="fa-solid fa-wand-magic-sparkles text-2xl text-[#d4af37] animate-pulse"></i>
+            </div>
+            <h3 id="loadingText" class="text-base font-bold mb-1">Applying AI Magic</h3>
+            <p class="text-xs text-slate-400">Generating artistic adjustments. Please hold on...</p>
+        </div>
     </div>
-    
-    <div class="header-actions">
-      <!-- 2 Upload Buttons -->
-      <button class="btn btn-accent" id="btn-upload-image" title="Upload JPEG, PNG or SVG photo">
-        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-        Upload Photo
-      </button>
-      <button class="btn" id="btn-upload-style" title="Load styled slider settings (.json)">
-        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-        Load Style
-      </button>
-      
-      <!-- 2 Download Buttons -->
-      <button class="btn" id="btn-download-style" title="Save slider parameters as JSON config">
-        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        Save Style
-      </button>
-      <button class="btn btn-accent" id="btn-download-image" title="Export processed image in full high-resolution">
-        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        Export Image
-      </button>
-    </div>
-  </header>
 
-  <!-- App Content Grid -->
-  <main class="app-container">
-    
-    <!-- Viewport (Main Center Display) -->
-    <section class="viewport">
-      <div class="title-area">
-        <div class="title-input-container">
-          <input type="text" id="filename-input" class="title-input" value="untitled-grunge" title="Click to edit export file name" placeholder="name your file...">
-        </div>
-        <svg class="edit-icon" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-      </div>
+    <!-- JS Logic -->
+    <script>
+        // API Key initialization
+        const apiKey = ""; // Set up by preview environment dynamically
 
-      <div class="viewer-card" id="drop-zone">
-        <!-- Canvas wrapper -->
-        <div class="canvas-container">
-          <canvas id="preview-canvas"></canvas>
-        </div>
+        // Primary Display Canvas & Context
+        const canvas = document.getElementById('editorCanvas');
+        const ctx = canvas.getContext('2d');
+        const canvasContainer = document.getElementById('canvasContainer');
+        const canvasPlaceholder = document.getElementById('canvasPlaceholder');
 
-        <!-- Drag & Drop empty state overlay -->
-        <div class="empty-state" id="empty-prompt">
-          <div class="empty-state-icon">
-            <svg viewBox="0 0 24 24" width="40" height="40" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-          </div>
-          <h2 class="empty-state-title">Drop your image here</h2>
-          <p class="empty-state-desc">Drag and drop your photo or click to browse. Supports JPEG, PNG, and SVG vector formats.</p>
-        </div>
-      </div>
+        // File Inputs / Action Buttons
+        const uploadBtn = document.getElementById('uploadBtn');
+        const imageInput = document.getElementById('imageInput');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const loadStyleBtn = document.getElementById('loadStyleBtn');
+        const styleInput = document.getElementById('styleInput');
+        const saveStyleBtn = document.getElementById('saveStyleBtn');
 
-      <!-- Zoom Controls Toolbar -->
-      <div class="zoom-control-bar" id="zoom-controls">
-        <button class="zoom-btn" id="btn-zoom-out" title="Zoom Out">
-          <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        </button>
-        <input type="range" id="zoom-slider" class="zoom-slider" min="0.5" max="2.0" step="0.05" value="1.0" title="Zoom level">
-        <button class="zoom-btn" id="btn-zoom-in" title="Zoom In">
-          <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        </button>
-        <span class="zoom-value" id="zoom-value">100%</span>
-        <button class="btn btn-sm" id="btn-zoom-fit" style="padding: 0.25rem 0.6rem; text-transform: none; letter-spacing: 0; font-size: 0.75rem;" title="Fit to Viewport">Fit</button>
-      </div>
-    </section>
-
-    <!-- Sidebar Controls -->
-    <aside class="sidebar">
-      <div class="sidebar-header">
-        <h2 class="sidebar-title">Grunge Effects</h2>
-        <div class="global-controls">
-          <button class="btn btn-sm" id="btn-reset-all" title="Reset all adjustments to zero">Reset All</button>
-          <button class="btn btn-sm btn-accent" id="btn-randomize-all" title="Randomize all slider values">Randomize All</button>
-        </div>
-      </div>
-
-      <!-- Effects Sliders List -->
-      <div class="effects-list">
+        // Non-destructive Baseline Buffers (Fixes double-filtering and rotation bugs)
+        let imageLoaded = false;
+        let originalImage = null; // Stays clean as reference
         
-        <!-- Slider 1: Noise -->
-        <div class="slider-group">
-          <div class="slider-header">
-            <span class="slider-label">Noise (Film Grain)</span>
-            <span class="slider-value" id="val-noise">0.00</span>
-          </div>
-          <div class="slider-row">
-            <button class="icon-btn btn-reset" data-slider="noise" title="Reset noise">
-              <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
-            </button>
-            <input type="range" id="slider-noise" min="0" max="1.2" step="0.01" value="0" class="custom-range">
-            <button class="icon-btn btn-randomize" data-slider="noise" title="Randomize noise">
-              <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
-            </button>
-          </div>
-        </div>
+        const baseCanvas = document.createElement('canvas'); // Holds raw, unrotated edit baseline
+        const baseCtx = baseCanvas.getContext('2d');
 
-        <!-- Slider 2: Rips -->
-        <div class="slider-group">
-          <div class="slider-header">
-            <span class="slider-label">Rips &amp; Tears</span>
-            <span class="slider-value" id="val-rips">0.00</span>
-          </div>
-          <div class="slider-row">
-            <button class="icon-btn btn-reset" data-slider="rips" title="Reset rips">
-              <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
-            </button>
-            <input type="range" id="slider-rips" min="0" max="1.2" step="0.01" value="0" class="custom-range">
-            <button class="icon-btn btn-randomize" data-slider="rips" title="Randomize rips">
-              <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
-            </button>
-          </div>
-        </div>
+        // One-Step Undo State Manager
+        const undoBufferCanvas = document.createElement('canvas');
+        const undoBufferCtx = undoBufferCanvas.getContext('2d');
+        let hasUndo = false;
 
-        <!-- Slider 3: Side Scratches -->
-        <div class="slider-group">
-          <div class="slider-header">
-            <span class="slider-label">Side Scratches</span>
-            <span class="slider-value" id="val-sideScratches">0.00</span>
-          </div>
-          <div class="slider-row">
-            <button class="icon-btn btn-reset" data-slider="sideScratches" title="Reset side scratches">
-              <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
-            </button>
-            <input type="range" id="slider-sideScratches" min="0" max="1.2" step="0.01" value="0" class="custom-range">
-            <button class="icon-btn btn-randomize" data-slider="sideScratches" title="Randomize side scratches">
-              <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
-            </button>
-          </div>
-        </div>
-
-        <!-- Slider 4: Central Scratches -->
-        <div class="slider-group">
-          <div class="slider-header">
-            <span class="slider-label">Central Scratches</span>
-            <span class="slider-value" id="val-centralScratches">0.00</span>
-          </div>
-          <div class="slider-row">
-            <button class="icon-btn btn-reset" data-slider="centralScratches" title="Reset central scratches">
-              <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
-            </button>
-            <input type="range" id="slider-centralScratches" min="0" max="1.2" step="0.01" value="0" class="custom-range">
-            <button class="icon-btn btn-randomize" data-slider="centralScratches" title="Randomize central scratches">
-              <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
-            </button>
-          </div>
-        </div>
-
-        <!-- Slider 5: Age -->
-        <div class="slider-group">
-          <div class="slider-header">
-            <span class="slider-label">Age (Yellowing / Fading)</span>
-            <span class="slider-value" id="val-age">0.00</span>
-          </div>
-          <div class="slider-row">
-            <button class="icon-btn btn-reset" data-slider="age" title="Reset age">
-              <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
-            </button>
-            <input type="range" id="slider-age" min="0" max="1.2" step="0.01" value="0" class="custom-range">
-            <button class="icon-btn btn-randomize" data-slider="age" title="Randomize age">
-              <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
-            </button>
-          </div>
-        </div>
-
-        <!-- Slider 6: Fade to Black -->
-        <div class="slider-group">
-          <div class="slider-header">
-            <span class="slider-label">Fade to Black</span>
-            <span class="slider-value" id="val-fadeToBlack">0.00</span>
-          </div>
-          <div class="slider-row">
-            <button class="icon-btn btn-reset" data-slider="fadeToBlack" title="Reset Fade to Black">
-              <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
-            </button>
-            <input type="range" id="slider-fadeToBlack" min="0" max="1.2" step="0.01" value="0" class="custom-range">
-            <button class="icon-btn btn-randomize" data-slider="fadeToBlack" title="Randomize Fade to Black">
-              <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
-            </button>
-          </div>
-        </div>
-
-        <!-- Slider 7: Fade to White -->
-        <div class="slider-group">
-          <div class="slider-header">
-            <span class="slider-label">Fade to White</span>
-            <span class="slider-value" id="val-fadeToWhite">0.00</span>
-          </div>
-          <div class="slider-row">
-            <button class="icon-btn btn-reset" data-slider="fadeToWhite" title="Reset Fade to White">
-              <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
-            </button>
-            <input type="range" id="slider-fadeToWhite" min="0" max="1.2" step="0.01" value="0" class="custom-range">
-            <button class="icon-btn btn-randomize" data-slider="fadeToWhite" title="Randomize Fade to White">
-              <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
-            </button>
-          </div>
-        </div>
-
-        <!-- Slider 8: Warmth -->
-        <div class="slider-group">
-          <div class="slider-header">
-            <span class="slider-label">Warmth (Cool vs. Warm)</span>
-            <span class="slider-value" id="val-warmth">0.50</span>
-          </div>
-          <div class="slider-row">
-            <button class="icon-btn btn-reset" data-slider="warmth" title="Reset warmth">
-              <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
-            </button>
-            <input type="range" id="slider-warmth" min="0" max="1.2" step="0.01" value="0.5" class="custom-range">
-            <button class="icon-btn btn-randomize" data-slider="warmth" title="Randomize warmth">
-              <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
-            </button>
-          </div>
-        </div>
-
-        <!-- Slider 9: Crumples -->
-        <div class="slider-group">
-          <div class="slider-header">
-            <span class="slider-label">Crumples &amp; Creases</span>
-            <span class="slider-value" id="val-crumples">0.00</span>
-          </div>
-          <div class="slider-row">
-            <button class="icon-btn btn-reset" data-slider="crumples" title="Reset crumples">
-              <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
-            </button>
-            <input type="range" id="slider-crumples" min="0" max="1.2" step="0.01" value="0" class="custom-range">
-            <button class="icon-btn btn-randomize" data-slider="crumples" title="Randomize crumples">
-              <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
-            </button>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- Stats Panel -->
-      <div class="metadata-panel">
-        <div class="meta-row">
-          <span>Active Photo:</span>
-          <span id="meta-filename">None</span>
-        </div>
-        <div class="meta-row">
-          <span>Dimensions:</span>
-          <span id="meta-dims">0 × 0 px</span>
-        </div>
-        <div class="meta-row">
-          <span>Torn Edges:</span>
-          <span id="meta-rips-status">Off</span>
-        </div>
-      </div>
-    </aside>
-  </main>
-
-  <!-- Notification Toast -->
-  <div class="toast" id="toast">Notification text</div>
-
-  <!-- SVG Filter definitions for hardware-accelerated color matrices -->
-  <svg style="position: absolute; width: 0; height: 0; overflow: hidden;" aria-hidden="true">
-    <filter id="grunge-color-filter">
-      <feColorMatrix id="color-matrix" type="matrix" 
-        values="1 0 0 0 0
-                0 1 0 0 0
-                0 0 1 0 0
-                0 0 0 1 0"/>
-    </filter>
-  </svg>
-
-  <!-- JavaScript Application Logic -->
-  <script>
-    // State management
-    const state = {
-      image: null,
-      originalFilename: 'untitled-grunge',
-      originalExtension: 'jpg',
-      sliders: {
-        noise: 0.0,
-        rips: 0.0,
-        sideScratches: 0.0,
-        centralScratches: 0.0,
-        age: 0.0,
-        fadeToBlack: 0.0,
-        fadeToWhite: 0.0,
-        warmth: 0.5,
-        crumples: 0.0
-      },
-      // Procedural Asset DBs (generated deterministically on image load)
-      scratchDb: [],
-      creaseDb: [],
-      ripDb: {
-        top: [],
-        right: [],
-        bottom: [],
-        left: []
-      },
-      ripHoles: [],
-      moldDb: [],
-      // Preview limits
-      maxPreviewSize: 1200,
-      zoom: 1.0
-    };
-
-    // DOM Elements
-    const elements = {
-      imageUpload: document.getElementById('image-upload'),
-      styleUpload: document.getElementById('style-upload'),
-      btnUploadImage: document.getElementById('btn-upload-image'),
-      btnUploadStyle: document.getElementById('btn-upload-style'),
-      btnDownloadImage: document.getElementById('btn-download-image'),
-      btnDownloadStyle: document.getElementById('btn-download-style'),
-      btnResetAll: document.getElementById('btn-reset-all'),
-      btnRandomizeAll: document.getElementById('btn-randomize-all'),
-      filenameInput: document.getElementById('filename-input'),
-      dropZone: document.getElementById('drop-zone'),
-      viewerCard: document.getElementById('drop-zone'),
-      emptyPrompt: document.getElementById('empty-prompt'),
-      canvas: document.getElementById('preview-canvas'),
-      ctx: document.getElementById('preview-canvas').getContext('2d'),
-      toast: document.getElementById('toast'),
-      // Stats Panel
-      metaFilename: document.getElementById('meta-filename'),
-      metaDims: document.getElementById('meta-dims'),
-      metaRipsStatus: document.getElementById('meta-rips-status'),
-      // Zoom Controls
-      zoomControls: document.getElementById('zoom-controls'),
-      zoomSlider: document.getElementById('zoom-slider'),
-      zoomValue: document.getElementById('zoom-value'),
-      btnZoomIn: document.getElementById('btn-zoom-in'),
-      btnZoomOut: document.getElementById('btn-zoom-out'),
-      btnZoomFit: document.getElementById('btn-zoom-fit')
-    };
-
-    // Default slider positions for reset
-    const defaultSliders = {
-      noise: 0.0,
-      rips: 0.0,
-      sideScratches: 0.0,
-      centralScratches: 0.0,
-      age: 0.0,
-      fadeToBlack: 0.0,
-      fadeToWhite: 0.0,
-      warmth: 0.5,
-      crumples: 0.0
-    };
-
-    // Noise Cache Canvas (Singleton)
-    let noiseCanvas = null;
-
-    // Helper: Show custom toast message
-    function showToast(message) {
-      elements.toast.textContent = message;
-      elements.toast.classList.add('show');
-      setTimeout(() => {
-        elements.toast.classList.remove('show');
-      }, 2500);
-    }
-
-    // Helper: 1D Smooth Noise generator (fractal combination of simple linear interpolation)
-    function generateSmoothNoise(length, octaves = 3) {
-      const noise = new Array(length).fill(0);
-      for (let oct = 0; oct < octaves; oct++) {
-        const freq = Math.pow(2, oct + 1);
-        const amp = 1.0 / freq;
-        const anchors = Array.from({length: freq + 1}, () => Math.random());
+        // Active Selection tool coordinates (stored relative to baseCanvas)
+        let selectionType = 'none'; // 'none', 'rect', 'free', 'paint', 'text'
+        let selectionActive = false;
+        let isDrawing = false;
+        let startX, startY, currentX, currentY;
+        let freePath = []; // baseline coordinate maps for free lasso
         
-        for (let i = 0; i < length; i++) {
-          const t = i / (length - 1);
-          const pos = t * freq;
-          const idx = Math.floor(pos);
-          const localT = pos - idx;
-          // Cosine interpolation for smoother transitions
-          const ft = localT * Math.PI;
-          const f = (1 - Math.cos(ft)) * 0.5;
-          
-          const nextIdx = Math.min(anchors.length - 1, idx + 1);
-          const val = anchors[idx] * (1 - f) + anchors[nextIdx] * f;
-          noise[i] += val * amp;
-        }
-      }
-      
-      // Normalize values to [0, 1]
-      const min = Math.min(...noise);
-      const max = Math.max(...noise);
-      return noise.map(v => (v - min) / (max - min || 1));
-    }
+        // Paint Settings
+        const paintColorInput = document.getElementById('paintColor');
+        const paintSizeInput = document.getElementById('paintSize');
+        let brushPath = [];
 
-    // Procedural DB Builders (Stable coordinates for changes)
-    function buildProceduralDbs() {
-      // 1. Scratches Database (120 elements)
-      state.scratchDb = [];
-      for (let i = 0; i < 120; i++) {
-        const isSide = Math.random() < 0.45;
-        const points = [];
-        const numSegments = 3 + Math.floor(Math.random() * 4); // 3-6 line points
-        
-        let cx, cy;
-        if (isSide) {
-          const margin = 0.15;
-          const side = Math.floor(Math.random() * 4); // top, right, bottom, left
-          if (side === 0) {
-            cx = Math.random(); cy = Math.random() * margin;
-          } else if (side === 1) {
-            cx = 1.0 - Math.random() * margin; cy = Math.random();
-          } else if (side === 2) {
-            cx = Math.random(); cy = 1.0 - Math.random() * margin;
-          } else {
-            cx = Math.random() * margin; cy = Math.random();
-          }
-        } else {
-          cx = 0.15 + Math.random() * 0.7;
-          cy = 0.15 + Math.random() * 0.7;
-        }
-        
-        points.push({x: cx, y: cy});
-        
-        const totalLength = 0.04 + Math.random() * 0.14; // normalized path length
-        const angle = Math.random() * Math.PI * 2;
-        const stepX = Math.cos(angle) * totalLength / numSegments;
-        const stepY = Math.sin(angle) * totalLength / numSegments;
-        
-        for (let j = 1; j < numSegments; j++) {
-          const jitter = 0.004;
-          cx += stepX + (Math.random() - 0.5) * jitter;
-          cy += stepY + (Math.random() - 0.5) * jitter;
-          points.push({
-            x: Math.max(0, Math.min(1, cx)), 
-            y: Math.max(0, Math.min(1, cy))
-          });
-        }
-        
-        state.scratchDb.push({
-          isSide: isSide,
-          points: points,
-          width: 0.35 + Math.random() * 1.15,
-          isDark: Math.random() < 0.22,
-          maxOpacity: 0.15 + Math.random() * 0.4
-        });
-      }
-
-      // 2. Creases/Crumples Database (16 major folds)
-      state.creaseDb = [];
-      const numCreases = 16;
-      for (let i = 0; i < numCreases; i++) {
-        const points = [];
-        const isHorizontal = Math.random() < 0.5;
-        
-        let cx = isHorizontal ? 0 : Math.random();
-        let cy = isHorizontal ? Math.random() : 0;
-        points.push({x: cx, y: cy});
-        
-        const numSegments = 4 + Math.floor(Math.random() * 4);
-        const segmentSize = 1.0 / numSegments;
-        
-        for (let j = 1; j <= numSegments; j++) {
-          if (isHorizontal) {
-            cx = j * segmentSize;
-            cy = cy + (Math.random() - 0.5) * 0.12;
-          } else {
-            cx = cx + (Math.random() - 0.5) * 0.12;
-            cy = j * segmentSize;
-          }
-          points.push({
-            x: Math.max(0, Math.min(1, cx)),
-            y: Math.max(0, Math.min(1, cy))
-          });
-        }
-        
-        state.creaseDb.push({
-          points: points,
-          width: 1.2 + Math.random() * 2.8,
-          maxOpacity: 0.2 + Math.random() * 0.3,
-          angle: isHorizontal ? 0 : Math.PI / 2
-        });
-      }
-
-      // 3. Torn Edges Database
-      const HPoints = 120;
-      const VPoints = 95;
-      state.ripDb.top = generateSmoothNoise(HPoints, 4);
-      state.ripDb.bottom = generateSmoothNoise(HPoints, 4);
-      state.ripDb.left = generateSmoothNoise(VPoints, 4);
-      state.ripDb.right = generateSmoothNoise(VPoints, 4);
-
-      // 4. Inner Rip Holes Database (for extreme rips)
-      state.ripHoles = [];
-      const numHoles = 3;
-      for (let i = 0; i < numHoles; i++) {
-        const cx = 0.25 + Math.random() * 0.5;
-        const cy = 0.25 + Math.random() * 0.5;
-        const radius = 0.04 + Math.random() * 0.05;
-        const numPoints = 12 + Math.floor(Math.random() * 8);
-        const points = [];
-        const holeNoise = generateSmoothNoise(numPoints, 2);
-        for (let j = 0; j < numPoints; j++) {
-          const angle = (j / numPoints) * Math.PI * 2;
-          const r = radius * (1.0 + (holeNoise[j] - 0.5) * 0.5);
-          points.push({
-            x: cx + Math.cos(angle) * r,
-            y: cy + Math.sin(angle) * r
-          });
-        }
-        state.ripHoles.push(points);
-      }
-
-      // 5. Mold Decay Spots Database (for extreme age)
-      state.moldDb = [];
-      const numMold = 5;
-      for (let i = 0; i < numMold; i++) {
-        state.moldDb.push({
-          x: 0.15 + Math.random() * 0.7,
-          y: 0.15 + Math.random() * 0.7,
-          r: 0.06 + Math.random() * 0.08,
-          opacity: 0.3 + Math.random() * 0.35
-        });
-      }
-    }
-
-    // Build the tileable grain/noise pattern once to prevent frame stutter
-    function getNoisePattern() {
-      if (noiseCanvas) return noiseCanvas;
-      
-      const size = 512;
-      noiseCanvas = document.createElement('canvas');
-      noiseCanvas.width = size;
-      noiseCanvas.height = size;
-      const nCtx = noiseCanvas.getContext('2d');
-      const imgData = nCtx.createImageData(size, size);
-      const data = imgData.data;
-      
-      for (let i = 0; i < data.length; i += 4) {
-        const val = Math.floor(Math.random() * 255);
-        data[i] = val;     // R
-        data[i+1] = val;   // G
-        data[i+2] = val;   // B
-        data[i+3] = 255;   // Fully opaque for canvas overlays
-      }
-      nCtx.putImageData(imgData, 0, 0);
-      return noiseCanvas;
-    }
-
-    // Helper: Calculate standard fit size of preview canvas inside viewport
-    function getFittedSize() {
-      const pad = 40; // padding inside viewer card
-      const maxW = Math.max(200, elements.viewerCard.clientWidth - pad);
-      const maxH = Math.max(200, elements.viewerCard.clientHeight - pad);
-      
-      const canvasW = elements.canvas.width;
-      const canvasH = elements.canvas.height;
-      
-      if (!canvasW || !canvasH) return { width: 0, height: 0 };
-      
-      const ratio = canvasW / canvasH;
-      let targetW = canvasW;
-      let targetH = canvasH;
-      
-      if (targetW > maxW || targetH > maxH) {
-        if (targetW / maxW > targetH / maxH) {
-          targetW = maxW;
-          targetH = Math.floor(targetW / ratio);
-        } else {
-          targetH = maxH;
-          targetW = Math.floor(targetH * ratio);
-        }
-      }
-      return { width: targetW, height: targetH };
-    }
-
-    // Helper: Update zoom scale in CSS and UI indicators
-    function updateZoom() {
-      if (!state.image) return;
-      
-      // Set text percentage
-      elements.zoomValue.textContent = `${Math.round(state.zoom * 100)}%`;
-      elements.zoomSlider.value = state.zoom;
-      
-      const fit = getFittedSize();
-      const displayWidth = fit.width * state.zoom;
-      const displayHeight = fit.height * state.zoom;
-      
-      // Apply styles to preview canvas
-      elements.canvas.style.width = `${displayWidth}px`;
-      elements.canvas.style.height = `${displayHeight}px`;
-      elements.canvas.style.maxWidth = 'none';
-      elements.canvas.style.maxHeight = 'none';
-    }
-
-    // Helper to sync slider value to UI and state
-    function updateSliderUI(key, value) {
-      state.sliders[key] = value;
-      const slider = document.getElementById(`slider-${key}`);
-      if (slider) slider.value = value;
-      
-      const valDisplay = document.getElementById(`val-${key}`);
-      if (valDisplay) {
-        if (value > 1.1) {
-          valDisplay.textContent = `${value.toFixed(2)} [💀 DESTRUCTIVE]`;
-        } else if (value > 1.0) {
-          valDisplay.textContent = `${value.toFixed(2)} [🔥 EXTREME]`;
-        } else {
-          valDisplay.textContent = value.toFixed(2);
-        }
-      }
-    }
-
-    // Setup input slider bindings
-    function initSliders() {
-      Object.keys(state.sliders).forEach(key => {
-        const slider = document.getElementById(`slider-${key}`);
-        
-        // Handle input events
-        slider.addEventListener('input', (e) => {
-          const value = parseFloat(e.target.value);
-          updateSliderUI(key, value);
-          renderPreview();
-        });
-      });
-
-      // Individual reset and randomize button event delegation
-      document.querySelectorAll('.btn-reset').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const key = btn.dataset.slider;
-          const defaultValue = defaultSliders[key];
-          
-          updateSliderUI(key, defaultValue);
-          showToast(`Reset ${key}`);
-          renderPreview();
-        });
-      });
-
-      document.querySelectorAll('.btn-randomize').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const key = btn.dataset.slider;
-          let randomVal;
-          
-          if (key === 'warmth') {
-            // Warmth centered around 0.5, randomize inside [0.15, 1.2]
-            randomVal = 0.15 + Math.random() * 1.05;
-          } else if (key === 'rips') {
-            // Rips can eat holes; restrict random slightly to [0, 1.1]
-            randomVal = Math.random() * 1.1;
-          } else {
-            // Randomize up to 1.2
-            randomVal = Math.random() * 1.2;
-          }
-          
-          updateSliderUI(key, randomVal);
-          renderPreview();
-        });
-      });
-
-      // Global Reset
-      elements.btnResetAll.addEventListener('click', () => {
-        Object.keys(state.sliders).forEach(key => {
-          const defaultVal = defaultSliders[key];
-          updateSliderUI(key, defaultVal);
-        });
-        showToast("Reset all sliders");
-        renderPreview();
-      });
-
-      // Global Randomize
-      elements.btnRandomizeAll.addEventListener('click', () => {
-        Object.keys(state.sliders).forEach(key => {
-          let val;
-          if (key === 'warmth') val = 0.2 + Math.random() * 0.9;
-          else if (key === 'rips') val = Math.random() * 0.9; // don't make it completely empty
-          else if (key === 'fadeToWhite' || key === 'fadeToBlack') val = Math.random() * 0.9;
-          else val = Math.random() * 1.2;
-          
-          updateSliderUI(key, val);
-        });
-        showToast("Randomized effects");
-        renderPreview();
-      });
-    }
-
-    // Dynamic Color Matrix Update (Warmth + Age Sepia)
-    function updateSvgColorMatrix(warmth, age) {
-      const matrixEl = document.getElementById('color-matrix');
-      if (!matrixEl) return;
-      
-      // Warmth shift values (0.5 is neutral)
-      let rMult = 1.0, gMult = 1.0, bMult = 1.0;
-      let rAdd = 0, gAdd = 0, bAdd = 0;
-      
-      if (warmth > 1.0) {
-        const intensity = (warmth - 1.0) * 5.0; // 0 to 1
-        rMult = 1.16 * (1 - intensity) + 1.85 * intensity;
-        gMult = 1.05 * (1 - intensity) + 0.40 * intensity;
-        bMult = 0.82 * (1 - intensity) + 0.02 * intensity;
-        rAdd = 0.04 * (1 - intensity) + 0.28 * intensity;
-      } else if (warmth > 0.5) {
-        const factor = (warmth - 0.5) * 2.0; // [0, 1]
-        rMult += factor * 0.16;
-        gMult += factor * 0.05;
-        bMult -= factor * 0.18;
-        rAdd += factor * 0.04;
-      } else if (warmth < 0.5) {
-        const factor = (0.5 - warmth) * 2.0; // [0, 1]
-        rMult -= factor * 0.18;
-        gMult -= factor * 0.02;
-        bMult += factor * 0.20;
-        bAdd += factor * 0.05;
-      }
-      
-      // Age yellowing / sepia tinting values
-      // Standard Sepia:
-      // R' = 0.393R + 0.769G + 0.189B
-      // G' = 0.349R + 0.686G + 0.168B
-      // B' = 0.272R + 0.534G + 0.131B
-      const rr = (1 - age) + age * 0.393;
-      const rg = age * 0.769;
-      const rb = age * 0.189;
-      
-      const gr = age * 0.349;
-      const gg = (1 - age) + age * 0.686;
-      const gb = age * 0.168;
-      
-      const br = age * 0.272;
-      const bg = age * 0.534;
-      const bb = (1 - age) + age * 0.131;
-      
-      // Combine Warmth and Sepia matrices via multiplication
-      const m00 = rr * rMult;
-      const m01 = rg * rMult;
-      const m02 = rb * rMult;
-      
-      const m10 = gr * gMult;
-      const m11 = gg * gMult;
-      const m12 = gb * gMult;
-      
-      const m20 = br * bMult;
-      const m21 = bg * bMult;
-      const m22 = bb * bMult;
-
-      // In SVG <feColorMatrix>, offsets are normalized (0 to 1) rather than 0 to 255
-      const offsetR = rAdd;
-      const offsetG = gAdd;
-      const offsetB = bAdd;
-      
-      matrixEl.setAttribute('values', [
-        m00, m01, m02, 0, offsetR,
-        m10, m11, m12, 0, offsetG,
-        m20, m21, m22, 0, offsetB,
-        0, 0, 0, 1, 0
-      ].join(' '));
-    }
-
-    // Construct the Edge Rips polygon path (clean, non-self-intersecting)
-    function buildRipsPath(ctx, w, h, ripsVal) {
-      const effectiveVal = ripsVal > 1.0 ? 1.0 + (ripsVal - 1.0) * 3.5 : ripsVal;
-      const maxDepth = effectiveVal * (Math.min(w, h) * 0.045);
-      if (maxDepth <= 0) {
-        ctx.beginPath();
-        ctx.rect(0, 0, w, h);
-        return;
-      }
-      
-      ctx.beginPath();
-      
-      const topPts = state.ripDb.top;
-      const rightPts = state.ripDb.right;
-      const bottomPts = state.ripDb.bottom;
-      const leftPts = state.ripDb.left;
-      
-      // Calculate corner coordinate offsets to prevent gaps and self-intersections
-      const tlX = maxDepth * leftPts[leftPts.length - 1];
-      const tlY = maxDepth * topPts[0];
-      
-      const trX = w - (maxDepth * rightPts[0]);
-      const trY = maxDepth * topPts[topPts.length - 1];
-      
-      const brX = w - (maxDepth * rightPts[rightPts.length - 1]);
-      const brY = h - (maxDepth * bottomPts[0]);
-      
-      const blX = maxDepth * leftPts[0];
-      const blY = h - (maxDepth * bottomPts[bottomPts.length - 1]);
-      
-      // 1. Top Edge (Left to Right, interpolating from tlX to trX)
-      ctx.moveTo(tlX, tlY);
-      for (let i = 1; i < topPts.length; i++) {
-        const t = i / (topPts.length - 1);
-        const x = tlX + t * (trX - tlX);
-        const y = maxDepth * topPts[i];
-        ctx.lineTo(x, y);
-      }
-      
-      // 2. Right Edge (Top to Bottom, interpolating from trY to brY)
-      for (let i = 1; i < rightPts.length; i++) {
-        const t = i / (rightPts.length - 1);
-        const x = w - (maxDepth * rightPts[i]);
-        const y = trY + t * (brY - trY);
-        ctx.lineTo(x, y);
-      }
-      
-      // 3. Bottom Edge (Right to Left, interpolating from brX to blX)
-      for (let i = 1; i < bottomPts.length; i++) {
-        const t = i / (bottomPts.length - 1);
-        const x = brX + t * (blX - brX);
-        const y = h - (maxDepth * bottomPts[i]);
-        ctx.lineTo(x, y);
-      }
-      
-      // 4. Left Edge (Bottom to Top, interpolating from blY to tlY)
-      for (let i = 1; i < leftPts.length; i++) {
-        const t = i / (leftPts.length - 1);
-        const x = maxDepth * leftPts[i];
-        const y = blY + t * (tlY - blY);
-        ctx.lineTo(x, y);
-      }
-      
-      ctx.closePath();
-    }
-
-    // Draw jagged paper rips inside the image for extreme rips values
-    function drawTornHoles(targetCtx, w, h, sRips) {
-      const holeScale = (sRips - 1.0) * 5.0; // scales 0 to 1
-      if (holeScale <= 0) return;
-
-      targetCtx.save();
-
-      state.ripHoles.forEach(hole => {
-        targetCtx.save();
-        // Determine hole center
-        let cx = 0, cy = 0;
-        hole.forEach(p => { cx += p.x; cy += p.y; });
-        cx /= hole.length;
-        cy /= hole.length;
-
-        targetCtx.beginPath();
-        hole.forEach((p, idx) => {
-          const px = cx + (p.x - cx) * holeScale;
-          const py = cy + (p.y - cy) * holeScale;
-          if (idx === 0) targetCtx.moveTo(px * w, py * h);
-          else targetCtx.lineTo(px * w, py * h);
-        });
-        targetCtx.closePath();
-
-        // 1. Fill with backing color
-        targetCtx.fillStyle = '#08080a';
-        targetCtx.fill();
-
-        // 2. Shadow inside the hole border
-        targetCtx.shadowColor = 'rgba(0, 0, 0, 0.6)';
-        targetCtx.shadowBlur = 8 * (w / 1000);
-        targetCtx.shadowOffsetY = 3 * (w / 1000);
-
-        // 3. Creamy torn paper border
-        targetCtx.strokeStyle = '#f5f1e8';
-        targetCtx.lineWidth = 1.5 * (w / 1000) + (sRips * 4 * (w / 1000));
-        targetCtx.lineCap = 'round';
-        targetCtx.lineJoin = 'round';
-        targetCtx.stroke();
-
-        targetCtx.restore();
-      });
-
-      targetCtx.restore();
-    }
-
-    // Core Procedural Rendering Engine
-    function renderPipeline(targetCanvas, targetCtx, srcImage, s, isFullRes = false) {
-      const w = targetCanvas.width;
-      const h = targetCanvas.height;
-      
-      // 1. Clear background
-      targetCtx.clearRect(0, 0, w, h);
-      
-      // If rips are active, we draw a dark slate backing under the photo area
-      if (s.rips > 0) {
-        targetCtx.save();
-        targetCtx.fillStyle = '#08080a';
-        targetCtx.fillRect(0, 0, w, h);
-        targetCtx.restore();
-      }
-      
-      // 2. Setup the Clip for Rips
-      targetCtx.save();
-      if (s.rips > 0) {
-        buildRipsPath(targetCtx, w, h, s.rips);
-        targetCtx.clip();
-      }
-      
-      // 3. Draw Base Photo with Warmth and Age color filters applied
-      targetCtx.save();
-      updateSvgColorMatrix(s.warmth, s.age);
-      
-      // Apply filters (SVG filter + brightness/contrast modifications for age/wash)
-      let contrastAdjust = 1.0 - (s.age * 0.1) - (s.fadeToBlack * 0.15) - (s.fadeToWhite * 0.15);
-      let brightnessAdjust = 1.0 - (s.fadeToBlack * 0.15) + (s.fadeToWhite * 0.15);
-      
-      if (s.fadeToBlack > 1.0) {
-        const intensity = (s.fadeToBlack - 1.0) * 5.0; // 0 to 1
-        contrastAdjust = (0.7) * (1 - intensity) + 4.5 * intensity;
-        brightnessAdjust = (0.85) * (1 - intensity) + 0.35 * intensity;
-      } else if (s.fadeToWhite > 1.0) {
-        const intensity = (s.fadeToWhite - 1.0) * 5.0; // 0 to 1
-        contrastAdjust = (0.7) * (1 - intensity) + 5.0 * intensity;
-        brightnessAdjust = (1.15) * (1 - intensity) + 2.4 * intensity;
-      }
-      
-      targetCtx.filter = `url(#grunge-color-filter) brightness(${brightnessAdjust}) contrast(${contrastAdjust})`;
-      targetCtx.drawImage(srcImage, 0, 0, w, h);
-      targetCtx.restore();
-      
-      // 3.5. Draw torn holes inside photo (Extreme Rips)
-      if (s.rips > 1.0) {
-        drawTornHoles(targetCtx, w, h, s.rips);
-      }
-      
-      // 4. Draw Radial Vintage Vignette (Age-based)
-      if (s.age > 0) {
-        targetCtx.save();
-        targetCtx.globalCompositeOperation = 'multiply';
-        
-        const grad = targetCtx.createRadialGradient(w/2, h/2, Math.min(w, h) * 0.2, w/2, h/2, Math.max(w, h) * 0.7);
-        // Vintage vignette shifts from warm light-gold in center to deep amber/black at edges
-        const ageVal = Math.min(1.0, s.age);
-        grad.addColorStop(0, 'rgba(255, 255, 255, 1)');
-        grad.addColorStop(0.5, `rgba(235, 215, 190, ${1 - ageVal * 0.25})`);
-        grad.addColorStop(0.8, `rgba(80, 50, 20, ${ageVal * 0.7})`);
-        grad.addColorStop(1, `rgba(10, 5, 0, ${ageVal * 0.95})`);
-        
-        targetCtx.fillStyle = grad;
-        targetCtx.fillRect(0, 0, w, h);
-        targetCtx.restore();
-      }
-
-      // 4.5. Mold / Rot decay stains (Extreme Age)
-      if (s.age > 1.0) {
-        targetCtx.save();
-        const moldIntensity = (s.age - 1.0) * 5.0; // 0 to 1
-        targetCtx.globalCompositeOperation = 'multiply';
-        
-        state.moldDb.forEach(mold => {
-          const mx = mold.x * w;
-          const my = mold.y * h;
-          const mr = mold.r * Math.min(w, h) * (1.0 + moldIntensity * 0.4);
-          const mOpacity = mold.opacity * moldIntensity;
-          
-          const moldGrad = targetCtx.createRadialGradient(mx, my, 0, mx, my, mr);
-          moldGrad.addColorStop(0, `rgba(48, 52, 35, ${mOpacity * 0.95})`); // mold core (olive green)
-          moldGrad.addColorStop(0.3, `rgba(65, 55, 40, ${mOpacity * 0.7})`);  // decaying brown edge
-          moldGrad.addColorStop(0.7, `rgba(90, 85, 70, ${mOpacity * 0.3})`);
-          moldGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
-          
-          targetCtx.fillStyle = moldGrad;
-          targetCtx.beginPath();
-          targetCtx.arc(mx, my, mr, 0, Math.PI * 2);
-          targetCtx.fill();
-        });
-        targetCtx.restore();
-      }
-      
-      // 5. Draw Fades (Fade to Black / White overlays)
-      if (s.fadeToBlack > 0) {
-        targetCtx.save();
-        targetCtx.globalCompositeOperation = 'source-over';
-        // Fade out solid wash if s.fadeToBlack > 1.0 to reveal photocopy high-contrast image
-        const opacity = s.fadeToBlack > 1.0 
-          ? 0.85 * (1.0 - (s.fadeToBlack - 1.0) * 5.0) 
-          : s.fadeToBlack * 0.85;
-        targetCtx.fillStyle = `rgba(0, 0, 0, ${opacity})`;
-        targetCtx.fillRect(0, 0, w, h);
-        targetCtx.restore();
-      }
-      if (s.fadeToWhite > 0) {
-        targetCtx.save();
-        targetCtx.globalCompositeOperation = 'source-over';
-        // Fade out solid wash if s.fadeToWhite > 1.0 to reveal solarized high-contrast image
-        const opacity = s.fadeToWhite > 1.0 
-          ? 0.85 * (1.0 - (s.fadeToWhite - 1.0) * 5.0) 
-          : s.fadeToWhite * 0.85;
-        targetCtx.fillStyle = `rgba(255, 255, 255, ${opacity})`;
-        targetCtx.fillRect(0, 0, w, h);
-        targetCtx.restore();
-      }
-      
-      // 6. Draw Scratches (Baked on top of image and fades)
-      if (s.sideScratches > 0 || s.centralScratches > 0) {
-        targetCtx.save();
-        
-        const sideVal = Math.min(1.0, s.sideScratches);
-        const centralVal = Math.min(1.0, s.centralScratches);
-        
-        const maxSideDrawCount = Math.floor(sideVal * 60);
-        const maxCentralDrawCount = Math.floor(centralVal * 60);
-        let sideDrawn = 0;
-        let centralDrawn = 0;
-        
-        for (const scratch of state.scratchDb) {
-          if (scratch.isSide) {
-            if (sideDrawn >= maxSideDrawCount) continue;
-            sideDrawn++;
-          } else {
-            if (centralDrawn >= maxCentralDrawCount) continue;
-            centralDrawn++;
-          }
-          
-          const opacity = (scratch.isSide ? sideVal : centralVal) * scratch.maxOpacity;
-          if (opacity <= 0) continue;
-          
-          targetCtx.beginPath();
-          const pts = scratch.points;
-          targetCtx.moveTo(pts[0].x * w, pts[0].y * h);
-          for (let i = 1; i < pts.length; i++) {
-            targetCtx.lineTo(pts[i].x * w, pts[i].y * h);
-          }
-          
-          targetCtx.strokeStyle = scratch.isDark 
-            ? `rgba(15, 10, 5, ${opacity * 0.85})` 
-            : `rgba(248, 246, 240, ${opacity})`;
-            
-          // Width scaled to resolution to maintain consistent visual size
-          const scale = isFullRes ? (w / 1000) : (w / 1000);
-          targetCtx.lineWidth = scratch.width * scale;
-          targetCtx.lineCap = 'round';
-          targetCtx.lineJoin = 'round';
-          targetCtx.stroke();
-        }
-        targetCtx.restore();
-
-        // 6.5. Extreme Side Scratches: Acid Burn & Emulsion Decay
-        if (s.sideScratches > 1.0) {
-          targetCtx.save();
-          const decayIntensity = (s.sideScratches - 1.0) * 5.0; // 0 to 1
-          
-          const grad = targetCtx.createRadialGradient(w/2, h/2, Math.min(w, h) * 0.35, w/2, h/2, Math.max(w, h) * 0.7);
-          grad.addColorStop(0, 'rgba(0, 0, 0, 0)');
-          grad.addColorStop(0.5, `rgba(45, 20, 5, ${decayIntensity * 0.4})`);
-          grad.addColorStop(0.8, `rgba(18, 6, 2, ${decayIntensity * 0.8})`);
-          grad.addColorStop(1, `rgba(5, 1, 0, ${decayIntensity * 0.98})`);
-          targetCtx.fillStyle = grad;
-          targetCtx.fillRect(0, 0, w, h);
-          
-          targetCtx.globalCompositeOperation = 'multiply';
-          const borderPoints = [
-            {x: 0, y: 0}, {x: w, y: 0}, {x: 0, y: h}, {x: w, y: h},
-            {x: w/2, y: 0}, {x: 0, y: h/2}, {x: w, y: h/2}, {x: w/2, y: h}
-          ];
-          borderPoints.forEach((pt, i) => {
-            const r = (0.08 + (i % 3) * 0.08) * Math.min(w, h) * (1.0 + decayIntensity * 0.5);
-            const gradSpot = targetCtx.createRadialGradient(pt.x, pt.y, 0, pt.x, pt.y, r);
-            gradSpot.addColorStop(0, `rgba(35, 15, 5, ${decayIntensity * 0.9})`);
-            gradSpot.addColorStop(0.5, `rgba(50, 25, 8, ${decayIntensity * 0.5})`);
-            gradSpot.addColorStop(1, 'rgba(0, 0, 0, 0)');
-            targetCtx.fillStyle = gradSpot;
-            targetCtx.beginPath();
-            targetCtx.arc(pt.x, pt.y, r, 0, Math.PI * 2);
-            targetCtx.fill();
-          });
-          targetCtx.restore();
-        }
-
-        // 6.6. Extreme Central Scratches: Razor cuts/slashes
-        if (s.centralScratches > 1.0) {
-          targetCtx.save();
-          const slashIntensity = (s.centralScratches - 1.0) * 5.0; // 0 to 1
-          
-          const slashes = [
-            { x1: 0.15, y1: 0.25, x2: 0.85, y2: 0.75, w: 4 },
-            { x1: 0.80, y1: 0.20, x2: 0.20, y2: 0.80, w: 3.5 },
-            { x1: 0.10, y1: 0.50, x2: 0.90, y2: 0.55, w: 5 }
-          ];
-          
-          slashes.forEach((sl, idx) => {
-            const x1 = sl.x1 * w;
-            const y1 = sl.y1 * h;
-            const x2 = sl.x2 * w;
-            const y2 = sl.y2 * h;
-            const cx = ((sl.x1 + sl.x2) / 2) * w + (idx === 0 ? 25 : -25) * (w / 1000);
-            const cy = ((sl.y1 + sl.y2) / 2) * h + (idx === 1 ? 30 : -15) * (h / 1000);
-            
-            // Incision depth/shadow
-            targetCtx.save();
-            targetCtx.strokeStyle = 'rgba(0, 0, 0, 0.9)';
-            targetCtx.lineWidth = sl.w * (w / 1000) * (1.0 + slashIntensity * 0.4);
-            targetCtx.lineCap = 'round';
-            targetCtx.beginPath();
-            targetCtx.moveTo(x1, y1);
-            targetCtx.quadraticCurveTo(cx, cy, x2, y2);
-            targetCtx.stroke();
-            targetCtx.restore();
-            
-            // White core slash
-            targetCtx.save();
-            targetCtx.strokeStyle = 'rgba(255, 255, 255, 0.95)';
-            targetCtx.lineWidth = (sl.w * 0.35) * (w / 1000);
-            targetCtx.lineCap = 'round';
-            targetCtx.shadowColor = 'rgba(255, 255, 255, 0.8)';
-            targetCtx.shadowBlur = 4 * (w / 1000);
-            targetCtx.beginPath();
-            targetCtx.moveTo(x1, y1);
-            targetCtx.quadraticCurveTo(cx, cy, x2, y2);
-            targetCtx.stroke();
-            targetCtx.restore();
-          });
-          targetCtx.restore();
-        }
-      }
-      
-      // 7. Draw Crumples & Wrinkles (Procedural heightmap simulation)
-      if (s.crumples > 0) {
-        targetCtx.save();
-        
-        const cCanvas = document.createElement('canvas');
-        cCanvas.width = w;
-        cCanvas.height = h;
-        const cCtx = cCanvas.getContext('2d');
-        
-        const scale = w / 1000;
-        const crumplesVal = Math.min(1.0, s.crumples);
-        
-        for (const crease of state.creaseDb) {
-          const opacity = crumplesVal * crease.maxOpacity;
-          const strokeWidth = crease.width * scale * (1.0 + crumplesVal * 1.5);
-          const pts = crease.points;
-          
-          const shiftX = Math.cos(crease.angle + Math.PI / 2) * strokeWidth * 0.45;
-          const shiftY = Math.sin(crease.angle + Math.PI / 2) * strokeWidth * 0.45;
-          
-          // Highlights (White)
-          cCtx.save();
-          cCtx.strokeStyle = `rgba(255, 255, 255, ${opacity * 0.65})`;
-          cCtx.lineWidth = strokeWidth;
-          cCtx.shadowColor = `rgba(255, 255, 255, ${opacity * 0.55})`;
-          cCtx.shadowBlur = strokeWidth * 2.5;
-          cCtx.beginPath();
-          cCtx.moveTo(pts[0].x * w + shiftX, pts[0].y * h + shiftY);
-          for (let i = 1; i < pts.length; i++) {
-            cCtx.lineTo(pts[i].x * w + shiftX, pts[i].y * h + shiftY);
-          }
-          cCtx.stroke();
-          cCtx.restore();
-          
-          // Shadows (Black)
-          cCtx.save();
-          cCtx.strokeStyle = `rgba(0, 0, 0, ${opacity * 0.8})`;
-          cCtx.lineWidth = strokeWidth;
-          cCtx.shadowColor = `rgba(0, 0, 0, ${opacity * 0.65})`;
-          cCtx.shadowBlur = strokeWidth * 2.5;
-          cCtx.beginPath();
-          cCtx.moveTo(pts[0].x * w - shiftX, pts[0].y * h - shiftY);
-          for (let i = 1; i < pts.length; i++) {
-            cCtx.lineTo(pts[i].x * w - shiftX, pts[i].y * h - shiftY);
-          }
-          cCtx.stroke();
-          cCtx.restore();
-          
-          // Cracked paper fibers (Thin white crease core)
-          cCtx.save();
-          cCtx.strokeStyle = `rgba(252, 250, 244, ${opacity * 1.25})`;
-          cCtx.lineWidth = 0.5 * scale + (crumplesVal * 1.0 * scale);
-          cCtx.beginPath();
-          cCtx.moveTo(pts[0].x * w, pts[0].y * h);
-          for (let i = 1; i < pts.length; i++) {
-            cCtx.lineTo(pts[i].x * w, pts[i].y * h);
-          }
-          cCtx.stroke();
-          cCtx.restore();
-
-          // 7.5. Paperboard fracture splits (Extreme Crumples)
-          if (s.crumples > 1.0) {
-            const intensity = (s.crumples - 1.0) * 5.0; // 0 to 1
-            cCtx.save();
-            cCtx.strokeStyle = `rgba(20, 10, 5, ${opacity * 1.7})`;
-            cCtx.lineWidth = (0.75 * scale) * (1.0 + intensity * 1.5);
-            cCtx.beginPath();
-            cCtx.moveTo(pts[0].x * w, pts[0].y * h);
-            for (let i = 1; i < pts.length; i++) {
-              cCtx.lineTo(pts[i].x * w, pts[i].y * h);
+        // App state dictionary for styling filters
+        const state = {
+            // Basic Edits
+            rotate: 0, // 0 to 23 steps (15 degrees each)
+            vignette: 0,
+            sharpness: 0,
+            contrast: 0,
+            saturation: 0,
+            brightness: 0,
+            flipH: false,
+            flipV: false,
+            // Grunge Panel Settings
+            wrinkles: 0, // Procedural 3D folding
+            scratchDensity: 0,
+            grain: 0,
+            fading: 0,
+            tintColor: '#b08c6a',
+            // Text Edits Parameters
+            textState: {
+                text: '',
+                font: 'system-ui, sans-serif',
+                color: '#ffffff',
+                size: 40,
+                glow: 0,
+                shadow: 0,
+                x: 50,
+                y: 50
             }
-            cCtx.stroke();
-            cCtx.restore();
-          }
-        }
-        
-        targetCtx.globalCompositeOperation = 'overlay';
-        targetCtx.drawImage(cCanvas, 0, 0);
-        targetCtx.restore();
-      }
-      
-      // 8. Draw Film Grain (Noise Overlay)
-      if (s.noise > 0) {
-        targetCtx.save();
-        targetCtx.globalCompositeOperation = 'overlay';
-        
-        const pattern = getNoisePattern();
-        if (s.noise > 1.0) {
-          const intensity = (s.noise - 1.0) * 5.0; // 0 to 1
-          const patternScale = 1.0 + intensity * 2.2;
-          const size = Math.floor(512 * patternScale);
-          targetCtx.globalAlpha = 0.48 + intensity * 0.22; // up to 70% opacity
-          for (let x = 0; x < w; x += size) {
-            for (let y = 0; y < h; y += size) {
-              targetCtx.drawImage(pattern, x, y, size, size);
-            }
-          }
-        } else {
-          targetCtx.globalAlpha = s.noise * 0.48;
-          for (let x = 0; x < w; x += 512) {
-            for (let y = 0; y < h; y += 512) {
-              targetCtx.drawImage(pattern, x, y);
-            }
-          }
-        }
-        targetCtx.restore();
-      }
-      
-      // Restore Rip path context
-      targetCtx.restore();
-      
-      // 9. Draw White Torn Border along the cut boundary (Overlay on top of clip)
-      if (s.rips > 0) {
-        targetCtx.save();
-        buildRipsPath(targetCtx, w, h, s.rips);
-        
-        // Paper Edge Shadow (adds thickness depth to paper rips)
-        targetCtx.shadowColor = 'rgba(0, 0, 0, 0.4)';
-        targetCtx.shadowBlur = 8 * (w / 1000);
-        targetCtx.shadowOffsetY = 3 * (w / 1000);
-        
-        // Creamy rough paper fiber border
-        targetCtx.strokeStyle = '#f5f1e8';
-        targetCtx.lineWidth = 1.5 * (w / 1000) + (s.rips * 7 * (w / 1000));
-        targetCtx.lineCap = 'round';
-        targetCtx.lineJoin = 'round';
-        targetCtx.stroke();
-        targetCtx.restore();
-      }
-    }
-
-    // Triggers rendering on requestAnimationFrame to protect UI thread
-    let isRenderPending = false;
-    function renderPreview() {
-      if (!state.image) return;
-      if (isRenderPending) return;
-      
-      isRenderPending = true;
-      requestAnimationFrame(() => {
-        renderPipeline(elements.canvas, elements.ctx, state.image, state.sliders, false);
-        isRenderPending = false;
-      });
-    }
-
-    // Handles Photo Import
-    function handleImageFile(file) {
-      if (!file) return;
-      
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const img = new Image();
-        img.onload = () => {
-          state.image = img;
-          
-          // Parse original name and extension
-          const lastDot = file.name.lastIndexOf('.');
-          if (lastDot !== -1) {
-            state.originalFilename = file.name.substring(0, lastDot);
-            state.originalExtension = file.name.substring(lastDot + 1).toLowerCase();
-          } else {
-            state.originalFilename = file.name;
-            state.originalExtension = 'jpg';
-          }
-          elements.filenameInput.value = state.originalFilename;
-          
-          // Setup canvas size matching aspect ratio (constrained to max preview width)
-          let w = img.width;
-          let h = img.height;
-          if (w > state.maxPreviewSize || h > state.maxPreviewSize) {
-            const ratio = w / h;
-            if (w > h) {
-              w = state.maxPreviewSize;
-              h = Math.floor(w / ratio);
-            } else {
-              h = state.maxPreviewSize;
-              w = Math.floor(h * ratio);
-            }
-          }
-          
-          elements.canvas.width = w;
-          elements.canvas.height = h;
-          elements.canvas.style.display = 'block';
-          elements.emptyPrompt.style.display = 'none';
-          
-          // Refresh procedural databases to fit new aspect ratios
-          buildProceduralDbs();
-          
-          // Update details dashboard
-          elements.metaFilename.textContent = file.name;
-          elements.metaDims.textContent = `${img.width} × ${img.height} px`;
-          elements.metaRipsStatus.textContent = state.sliders.rips > 0 ? "Active" : "Off";
-          
-          showToast("Loaded photo successfully");
-          renderPreview();
-          
-          // Reset zoom and show zoom bar
-          state.zoom = 1.0;
-          updateZoom();
-          elements.zoomControls.classList.add('visible');
         };
-        img.src = e.target.result;
-      };
-      reader.readAsDataURL(file);
-    }
 
-    // Drag and Drop Event listeners
-    function initDragAndDrop() {
-      const dropZone = elements.dropZone;
-      
-      ['dragenter', 'dragover'].forEach(eventName => {
-        dropZone.addEventListener(eventName, (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          dropZone.classList.add('drag-over');
-        }, false);
-      });
+        // Text Edits variables
+        let isDraggingText = false;
+        let textDragOffsetX = 0;
+        let textDragOffsetY = 0;
 
-      ['dragleave', 'drop'].forEach(eventName => {
-        dropZone.addEventListener(eventName, (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          dropZone.classList.remove('drag-over');
-        }, false);
-      });
+        // Wrinkle Crease Paths (Calculated once on file load so slider adjustments don't shake creases)
+        let wrinkleCreases = [];
 
-      dropZone.addEventListener('drop', (e) => {
-        const dt = e.dataTransfer;
-        const files = dt.files;
-        if (files.length > 0) {
-          const file = files[0];
-          const fileType = file.type || '';
-          const fileName = file.name || '';
-          const isImage = fileType.match('image.*') || /\.(jpg|jpeg|png|gif|svg|webp)$/i.test(fileName);
-          const isStyle = fileName.endsWith('.json') || fileType === 'application/json' || fileType === 'text/json';
-          
-          if (isImage) {
-            handleImageFile(file);
-          } else if (isStyle) {
-            handleStyleFile(file);
-          } else {
-            showToast("Invalid file format. Drop an image or style JSON.");
-          }
-        }
-      });
+        // UI Sliders mapping
+        const sliders = {
+            rotate: { el: document.getElementById('slider-rotate'), valEl: document.getElementById('val-rotate'), stepVal: 15, suffix: '°' },
+            vignette: { el: document.getElementById('slider-vignette'), valEl: document.getElementById('val-vignette'), suffix: '%' },
+            sharpness: { el: document.getElementById('slider-sharpness'), valEl: document.getElementById('val-sharpness'), suffix: '%' },
+            contrast: { el: document.getElementById('slider-contrast'), valEl: document.getElementById('val-contrast'), suffix: '%' },
+            saturation: { el: document.getElementById('slider-saturation'), valEl: document.getElementById('val-saturation'), suffix: '%' },
+            brightness: { el: document.getElementById('slider-brightness'), valEl: document.getElementById('val-brightness'), suffix: '%' },
+            
+            wrinkles: { el: document.getElementById('slider-wrinkles'), valEl: document.getElementById('val-wrinkles'), suffix: '%' },
+            scratchDensity: { el: document.getElementById('slider-scratchDensity'), valEl: document.getElementById('val-scratchDensity'), suffix: '%' },
+            grain: { el: document.getElementById('slider-grain'), valEl: document.getElementById('val-grain'), suffix: '%' },
+            fading: { el: document.getElementById('slider-fading'), valEl: document.getElementById('val-fading'), suffix: '%' }
+        };
 
-      dropZone.addEventListener('click', () => {
-        if (!state.image) {
-          elements.imageUpload.click();
-        }
-      });
-    }
+        // Text Slider Elements
+        const textInputEl = document.getElementById('text-input');
+        const textFontEl = document.getElementById('text-font');
+        const textColorEl = document.getElementById('text-color');
+        const textSizeEl = document.getElementById('slider-textSize');
+        const textGlowEl = document.getElementById('slider-textGlow');
+        const textShadowEl = document.getElementById('slider-textShadow');
 
-    // Handles Style JSON upload file
-    function handleStyleFile(file) {
-      if (!file) return;
-      
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        try {
-          const style = JSON.parse(e.target.result);
-          
-          // Verify configuration has required properties
-          let matchedCount = 0;
-          Object.keys(state.sliders).forEach(key => {
-            if (style[key] !== undefined) {
-              const val = parseFloat(style[key]);
-              if (!isNaN(val)) {
-                const clampedVal = Math.max(0, Math.min(1.2, val));
-                updateSliderUI(key, clampedVal);
-                matchedCount++;
-              }
+        const textSizeVal = document.getElementById('val-textSize');
+        const textGlowVal = document.getElementById('val-textGlow');
+        const textShadowVal = document.getElementById('val-textShadow');
+
+        // Custom Toast Notifications
+        function showToast(message, type = 'warning') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `flex items-center gap-3 px-4 py-3.5 rounded-xl border shadow-xl transition-all duration-300 transform translate-y-2 opacity-0 pointer-events-auto max-w-sm bg-[#0a0a0a]/95`;
+            
+            let icon = '<i class="fa-solid fa-triangle-exclamation text-[#d4af37]"></i>';
+            if (type === 'error') {
+                toast.className += ' border-red-500/20';
+                icon = '<i class="fa-solid fa-circle-exclamation text-red-500"></i>';
+            } else if (type === 'success') {
+                toast.className += ' border-[#d4af37]/20';
+                icon = '<i class="fa-solid fa-circle-check text-[#d4af37]"></i>';
+            } else {
+                toast.className += ' border-[#d4af37]/20';
             }
-          });
-          
-          if (matchedCount > 0) {
-            showToast("Style loaded and applied");
-            renderPreview();
-          } else {
-            showToast("Could not find sliders config inside file.");
-          }
-        } catch(err) {
-          showToast("Error parsing Style JSON");
-        }
-      };
-      reader.readAsText(file);
-    }
 
-    // High-Resolution Image Export Download
-    function exportHighResImage() {
-      if (!state.image) {
-        showToast("Please upload a photo first");
-        return;
-      }
-      
-      showToast("Rendering high-res photo...");
-      
-      // Use set timeout to ensure browser paints rendering toast before thread blocks
-      setTimeout(() => {
-        const fullCanvas = document.createElement('canvas');
-        fullCanvas.width = state.image.width;
-        fullCanvas.height = state.image.height;
-        const fullCtx = fullCanvas.getContext('2d');
-        
-        // Execute rendering engine on full-res
-        renderPipeline(fullCanvas, fullCtx, state.image, state.sliders, true);
-        
-        // Generate download action
-        const filename = elements.filenameInput.value.trim() || 'untitled-grunge';
-        const extension = state.originalExtension === 'svg' ? 'png' : state.originalExtension;
-        const mimeType = (extension === 'png') ? 'image/png' : 'image/jpeg';
-        
-        // Triggers binary file download
-        const link = document.createElement('a');
-        link.download = `${filename}.${extension}`;
-        
-        try {
-          fullCanvas.toBlob((blob) => {
-            if (!blob) {
-              showToast("Failed to compile image blob");
-              return;
+            toast.innerHTML = `
+                <div class="text-sm">${icon}</div>
+                <div class="text-xs text-slate-200 font-medium">${message}</div>
+            `;
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            }, 10);
+
+            setTimeout(() => {
+                toast.classList.add('translate-y-2', 'opacity-0');
+                setTimeout(() => {
+                    toast.remove();
+                }, 300);
+            }, 4000);
+        }
+
+        // Save Undo State
+        function saveUndoState() {
+            if (!imageLoaded) return;
+            undoBufferCanvas.width = baseCanvas.width;
+            undoBufferCanvas.height = baseCanvas.height;
+            undoBufferCtx.clearRect(0, 0, undoBufferCanvas.width, undoBufferCanvas.height);
+            undoBufferCtx.drawImage(baseCanvas, 0, 0);
+            hasUndo = true;
+        }
+
+        // Trigger One-Step Undo/Redo Swap (CTRL + Z)
+        function triggerUndo() {
+            if (!imageLoaded) return showToast("No image loaded to undo.");
+            if (hasUndo) {
+                const tempW = baseCanvas.width;
+                const tempH = baseCanvas.height;
+                
+                // Keep local clone
+                const tempCanv = document.createElement('canvas');
+                tempCanv.width = tempW;
+                tempCanv.height = tempH;
+                const tempCtx = tempCanv.getContext('2d');
+                tempCtx.drawImage(baseCanvas, 0, 0);
+                
+                // Swap baseline memory
+                baseCanvas.width = undoBufferCanvas.width;
+                baseCanvas.height = undoBufferCanvas.height;
+                baseCtx.clearRect(0, 0, baseCanvas.width, baseCanvas.height);
+                baseCtx.drawImage(undoBufferCanvas, 0, 0);
+                
+                // Shift undone to redo
+                undoBufferCanvas.width = tempW;
+                undoBufferCanvas.height = tempH;
+                undoBufferCtx.clearRect(0, 0, tempW, tempH);
+                undoBufferCtx.drawImage(tempCanv, 0, 0);
+                
+                scheduleRender();
+                showToast("Action undone / toggled!", "success");
+            } else {
+                showToast("Nothing to undo.");
             }
+        }
+
+        // Setup Keyboard Shortcut CTRL + Z
+        window.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
+                e.preventDefault();
+                triggerUndo();
+            }
+        });
+
+        // Setup Dropdown Menu Toggle
+        const dropdownBtn = document.getElementById('menuDropdownBtn');
+        const dropdownList = document.getElementById('menuDropdownList');
+        const dropdownChevron = document.getElementById('menuChevron');
+        const dropdownLabel = document.getElementById('menuDropdownLabel');
+
+        dropdownBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            dropdownList.classList.toggle('hidden');
+            dropdownChevron.classList.toggle('rotate-180');
+        });
+
+        document.addEventListener('click', () => {
+            dropdownList.classList.add('hidden');
+            dropdownChevron.classList.remove('rotate-180');
+        });
+
+        // Toggle Right Side Panel views & Update Dropdown Active Colors
+        const menuOptions = document.querySelectorAll('.menu-opt');
+        const panels = document.querySelectorAll('.panel-section');
+
+        function updateDropdownActiveColor(panelId) {
+            menuOptions.forEach(opt => {
+                const targetPanel = opt.getAttribute('data-panel');
+                if (targetPanel === panelId) {
+                    opt.classList.add('text-[#d4af37]');
+                    opt.classList.remove('text-slate-300', 'hover:text-white');
+                } else {
+                    opt.classList.remove('text-[#d4af37]');
+                    opt.classList.add('text-slate-300', 'hover:text-white');
+                }
+            });
+        }
+
+        menuOptions.forEach(opt => {
+            opt.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const targetPanel = opt.getAttribute('data-panel');
+                
+                dropdownLabel.innerHTML = opt.innerHTML;
+                dropdownList.classList.add('hidden');
+                dropdownChevron.classList.remove('rotate-180');
+
+                // Switch visible panel
+                panels.forEach(panel => {
+                    if (panel.id === `${targetPanel}Panel`) {
+                        panel.classList.remove('hidden');
+                    } else {
+                        panel.classList.add('hidden');
+                    }
+                });
+
+                updateDropdownActiveColor(targetPanel);
+
+                // Mode entry setups
+                if (targetPanel === 'text') {
+                    setSelectionTool('text');
+                } else if (targetPanel !== 'paint') {
+                    setSelectionTool('none');
+                }
+            });
+        });
+
+        // Initialize state slider adjustments
+        Object.keys(sliders).forEach(key => {
+            const config = sliders[key];
+            if (config.el) {
+                config.el.addEventListener('input', (e) => {
+                    const parsedVal = parseInt(e.target.value);
+                    state[key] = parsedVal;
+                    if (config.suffix === '°') {
+                        config.valEl.textContent = `${parsedVal * config.stepVal}°`;
+                    } else {
+                        config.valEl.textContent = `${parsedVal > 0 && key !== 'vignette' && key !== 'fading' ? '+' : ''}${parsedVal}${config.suffix}`;
+                    }
+                    scheduleRender();
+                });
+            }
+        });
+
+        // Warm tint color selector changes
+        const tintColorInput = document.getElementById('tintColor');
+        const tintColorHex = document.getElementById('tintColorHex');
+        tintColorInput.addEventListener('input', (e) => {
+            state.tintColor = e.target.value;
+            tintColorHex.textContent = e.target.value;
+            scheduleRender();
+        });
+
+        document.getElementById('clearTintBtn').addEventListener('click', () => {
+            tintColorInput.value = '#b08c6a';
+            state.tintColor = '#b08c6a';
+            tintColorHex.textContent = '#b08c6a';
+            scheduleRender();
+        });
+
+        // Mirror Flips logic
+        document.getElementById('flipHBtn').addEventListener('click', () => {
+            if (!imageLoaded) return showToast("Upload an image first!");
+            state.flipH = !state.flipH;
+            document.getElementById('flipHBtn').classList.toggle('border-[#d4af37]', state.flipH);
+            document.getElementById('flipHBtn').classList.toggle('text-[#d4af37]', state.flipH);
+            scheduleRender();
+        });
+
+        document.getElementById('flipVBtn').addEventListener('click', () => {
+            if (!imageLoaded) return showToast("Upload an image first!");
+            state.flipV = !state.flipV;
+            document.getElementById('flipVBtn').classList.toggle('border-[#d4af37]', state.flipV);
+            document.getElementById('flipVBtn').classList.toggle('text-[#d4af37]', state.flipV);
+            scheduleRender();
+        });
+
+        // Randomize Slider values
+        const randomizeButtons = document.querySelectorAll('.randomize-btn');
+        randomizeButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (!imageLoaded) return showToast("Upload an image first!");
+                
+                const parentPanel = btn.closest('.panel-section').id;
+                if (parentPanel === 'basicPanel') {
+                    state.rotate = Math.floor(Math.random() * 24);
+                    state.vignette = Math.floor(Math.random() * 80);
+                    state.sharpness = Math.floor(Math.random() * 140) - 70;
+                    state.contrast = Math.floor(Math.random() * 100) - 50;
+                    state.saturation = Math.floor(Math.random() * 140) - 70;
+                    state.brightness = Math.floor(Math.random() * 60) - 30;
+                    
+                    sliders.rotate.el.value = state.rotate;
+                    sliders.rotate.valEl.textContent = `${state.rotate * 15}°`;
+                    
+                    sliders.vignette.el.value = state.vignette;
+                    sliders.vignette.valEl.textContent = `${state.vignette}%`;
+                    
+                    sliders.sharpness.el.value = state.sharpness;
+                    sliders.sharpness.valEl.textContent = `${state.sharpness > 0 ? '+' : ''}${state.sharpness}%`;
+                    
+                    sliders.contrast.el.value = state.contrast;
+                    sliders.contrast.valEl.textContent = `${state.contrast > 0 ? '+' : ''}${state.contrast}%`;
+                    
+                    sliders.saturation.el.value = state.saturation;
+                    sliders.saturation.valEl.textContent = `${state.saturation > 0 ? '+' : ''}${state.saturation}%`;
+                    
+                    sliders.brightness.el.value = state.brightness;
+                    sliders.brightness.valEl.textContent = `${state.brightness > 0 ? '+' : ''}${state.brightness}%`;
+                } else if (parentPanel === 'grungePanel') {
+                    state.wrinkles = Math.floor(Math.random() * 65) + 10;
+                    state.scratchDensity = Math.floor(Math.random() * 60) + 10;
+                    state.grain = Math.floor(Math.random() * 50) + 10;
+                    state.fading = Math.floor(Math.random() * 50) + 5;
+                    
+                    sliders.wrinkles.el.value = state.wrinkles;
+                    sliders.wrinkles.valEl.textContent = `${state.wrinkles}%`;
+                    
+                    sliders.scratchDensity.el.value = state.scratchDensity;
+                    sliders.scratchDensity.valEl.textContent = `${state.scratchDensity}%`;
+                    
+                    sliders.grain.el.value = state.grain;
+                    sliders.grain.valEl.textContent = `${state.grain}%`;
+                    
+                    sliders.fading.el.value = state.fading;
+                    sliders.fading.valEl.textContent = `${state.fading}%`;
+                }
+                scheduleRender();
+                showToast("Applied random aesthetic adjustments!", "success");
+            });
+        });
+
+        // Reset Panels state
+        const resetButtons = document.querySelectorAll('.reset-btn');
+        resetButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const parentPanel = btn.closest('.panel-section').id;
+                resetStateSection(parentPanel);
+            });
+        });
+
+        function resetStateSection(sectionId) {
+            if (sectionId === 'basicPanel') {
+                state.rotate = 0;
+                state.vignette = 0;
+                state.sharpness = 0;
+                state.contrast = 0;
+                state.saturation = 0;
+                state.brightness = 0;
+                state.flipH = false;
+                state.flipV = false;
+                
+                document.getElementById('flipHBtn').classList.remove('border-[#d4af37]', 'text-[#d4af37]');
+                document.getElementById('flipVBtn').classList.remove('border-[#d4af37]', 'text-[#d4af37]');
+
+                Object.keys(sliders).forEach(key => {
+                    if (['rotate', 'vignette', 'sharpness', 'contrast', 'saturation', 'brightness'].includes(key)) {
+                        sliders[key].el.value = 0;
+                        sliders[key].valEl.textContent = key === 'rotate' ? '0°' : '0%';
+                    }
+                });
+            } else if (sectionId === 'grungePanel') {
+                state.wrinkles = 0;
+                state.scratchDensity = 0;
+                state.grain = 0;
+                state.fading = 0;
+                state.tintColor = '#b08c6a';
+                tintColorInput.value = '#b08c6a';
+                tintColorHex.textContent = '#b08c6a';
+
+                Object.keys(sliders).forEach(key => {
+                    if (['wrinkles', 'scratchDensity', 'grain', 'fading'].includes(key)) {
+                        sliders[key].el.value = 0;
+                        sliders[key].valEl.textContent = '0%';
+                    }
+                });
+            }
+            scheduleRender();
+            showToast("Reset section parameters to default.", "success");
+        }
+
+        // Upload functionality
+        uploadBtn.addEventListener('click', () => imageInput.click());
+        imageInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) loadImage(file);
+        });
+
+        // Drop & Drag upload support
+        window.addEventListener('dragover', (e) => e.preventDefault());
+        window.addEventListener('drop', (e) => {
+            e.preventDefault();
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith('image/')) {
+                loadImage(file);
+            }
+        });
+
+        function loadImage(file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    originalImage = img;
+                    
+                    // Setup baseline Canvas Dimensions
+                    baseCanvas.width = img.width;
+                    baseCanvas.height = img.height;
+                    baseCtx.clearRect(0, 0, baseCanvas.width, baseCanvas.height);
+                    baseCtx.drawImage(img, 0, 0);
+
+                    // Procedurally generate crease vectors for the folded wrinkles layout
+                    generateWrinkleCreases();
+
+                    imageLoaded = true;
+                    canvasPlaceholder.classList.add('hidden');
+                    canvas.classList.remove('hidden');
+                    
+                    scheduleRender();
+                    showToast("Loaded image successfully!", "success");
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Generate Fold Creases once on File load so that tweaking wrinkly sliders doesn't cause them to drift
+        function generateWrinkleCreases() {
+            if (!baseCanvas) return;
+            wrinkleCreases = [];
+            const w = baseCanvas.width;
+            const h = baseCanvas.height;
+            const count = 45; // Generates robust interconnected creasing coverage
+
+            let seed = 5678;
+            function srandom() {
+                let x = Math.sin(seed++) * 10000;
+                return x - Math.floor(x);
+            }
+
+            for (let i = 0; i < count; i++) {
+                let points = [];
+                let nodeCount = Math.floor(srandom() * 3) + 2; // 2 to 4 crease node path
+                let startX = srandom() * w;
+                let startY = srandom() * h;
+                points.push({x: startX, y: startY});
+
+                let angle = srandom() * Math.PI * 2;
+                let segmentLen = (w + h) * 0.12;
+
+                for (let j = 0; j < nodeCount; j++) {
+                    let last = points[points.length - 1];
+                    let nextX = last.x + Math.cos(angle) * segmentLen;
+                    let nextY = last.y + Math.sin(angle) * segmentLen;
+                    points.push({x: nextX, y: nextY});
+                    angle += (srandom() - 0.5) * 1.8; // slightly bend crease
+                }
+                wrinkleCreases.push(points);
+            }
+        }
+
+        // Render queue throttle
+        let renderScheduled = false;
+        function scheduleRender() {
+            if (renderScheduled) return;
+            renderScheduled = true;
+            requestAnimationFrame(() => {
+                render();
+                renderScheduled = false;
+            });
+        }
+
+        // Forward Transformation (baseline coordinates -> screen viewport coordinates)
+        function mapBaselineToDisplay(bx, by) {
+            if (!imageLoaded || !baseCanvas) return { x: bx, y: by };
+
+            // 1. Subtract original base center
+            let rx = bx - baseCanvas.width / 2;
+            let ry = by - baseCanvas.height / 2;
+
+            // 2. Rotate forward
+            const radAngle = (state.rotate * 15) * Math.PI / 180;
+            const cos = Math.cos(radAngle);
+            const sin = Math.sin(radAngle);
+            let dx = rx * cos - ry * sin;
+            let dy = rx * sin + ry * cos;
+
+            // 3. Mirror forward
+            if (state.flipH) dx = -dx;
+            if (state.flipV) dy = -dy;
+
+            // 4. Add display canvas center
+            const displayX = dx + canvas.width / 2;
+            const displayY = dy + canvas.height / 2;
+
+            return { x: displayX, y: displayY };
+        }
+
+        // Inverse Transformation (screen viewport coordinates -> baseline coordinates)
+        function mapDisplayToBaseline(dx, dy) {
+            if (!imageLoaded || !baseCanvas) return { x: dx, y: dy };
+
+            // 1. Subtract display center
+            let rx = dx - canvas.width / 2;
+            let ry = dy - canvas.height / 2;
+
+            // 2. Mirror backward
+            if (state.flipH) rx = -rx;
+            if (state.flipV) ry = -ry;
+
+            // 3. Rotate backward
+            const radAngle = (state.rotate * 15) * Math.PI / 180;
+            const cos = Math.cos(-radAngle);
+            const sin = Math.sin(-radAngle);
+            const bx = rx * cos - ry * sin;
+            const by = rx * sin + ry * cos;
+
+            // 4. Add original base center
+            const baselineX = bx + baseCanvas.width / 2;
+            const baselineY = by + baseCanvas.height / 2;
+
+            return { x: baselineX, y: baselineY };
+        }
+
+        // Multi-Step Image Filter Rendering System
+        function render() {
+            if (!imageLoaded || !baseCanvas) return;
+
+            // Compute bounds for rotation transforms on display canvas size
+            const radAngle = (state.rotate * 15) * Math.PI / 180;
+            const absoluteCos = Math.abs(Math.cos(radAngle));
+            const absoluteSin = Math.abs(Math.sin(radAngle));
+            
+            const rotatedWidth = baseCanvas.width * absoluteCos + baseCanvas.height * absoluteSin;
+            const rotatedHeight = baseCanvas.width * absoluteSin + baseCanvas.height * absoluteCos;
+            
+            canvas.width = rotatedWidth;
+            canvas.height = rotatedHeight;
+
+            // Clear viewport context
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Save transform matrix states
+            ctx.save();
+            ctx.translate(canvas.width / 2, canvas.height / 2);
+            ctx.rotate(radAngle);
+            ctx.scale(state.flipH ? -1 : 1, state.flipV ? -1 : 1);
+            
+            // Draw baseline raw image
+            ctx.drawImage(baseCanvas, -baseCanvas.width / 2, -baseCanvas.height / 2);
+
+            // Draw Text Overlay relative to transformed baseline system so it aligns correctly
+            if (state.textState.text.trim() !== '') {
+                drawTextOnCtx(ctx, -baseCanvas.width / 2 + state.textState.x, -baseCanvas.height / 2 + state.textState.y);
+            }
+
+            ctx.restore();
+
+            // Run Core Pixel Filters (Brightness, Contrast, Saturation, Vignette, Sharpness, Dust, Scratches)
+            applyFiltersPipeline();
+
+            // Render active selection lines atop workspace
+            renderSelectionIndicators();
+        }
+
+        // Image Processing Pixel Engine
+        function applyFiltersPipeline() {
+            const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const d = imgData.data;
+            const w = imgData.width;
+            const h = imgData.height;
+
+            // Precalculate coefficients
+            const b = state.brightness; 
+            const c = (state.contrast + 100) / 100; 
+            const s = (state.saturation + 100) / 100; 
+            const vign = state.vignette / 100;
+
+            const cx = w / 2;
+            const cy = h / 2;
+            const maxDist = Math.sqrt(cx*cx + cy*cy);
+
+            const tintRGB = hexToRgb(state.tintColor) || { r: 176, g: 140, b: 106 };
+
+            // Core adjustments
+            for (let i = 0; i < d.length; i += 4) {
+                let r = d[i];
+                let g = d[i+1];
+                let b_val = d[i+2];
+
+                // 1. Brightness & Contrast
+                if (b !== 0 || c !== 1) {
+                    r = ((r - 128) * c) + 128 + b;
+                    g = ((g - 128) * c) + 128 + b;
+                    b_val = ((b_val - 128) * c) + 128 + b;
+                }
+
+                // 2. Saturation
+                if (s !== 1) {
+                    const luma = 0.299 * r + 0.587 * g + 0.114 * b_val;
+                    r = luma + (r - luma) * s;
+                    g = luma + (g - luma) * s;
+                    b_val = luma + (b_val - luma) * s;
+                }
+
+                // 3. Vintage atmospheric wash / fade
+                if (state.fading > 0) {
+                    const fadeCo = state.fading / 100;
+                    r = r * (1 - fadeCo) + (tintRGB.r * 0.7) * fadeCo;
+                    g = g * (1 - fadeCo) + (tintRGB.g * 0.7) * fadeCo;
+                    b_val = b_val * (1 - fadeCo) + (tintRGB.b * 0.7) * fadeCo;
+                }
+
+                // 4. Custom Radial Vignette Layer
+                if (vign > 0) {
+                    const idx = i / 4;
+                    const px = idx % w;
+                    const py = Math.floor(idx / w);
+                    const dx = px - cx;
+                    const dy = py - cy;
+                    const dist = Math.sqrt(dx*dx + dy*dy) / maxDist;
+                    const vignetteFactor = 1 - (dist * vign);
+                    r *= Math.max(0, vignetteFactor);
+                    g *= Math.max(0, vignetteFactor);
+                    b_val *= Math.max(0, vignetteFactor);
+                }
+
+                d[i] = r < 0 ? 0 : r > 255 ? 255 : r;
+                d[i+1] = g < 0 ? 0 : g > 255 ? 255 : g;
+                d[i+2] = b_val < 0 ? 0 : b_val > 255 ? 255 : b_val;
+            }
+
+            ctx.putImageData(imgData, 0, 0);
+
+            // 5. Apply Sharpness & Multi-Pass Smooth Blurring
+            if (state.sharpness !== 0) {
+                applySharpness(state.sharpness);
+            }
+
+            // 6. Generate Procedural Artistic Grunge Layers overlay (Crumple paper wrinkles, noise, dust)
+            applyGrungeFilters(tintRGB);
+        }
+
+        // Fast Sharpness / Blur Convolution Matrix
+        function applySharpness(sharpnessVal) {
+            const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const w = imgData.width;
+            const h = imgData.height;
+            const src = new Uint8ClampedArray(imgData.data);
+            const dst = imgData.data;
+
+            // If Sharpness is Negative, run an beautiful multi-pass box blur to make blurring completely visible
+            if (sharpnessVal < 0) {
+                const passes = Math.min(10, Math.ceil(Math.abs(sharpnessVal) / 10));
+                for (let p = 0; p < passes; p++) {
+                    boxBlurPass(imgData);
+                }
+                return;
+            }
+
+            // Otherwise apply clean High pass Sharpness matrix
+            let kernel;
+            const amount = sharpnessVal / 100;
+            kernel = [
+                0, -amount, 0,
+                -amount, 1 + (4 * amount), -amount,
+                0, -amount, 0
+            ];
+
+            const kSize = 3;
+            const halfK = 1;
+
+            for (let y = 0; y < h; y++) {
+                for (let x = 0; x < w; x++) {
+                    let r = 0, g = 0, b = 0;
+                    for (let ky = 0; ky < kSize; ky++) {
+                        for (let kx = 0; kx < kSize; kx++) {
+                            const px = Math.min(w - 1, Math.max(0, x + kx - halfK));
+                            const py = Math.min(h - 1, Math.max(0, y + ky - halfK));
+                            const srcIdx = (py * w + px) * 4;
+                            const weight = kernel[ky * kSize + kx];
+
+                            r += src[srcIdx] * weight;
+                            g += src[srcIdx+1] * weight;
+                            b += src[srcIdx+2] * weight;
+                        }
+                    }
+                    const dstIdx = (y * w + x) * 4;
+                    dst[dstIdx] = r < 0 ? 0 : r > 255 ? 255 : r;
+                    dst[dstIdx+1] = g < 0 ? 0 : g > 255 ? 255 : g;
+                    dst[dstIdx+2] = b < 0 ? 0 : b > 255 ? 255 : b;
+                }
+            }
+            ctx.putImageData(imgData, 0, 0);
+        }
+
+        // Fast Box Blur Pass for clean blurry filters
+        function boxBlurPass(imgData) {
+            const d = imgData.data;
+            const w = imgData.width;
+            const h = imgData.height;
+            const src = new Uint8ClampedArray(d);
+
+            for (let y = 0; y < h; y++) {
+                for (let x = 0; x < w; x++) {
+                    let r = 0, g = 0, b = 0, count = 0;
+                    for (let ky = -1; ky <= 1; ky++) {
+                        for (let kx = -1; kx <= 1; kx++) {
+                            const px = x + kx;
+                            const py = y + ky;
+                            if (px >= 0 && px < w && py >= 0 && py < h) {
+                                const idx = (py * w + px) * 4;
+                                r += src[idx];
+                                g += src[idx+1];
+                                b += src[idx+2];
+                                count++;
+                            }
+                        }
+                    }
+                    const idx = (y * w + x) * 4;
+                    d[idx] = r / count;
+                    d[idx+1] = g / count;
+                    d[idx+2] = b / count;
+                }
+            }
+        }
+
+        // Procedural Grunge generator overlays
+        function applyGrungeFilters(tintRGB) {
+            ctx.save();
+            
+            let randSeed = 42;
+            function srandom() {
+                let x = Math.sin(randSeed++) * 10000;
+                return x - Math.floor(x);
+            }
+
+            // A: Noise & Grain
+            if (state.grain > 0) {
+                const grainImgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                const gd = grainImgData.data;
+                const grainCo = state.grain / 100;
+                
+                for (let i = 0; i < gd.length; i += 4) {
+                    if (srandom() < (grainCo * 0.003)) {
+                        const dustColor = srandom() > 0.5 ? 255 : 30;
+                        gd[i] = dustColor;
+                        gd[i+1] = dustColor;
+                        gd[i+2] = dustColor;
+                    } else if (grainCo > 0) {
+                        const grainNoise = (srandom() - 0.5) * grainCo * 65;
+                        gd[i] = Math.min(255, Math.max(0, gd[i] + grainNoise));
+                        gd[i+1] = Math.min(255, Math.max(0, gd[i+1] + grainNoise));
+                        gd[i+2] = Math.min(255, Math.max(0, gd[i+2] + grainNoise));
+                    }
+                }
+                ctx.putImageData(grainImgData, 0, 0);
+            }
+
+            // B: Scratch lines overlay
+            if (state.scratchDensity > 0) {
+                const numScratches = Math.floor(state.scratchDensity * 0.35);
+                ctx.strokeStyle = `rgba(235, 225, 215, ${state.scratchDensity * 0.008})`;
+                ctx.lineWidth = 0.8;
+                
+                for (let i = 0; i < numScratches; i++) {
+                    ctx.beginPath();
+                    const x1 = srandom() * canvas.width;
+                    const y1 = srandom() * canvas.height;
+                    ctx.moveTo(x1, y1);
+                    ctx.quadraticCurveTo(
+                        x1 + (srandom() - 0.5) * 120,
+                        y1 + (srandom() - 0.5) * 120,
+                        x1 + (srandom() - 0.5) * 200,
+                        y1 + (srandom() - 0.5) * 200
+                    );
+                    ctx.stroke();
+                }
+            }
+
+            // C: Procedural Wrinkles Crumpled paper crease highlights/shadow lines
+            if (state.wrinkles > 0 && wrinkleCreases.length > 0) {
+                const wrinkleCo = state.wrinkles / 100;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'miter';
+
+                // 1. Draw Crease shadow pass (slightly offset bottom-right)
+                ctx.strokeStyle = `rgba(0, 0, 0, ${0.42 * wrinkleCo})`;
+                ctx.lineWidth = 1.0 + wrinkleCo * 1.5;
+                wrinkleCreases.forEach(path => {
+                    ctx.beginPath();
+                    const start = mapBaselineToDisplay(path[0].x, path[0].y);
+                    ctx.moveTo(start.x + 1.2, start.y + 1.2);
+                    for (let i = 1; i < path.length; i++) {
+                        const pt = mapBaselineToDisplay(path[i].x, path[i].y);
+                        ctx.lineTo(pt.x + 1.2, pt.y + 1.2);
+                    }
+                    ctx.stroke();
+                });
+
+                // 2. Draw Crease highlight pass (slightly offset top-left)
+                ctx.strokeStyle = `rgba(255, 255, 255, ${0.48 * wrinkleCo})`;
+                ctx.lineWidth = 0.8 + wrinkleCo * 1.0;
+                wrinkleCreases.forEach(path => {
+                    ctx.beginPath();
+                    const start = mapBaselineToDisplay(path[0].x, path[0].y);
+                    ctx.moveTo(start.x - 1.0, start.y - 1.0);
+                    for (let i = 1; i < path.length; i++) {
+                        const pt = mapBaselineToDisplay(path[i].x, path[i].y);
+                        ctx.lineTo(pt.x - 1.0, pt.y - 1.0);
+                    }
+                    ctx.stroke();
+                });
+
+                // 3. Far-right heavy destructive details (jagged paper tear cracks, dark worn folds)
+                if (state.wrinkles > 80) {
+                    const tearIntensity = (state.wrinkles - 80) / 20; // 0 to 1
+                    ctx.strokeStyle = `rgba(26, 18, 12, ${0.85 * tearIntensity})`;
+                    ctx.lineWidth = 3.5 * tearIntensity;
+                    
+                    // Draw randomized jagged paper rips
+                    for (let i = 0; i < 4; i++) {
+                        ctx.beginPath();
+                        let localSeed = i * 4567;
+                        function localRand() {
+                            let x = Math.sin(localSeed++) * 10000;
+                            return x - Math.floor(x);
+                        }
+                        const rX = localRand() * canvas.width;
+                        const rY = localRand() * canvas.height;
+                        ctx.moveTo(rX, rY);
+                        let cx = rX;
+                        let cy = rY;
+                        for (let j = 0; j < 6; j++) {
+                            cx += (localRand() - 0.5) * 75;
+                            cy += (localRand() - 0.5) * 75;
+                            ctx.lineTo(cx, cy);
+                        }
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            ctx.restore();
+        }
+
+        // ==========================================
+        // FINGER PAINTS & DRAWING SELECTIONS ENGINE
+        // ==========================================
+        const selectionButtons = {
+            rect: document.getElementById('btn-tool-rect'),
+            free: document.getElementById('btn-tool-free'),
+            paint: document.getElementById('btn-tool-paint')
+        };
+
+        const activeToolName = document.getElementById('activeToolName');
+        const activeToolIndicator = document.getElementById('activeToolIndicator');
+        const paintSettings = document.getElementById('paintSettings');
+
+        // Tool Toggle click handlers
+        Object.keys(selectionButtons).forEach(tool => {
+            selectionButtons[tool].addEventListener('click', () => {
+                if (!imageLoaded) return showToast("Upload an image first!");
+                if (selectionType === tool) {
+                    setSelectionTool('none');
+                } else {
+                    setSelectionTool(tool);
+                }
+            });
+        });
+
+        function setSelectionTool(tool) {
+            selectionType = tool;
+            
+            // Clean selection variables instantly to prevent lingering stale lines
+            selectionActive = false;
+            freePath = [];
+            startX = undefined;
+            startY = undefined;
+            currentX = undefined;
+            currentY = undefined;
+            
+            Object.keys(selectionButtons).forEach(k => {
+                const btn = selectionButtons[k];
+                if (k === tool) {
+                    btn.classList.add('bg-[#d4af37]/10', 'border-[#d4af37]', 'text-[#d4af37]');
+                } else {
+                    btn.classList.remove('bg-[#d4af37]/10', 'border-[#d4af37]', 'text-[#d4af37]');
+                }
+            });
+
+            if (tool === 'paint') {
+                paintSettings.classList.remove('hidden');
+            } else {
+                paintSettings.classList.add('hidden');
+            }
+
+            if (tool !== 'none' && tool !== 'text') {
+                activeToolName.textContent = tool === 'rect' ? 'Rectangle Select' : tool === 'free' ? 'Lasso Select' : 'Brush Paint';
+                activeToolIndicator.classList.remove('opacity-0', 'translate-y-4');
+            } else if (tool === 'text') {
+                activeToolName.textContent = 'Text Repositioning';
+                activeToolIndicator.classList.remove('opacity-0', 'translate-y-4');
+            } else {
+                activeToolIndicator.classList.add('opacity-0', 'translate-y-4');
+            }
+            scheduleRender();
+        }
+
+        document.getElementById('deselectBtn').addEventListener('click', () => {
+            setSelectionTool('none');
+            showToast("Cleared active canvas selections.", "success");
+        });
+
+        // Event listener coordinates translaters
+        function getCanvasCoords(e) {
+            const rect = canvas.getBoundingClientRect();
+            // Map viewport position to coordinate density of underlying bitmap
+            const x = (e.clientX - rect.left) * (canvas.width / rect.width);
+            const y = (e.clientY - rect.top) * (canvas.height / rect.height);
+            return { x, y };
+        }
+
+        // Support mobile Touch actions
+        function getTouchCoords(e) {
+            if (e.touches.length === 0) return null;
+            const touch = e.touches[0];
+            const rect = canvas.getBoundingClientRect();
+            const x = (touch.clientX - rect.left) * (canvas.width / rect.width);
+            const y = (touch.clientY - rect.top) * (canvas.height / rect.height);
+            return { x, y };
+        }
+
+        // Start touch/mouse interaction
+        function handleStart(displayCoords) {
+            if (!imageLoaded || selectionType === 'none') return;
+            
+            const coords = mapDisplayToBaseline(displayCoords.x, displayCoords.y);
+            
+            // Check Text click collision bounds
+            if (selectionType === 'text' && state.textState.text.trim() !== '') {
+                const textBBox = measureTextBoundingBox();
+                if (textBBox && coords.x >= textBBox.x1 && coords.x <= textBBox.x2 && coords.y >= textBBox.y1 && coords.y <= textBBox.y2) {
+                    isDraggingText = true;
+                    textDragOffsetX = coords.x - state.textState.x;
+                    textDragOffsetY = coords.y - state.textState.y;
+                    return;
+                }
+            }
+
+            isDrawing = true;
+            startX = coords.x;
+            startY = coords.y;
+            currentX = coords.x;
+            currentY = coords.y;
+
+            if (selectionType === 'free') {
+                freePath = [{ x: coords.x, y: coords.y }];
+            } else if (selectionType === 'paint') {
+                saveUndoState(); // Store undo frame before drawing
+
+                baseCtx.save();
+                applySelectionClipping(baseCtx);
+                
+                baseCtx.beginPath();
+                baseCtx.moveTo(coords.x, coords.y);
+                baseCtx.strokeStyle = paintColorInput.value;
+                baseCtx.lineWidth = parseInt(paintSizeInput.value) || 15;
+                baseCtx.lineCap = 'round';
+                baseCtx.lineJoin = 'round';
+                
+                brushPath = [{ x: coords.x, y: coords.y }];
+            }
+        }
+
+        // Handle move operations
+        function handleMove(displayCoords) {
+            const coords = mapDisplayToBaseline(displayCoords.x, displayCoords.y);
+
+            // Drag dynamic text box
+            if (isDraggingText && selectionType === 'text') {
+                state.textState.x = coords.x - textDragOffsetX;
+                state.textState.y = coords.y - textDragOffsetY;
+                scheduleRender();
+                return;
+            }
+
+            if (!isDrawing) return;
+            currentX = coords.x;
+            currentY = coords.y;
+
+            if (selectionType === 'rect') {
+                selectionActive = true;
+                scheduleRender();
+            } else if (selectionType === 'free') {
+                selectionActive = true;
+                freePath.push({ x: coords.x, y: coords.y });
+                scheduleRender();
+            } else if (selectionType === 'paint') {
+                baseCtx.lineTo(coords.x, coords.y);
+                baseCtx.stroke();
+                brushPath.push({ x: coords.x, y: coords.y });
+                scheduleRender();
+            }
+        }
+
+        function handleEnd() {
+            if (isDraggingText) {
+                isDraggingText = false;
+                return;
+            }
+            if (!isDrawing) return;
+            isDrawing = false;
+
+            if (selectionType === 'paint') {
+                baseCtx.restore();
+                scheduleRender();
+            }
+        }
+
+        canvas.addEventListener('mousedown', (e) => handleStart(getCanvasCoords(e)));
+        canvas.addEventListener('mousemove', (e) => handleMove(getCanvasCoords(e)));
+        canvas.addEventListener('mouseup', handleEnd);
+        canvas.addEventListener('mouseleave', handleEnd);
+
+        // Double-click event listener to cleanly auto-close lasso selection paths
+        canvas.addEventListener('dblclick', (e) => {
+            if (!imageLoaded) return;
+            if (selectionType === 'free' && freePath.length > 2) {
+                // Pop the last 2 nodes which represent mouse coordinate drag jitter added by double clicking
+                if (freePath.length > 4) {
+                    freePath.pop();
+                    freePath.pop();
+                }
+                // Auto close boundary by drawing path back to origin start coordinates
+                freePath.push({ x: freePath[0].x, y: freePath[0].y });
+                selectionActive = true;
+                isDrawing = false;
+                scheduleRender();
+                showToast("Lasso selection closed successfully!", "success");
+            }
+        });
+
+        canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            const coords = getTouchCoords(e);
+            if (coords) handleStart(coords);
+        });
+        canvas.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            const coords = getTouchCoords(e);
+            if (coords) handleMove(coords);
+        });
+        canvas.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            handleEnd();
+        });
+
+        // Restrict active editing boundaries to selections
+        function applySelectionClipping(context) {
+            if (!selectionActive) return;
+            context.beginPath();
+            if (freePath.length > 1) {
+                context.moveTo(freePath[0].x, freePath[0].y);
+                for (let i = 1; i < freePath.length; i++) {
+                    context.lineTo(freePath[i].x, freePath[i].y);
+                }
+                context.closePath();
+                context.clip();
+            } else {
+                const rx = Math.min(startX, currentX);
+                const ry = Math.min(startY, currentY);
+                const rw = Math.abs(startX - currentX);
+                const rh = Math.abs(startY - currentY);
+                context.rect(rx, ry, rw, rh);
+                context.clip();
+            }
+        }
+
+        // Render Dashed Selection Box in Display space
+        function renderSelectionIndicators() {
+            if (!selectionActive) return;
+
+            ctx.save();
+
+            // Create Path representation
+            const pathObj = new Path2D();
+            if (freePath.length > 1) {
+                const startPt = mapBaselineToDisplay(freePath[0].x, freePath[0].y);
+                pathObj.moveTo(startPt.x, startPt.y);
+                for (let i = 1; i < freePath.length; i++) {
+                    const pt = mapBaselineToDisplay(freePath[i].x, freePath[i].y);
+                    pathObj.lineTo(pt.x, pt.y);
+                }
+                pathObj.closePath();
+            } else {
+                if (startX === undefined || currentX === undefined) {
+                    ctx.restore();
+                    return;
+                }
+                const p1 = mapBaselineToDisplay(startX, startY);
+                const p2 = mapBaselineToDisplay(currentX, currentY);
+                const rx = Math.min(p1.x, p2.x);
+                const ry = Math.min(p1.y, p2.y);
+                const rw = Math.abs(p1.x - p2.x);
+                const rh = Math.abs(p1.y - p2.y);
+                pathObj.rect(rx, ry, rw, rh);
+            }
+
+            // Pass 1: Solid Black Backing for Contrast (thicker stroke)
+            ctx.strokeStyle = '#000000';
+            ctx.lineWidth = 4.5;
+            ctx.setLineDash([]); // solid backing
+            ctx.stroke(pathObj);
+
+            // Pass 2: Dashed Gold Foreground for Elegant High Visibility
+            ctx.strokeStyle = '#d4af37';
+            ctx.lineWidth = 2.5;
+            ctx.setLineDash([8, 6]); // bold, long dashes
+            ctx.stroke(pathObj);
+
+            ctx.restore();
+        }
+
+        // ==========================================
+        // TEXT OVERLAY DRAWING ENGINE
+        // ==========================================
+
+        // Track Text Panel changes
+        textInputEl.addEventListener('input', (e) => {
+            state.textState.text = e.target.value;
+            scheduleRender();
+        });
+
+        textFontEl.addEventListener('change', (e) => {
+            state.textState.font = e.target.value;
+            scheduleRender();
+        });
+
+        textColorEl.addEventListener('input', (e) => {
+            state.textState.color = e.target.value;
+            scheduleRender();
+        });
+
+        textSizeEl.addEventListener('input', (e) => {
+            const val = parseInt(e.target.value);
+            state.textState.size = val;
+            textSizeVal.textContent = `${val}px`;
+            scheduleRender();
+        });
+
+        textGlowEl.addEventListener('input', (e) => {
+            const val = parseInt(e.target.value);
+            state.textState.glow = val;
+            textGlowVal.textContent = `${val}px`;
+            scheduleRender();
+        });
+
+        textShadowEl.addEventListener('input', (e) => {
+            const val = parseInt(e.target.value);
+            state.textState.shadow = val;
+            textShadowVal.textContent = `${val}px`;
+            scheduleRender();
+        });
+
+        // Measure text boundary coordinates relative to baseline workspace
+        function measureTextBoundingBox() {
+            const txt = state.textState;
+            if (!txt.text) return null;
+
+            baseCtx.save();
+            baseCtx.font = `${txt.size}px ${txt.font}`;
+            const lines = txt.text.split('\n');
+            let maxW = 0;
+            for (let i = 0; i < lines.length; i++) {
+                const width = baseCtx.measureText(lines[i]).width;
+                if (width > maxW) maxW = width;
+            }
+            baseCtx.restore();
+
+            const lineHeight = txt.size * 1.25;
+            const totalH = lines.length * lineHeight;
+
+            return {
+                x1: txt.x,
+                y1: txt.y,
+                x2: txt.x + maxW,
+                y2: txt.y + totalH
+            };
+        }
+
+        // Draw multi-line text with shadow and glow
+        function drawTextOnCtx(context, x, y) {
+            const txt = state.textState;
+            context.save();
+            
+            context.font = `${txt.size}px ${txt.font}`;
+            context.fillStyle = txt.color;
+            context.textBaseline = 'top';
+            context.textAlign = 'left';
+
+            // Glow / Shadow Settings
+            if (txt.glow > 0) {
+                context.shadowColor = 'rgba(255, 255, 255, 0.95)';
+                context.shadowBlur = txt.glow;
+            } else if (txt.shadow > 0) {
+                context.shadowColor = 'rgba(0, 0, 0, 0.85)';
+                context.shadowBlur = txt.shadow / 2;
+                context.shadowOffsetX = txt.shadow / 3;
+                context.shadowOffsetY = txt.shadow / 3;
+            }
+
+            const lines = txt.text.split('\n');
+            const lineHeight = txt.size * 1.25;
+            for (let i = 0; i < lines.length; i++) {
+                context.fillText(lines[i], x, y + (i * lineHeight));
+            }
+
+            context.restore();
+        }
+
+        // ==========================================
+        // REGION ACTIONS (Heal, Fill, Crop)
+        // ==========================================
+
+        // Crop Selection Action
+        document.getElementById('cropBtn').addEventListener('click', () => {
+            if (!imageLoaded) return showToast("Upload an image first!");
+            if (!selectionActive) return showToast("Please select an area to crop first!");
+
+            let rx, ry, rw, rh;
+            if (freePath.length > 1) {
+                const xs = freePath.map(p => p.x);
+                const ys = freePath.map(p => p.y);
+                rx = Math.min(...xs);
+                ry = Math.min(...ys);
+                rw = Math.max(...xs) - rx;
+                rh = Math.max(...ys) - ry;
+            } else {
+                rx = Math.min(startX, currentX);
+                ry = Math.min(startY, currentY);
+                rw = Math.abs(startX - currentX);
+                rh = Math.abs(startY - currentY);
+            }
+
+            if (rw < 5 || rh < 5) return showToast("Selection box too small for crop.");
+
+            saveUndoState(); // Store undo framing
+
+            const cropCanvas = document.createElement('canvas');
+            cropCanvas.width = rw;
+            cropCanvas.height = rh;
+            const cropCtx = cropCanvas.getContext('2d');
+            
+            cropCtx.drawImage(baseCanvas, rx, ry, rw, rh, 0, 0, rw, rh);
+
+            baseCanvas.width = rw;
+            baseCanvas.height = rh;
+            baseCtx.clearRect(0, 0, rw, rh);
+            baseCtx.drawImage(cropCanvas, 0, 0);
+
+            // Re-generate wrinkles for the new smaller crop frame
+            generateWrinkleCreases();
+
+            // Clean active selections
+            selectionActive = false;
+            freePath = [];
+            setSelectionTool('none');
+            
+            scheduleRender();
+            showToast("Image cropped successfully!", "success");
+        });
+
+        // Color Fill Action
+        document.getElementById('btn-action-fill').addEventListener('click', () => {
+            if (!imageLoaded) return showToast("Upload an image first!");
+            if (!selectionActive) return showToast("First select an area!");
+
+            const tempColorPicker = document.createElement('input');
+            tempColorPicker.type = 'color';
+            tempColorPicker.value = paintColorInput.value;
+            tempColorPicker.click();
+
+            tempColorPicker.addEventListener('change', (e) => {
+                saveUndoState(); // Store undo frame
+
+                const fillClr = e.target.value;
+                baseCtx.save();
+                applySelectionClipping(baseCtx);
+
+                baseCtx.fillStyle = fillClr;
+                baseCtx.fillRect(0, 0, baseCanvas.width, baseCanvas.height);
+                baseCtx.restore();
+
+                scheduleRender();
+                showToast("Filled selection with color.", "success");
+            });
+        });
+
+        // Advanced Spot Healing Inpainter (Texture Boundary cloning & propagation)
+        document.getElementById('btn-action-heal').addEventListener('click', () => {
+            if (!imageLoaded) return showToast("Upload an image first!");
+            if (!selectionActive) return showToast("First select an area!");
+
+            saveUndoState(); // Store undo state
+
+            const imgData = baseCtx.getImageData(0, 0, baseCanvas.width, baseCanvas.height);
+            const d = imgData.data;
+            const w = imgData.width;
+            const h = imgData.height;
+
+            const mask = new Uint8Array(w * h);
+
+            let rx = 0, ry = 0, rw = w, rh = h;
+            if (freePath.length > 1) {
+                const xs = freePath.map(p => p.x);
+                const ys = freePath.map(p => p.y);
+                rx = Math.max(0, Math.floor(Math.min(...xs)));
+                ry = Math.max(0, Math.floor(Math.min(...ys)));
+                rw = Math.min(w, Math.ceil(Math.max(...xs))) - rx;
+                rh = Math.min(h, Math.ceil(Math.max(...ys))) - ry;
+            } else {
+                rx = Math.max(0, Math.floor(Math.min(startX, currentX)));
+                ry = Math.max(0, Math.floor(Math.min(startY, currentY)));
+                rw = Math.min(w, Math.ceil(Math.abs(startX - currentX)));
+                rh = Math.min(h, Math.ceil(Math.abs(startY - currentY)));
+            }
+
+            // Create selection boolean mask
+            for (let y = ry; y < ry + rh; y++) {
+                for (let x = rx; x < rx + rw; x++) {
+                    if (isPointInsideSelection(x, y)) {
+                        mask[y * w + x] = 1;
+                    }
+                }
+            }
+
+            // Outer Texture propagation clone pass
+            const src = new Uint8ClampedArray(imgData.data);
+            for (let y = ry; y < ry + rh; y++) {
+                for (let x = rx; x < rx + rw; x++) {
+                    const idx = y * w + x;
+                    if (mask[idx] === 1) {
+                        // Find closest unmasked border pixel immediately outside selection boundary
+                        const nearest = findNearestUnmasked(x, y, mask, w, h);
+                        const destIdx = idx * 4;
+                        const nearestIdx = (nearest.y * w + nearest.x) * 4;
+                        
+                        d[destIdx] = src[nearestIdx];
+                        d[destIdx+1] = src[nearestIdx+1];
+                        d[destIdx+2] = src[nearestIdx+2];
+                    }
+                }
+            }
+
+            // Smooth texture boundaries / Feather seams
+            applySmartInpaintBlur(imgData, mask, rx, ry, rw, rh);
+
+            baseCtx.putImageData(imgData, 0, 0);
+            scheduleRender();
+            showToast("Successfully healed selected region details!", "success");
+        });
+
+        // Fast Spiral outward search to clone boundary textures
+        function findNearestUnmasked(x, y, mask, w, h) {
+            let maxDist = Math.max(w, h);
+            for (let r = 1; r < maxDist; r++) {
+                // Top & Bottom boundary rings of radius r
+                for (let dx = -r; dx <= r; dx++) {
+                    let nx1 = x + dx;
+                    let ny1 = y - r;
+                    if (nx1 >= 0 && nx1 < w && ny1 >= 0 && ny1 < h) {
+                        if (mask[ny1 * w + nx1] === 0) return {x: nx1, y: ny1};
+                    }
+                    let nx2 = x + dx;
+                    let ny2 = y + r;
+                    if (nx2 >= 0 && nx2 < w && ny2 >= 0 && ny2 < h) {
+                        if (mask[ny2 * w + nx2] === 0) return {x: nx2, y: ny2};
+                    }
+                }
+                // Left & Right boundary rings of radius r
+                for (let dy = -r + 1; dy < r; dy++) {
+                    let nx1 = x - r;
+                    let ny1 = y + dy;
+                    if (nx1 >= 0 && nx1 < w && ny1 >= 0 && ny1 < h) {
+                        if (mask[ny1 * w + nx1] === 0) return {x: nx1, y: ny1};
+                    }
+                    let nx2 = x + r;
+                    let ny2 = y + dy;
+                    if (nx2 >= 0 && nx2 < w && ny2 >= 0 && ny2 < h) {
+                        if (mask[ny2 * w + nx2] === 0) return {x: nx2, y: ny2};
+                    }
+                }
+            }
+            return {x, y};
+        }
+
+        function isPointInsideSelection(x, y) {
+            if (!selectionActive) return false;
+            if (freePath.length > 1) {
+                let inside = false;
+                for (let i = 0, j = freePath.length - 1; i < freePath.length; j = i++) {
+                    const xi = freePath[i].x, yi = freePath[i].y;
+                    const xj = freePath[j].x, yj = freePath[j].y;
+                    const intersect = ((yi > y) !== (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+                    if (intersect) inside = !inside;
+                }
+                return inside;
+            } else {
+                if (startX === undefined || currentX === undefined) return false;
+                const rx = Math.min(startX, currentX);
+                const ry = Math.min(startY, currentY);
+                const rw = Math.abs(startX - currentX);
+                const rh = Math.abs(startY - currentY);
+                return (x >= rx && x <= rx + rw && y >= ry && y <= ry + rh);
+            }
+        }
+
+        // Box blend smoothing strictly within seam masks
+        function applySmartInpaintBlur(imgData, mask, rx, ry, rw, rh) {
+            const w = imgData.width;
+            const h = imgData.height;
+            const src = new Uint8ClampedArray(imgData.data);
+            const d = imgData.data;
+
+            // Feathering boundary seams
+            for (let y = ry; y < ry + rh; y++) {
+                for (let x = rx; x < rx + rw; x++) {
+                    const idx = y * w + x;
+                    if (mask[idx] === 1) {
+                        let r = 0, g = 0, b = 0, count = 0;
+                        for (let ky = -2; ky <= 2; ky++) {
+                            for (let kx = -2; kx <= 2; kx++) {
+                                const px = x + kx;
+                                const py = y + ky;
+                                if (px >= 0 && px < w && py >= 0 && py < h) {
+                                    const nIdx = (py * w + px) * 4;
+                                    r += src[nIdx];
+                                    g += src[nIdx+1];
+                                    b += src[nIdx+2];
+                                    count++;
+                                }
+                            }
+                        }
+                        const pixIdx = idx * 4;
+                        d[pixIdx] = r / count;
+                        d[pixIdx+1] = g / count;
+                        d[pixIdx+2] = b / count;
+                    }
+                }
+            }
+        }
+
+        // ==========================================
+        // SECTION 4: ARTISTIC STUDIO FILTERS
+        // ==========================================
+        const fxButtons = document.querySelectorAll('.fx-preset-btn');
+        fxButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (!imageLoaded) return showToast("Upload an image first!");
+                const fx = btn.getAttribute('data-fx');
+                applyArtisticPreset(fx);
+            });
+        });
+
+        function applyArtisticPreset(preset) {
+            saveUndoState(); // Store undo frame
+
+            const imgData = baseCtx.getImageData(0, 0, baseCanvas.width, baseCanvas.height);
+            const d = imgData.data;
+            const w = imgData.width;
+            const h = imgData.height;
+
+            if (preset === 'sepia') {
+                for (let i = 0; i < d.length; i += 4) {
+                    const r = d[i], g = d[i+1], b = d[i+2];
+                    d[i] = (r * 0.393) + (g * 0.769) + (b * 0.189);
+                    d[i+1] = (r * 0.349) + (g * 0.686) + (b * 0.168);
+                    d[i+2] = (r * 0.272) + (g * 0.534) + (b * 0.131);
+                }
+                baseCtx.putImageData(imgData, 0, 0);
+                scheduleRender();
+                showToast("Applied Vintage Sepia styling!", "success");
+            } else if (preset === 'pixel') {
+                const pixelSize = 10;
+                const tempCanv = document.createElement('canvas');
+                tempCanv.width = Math.max(1, w / pixelSize);
+                tempCanv.height = Math.max(1, h / pixelSize);
+                const tempCtx = tempCanv.getContext('2d');
+                
+                tempCtx.imageSmoothingEnabled = false;
+                baseCtx.imageSmoothingEnabled = false;
+
+                tempCtx.drawImage(baseCanvas, 0, 0, w, h, 0, 0, tempCanv.width, tempCanv.height);
+                baseCtx.clearRect(0, 0, w, h);
+                baseCtx.drawImage(tempCanv, 0, 0, tempCanv.width, tempCanv.height, 0, 0, w, h);
+                
+                baseCtx.imageSmoothingEnabled = true;
+                scheduleRender();
+                showToast("Applied Retro Pixelation!", "success");
+            } else if (preset === 'cyber') {
+                // High-Fidelity Multi-Color Edge-Aware Cyberpunk Highlights Filter
+                const src = new Uint8ClampedArray(d);
+                for (let y = 1; y < h - 1; y++) {
+                    for (let x = 1; x < w - 1; x++) {
+                        const idx = (y * w + x) * 4;
+                        const r = src[idx], g = src[idx+1], b_val = src[idx+2];
+                        const luma = 0.299 * r + 0.587 * g + 0.114 * b_val;
+
+                        // Sobel structural edge calculation to highlight contours in neon green/pink/cyan
+                        const leftIdx = (y * w + (x - 1)) * 4;
+                        const rightIdx = (y * w + (x + 1)) * 4;
+                        const topIdx = ((y - 1) * w + x) * 4;
+                        const bottomIdx = ((y + 1) * w + x) * 4;
+
+                        const lumaLeft = 0.299 * src[leftIdx] + 0.587 * src[leftIdx+1] + 0.114 * src[leftIdx+2];
+                        const lumaRight = 0.299 * src[rightIdx] + 0.587 * src[rightIdx+1] + 0.114 * src[rightIdx+2];
+                        const lumaTop = 0.299 * src[topIdx] + 0.587 * src[topIdx+1] + 0.114 * src[topIdx+2];
+                        const lumaBottom = 0.299 * src[bottomIdx] + 0.587 * src[bottomIdx+1] + 0.114 * src[bottomIdx+2];
+
+                        const edgeX = lumaRight - lumaLeft;
+                        const edgeY = lumaBottom - lumaTop;
+                        const edgeStrength = Math.sqrt(edgeX * edgeX + edgeY * edgeY);
+
+                        if (edgeStrength > 35) {
+                            // Edge contours colored with high intensity neon accents
+                            const selector = (x + y) % 3;
+                            if (selector === 0) {
+                                // Neon Pink / Magenta
+                                d[idx] = 255;
+                                d[idx+1] = 0;
+                                d[idx+2] = 180;
+                            } else if (selector === 1) {
+                                // Neon Cyan
+                                d[idx] = 0;
+                                d[idx+1] = 240;
+                                d[idx+2] = 255;
+                            } else {
+                                // Neon Green
+                                d[idx] = 50;
+                                d[idx+1] = 255;
+                                d[idx+2] = 50;
+                            }
+                        } else {
+                            // Non-edge zones styled with rich deep cyber gradients
+                            if (luma < 60) {
+                                // Shadows: Deep Violet
+                                d[idx] = Math.max(0, luma * 0.4);
+                                d[idx+1] = 0;
+                                d[idx+2] = Math.min(255, luma * 1.5 + 40);
+                            } else if (luma < 150) {
+                                // Midtones: Rich Electric Blue
+                                d[idx] = Math.max(0, luma * 0.2);
+                                d[idx+1] = Math.min(255, luma * 0.5 + 20);
+                                d[idx+2] = Math.min(255, luma * 1.6 + 60);
+                            } else {
+                                // Highlights: Pastel Violet / White
+                                d[idx] = Math.min(255, luma * 1.2 + 30);
+                                d[idx+1] = Math.max(0, luma * 0.6);
+                                d[idx+2] = 255;
+                            }
+                        }
+                    }
+                }
+                baseCtx.putImageData(imgData, 0, 0);
+                scheduleRender();
+                showToast("Applied Neon Cyberpunk filter!", "success");
+            } else if (preset === 'oil') {
+                for (let i = 0; i < d.length; i += 4) {
+                    const luma = 0.299 * d[i] + 0.587 * d[i+1] + 0.114 * d[i+2];
+                    const level = Math.round(luma / 64) * 64;
+                    const scale = level / (luma || 1);
+                    d[i] = Math.min(255, d[i] * scale * 1.1);
+                    d[i+1] = Math.min(255, d[i+1] * scale * 1.1);
+                    d[i+2] = Math.min(255, d[i+2] * scale * 0.9);
+                }
+                baseCtx.putImageData(imgData, 0, 0);
+                scheduleRender();
+                showToast("Applied Oil Painting style!", "success");
+            }
+        }
+
+        // ==========================================
+        // AI GENERATIVE EDIT VIA GEMINI API
+        // ==========================================
+        const aiGenerateBtn = document.getElementById('aiGenerateBtn');
+        const aiPromptInput = document.getElementById('aiPrompt');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+
+        aiGenerateBtn.addEventListener('click', async () => {
+            if (!imageLoaded) return showToast("Upload an image first!");
+            const promptText = aiPromptInput.value.trim();
+            if (!promptText) return showToast("Please describe the AI edit you wish to generate!");
+
+            loadingOverlay.classList.remove('pointer-events-none', 'opacity-0');
+            loadingOverlay.querySelector('.scale-95')?.classList.remove('scale-95');
+
+            try {
+                // Compress slightly so token transfers are rapid
+                const resizeWidth = Math.min(1024, baseCanvas.width);
+                const resizeHeight = (resizeWidth / baseCanvas.width) * baseCanvas.height;
+                const uploadCanv = document.createElement('canvas');
+                uploadCanv.width = resizeWidth;
+                uploadCanv.height = resizeHeight;
+                const uploadCtx = uploadCanv.getContext('2d');
+                uploadCtx.drawImage(baseCanvas, 0, 0, resizeWidth, resizeHeight);
+                
+                const base64URI = uploadCanv.toDataURL('image/png');
+                const base64Clean = base64URI.split(',')[1];
+
+                let attempts = 0;
+                let maxRetries = 5;
+                let delay = 1000;
+                let success = false;
+                let base64Result = null;
+
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image-preview:generateContent?key=${apiKey}`;
+
+                const payload = {
+                    contents: [{
+                        parts: [
+                            { text: `Apply this artistic edit transformation to the provided image: ${promptText}. Respond only with the resulting modified image.` },
+                            { inlineData: { mimeType: "image/png", data: base64Clean } }
+                        ]
+                    }],
+                    generationConfig: {
+                        responseModalalities: ["TEXT", "IMAGE"]
+                    }
+                };
+
+                while (attempts < maxRetries && !success) {
+                    try {
+                        const response = await fetch(url, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+
+                        if (response.ok) {
+                            const data = await response.json();
+                            base64Result = data.candidates?.[0]?.content?.parts?.find(p => p.inlineData)?.inlineData?.data;
+                            if (base64Result) {
+                                success = true;
+                            } else {
+                                throw new Error("Image wasn't returned in the response parts.");
+                            }
+                        } else {
+                            throw new Error(`API returned HTTP Status ${response.status}`);
+                        }
+                    } catch (err) {
+                        attempts++;
+                        if (attempts >= maxRetries) {
+                            throw err;
+                        }
+                        await new Promise(res => setTimeout(res, delay));
+                        delay *= 2;
+                    }
+                }
+
+                if (success && base64Result) {
+                    saveUndoState(); // Store undo state
+
+                    const aiImage = new Image();
+                    aiImage.onload = () => {
+                        baseCanvas.width = aiImage.width;
+                        baseCanvas.height = aiImage.height;
+                        baseCtx.clearRect(0, 0, aiImage.width, aiImage.height);
+                        baseCtx.drawImage(aiImage, 0, 0);
+
+                        scheduleRender();
+                        loadingOverlay.classList.add('pointer-events-none', 'opacity-0');
+                        showToast("AI magic adjustment successfully applied!", "success");
+                    };
+                    aiImage.src = `data:image/png;base64,${base64Result}`;
+                } else {
+                    throw new Error("Could not fetch output generated image.");
+                }
+
+            } catch (error) {
+                console.error(error);
+                loadingOverlay.classList.add('pointer-events-none', 'opacity-0');
+                showToast(`AI Generation failed: ${error.message || 'Server error'}. Please try again.`, 'error');
+            }
+        });
+
+        // Helper: Hex color to RGB
+        function hexToRgb(hex) {
+            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? {
+                r: parseInt(result[1], 16),
+                g: parseInt(result[2], 16),
+                b: parseInt(result[3], 16)
+            } : null;
+        }
+
+        // ==========================================
+        // STYLE LOAD & SAVE (JSON CONFIGS)
+        // ==========================================
+
+        saveStyleBtn.addEventListener('click', () => {
+            const styleString = JSON.stringify(state, null, 2);
+            const blob = new Blob([styleString], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
+            
+            const link = document.createElement('a');
             link.href = url;
-            document.body.appendChild(link);
+            link.download = 'gekko-style.json';
             link.click();
-            document.body.removeChild(link);
+            
             URL.revokeObjectURL(url);
-            showToast("Image exported successfully!");
-          }, mimeType, 0.92);
-        } catch (e) {
-          // Fallback if toBlob throws security errors on local origins
-          const url = fullCanvas.toDataURL(mimeType, 0.92);
-          link.href = url;
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-          showToast("Image exported successfully!");
-        }
-      }, 50);
-    }
+            showToast("Saved custom style file successfully!", "success");
+        });
 
-    // Export Style JSON Download
-    function exportStyleJson() {
-      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state.sliders, null, 2));
-      const filename = elements.filenameInput.value.trim() || 'untitled-grunge';
-      
-      const link = document.createElement('a');
-      link.setAttribute("href", dataStr);
-      link.setAttribute("download", `${filename}.json`);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      showToast("Style downloaded");
-    }
+        loadStyleBtn.addEventListener('click', () => styleInput.click());
+        styleInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (evt) => {
+                    try {
+                        const parsed = JSON.parse(evt.target.result);
+                        Object.keys(parsed).forEach(key => {
+                            if (state.hasOwnProperty(key)) {
+                                state[key] = parsed[key];
+                                if (sliders[key]) {
+                                    sliders[key].el.value = parsed[key];
+                                    if (sliders[key].suffix === '°') {
+                                        sliders[key].valEl.textContent = `${parsed[key] * 15}°`;
+                                    } else {
+                                        sliders[key].valEl.textContent = `${parsed[key] > 0 && key !== 'vignette' && key !== 'fading' ? '+' : ''}${parsed[key]}${sliders[key].suffix}`;
+                                    }
+                                }
+                            }
+                        });
 
-    // Init Page setup
-    window.addEventListener('DOMContentLoaded', () => {
-      // Event bindings for Action buttons
-      elements.btnUploadImage.addEventListener('click', () => elements.imageUpload.click());
-      elements.btnUploadStyle.addEventListener('click', () => elements.styleUpload.click());
-      
-      elements.imageUpload.addEventListener('change', (e) => {
-        if (e.target.files.length > 0) handleImageFile(e.target.files[0]);
-      });
-      
-      elements.styleUpload.addEventListener('change', (e) => {
-        if (e.target.files.length > 0) handleStyleFile(e.target.files[0]);
-      });
+                        document.getElementById('flipHBtn').classList.toggle('border-[#d4af37]', state.flipH);
+                        document.getElementById('flipHBtn').classList.toggle('text-[#d4af37]', state.flipH);
+                        document.getElementById('flipVBtn').classList.toggle('border-[#d4af37]', state.flipV);
+                        document.getElementById('flipVBtn').classList.toggle('text-[#d4af37]', state.flipV);
+                        
+                        tintColorInput.value = state.tintColor;
+                        tintColorHex.textContent = state.tintColor;
 
-      elements.btnDownloadImage.addEventListener('click', exportHighResImage);
-      elements.btnDownloadStyle.addEventListener('click', exportStyleJson);
-      
-      // Update metadata on slider input
-      document.getElementById('slider-rips').addEventListener('input', (e) => {
-        elements.metaRipsStatus.textContent = parseFloat(e.target.value) > 0 ? "Active" : "Off";
-      });
+                        scheduleRender();
+                        showToast("Loaded style settings correctly!", "success");
+                    } catch (err) {
+                        showToast("Error parsing Style JSON file.", "error");
+                    }
+                };
+                reader.readAsText(file);
+            }
+        });
 
-      // Bind input elements
-      initSliders();
-      initDragAndDrop();
+        // ==========================================
+        // EXPORT / DOWNLOAD IMAGE
+        // ==========================================
+        downloadBtn.addEventListener('click', () => {
+            if (!imageLoaded) return showToast("Upload an image first!");
 
-      // Zoom Control Event listeners
-      elements.zoomSlider.addEventListener('input', (e) => {
-        state.zoom = parseFloat(e.target.value);
-        updateZoom();
-      });
-      
-      elements.btnZoomIn.addEventListener('click', () => {
-        state.zoom = Math.min(2.0, state.zoom + 0.1);
-        updateZoom();
-      });
-      
-      elements.btnZoomOut.addEventListener('click', () => {
-        state.zoom = Math.max(0.5, state.zoom - 0.1);
-        updateZoom();
-      });
-      
-      elements.btnZoomFit.addEventListener('click', () => {
-        state.zoom = 1.0;
-        updateZoom();
-      });
-      
-      window.addEventListener('resize', () => {
-        if (state.image) {
-          updateZoom();
-        }
-      });
-    });
-  </script>
+            const wasSelectionActive = selectionActive;
+            selectionActive = false;
+            
+            // Re-render immediately to clear dashboard selection bounding indicators during export
+            render();
+
+            const imageURL = canvas.toDataURL('image/png');
+            const link = document.createElement('a');
+            link.href = imageURL;
+            link.download = 'gekko-edit-export.png';
+            link.click();
+
+            selectionActive = wasSelectionActive;
+            render();
+
+            showToast("Exported image downloaded successfully!", "success");
+        });
+    </script>
 </body>
 </html>
