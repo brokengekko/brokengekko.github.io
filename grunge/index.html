@@ -2066,8 +2066,19 @@
             scheduleRender();
         });
 
-        textFontEl.addEventListener('change', (e) => {
+        textFontEl.addEventListener('change', async (e) => {
             state.textState.font = e.target.value;
+            
+            // Fix: HTML5 Canvas will draw fallback fonts if the requested web font 
+            // hasn't finished downloading. This forces the browser to await the font first.
+            if (document.fonts) {
+                try {
+                    await document.fonts.load(`${state.textState.size}px ${state.textState.font}`);
+                } catch (err) {
+                    console.warn("Font pre-load warning:", err);
+                }
+            }
+            
             scheduleRender();
         });
 
