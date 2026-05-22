@@ -282,11 +282,22 @@
                     <div>
                         <div class="flex justify-between items-center mb-2">
                             <span class="text-sm font-semibold text-slate-200 flex items-center gap-2">
-                                <i class="fa-solid fa-scroll text-[#d4af37]"></i> Wrinkles (Crumpled Paper)
+                                <i class="fa-solid fa-scroll text-[#d4af37]"></i> Tears
                             </span>
                             <span id="val-wrinkles" class="text-xs text-[#d4af37] code-font">0%</span>
                         </div>
                         <input type="range" id="slider-wrinkles" min="0" max="100" value="0" class="w-full h-1 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-[#d4af37]">
+                    </div>
+
+                    <!-- Edge Wear Damage -->
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-sm font-semibold text-slate-200 flex items-center gap-2">
+                                <i class="fa-solid fa-map-location-dot text-[#d4af37]"></i> Edge Wear
+                            </span>
+                            <span id="val-wear" class="text-xs text-[#d4af37] code-font">0%</span>
+                        </div>
+                        <input type="range" id="slider-wear" min="0" max="100" value="0" class="w-full h-1 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-[#d4af37]">
                     </div>
 
                     <!-- Scratch Density -->
@@ -474,6 +485,16 @@
                                 <span id="val-textShadow" class="text-xs text-[#d4af37] code-font">0px</span>
                             </div>
                             <input type="range" id="slider-textShadow" min="0" max="50" value="0" class="w-full h-1 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-[#d4af37]">
+                        </div>
+
+                        <!-- Bold & Italic Toggles -->
+                        <div class="grid grid-cols-2 gap-2 mt-1">
+                            <button id="text-bold-btn" class="flex items-center justify-center gap-2 py-2.5 bg-zinc-900 border border-zinc-800 hover:border-[#d4af37]/40 rounded-lg text-sm font-bold text-slate-300 transition duration-150">
+                                <i class="fa-solid fa-bold"></i> Bold
+                            </button>
+                            <button id="text-italic-btn" class="flex items-center justify-center gap-2 py-2.5 bg-zinc-900 border border-zinc-800 hover:border-[#d4af37]/40 rounded-lg text-sm italic font-serif text-slate-300 transition duration-150">
+                                <i class="fa-solid fa-italic"></i> Italic
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -735,6 +756,7 @@
             flipV: false,
             // Grunge Panel Settings
             wrinkles: 0, // Procedural 3D folding
+            wear: 0,     // Edge damage & aging
             scratchDensity: 0,
             grain: 0,
             fading: 0,
@@ -755,7 +777,9 @@
                 glow: 0,
                 shadow: 0,
                 x: 50,
-                y: 50
+                y: 50,
+                bold: false,
+                italic: false
             }
         };
 
@@ -777,6 +801,7 @@
             brightness: { el: document.getElementById('slider-brightness'), valEl: document.getElementById('val-brightness'), suffix: '%' },
             
             wrinkles: { el: document.getElementById('slider-wrinkles'), valEl: document.getElementById('val-wrinkles'), suffix: '%' },
+            wear: { el: document.getElementById('slider-wear'), valEl: document.getElementById('val-wear'), suffix: '%' },
             scratchDensity: { el: document.getElementById('slider-scratchDensity'), valEl: document.getElementById('val-scratchDensity'), suffix: '%' },
             grain: { el: document.getElementById('slider-grain'), valEl: document.getElementById('val-grain'), suffix: '%' },
             fading: { el: document.getElementById('slider-fading'), valEl: document.getElementById('val-fading'), suffix: '%' },
@@ -1056,12 +1081,16 @@
                     sliders.brightness.valEl.textContent = `${state.brightness > 0 ? '+' : ''}${state.brightness}%`;
                 } else if (parentPanel === 'grungePanel') {
                     state.wrinkles = Math.floor(Math.random() * 65) + 10;
+                    state.wear = Math.floor(Math.random() * 60) + 10;
                     state.scratchDensity = Math.floor(Math.random() * 60) + 10;
                     state.grain = Math.floor(Math.random() * 50) + 10;
                     state.fading = Math.floor(Math.random() * 50) + 5;
                     
                     sliders.wrinkles.el.value = state.wrinkles;
                     sliders.wrinkles.valEl.textContent = `${state.wrinkles}%`;
+                    
+                    sliders.wear.el.value = state.wear;
+                    sliders.wear.valEl.textContent = `${state.wear}%`;
                     
                     sliders.scratchDensity.el.value = state.scratchDensity;
                     sliders.scratchDensity.valEl.textContent = `${state.scratchDensity}%`;
@@ -1125,6 +1154,7 @@
                 });
             } else if (sectionId === 'grungePanel') {
                 state.wrinkles = 0;
+                state.wear = 0;
                 state.scratchDensity = 0;
                 state.grain = 0;
                 state.fading = 0;
@@ -1133,7 +1163,7 @@
                 tintColorHex.textContent = '#b08c6a';
 
                 Object.keys(sliders).forEach(key => {
-                    if (['wrinkles', 'scratchDensity', 'grain', 'fading'].includes(key)) {
+                    if (['wrinkles', 'wear', 'scratchDensity', 'grain', 'fading'].includes(key)) {
                         sliders[key].el.value = 0;
                         sliders[key].valEl.textContent = '0%';
                     }
@@ -1541,23 +1571,71 @@
                 return x - Math.floor(x);
             }
 
-            // A: Noise & Grain
-            if (state.grain > 0) {
+            // A: Noise, Grain & Edge Wear Damage
+            if (state.grain > 0 || state.wear > 0) {
                 const grainImgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
                 const gd = grainImgData.data;
+                const w = grainImgData.width;
+                const h = grainImgData.height;
                 const grainCo = state.grain / 100;
+                const wearCo = state.wear / 100;
+                const maxEdgeDist = Math.min(w, h) * (0.02 + 0.18 * wearCo); // Effect stretches further inward with higher wear
                 
-                for (let i = 0; i < gd.length; i += 4) {
-                    if (srandom() < (grainCo * 0.003)) {
-                        const dustColor = srandom() > 0.5 ? 255 : 30;
-                        gd[i] = dustColor;
-                        gd[i+1] = dustColor;
-                        gd[i+2] = dustColor;
-                    } else if (grainCo > 0) {
-                        const grainNoise = (srandom() - 0.5) * grainCo * 65;
-                        gd[i] = Math.min(255, Math.max(0, gd[i] + grainNoise));
-                        gd[i+1] = Math.min(255, Math.max(0, gd[i+1] + grainNoise));
-                        gd[i+2] = Math.min(255, Math.max(0, gd[i+2] + grainNoise));
+                for (let y = 0; y < h; y++) {
+                    for (let x = 0; x < w; x++) {
+                        const idx = (y * w + x) * 4;
+                        let scuffed = false;
+
+                        // Edge Wear Pass
+                        if (wearCo > 0) {
+                            const distToLeft = x;
+                            const distToRight = w - 1 - x;
+                            const distToTop = y;
+                            const distToBottom = h - 1 - y;
+                            const minDist = Math.min(distToLeft, distToRight, distToTop, distToBottom);
+
+                            if (minDist < maxEdgeDist) {
+                                const edgeFactor = 1 - (minDist / maxEdgeDist);
+                                // Add organic noise to the edge distance
+                                const noisyFactor = Math.max(0, edgeFactor + (srandom() - 0.5) * 0.4);
+                                
+                                // Gradual darkening towards the very edges (like old burnt paper)
+                                const darkening = 1 - (noisyFactor * wearCo * 0.7);
+                                gd[idx] = Math.max(0, gd[idx] * darkening);
+                                gd[idx+1] = Math.max(0, gd[idx+1] * darkening);
+                                gd[idx+2] = Math.max(0, gd[idx+2] * darkening);
+
+                                // Probabilistic scuffing (tears exposing white paper fibers or dark rotting spots)
+                                const wearProb = Math.pow(noisyFactor, 2) * wearCo * 0.55;
+                                if (srandom() < wearProb) {
+                                    const isDark = srandom() > 0.65;
+                                    const scuffR = isDark ? 30 : 230 + srandom() * 25;
+                                    const scuffG = isDark ? 25 : 230 + srandom() * 25;
+                                    const scuffB = isDark ? 20 : 220 + srandom() * 25;
+                                    const alpha = 0.5 + srandom() * 0.5;
+
+                                    gd[idx] = gd[idx] * (1 - alpha) + scuffR * alpha;
+                                    gd[idx+1] = gd[idx+1] * (1 - alpha) + scuffG * alpha;
+                                    gd[idx+2] = gd[idx+2] * (1 - alpha) + scuffB * alpha;
+                                    scuffed = true;
+                                }
+                            }
+                        }
+
+                        // Film Grain Pass (skip if heavily scuffed to preserve scuff texture)
+                        if (grainCo > 0 && !scuffed) {
+                            if (srandom() < (grainCo * 0.003)) {
+                                const dustColor = srandom() > 0.5 ? 255 : 30;
+                                gd[idx] = dustColor;
+                                gd[idx+1] = dustColor;
+                                gd[idx+2] = dustColor;
+                            } else {
+                                const grainNoise = (srandom() - 0.5) * grainCo * 65;
+                                gd[idx] = Math.min(255, Math.max(0, gd[idx] + grainNoise));
+                                gd[idx+1] = Math.min(255, Math.max(0, gd[idx+1] + grainNoise));
+                                gd[idx+2] = Math.min(255, Math.max(0, gd[idx+2] + grainNoise));
+                            }
+                        }
                     }
                 }
                 ctx.putImageData(grainImgData, 0, 0);
@@ -2073,7 +2151,8 @@
             // hasn't finished downloading. This forces the browser to await the font first.
             if (document.fonts) {
                 try {
-                    await document.fonts.load(`${state.textState.size}px ${state.textState.font}`);
+                    const fontStyle = `${state.textState.italic ? 'italic ' : ''}${state.textState.bold ? 'bold ' : ''}${state.textState.size}px ${state.textState.font}`;
+                    await document.fonts.load(fontStyle);
                 } catch (err) {
                     console.warn("Font pre-load warning:", err);
                 }
@@ -2108,13 +2187,46 @@
             scheduleRender();
         });
 
+        const textBoldBtn = document.getElementById('text-bold-btn');
+        const textItalicBtn = document.getElementById('text-italic-btn');
+        
+        textBoldBtn.addEventListener('click', () => {
+            state.textState.bold = !state.textState.bold;
+            textBoldBtn.classList.toggle('bg-zinc-900', !state.textState.bold);
+            textBoldBtn.classList.toggle('bg-[#d4af37]/10', state.textState.bold);
+            textBoldBtn.classList.toggle('border-[#d4af37]', state.textState.bold);
+            textBoldBtn.classList.toggle('text-[#d4af37]', state.textState.bold);
+            
+            if (document.fonts) {
+                const fontStyle = `${state.textState.italic ? 'italic ' : ''}${state.textState.bold ? 'bold ' : ''}${state.textState.size}px ${state.textState.font}`;
+                document.fonts.load(fontStyle).then(() => scheduleRender());
+            } else {
+                scheduleRender();
+            }
+        });
+
+        textItalicBtn.addEventListener('click', () => {
+            state.textState.italic = !state.textState.italic;
+            textItalicBtn.classList.toggle('bg-zinc-900', !state.textState.italic);
+            textItalicBtn.classList.toggle('bg-[#d4af37]/10', state.textState.italic);
+            textItalicBtn.classList.toggle('border-[#d4af37]', state.textState.italic);
+            textItalicBtn.classList.toggle('text-[#d4af37]', state.textState.italic);
+            
+            if (document.fonts) {
+                const fontStyle = `${state.textState.italic ? 'italic ' : ''}${state.textState.bold ? 'bold ' : ''}${state.textState.size}px ${state.textState.font}`;
+                document.fonts.load(fontStyle).then(() => scheduleRender());
+            } else {
+                scheduleRender();
+            }
+        });
+
         // Measure text boundary coordinates relative to baseline workspace
         function measureTextBoundingBox() {
             const txt = state.textState;
             if (!txt.text) return null;
 
             baseCtx.save();
-            baseCtx.font = `${txt.size}px ${txt.font}`;
+            baseCtx.font = `${txt.italic ? 'italic ' : ''}${txt.bold ? 'bold ' : ''}${txt.size}px ${txt.font}`;
             const lines = txt.text.split('\n');
             let maxW = 0;
             for (let i = 0; i < lines.length; i++) {
@@ -2139,7 +2251,7 @@
             const txt = state.textState;
             context.save();
             
-            context.font = `${txt.size}px ${txt.font}`;
+            context.font = `${txt.italic ? 'italic ' : ''}${txt.bold ? 'bold ' : ''}${txt.size}px ${txt.font}`;
             context.fillStyle = txt.color;
             context.textBaseline = 'top';
             context.textAlign = 'left';
