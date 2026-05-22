@@ -684,9 +684,9 @@
         const urlParams = new URLSearchParams(window.location.search);
         const apiKey = urlParams.get('key') || ""; 
 
-        // Primary Display Canvas & Context
+        // Primary Display Canvas & Context (Optimized for heavy pixel readback)
         const canvas = document.getElementById('editorCanvas');
-        const ctx = canvas.getContext('2d');
+        const ctx = canvas.getContext('2d', { willReadFrequently: true });
         const canvasContainer = document.getElementById('canvasContainer');
         const canvasPlaceholder = document.getElementById('canvasPlaceholder');
 
@@ -703,11 +703,11 @@
         let originalImage = null; // Stays clean as reference
         
         const baseCanvas = document.createElement('canvas'); // Holds raw, unrotated edit baseline
-        const baseCtx = baseCanvas.getContext('2d');
+        const baseCtx = baseCanvas.getContext('2d', { willReadFrequently: true });
 
         // One-Step Undo State Manager
         const undoBufferCanvas = document.createElement('canvas');
-        const undoBufferCtx = undoBufferCanvas.getContext('2d');
+        const undoBufferCtx = undoBufferCanvas.getContext('2d', { willReadFrequently: true });
         let hasUndo = false;
 
         // Active Selection tool coordinates (stored relative to baseCanvas)
@@ -2598,8 +2598,11 @@
                         showToast("Image editing restricted by API Key. Generating new image instead...", "warning");
                         
                         try {
+                            // Fix: Imagen API requires 'instances' to be an array of objects
                             const t2iPayload = {
-                                instances: { prompt: `Generate a grungy, artistic image based on this concept: ${promptText}` },
+                                instances: [
+                                    { prompt: `Generate a grungy, artistic image based on this concept: ${promptText}` }
+                                ],
                                 parameters: { sampleCount: 1 }
                             };
                             
