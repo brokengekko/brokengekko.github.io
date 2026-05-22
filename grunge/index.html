@@ -2553,69 +2553,73 @@
                 const base64URI = uploadCanv.toDataURL('image/png');
                 const base64Clean = base64URI.split(',')[1];
 
-                const payload = {
-                    contents: [{
-                        parts: [
-                            { text: `Apply this artistic edit transformation to the provided image: ${promptText}. Respond only with the resulting modified image.` },
-                            { inlineData: { mimeType: "image/png", data: base64Clean } }
-                        ]
-                    }],
-                    generationConfig: {
-                        responseModalities: ["TEXT", "IMAGE"] // Corrected: Fixed parameter schema spelling typo
-                    }
-                };
-
-                // Model Fallback Chain: Handles 404s dynamically for live public API keys
-                const modelsToTry = [
-                    'gemini-2.5-flash-image-preview', // Internal Canvas Preview
-                    'gemini-2.5-flash',               // Standard Public Release
-                    'gemini-2.0-flash-exp',           // Experimental Public
-                    'gemini-2.0-flash'                // Stable Public
-                ];
-
                 let success = false;
                 let base64Result = null;
-                let lastError = "Could not connect to any AI models.";
+                let lastError = "Could not connect to AI.";
 
-                for (const modelName of modelsToTry) {
-                    if (success) break;
+                // ATTEMPT 1: Image-to-Image using gemini-2.5-flash-image-preview
+                try {
+                    const i2iPayload = {
+                        contents: [{
+                            role: "user",
+                            parts: [
+                                { text: `Apply this artistic edit transformation to the provided image: ${promptText}. Respond only with the resulting modified image.` },
+                                { inlineData: { mimeType: "image/png", data: base64Clean } }
+                            ]
+                        }],
+                        generationConfig: {
+                            responseModalities: ["TEXT", "IMAGE"]
+                        }
+                    };
+
+                    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image-preview:generateContent?key=${apiKey}`;
                     
-                    let attempts = 0;
-                    let maxRetries = 2; // Lower retries per model to speed up fallback chain
-                    let delay = 1000;
-                    const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(i2iPayload)
+                    });
 
-                    while (attempts < maxRetries && !success) {
+                    if (response.ok) {
+                        const data = await response.json();
+                        base64Result = data.candidates?.[0]?.content?.parts?.find(p => p.inlineData)?.inlineData?.data;
+                        if (base64Result) success = true;
+                    } else if (response.status === 404 || response.status === 403) {
+                        // Public API keys often lack access to this preview model. We will throw to trigger the fallback.
+                        throw new Error("I2I_UNAVAILABLE");
+                    } else {
+                        throw new Error(`API returned HTTP Status ${response.status}`);
+                    }
+                } catch (err) {
+                    lastError = err.message;
+                    
+                    // ATTEMPT 2: Fallback to Text-to-Image using Imagen 4 if I2I is unavailable
+                    if (err.message === "I2I_UNAVAILABLE" || lastError.includes("404") || lastError.includes("403")) {
+                        showToast("Image editing restricted by API Key. Generating new image instead...", "warning");
+                        
                         try {
+                            const t2iPayload = {
+                                instances: { prompt: `Generate a grungy, artistic image based on this concept: ${promptText}` },
+                                parameters: { sampleCount: 1 }
+                            };
+                            
+                            const url = `https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-generate-001:predict?key=${apiKey}`;
+                            
                             const response = await fetch(url, {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify(payload)
+                                body: JSON.stringify(t2iPayload)
                             });
 
                             if (response.ok) {
                                 const data = await response.json();
-                                base64Result = data.candidates?.[0]?.content?.parts?.find(p => p.inlineData)?.inlineData?.data;
-                                if (base64Result) {
-                                    success = true;
-                                    break;
-                                } else {
-                                    throw new Error("Image wasn't returned in the response parts.");
-                                }
-                            } else if (response.status === 404) {
-                                // 404 means your API key lacks access to this specific model name.
-                                // Break immediately to fallback to the next model in the list.
-                                lastError = `Model ${modelName} returned 404 Not Found.`;
-                                break;
+                                base64Result = data.predictions?.[0]?.bytesBase64Encoded;
+                                if (base64Result) success = true;
                             } else {
-                                throw new Error(`API returned HTTP Status ${response.status}`);
+                                throw new Error(`Imagen API returned HTTP Status ${response.status}`);
                             }
-                        } catch (err) {
-                            lastError = err.message || 'Server error';
-                            attempts++;
-                            if (attempts >= maxRetries) break;
-                            await new Promise(res => setTimeout(res, delay));
-                            delay *= 2;
+                        } catch (fallbackErr) {
+                            lastError = fallbackErr.message || 'Server error during fallback';
                         }
                     }
                 }
@@ -2636,7 +2640,7 @@
                     };
                     aiImage.src = `data:image/png;base64,${base64Result}`;
                 } else {
-                    throw new Error(lastError); // Throw the most recent error if all models fail
+                    throw new Error(lastError === "I2I_UNAVAILABLE" ? "Model access denied for this API Key." : lastError);
                 }
 
             } catch (error) {
