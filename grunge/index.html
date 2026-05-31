@@ -110,7 +110,7 @@
         
         <!-- Canvas Viewer Area -->
         <div id="viewerArea" class="flex-1 bg-black p-6 flex flex-col items-center justify-center relative overflow-hidden select-none min-h-0 w-full h-full">
-            <!-- Canvas Wrapper for Drop Shadow / Styling (Corrected: Removed size transitions to prevent browser layout reflow drifts) -->
+            <!-- Canvas Wrapper for Drop Shadow / Styling -->
             <div id="canvasContainer" class="relative max-w-full max-h-full flex items-center justify-center bg-zinc-950 border border-zinc-800/60 rounded-xl overflow-auto shadow-2xl min-h-0">
                 <!-- Fallback empty state -->
                 <div id="canvasPlaceholder" class="p-12 text-center flex flex-col items-center max-w-md">
@@ -200,6 +200,17 @@
                         <input type="range" id="slider-rotate" min="0" max="23" value="0" class="w-full h-1 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-[#d4af37]">
                     </div>
 
+                    <!-- Warmth Slider -->
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-sm font-semibold text-slate-200 flex items-center gap-2">
+                                <i class="fa-solid fa-temperature-half text-[#d4af37]"></i> Warmth
+                            </span>
+                            <span id="val-warmth" class="text-xs text-[#d4af37] code-font">0%</span>
+                        </div>
+                        <input type="range" id="slider-warmth" min="-100" max="100" value="0" class="w-full h-1 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-[#d4af37]">
+                    </div>
+
                     <!-- Vignette Slider -->
                     <div>
                         <div class="flex justify-between items-center mb-2">
@@ -255,16 +266,6 @@
                         <input type="range" id="slider-brightness" min="-100" max="100" value="0" class="w-full h-1 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-[#d4af37]">
                     </div>
 
-                    <!-- Flip buttons -->
-                    <div class="grid grid-cols-2 gap-3 pt-2">
-                        <button id="flipHBtn" class="flex items-center justify-center gap-2 py-3 bg-black border border-zinc-800 hover:border-[#d4af37]/40 rounded-xl text-sm font-semibold text-slate-300 hover:text-[#d4af37] transition duration-150">
-                            <i class="fa-solid fa-arrows-left-right"></i> Flip H
-                        </button>
-                        <button id="flipVBtn" class="flex items-center justify-center gap-2 py-3 bg-black border border-zinc-800 hover:border-[#d4af37]/40 rounded-xl text-sm font-semibold text-slate-300 hover:text-[#d4af37] transition duration-150">
-                            <i class="fa-solid fa-arrows-up-down"></i> Flip V
-                        </button>
-                    </div>
-
                     <!-- Action controls -->
                     <div class="grid grid-cols-2 gap-3 border-t border-zinc-800 pt-6 mt-2">
                         <button class="randomize-btn flex items-center justify-center gap-2 py-3 bg-[#d4af37] hover:bg-[#e6ca65] rounded-xl text-sm font-bold text-black transition duration-150 shadow-lg shadow-[#d4af37]/10">
@@ -308,7 +309,7 @@
                             </span>
                             <span id="val-scratchDensity" class="text-xs text-[#d4af37] code-font">0%</span>
                         </div>
-                        <input type="range" id="slider-scratchDensity" min="0" max="100" value="0" class="w-full h-1 bg-zinc-850 rounded-lg appearance-none cursor-pointer accent-[#d4af37]">
+                        <input type="range" id="slider-scratchDensity" min="0" max="100" value="0" class="w-full h-1 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-[#d4af37]">
                     </div>
 
                     <!-- Dust / Noise -->
@@ -320,6 +321,17 @@
                             <span id="val-grain" class="text-xs text-[#d4af37] code-font">0%</span>
                         </div>
                         <input type="range" id="slider-grain" min="0" max="100" value="0" class="w-full h-1 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-[#d4af37]">
+                    </div>
+
+                    <!-- Pixel Sorting -->
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-sm font-semibold text-slate-200 flex items-center gap-2">
+                                <i class="fa-solid fa-bars-staggered text-[#d4af37]"></i> Pixel Sorting
+                            </span>
+                            <span id="val-pixelSort" class="text-xs text-[#d4af37] code-font">0%</span>
+                        </div>
+                        <input type="range" id="slider-pixelSort" min="0" max="100" value="0" class="w-full h-1 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-[#d4af37]">
                     </div>
 
                     <!-- Fading amount -->
@@ -438,7 +450,6 @@
                                         <option value="'Rye', cursive">Western Grunge</option>
                                         <option value="'Lobster', cursive">Playful Script</option>
                                         <option value="'Cinzel', serif">Cinematic Gold</option>
-                                        <!-- Expanded artistic & crafty font selections -->
                                         <option value="'Creepster', cursive">Zombie Slime</option>
                                         <option value="'Special Elite', cursive">Grungy Typewriter</option>
                                         <option value="'Permanent Marker', cursive">Street Marker</option>
@@ -565,6 +576,16 @@
                             <i class="fa-solid fa-crop-simple"></i> Crop Selected
                         </button>
                     </div>
+
+                    <!-- Image Flip Utilities -->
+                    <div class="grid grid-cols-2 gap-2">
+                        <button id="flipHBtn" class="flex items-center justify-center gap-2 py-3 bg-black border border-zinc-800 hover:border-[#d4af37]/40 rounded-xl text-xs font-bold text-slate-400 hover:text-[#d4af37] transition">
+                            <i class="fa-solid fa-arrows-left-right"></i> Flip H
+                        </button>
+                        <button id="flipVBtn" class="flex items-center justify-center gap-2 py-3 bg-black border border-zinc-800 hover:border-[#d4af37]/40 rounded-xl text-xs font-bold text-slate-400 hover:text-[#d4af37] transition">
+                            <i class="fa-solid fa-arrows-up-down"></i> Flip V
+                        </button>
+                    </div>
                 </div>
 
                 <!-- SECTION 6: AI MAGIC+ -->
@@ -581,12 +602,12 @@
                                 </div>
                                 <span class="text-xs font-bold text-slate-200">Oil Paint</span>
                             </button>
-                            <!-- Retro Pixel -->
-                            <button class="fx-preset-btn flex flex-col items-center justify-center p-3.5 rounded-lg bg-zinc-900 border border-zinc-800 hover:border-[#d4af37]/40 hover:bg-zinc-900/50 transition group" data-fx="pixel">
+                            <!-- Blockbuster -->
+                            <button class="fx-preset-btn flex flex-col items-center justify-center p-3.5 rounded-lg bg-zinc-900 border border-zinc-800 hover:border-[#d4af37]/40 hover:bg-zinc-900/50 transition group" data-fx="blockbuster">
                                 <div class="w-8 h-8 rounded-full bg-slate-500/10 flex items-center justify-center mb-2 text-slate-300 group-hover:scale-110 transition">
-                                    <i class="fa-solid fa-table-cells"></i>
+                                    <i class="fa-solid fa-film"></i>
                                 </div>
-                                <span class="text-xs font-bold text-slate-200">Retro Pixel</span>
+                                <span class="text-xs font-bold text-slate-200">Blockbuster</span>
                             </button>
                             <!-- Neon Cyber -->
                             <button class="fx-preset-btn flex flex-col items-center justify-center p-3.5 rounded-lg bg-zinc-900 border border-zinc-800 hover:border-[#d4af37]/40 hover:bg-zinc-900/50 transition group" data-fx="cyber">
@@ -625,7 +646,7 @@
                 <!-- SECTION 7: ABOUT PANEL -->
                 <div id="aboutPanel" class="panel-section flex flex-col gap-6 hidden">
                     <div class="bg-black p-6 rounded-2xl border border-zinc-800/80 text-center flex flex-col items-center">
-                        <!-- Golden Gecko Icon Frame (Corrected typo in SVG path) -->
+                        <!-- Golden Gecko Icon Frame -->
                         <div class="h-16 w-16 bg-[#d4af37]/10 rounded-2xl flex items-center justify-center shadow-lg shadow-[#d4af37]/5 p-2.5 mb-4">
                             <svg class="h-11 w-11 text-[#d4af37]" viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M14.11,13.63L15.5,12.24C16,12.55 16.59,12.75 17.22,12.75A3.25,3.25 0 0,0 20.47,9.5C20.47,8.27 19.78,7.21 18.77,6.67L19.8,5.64C20.19,5.25 20.19,4.61 19.8,4.22C19.41,3.83 18.77,3.83 18.38,4.22L17.35,5.25C16.81,4.24 15.75,3.55 14.52,3.55A3.25,3.25 0 0,0 11.27,6.8C11.27,7.43 11.47,8.02 11.78,8.53L10.39,9.92C9.5,9.45 8.43,9.25 7.37,9.44L4.85,6.92C4.46,6.53 3.82,6.53 3.43,6.92C3.04,7.31 3.04,7.95 3.43,8.34L5.95,10.86C5.76,11.92 5.96,12.99,6.43,13.88L5.04,15.27C4.53,14.96 3.94,14.76 3.31,14.76A3.25,3.25 0 0,0 0.06,18.01C0.06,19.24 0.75,20.3 1.76,20.84L0.73,21.87C0.34,22.26 0.34,22.9 0.73,23.29C1.12,23.68 1.76,23.68 2.15,23.29L3.18,22.26C3.72,23.27 4.78,23.96 6.01,23.96A3.25,3.25 0 0,0 9.26,20.71C9.26,20.08 9.06,19.49 8.75,18.98L10.14,17.59C11.03,18.06 12.1,18.26 13.16,18.07L15.68,20.59C16.07,20.98 16.71,20.98 17.1,20.59C17.49,20.2 17.49,19.56 17.1,19.17L14.58,16.65C14.77,15.59 14.57,14.52 14.11,13.63M15.89,10.11A1.25,1.25 0 1,1 17.14,8.86A1.25,1.25 0 0,1 15.89,10.11M4.64,18.89A1.25,1.25 0 1,1 5.89,17.64A1.25,1.25 0 0,1 4.64,18.89Z" />
@@ -683,9 +704,9 @@
             </div>
             <div class="mb-6">
                 <label for="filenameInput" class="block text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-2">Filename</label>
-                <div class="relative">
-                    <input type="text" id="filenameInput" placeholder="gekko-edit-export" class="w-full bg-black border border-zinc-800 hover:border-zinc-700 focus:border-[#d4af37] rounded-xl px-4 py-3 text-sm text-white placeholder-slate-600 outline-none transition">
-                    <span class="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-zinc-500 font-bold code-font">.png</span>
+                <div class="relative flex items-center">
+                    <input type="text" id="filenameInput" placeholder="gekko-edit-export" class="w-full bg-black border border-zinc-800 hover:border-zinc-700 focus:border-[#d4af37] rounded-xl px-4 py-3 text-sm text-white placeholder-slate-600 outline-none transition pr-12">
+                    <span class="absolute right-4 text-xs text-zinc-500 font-bold code-font">.png</span>
                 </div>
             </div>
             <div class="flex items-center justify-end gap-3">
@@ -699,11 +720,52 @@
         </div>
     </div>
 
+    <!-- Export Style Custom Modal -->
+    <div id="saveStyleModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-zinc-950 border border-zinc-800 p-6 rounded-2xl w-full max-w-md shadow-2xl transform scale-95 transition-all duration-300">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="h-11 w-11 bg-[#d4af37]/10 rounded-xl flex items-center justify-center text-[#d4af37]">
+                    <i class="fa-solid fa-file-export text-lg"></i>
+                </div>
+                <div>
+                    <h3 class="text-base font-extrabold text-slate-100">Export Style Preset</h3>
+                    <p class="text-xs text-slate-400">Specify a filename for your custom JSON style</p>
+                </div>
+            </div>
+            <div class="mb-6">
+                <label for="styleFilenameInput" class="block text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-2">Preset Name</label>
+                <div class="relative flex items-center">
+                    <span class="absolute left-4 text-xs text-zinc-500 font-bold code-font">style-</span>
+                    <input type="text" id="styleFilenameInput" placeholder="my-preset" class="w-full bg-black border border-zinc-800 hover:border-zinc-700 focus:border-[#d4af37] rounded-xl pl-[52px] pr-12 py-3 text-sm text-white placeholder-slate-600 outline-none transition">
+                    <span class="absolute right-4 text-xs text-zinc-500 font-bold code-font">.json</span>
+                </div>
+            </div>
+            <div class="flex items-center justify-end gap-3">
+                <button id="cancelStyleSaveBtn" class="px-4 py-2.5 rounded-xl border border-zinc-800 hover:bg-zinc-900 text-xs font-bold text-slate-300 transition">
+                    Cancel
+                </button>
+                <button id="confirmStyleSaveBtn" class="px-5 py-2.5 bg-[#d4af37] hover:bg-[#e6ca65] text-black font-extrabold text-xs rounded-xl transition shadow-lg shadow-[#d4af37]/20">
+                    Save Style
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- JS Logic -->
     <script>
         // API Key initialization - checks URL search queries first, then falls back to environment
         const urlParams = new URLSearchParams(window.location.search);
         const apiKey = urlParams.get('key') || ""; 
+
+        // Apply API Key Guard early onto Text Area
+        const aiPromptInput = document.getElementById('aiPrompt');
+        const aiGenerateBtn = document.getElementById('aiGenerateBtn');
+        if (!apiKey) {
+            aiPromptInput.disabled = true;
+            aiPromptInput.placeholder = "Enter API key in URL (?key=YOUR_KEY) to enable AI Magic.";
+            aiPromptInput.classList.add('opacity-50', 'cursor-not-allowed');
+            aiGenerateBtn.classList.add('opacity-50', 'cursor-not-allowed');
+        }
 
         // Primary Display Canvas & Context (Optimized for heavy pixel readback)
         const canvas = document.getElementById('editorCanvas');
@@ -719,7 +781,7 @@
         const styleInput = document.getElementById('styleInput');
         const saveStyleBtn = document.getElementById('saveStyleBtn');
 
-        // Non-destructive Baseline Buffers (Fixes double-filtering and rotation bugs)
+        // Non-destructive Baseline Buffers
         let imageLoaded = false;
         let originalImage = null; // Stays clean as reference
         
@@ -731,12 +793,12 @@
         const undoBufferCtx = undoBufferCanvas.getContext('2d', { willReadFrequently: true });
         let hasUndo = false;
 
-        // Active Selection tool coordinates (stored relative to baseCanvas)
+        // Active Selection tool coordinates
         let selectionType = 'none'; // 'none', 'rect', 'free', 'paint', 'text'
         let selectionActive = false;
         let isDrawing = false;
         let startX, startY, currentX, currentY;
-        let freePath = []; // baseline coordinate maps for free lasso
+        let freePath = []; 
         
         // Paint Settings
         const paintColorInput = document.getElementById('paintColor');
@@ -746,7 +808,8 @@
         // App state dictionary for styling filters
         const state = {
             // Basic Edits
-            rotate: 0, // 0 to 23 steps (15 degrees each)
+            rotate: 0,
+            warmth: 0,
             vignette: 0,
             sharpness: 0,
             contrast: 0,
@@ -755,10 +818,11 @@
             flipH: false,
             flipV: false,
             // Grunge Panel Settings
-            wrinkles: 0, // Procedural 3D folding
-            wear: 0,     // Edge damage & aging
+            wrinkles: 0, 
+            wear: 0,     
             scratchDensity: 0,
             grain: 0,
+            pixelSort: 0,
             fading: 0,
             tintColor: '#b08c6a',
             // Glitch Panel Settings
@@ -767,7 +831,7 @@
             waveGlitch: 0,
             vhsStatic: 0,
             // Zoom Settings
-            zoom: 100, // Range 50 to 200
+            zoom: 100,
             // Text Edits Parameters
             textState: {
                 text: '',
@@ -783,17 +847,15 @@
             }
         };
 
-        // Text Edits variables
         let isDraggingText = false;
         let textDragOffsetX = 0;
         let textDragOffsetY = 0;
-
-        // Wrinkle Crease Paths (Calculated once on file load so slider adjustments don't shake creases)
         let wrinkleCreases = [];
 
         // UI Sliders mapping
         const sliders = {
             rotate: { el: document.getElementById('slider-rotate'), valEl: document.getElementById('val-rotate'), stepVal: 15, suffix: '°' },
+            warmth: { el: document.getElementById('slider-warmth'), valEl: document.getElementById('val-warmth'), suffix: '%' },
             vignette: { el: document.getElementById('slider-vignette'), valEl: document.getElementById('val-vignette'), suffix: '%' },
             sharpness: { el: document.getElementById('slider-sharpness'), valEl: document.getElementById('val-sharpness'), suffix: '%' },
             contrast: { el: document.getElementById('slider-contrast'), valEl: document.getElementById('val-contrast'), suffix: '%' },
@@ -804,6 +866,7 @@
             wear: { el: document.getElementById('slider-wear'), valEl: document.getElementById('val-wear'), suffix: '%' },
             scratchDensity: { el: document.getElementById('slider-scratchDensity'), valEl: document.getElementById('val-scratchDensity'), suffix: '%' },
             grain: { el: document.getElementById('slider-grain'), valEl: document.getElementById('val-grain'), suffix: '%' },
+            pixelSort: { el: document.getElementById('slider-pixelSort'), valEl: document.getElementById('val-pixelSort'), suffix: '%' },
             fading: { el: document.getElementById('slider-fading'), valEl: document.getElementById('val-fading'), suffix: '%' },
 
             rgbSplit: { el: document.getElementById('slider-rgbSplit'), valEl: document.getElementById('val-rgbSplit'), suffix: 'px' },
@@ -833,6 +896,11 @@
         const filenameInput = document.getElementById('filenameInput');
         const cancelSaveBtn = document.getElementById('cancelSaveBtn');
         const confirmSaveBtn = document.getElementById('confirmSaveBtn');
+
+        const saveStyleModal = document.getElementById('saveStyleModal');
+        const styleFilenameInput = document.getElementById('styleFilenameInput');
+        const cancelStyleSaveBtn = document.getElementById('cancelStyleSaveBtn');
+        const confirmStyleSaveBtn = document.getElementById('confirmStyleSaveBtn');
 
         // Custom Toast Notifications
         function showToast(message, type = 'warning') {
@@ -886,20 +954,17 @@
                 const tempW = baseCanvas.width;
                 const tempH = baseCanvas.height;
                 
-                // Keep local clone
                 const tempCanv = document.createElement('canvas');
                 tempCanv.width = tempW;
                 tempCanv.height = tempH;
                 const tempCtx = tempCanv.getContext('2d');
                 tempCtx.drawImage(baseCanvas, 0, 0);
                 
-                // Swap baseline memory
                 baseCanvas.width = undoBufferCanvas.width;
                 baseCanvas.height = undoBufferCanvas.height;
                 baseCtx.clearRect(0, 0, baseCanvas.width, baseCanvas.height);
                 baseCtx.drawImage(undoBufferCanvas, 0, 0);
                 
-                // Shift undone to redo
                 undoBufferCanvas.width = tempW;
                 undoBufferCanvas.height = tempH;
                 undoBufferCtx.clearRect(0, 0, tempW, tempH);
@@ -912,7 +977,6 @@
             }
         }
 
-        // Setup Keyboard Shortcuts (CTRL + Z and Escape Key binding for custom modals)
         window.addEventListener('keydown', (e) => {
             if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
                 e.preventDefault();
@@ -922,6 +986,10 @@
                 if (!saveModal.classList.contains('hidden')) {
                     e.preventDefault();
                     closeSaveModal();
+                }
+                if (!saveStyleModal.classList.contains('hidden')) {
+                    e.preventDefault();
+                    closeStyleSaveModal();
                 }
             }
         });
@@ -943,7 +1011,6 @@
             dropdownChevron.classList.remove('rotate-180');
         });
 
-        // Toggle Right Side Panel views & Update Dropdown Active Colors
         const menuOptions = document.querySelectorAll('.menu-opt');
         const panels = document.querySelectorAll('.panel-section');
 
@@ -969,7 +1036,6 @@
                 dropdownList.classList.add('hidden');
                 dropdownChevron.classList.remove('rotate-180');
 
-                // Switch visible panel
                 panels.forEach(panel => {
                     if (panel.id === `${targetPanel}Panel`) {
                         panel.classList.remove('hidden');
@@ -980,7 +1046,6 @@
 
                 updateDropdownActiveColor(targetPanel);
 
-                // Mode entry setups
                 if (targetPanel === 'text') {
                     setSelectionTool('text');
                 } else if (targetPanel !== 'paint') {
@@ -999,14 +1064,13 @@
                     if (config.suffix === '°') {
                         config.valEl.textContent = `${parsedVal * config.stepVal}°`;
                     } else {
-                        config.valEl.textContent = `${parsedVal > 0 && key !== 'vignette' && key !== 'fading' ? '+' : ''}${parsedVal}${config.suffix}`;
+                        config.valEl.textContent = `${parsedVal > 0 && key !== 'vignette' && key !== 'fading' && key !== 'pixelSort' ? '+' : ''}${parsedVal}${config.suffix}`;
                     }
                     scheduleRender();
                 });
             }
         });
 
-        // Zoom Slider adjustments
         zoomSlider.addEventListener('input', (e) => {
             const val = parseInt(e.target.value);
             state.zoom = val;
@@ -1014,7 +1078,6 @@
             scheduleRender();
         });
 
-        // Warm tint color selector changes
         const tintColorInput = document.getElementById('tintColor');
         const tintColorHex = document.getElementById('tintColorHex');
         tintColorInput.addEventListener('input', (e) => {
@@ -1056,6 +1119,7 @@
                 const parentPanel = btn.closest('.panel-section').id;
                 if (parentPanel === 'basicPanel') {
                     state.rotate = Math.floor(Math.random() * 24);
+                    state.warmth = Math.floor(Math.random() * 140) - 70;
                     state.vignette = Math.floor(Math.random() * 80);
                     state.sharpness = Math.floor(Math.random() * 140) - 70;
                     state.contrast = Math.floor(Math.random() * 100) - 50;
@@ -1064,6 +1128,9 @@
                     
                     sliders.rotate.el.value = state.rotate;
                     sliders.rotate.valEl.textContent = `${state.rotate * 15}°`;
+
+                    sliders.warmth.el.value = state.warmth;
+                    sliders.warmth.valEl.textContent = `${state.warmth > 0 ? '+' : ''}${state.warmth}%`;
                     
                     sliders.vignette.el.value = state.vignette;
                     sliders.vignette.valEl.textContent = `${state.vignette}%`;
@@ -1084,6 +1151,7 @@
                     state.wear = Math.floor(Math.random() * 60) + 10;
                     state.scratchDensity = Math.floor(Math.random() * 60) + 10;
                     state.grain = Math.floor(Math.random() * 50) + 10;
+                    state.pixelSort = Math.floor(Math.random() * 50);
                     state.fading = Math.floor(Math.random() * 50) + 5;
                     
                     sliders.wrinkles.el.value = state.wrinkles;
@@ -1097,6 +1165,9 @@
                     
                     sliders.grain.el.value = state.grain;
                     sliders.grain.valEl.textContent = `${state.grain}%`;
+
+                    sliders.pixelSort.el.value = state.pixelSort;
+                    sliders.pixelSort.valEl.textContent = `${state.pixelSort}%`;
                     
                     sliders.fading.el.value = state.fading;
                     sliders.fading.valEl.textContent = `${state.fading}%`;
@@ -1135,19 +1206,15 @@
         function resetStateSection(sectionId) {
             if (sectionId === 'basicPanel') {
                 state.rotate = 0;
+                state.warmth = 0;
                 state.vignette = 0;
                 state.sharpness = 0;
                 state.contrast = 0;
                 state.saturation = 0;
                 state.brightness = 0;
-                state.flipH = false;
-                state.flipV = false;
                 
-                document.getElementById('flipHBtn').classList.remove('border-[#d4af37]', 'text-[#d4af37]');
-                document.getElementById('flipVBtn').classList.remove('border-[#d4af37]', 'text-[#d4af37]');
-
                 Object.keys(sliders).forEach(key => {
-                    if (['rotate', 'vignette', 'sharpness', 'contrast', 'saturation', 'brightness'].includes(key)) {
+                    if (['rotate', 'warmth', 'vignette', 'sharpness', 'contrast', 'saturation', 'brightness'].includes(key)) {
                         sliders[key].el.value = 0;
                         sliders[key].valEl.textContent = key === 'rotate' ? '0°' : '0%';
                     }
@@ -1157,13 +1224,14 @@
                 state.wear = 0;
                 state.scratchDensity = 0;
                 state.grain = 0;
+                state.pixelSort = 0;
                 state.fading = 0;
                 state.tintColor = '#b08c6a';
                 tintColorInput.value = '#b08c6a';
                 tintColorHex.textContent = '#b08c6a';
 
                 Object.keys(sliders).forEach(key => {
-                    if (['wrinkles', 'wear', 'scratchDensity', 'grain', 'fading'].includes(key)) {
+                    if (['wrinkles', 'wear', 'scratchDensity', 'grain', 'pixelSort', 'fading'].includes(key)) {
                         sliders[key].el.value = 0;
                         sliders[key].valEl.textContent = '0%';
                     }
@@ -1192,7 +1260,6 @@
             if (file) loadImage(file);
         });
 
-        // Drop & Drag upload support
         window.addEventListener('dragover', (e) => e.preventDefault());
         window.addEventListener('drop', (e) => {
             e.preventDefault();
@@ -1209,20 +1276,17 @@
                 img.onload = () => {
                     originalImage = img;
                     
-                    // Setup baseline Canvas Dimensions
                     baseCanvas.width = img.width;
                     baseCanvas.height = img.height;
                     baseCtx.clearRect(0, 0, baseCanvas.width, baseCanvas.height);
                     baseCtx.drawImage(img, 0, 0);
 
-                    // Procedurally generate crease vectors for the folded wrinkles layout
                     generateWrinkleCreases();
 
                     imageLoaded = true;
                     canvasPlaceholder.classList.add('hidden');
                     canvas.classList.remove('hidden');
 
-                    // Set zoom slider value to 100% and show container
                     state.zoom = 100;
                     zoomSlider.value = 100;
                     zoomValue.textContent = '100%';
@@ -1236,13 +1300,12 @@
             reader.readAsDataURL(file);
         }
 
-        // Generate Fold Creases once on File load so that tweaking wrinkly sliders doesn't cause them to drift
         function generateWrinkleCreases() {
             if (!baseCanvas) return;
             wrinkleCreases = [];
             const w = baseCanvas.width;
             const h = baseCanvas.height;
-            const count = 45; // Generates robust interconnected creasing coverage
+            const count = 45; 
 
             let seed = 5678;
             function srandom() {
@@ -1252,7 +1315,7 @@
 
             for (let i = 0; i < count; i++) {
                 let points = [];
-                let nodeCount = Math.floor(srandom() * 3) + 2; // 2 to 4 crease node path
+                let nodeCount = Math.floor(srandom() * 3) + 2; 
                 let startX = srandom() * w;
                 let startY = srandom() * h;
                 points.push({x: startX, y: startY});
@@ -1265,13 +1328,12 @@
                     let nextX = last.x + Math.cos(angle) * segmentLen;
                     let nextY = last.y + Math.sin(angle) * segmentLen;
                     points.push({x: nextX, y: nextY});
-                    angle += (srandom() - 0.5) * 1.8; // slightly bend crease
+                    angle += (srandom() - 0.5) * 1.8; 
                 }
                 wrinkleCreases.push(points);
             }
         }
 
-        // Render queue throttle
         let renderScheduled = false;
         function scheduleRender() {
             if (renderScheduled) return;
@@ -1282,63 +1344,51 @@
             });
         }
 
-        // Forward Transformation (baseline coordinates -> screen viewport coordinates)
         function mapBaselineToDisplay(bx, by) {
             if (!imageLoaded || !baseCanvas) return { x: bx, y: by };
 
-            // 1. Subtract original base center
             let rx = bx - baseCanvas.width / 2;
             let ry = by - baseCanvas.height / 2;
 
-            // 2. Rotate forward
             const radAngle = (state.rotate * 15) * Math.PI / 180;
             const cos = Math.cos(radAngle);
             const sin = Math.sin(radAngle);
             let dx = rx * cos - ry * sin;
             let dy = rx * sin + ry * cos;
 
-            // 3. Mirror forward
             if (state.flipH) dx = -dx;
             if (state.flipV) dy = -dy;
 
-            // 4. Add display canvas center
             const displayX = dx + canvas.width / 2;
             const displayY = dy + canvas.height / 2;
 
             return { x: displayX, y: displayY };
         }
 
-        // Inverse Transformation (screen viewport coordinates -> baseline coordinates)
         function mapDisplayToBaseline(dx, dy) {
             if (!imageLoaded || !baseCanvas) return { x: dx, y: dy };
 
-            // 1. Subtract display center
             let rx = dx - canvas.width / 2;
             let ry = dy - canvas.height / 2;
 
-            // 2. Mirror backward
             if (state.flipH) rx = -rx;
             if (state.flipV) ry = -ry;
 
-            // 3. Rotate backward
             const radAngle = (state.rotate * 15) * Math.PI / 180;
             const cos = Math.cos(-radAngle);
             const sin = Math.sin(-radAngle);
             const bx = rx * cos - ry * sin;
             const by = rx * sin + ry * cos;
 
-            // 4. Add original base center
             const baselineX = bx + baseCanvas.width / 2;
             const baselineY = by + baseCanvas.height / 2;
 
             return { x: baselineX, y: baselineY };
         }
 
-        // Multi-Step Image Filter Rendering System
         function render() {
             if (!imageLoaded || !baseCanvas) return;
 
-            // Compute bounds for rotation transforms on display canvas size
             const radAngle = (state.rotate * 15) * Math.PI / 180;
             const absoluteCos = Math.abs(Math.cos(radAngle));
             const absoluteSin = Math.abs(Math.sin(radAngle));
@@ -1349,38 +1399,27 @@
             canvas.width = rotatedWidth;
             canvas.height = rotatedHeight;
 
-            // Clear viewport context
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Save transform matrix states
             ctx.save();
             ctx.translate(canvas.width / 2, canvas.height / 2);
             ctx.rotate(radAngle);
             ctx.scale(state.flipH ? -1 : 1, state.flipV ? -1 : 1);
             
-            // Draw baseline raw image
             ctx.drawImage(baseCanvas, -baseCanvas.width / 2, -baseCanvas.height / 2);
 
-            // Draw Text Overlay relative to transformed baseline system so it aligns correctly
             if (state.textState.text.trim() !== '') {
                 drawTextOnCtx(ctx, -baseCanvas.width / 2 + state.textState.x, -baseCanvas.height / 2 + state.textState.y);
             }
 
             ctx.restore();
 
-            // Run Core Pixel Filters (Brightness, Contrast, Saturation, Vignette, Sharpness, Dust, Scratches)
             applyFiltersPipeline();
-
-            // Apply Glitch Distortions Studio Filters (RGB Split, Scanlines, Wave Glitch, VHS Static)
             applyGlitchFilters();
-
-            // Render active selection lines atop workspace
             renderSelectionIndicators();
 
-            // Handle Zoom and Display Dimensions Scaling
-            // We read the stable parent container (viewerArea) to avoid measurement feedback loops!
             const viewerArea = document.getElementById('viewerArea') || canvasContainer.parentElement;
-            const containerWidth = Math.max(100, viewerArea.clientWidth - 48); // accounts for padding (p-6 is 24px each side)
+            const containerWidth = Math.max(100, viewerArea.clientWidth - 48);
             const containerHeight = Math.max(100, viewerArea.clientHeight - 48);
 
             let fitScale = 1.0;
@@ -1399,14 +1438,58 @@
             canvas.style.height = `${displayHeight}px`;
         }
 
-        // Image Processing Pixel Engine
+        // Apply Pixel Sorting
+        function applyPixelSorting(context, intensity) {
+            const imgData = context.getImageData(0, 0, canvas.width, canvas.height);
+            const d = imgData.data;
+            const w = imgData.width;
+            const h = imgData.height;
+            
+            const sortFactor = intensity / 100;
+            const colsToSort = Math.floor(w * sortFactor * 0.8);
+            const maxSpanLength = Math.floor(h * sortFactor);
+            
+            let seed = 4321;
+            function srandom() {
+                let x = Math.sin(seed++) * 10000;
+                return x - Math.floor(x);
+            }
+
+            for (let c = 0; c < colsToSort; c++) {
+                const x = Math.floor(srandom() * w);
+                const startY = Math.floor(srandom() * (h - 1));
+                const length = Math.floor(srandom() * maxSpanLength) + 10;
+                const endY = Math.min(h, startY + length);
+                
+                const span = [];
+                for (let y = startY; y < endY; y++) {
+                    const idx = (y * w + x) * 4;
+                    span.push({
+                        r: d[idx], g: d[idx+1], b: d[idx+2], a: d[idx+3],
+                        luma: 0.299 * d[idx] + 0.587 * d[idx+1] + 0.114 * d[idx+2]
+                    });
+                }
+                
+                span.sort((a, b) => a.luma - b.luma); // Descending brightness -> cool melting
+                
+                for (let y = startY; y < endY; y++) {
+                    const idx = (y * w + x) * 4;
+                    const p = span[y - startY];
+                    d[idx] = p.r;
+                    d[idx+1] = p.g;
+                    d[idx+2] = p.b;
+                    d[idx+3] = p.a;
+                }
+            }
+            context.putImageData(imgData, 0, 0);
+        }
+
         function applyFiltersPipeline() {
             const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
             const d = imgData.data;
             const w = imgData.width;
             const h = imgData.height;
 
-            // Precalculate coefficients
             const b = state.brightness; 
             const c = (state.contrast + 100) / 100; 
             const s = (state.saturation + 100) / 100; 
@@ -1418,20 +1501,19 @@
 
             const tintRGB = hexToRgb(state.tintColor) || { r: 176, g: 140, b: 106 };
 
-            // Core adjustments
             for (let i = 0; i < d.length; i += 4) {
                 let r = d[i];
                 let g = d[i+1];
                 let b_val = d[i+2];
 
-                // 1. Brightness & Contrast
+                // Brightness & Contrast
                 if (b !== 0 || c !== 1) {
                     r = ((r - 128) * c) + 128 + b;
                     g = ((g - 128) * c) + 128 + b;
                     b_val = ((b_val - 128) * c) + 128 + b;
                 }
 
-                // 2. Saturation
+                // Saturation
                 if (s !== 1) {
                     const luma = 0.299 * r + 0.587 * g + 0.114 * b_val;
                     r = luma + (r - luma) * s;
@@ -1439,7 +1521,19 @@
                     b_val = luma + (b_val - luma) * s;
                 }
 
-                // 3. Vintage atmospheric wash / fade
+                // Warmth Adjustment
+                if (state.warmth !== 0) {
+                    const warmthVal = state.warmth;
+                    const rOffset = warmthVal > 0 ? warmthVal * 0.4 : warmthVal * 0.2;
+                    const gOffset = warmthVal > 0 ? warmthVal * 0.15 : warmthVal * 0.1;
+                    const bOffset = warmthVal > 0 ? -warmthVal * 0.3 : -warmthVal * 0.5;
+
+                    r += rOffset;
+                    g += gOffset;
+                    b_val += bOffset;
+                }
+
+                // Fading
                 if (state.fading > 0) {
                     const fadeCo = state.fading / 100;
                     r = r * (1 - fadeCo) + (tintRGB.r * 0.7) * fadeCo;
@@ -1447,7 +1541,7 @@
                     b_val = b_val * (1 - fadeCo) + (tintRGB.b * 0.7) * fadeCo;
                 }
 
-                // 4. Custom Radial Vignette Layer
+                // Vignette
                 if (vign > 0) {
                     const idx = i / 4;
                     const px = idx % w;
@@ -1468,16 +1562,18 @@
 
             ctx.putImageData(imgData, 0, 0);
 
-            // 5. Apply Sharpness & Multi-Pass Smooth Blurring
             if (state.sharpness !== 0) {
                 applySharpness(state.sharpness);
             }
 
-            // 6. Generate Procedural Artistic Grunge Layers overlay (Crumple paper wrinkles, noise, dust)
             applyGrungeFilters(tintRGB);
+
+            // Execute Custom Pixel Sorting 
+            if (state.pixelSort > 0) {
+                applyPixelSorting(ctx, state.pixelSort);
+            }
         }
 
-        // Fast Sharpness / Blur Convolution Matrix
         function applySharpness(sharpnessVal) {
             const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
             const w = imgData.width;
@@ -1485,7 +1581,6 @@
             const src = new Uint8ClampedArray(imgData.data);
             const dst = imgData.data;
 
-            // If Sharpness is Negative, run an beautiful multi-pass box blur to make blurring completely visible
             if (sharpnessVal < 0) {
                 const passes = Math.min(10, Math.ceil(Math.abs(sharpnessVal) / 10));
                 for (let p = 0; p < passes; p++) {
@@ -1494,7 +1589,6 @@
                 return;
             }
 
-            // Otherwise apply clean High pass Sharpness matrix
             let kernel;
             const amount = sharpnessVal / 100;
             kernel = [
@@ -1530,7 +1624,6 @@
             ctx.putImageData(imgData, 0, 0);
         }
 
-        // Fast Box Blur Pass for clean blurry filters
         function boxBlurPass(imgData) {
             const d = imgData.data;
             const w = imgData.width;
@@ -1561,7 +1654,6 @@
             }
         }
 
-        // Procedural Grunge generator overlays
         function applyGrungeFilters(tintRGB) {
             ctx.save();
             
@@ -1571,7 +1663,6 @@
                 return x - Math.floor(x);
             }
 
-            // A: Noise, Grain & Edge Wear Damage
             if (state.grain > 0 || state.wear > 0) {
                 const grainImgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
                 const gd = grainImgData.data;
@@ -1579,14 +1670,13 @@
                 const h = grainImgData.height;
                 const grainCo = state.grain / 100;
                 const wearCo = state.wear / 100;
-                const maxEdgeDist = Math.min(w, h) * (0.02 + 0.18 * wearCo); // Effect stretches further inward with higher wear
+                const maxEdgeDist = Math.min(w, h) * (0.02 + 0.18 * wearCo);
                 
                 for (let y = 0; y < h; y++) {
                     for (let x = 0; x < w; x++) {
                         const idx = (y * w + x) * 4;
                         let scuffed = false;
 
-                        // Edge Wear Pass
                         if (wearCo > 0) {
                             const distToLeft = x;
                             const distToRight = w - 1 - x;
@@ -1596,16 +1686,13 @@
 
                             if (minDist < maxEdgeDist) {
                                 const edgeFactor = 1 - (minDist / maxEdgeDist);
-                                // Add organic noise to the edge distance
                                 const noisyFactor = Math.max(0, edgeFactor + (srandom() - 0.5) * 0.4);
                                 
-                                // Gradual darkening towards the very edges (like old burnt paper)
                                 const darkening = 1 - (noisyFactor * wearCo * 0.7);
                                 gd[idx] = Math.max(0, gd[idx] * darkening);
                                 gd[idx+1] = Math.max(0, gd[idx+1] * darkening);
                                 gd[idx+2] = Math.max(0, gd[idx+2] * darkening);
 
-                                // Probabilistic scuffing (tears exposing white paper fibers or dark rotting spots)
                                 const wearProb = Math.pow(noisyFactor, 2) * wearCo * 0.55;
                                 if (srandom() < wearProb) {
                                     const isDark = srandom() > 0.65;
@@ -1622,7 +1709,6 @@
                             }
                         }
 
-                        // Film Grain Pass (skip if heavily scuffed to preserve scuff texture)
                         if (grainCo > 0 && !scuffed) {
                             if (srandom() < (grainCo * 0.003)) {
                                 const dustColor = srandom() > 0.5 ? 255 : 30;
@@ -1641,7 +1727,6 @@
                 ctx.putImageData(grainImgData, 0, 0);
             }
 
-            // B: Scratch lines overlay
             if (state.scratchDensity > 0) {
                 const numScratches = Math.floor(state.scratchDensity * 0.35);
                 ctx.strokeStyle = `rgba(235, 225, 215, ${state.scratchDensity * 0.008})`;
@@ -1662,13 +1747,11 @@
                 }
             }
 
-            // C: Procedural Wrinkles Crumpled paper crease highlights/shadow lines
             if (state.wrinkles > 0 && wrinkleCreases.length > 0) {
                 const wrinkleCo = state.wrinkles / 100;
                 ctx.lineCap = 'round';
                 ctx.lineJoin = 'miter';
 
-                // 1. Draw Crease shadow pass (slightly offset bottom-right)
                 ctx.strokeStyle = `rgba(0, 0, 0, ${0.42 * wrinkleCo})`;
                 ctx.lineWidth = 1.0 + wrinkleCo * 1.5;
                 wrinkleCreases.forEach(path => {
@@ -1682,7 +1765,6 @@
                     ctx.stroke();
                 });
 
-                // 2. Draw Crease highlight pass (slightly offset top-left)
                 ctx.strokeStyle = `rgba(255, 255, 255, ${0.48 * wrinkleCo})`;
                 ctx.lineWidth = 0.8 + wrinkleCo * 1.0;
                 wrinkleCreases.forEach(path => {
@@ -1696,13 +1778,11 @@
                     ctx.stroke();
                 });
 
-                // 3. Far-right heavy destructive details (jagged paper tear cracks, dark worn folds)
                 if (state.wrinkles > 80) {
-                    const tearIntensity = (state.wrinkles - 80) / 20; // 0 to 1
+                    const tearIntensity = (state.wrinkles - 80) / 20; 
                     ctx.strokeStyle = `rgba(26, 18, 12, ${0.85 * tearIntensity})`;
                     ctx.lineWidth = 3.5 * tearIntensity;
                     
-                    // Draw randomized jagged paper rips
                     for (let i = 0; i < 4; i++) {
                         ctx.beginPath();
                         let localSeed = i * 4567;
@@ -1728,11 +1808,7 @@
             ctx.restore();
         }
 
-        // ==========================================
-        // DYNAMIC RETRO GLITCH FILTERS ENGINE
-        // ==========================================
         function applyGlitchFilters() {
-            // A: RGB Split (Chromatic Aberration)
             if (state.rgbSplit > 0) {
                 const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
                 const src = new Uint8ClampedArray(imgData.data);
@@ -1745,12 +1821,10 @@
                     for (let x = 0; x < w; x++) {
                         const idx = (y * w + x) * 4;
                         
-                        // Red channel shifted from left
                         const rX = Math.max(0, x - offset);
                         const rIdx = (y * w + rX) * 4;
                         dst[idx] = src[rIdx];
 
-                        // Blue channel shifted from right
                         const bX = Math.min(w - 1, x + offset);
                         const bIdx = (y * w + bX) * 4;
                         dst[idx+2] = src[bIdx+2];
@@ -1759,7 +1833,6 @@
                 ctx.putImageData(imgData, 0, 0);
             }
 
-            // B: Retro VHS Scanlines
             if (state.scanlines > 0) {
                 const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
                 const d = imgData.data;
@@ -1768,7 +1841,6 @@
                 const intensity = state.scanlines / 100;
 
                 for (let y = 0; y < h; y++) {
-                    // Generates oscillating horizontal lines pattern
                     const factor = 1 - (intensity * (0.45 + 0.45 * Math.sin(y * 1.5)));
                     for (let x = 0; x < w; x++) {
                         const idx = (y * w + x) * 4;
@@ -1780,7 +1852,6 @@
                 ctx.putImageData(imgData, 0, 0);
             }
 
-            // C: Wave Glitch Distortion
             if (state.waveGlitch > 0) {
                 const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
                 const src = new Uint8ClampedArray(imgData.data);
@@ -1790,7 +1861,6 @@
                 const maxAmp = (state.waveGlitch / 100) * 35;
 
                 for (let y = 0; y < h; y++) {
-                    // Create horizontal liquid waves
                     const offset = Math.sin(y * 0.05) * maxAmp + Math.cos(y * 0.015) * (maxAmp * 0.35);
                     const shift = Math.round(offset);
 
@@ -1808,7 +1878,6 @@
                 ctx.putImageData(imgData, 0, 0);
             }
 
-            // D: VCR Static Noise Streaks
             if (state.vhsStatic > 0) {
                 const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
                 const d = imgData.data;
@@ -1822,7 +1891,6 @@
                     return x - Math.floor(x);
                 }
 
-                // 1. Pixel high frequency static
                 for (let i = 0; i < d.length; i += 4) {
                     if (srandom() < (amount * 0.04)) {
                         const noise = (srandom() - 0.5) * 160;
@@ -1832,7 +1900,6 @@
                     }
                 }
 
-                // 2. Horizontal tear bands
                 const bandsCount = Math.floor(amount * 8);
                 for (let b = 0; b < bandsCount; b++) {
                     const startY = Math.floor(srandom() * h);
@@ -1856,9 +1923,6 @@
             }
         }
 
-        // ==========================================
-        // FINGER PAINTS & DRAWING SELECTIONS ENGINE
-        // ==========================================
         const selectionButtons = {
             rect: document.getElementById('btn-tool-rect'),
             free: document.getElementById('btn-tool-free'),
@@ -1869,7 +1933,6 @@
         const activeToolIndicator = document.getElementById('activeToolIndicator');
         const paintSettings = document.getElementById('paintSettings');
 
-        // Tool Toggle click handlers
         Object.keys(selectionButtons).forEach(tool => {
             selectionButtons[tool].addEventListener('click', () => {
                 if (!imageLoaded) return showToast("Upload an image first!");
@@ -1884,7 +1947,6 @@
         function setSelectionTool(tool) {
             selectionType = tool;
             
-            // Clean selection variables instantly to prevent lingering stale lines
             selectionActive = false;
             freePath = [];
             startX = undefined;
@@ -1924,16 +1986,13 @@
             showToast("Cleared active canvas selections.", "success");
         });
 
-        // Event listener coordinates translaters
         function getCanvasCoords(e) {
             const rect = canvas.getBoundingClientRect();
-            // Map viewport position to coordinate density of underlying bitmap
             const x = (e.clientX - rect.left) * (canvas.width / rect.width);
             const y = (e.clientY - rect.top) * (canvas.height / rect.height);
             return { x, y };
         }
 
-        // Support mobile Touch actions
         function getTouchCoords(e) {
             if (e.touches.length === 0) return null;
             const touch = e.touches[0];
@@ -1943,13 +2002,11 @@
             return { x, y };
         }
 
-        // Start touch/mouse interaction
         function handleStart(displayCoords) {
             if (!imageLoaded || selectionType === 'none') return;
             
             const coords = mapDisplayToBaseline(displayCoords.x, displayCoords.y);
             
-            // Check Text click collision bounds
             if (selectionType === 'text' && state.textState.text.trim() !== '') {
                 const textBBox = measureTextBoundingBox();
                 if (textBBox && coords.x >= textBBox.x1 && coords.x <= textBBox.x2 && coords.y >= textBBox.y1 && coords.y <= textBBox.y2) {
@@ -1969,7 +2026,7 @@
             if (selectionType === 'free') {
                 freePath = [{ x: coords.x, y: coords.y }];
             } else if (selectionType === 'paint') {
-                saveUndoState(); // Store undo frame before drawing
+                saveUndoState(); 
 
                 baseCtx.save();
                 applySelectionClipping(baseCtx);
@@ -1985,11 +2042,9 @@
             }
         }
 
-        // Handle move operations
         function handleMove(displayCoords) {
             const coords = mapDisplayToBaseline(displayCoords.x, displayCoords.y);
 
-            // Drag dynamic text box
             if (isDraggingText && selectionType === 'text') {
                 state.textState.x = coords.x - textDragOffsetX;
                 state.textState.y = coords.y - textDragOffsetY;
@@ -2035,16 +2090,13 @@
         canvas.addEventListener('mouseup', handleEnd);
         canvas.addEventListener('mouseleave', handleEnd);
 
-        // Double-click event listener to cleanly auto-close lasso selection paths
         canvas.addEventListener('dblclick', (e) => {
             if (!imageLoaded) return;
             if (selectionType === 'free' && freePath.length > 2) {
-                // Pop the last 2 nodes which represent mouse coordinate drag jitter added by double clicking
                 if (freePath.length > 4) {
                     freePath.pop();
                     freePath.pop();
                 }
-                // Auto close boundary by drawing path back to origin start coordinates
                 freePath.push({ x: freePath[0].x, y: freePath[0].y });
                 selectionActive = true;
                 isDrawing = false;
@@ -2068,7 +2120,6 @@
             handleEnd();
         });
 
-        // Restrict active editing boundaries to selections
         function applySelectionClipping(context) {
             if (!selectionActive) return;
             context.beginPath();
@@ -2089,13 +2140,11 @@
             }
         }
 
-        // Render Dashed Selection Box in Display space
         function renderSelectionIndicators() {
             if (!selectionActive) return;
 
             ctx.save();
 
-            // Create Path representation
             const pathObj = new Path2D();
             if (freePath.length > 1) {
                 const startPt = mapBaselineToDisplay(freePath[0].x, freePath[0].y);
@@ -2119,26 +2168,19 @@
                 pathObj.rect(rx, ry, rw, rh);
             }
 
-            // Pass 1: Solid Black Backing for Contrast (thicker stroke)
             ctx.strokeStyle = '#000000';
             ctx.lineWidth = 4.5;
-            ctx.setLineDash([]); // solid backing
+            ctx.setLineDash([]); 
             ctx.stroke(pathObj);
 
-            // Pass 2: Dashed Gold Foreground for Elegant High Visibility
             ctx.strokeStyle = '#d4af37';
             ctx.lineWidth = 2.5;
-            ctx.setLineDash([8, 6]); // bold, long dashes
+            ctx.setLineDash([8, 6]); 
             ctx.stroke(pathObj);
 
             ctx.restore();
         }
 
-        // ==========================================
-        // TEXT OVERLAY DRAWING ENGINE
-        // ==========================================
-
-        // Track Text Panel changes
         textInputEl.addEventListener('input', (e) => {
             state.textState.text = e.target.value;
             scheduleRender();
@@ -2147,8 +2189,6 @@
         textFontEl.addEventListener('change', async (e) => {
             state.textState.font = e.target.value;
             
-            // Fix: HTML5 Canvas will draw fallback fonts if the requested web font 
-            // hasn't finished downloading. This forces the browser to await the font first.
             if (document.fonts) {
                 try {
                     const fontStyle = `${state.textState.italic ? 'italic ' : ''}${state.textState.bold ? 'bold ' : ''}${state.textState.size}px ${state.textState.font}`;
@@ -2220,7 +2260,6 @@
             }
         });
 
-        // Measure text boundary coordinates relative to baseline workspace
         function measureTextBoundingBox() {
             const txt = state.textState;
             if (!txt.text) return null;
@@ -2246,7 +2285,6 @@
             };
         }
 
-        // Draw multi-line text with shadow and glow
         function drawTextOnCtx(context, x, y) {
             const txt = state.textState;
             context.save();
@@ -2256,7 +2294,6 @@
             context.textBaseline = 'top';
             context.textAlign = 'left';
 
-            // Glow / Shadow Settings
             if (txt.glow > 0) {
                 context.shadowColor = 'rgba(255, 255, 255, 0.95)';
                 context.shadowBlur = txt.glow;
@@ -2276,11 +2313,6 @@
             context.restore();
         }
 
-        // ==========================================
-        // REGION ACTIONS (Heal, Fill, Crop)
-        // ==========================================
-
-        // Crop Selection Action
         document.getElementById('cropBtn').addEventListener('click', () => {
             if (!imageLoaded) return showToast("Upload an image first!");
             if (!selectionActive) return showToast("Please select an area to crop first!");
@@ -2302,7 +2334,7 @@
 
             if (rw < 5 || rh < 5) return showToast("Selection box too small for crop.");
 
-            saveUndoState(); // Store undo framing
+            saveUndoState(); 
 
             const cropCanvas = document.createElement('canvas');
             cropCanvas.width = rw;
@@ -2316,10 +2348,8 @@
             baseCtx.clearRect(0, 0, rw, rh);
             baseCtx.drawImage(cropCanvas, 0, 0);
 
-            // Re-generate wrinkles for the new smaller crop frame
             generateWrinkleCreases();
 
-            // Clean active selections
             selectionActive = false;
             freePath = [];
             setSelectionTool('none');
@@ -2328,7 +2358,6 @@
             showToast("Image cropped successfully!", "success");
         });
 
-        // Color Fill Action
         document.getElementById('btn-action-fill').addEventListener('click', () => {
             if (!imageLoaded) return showToast("Upload an image first!");
             if (!selectionActive) return showToast("First select an area!");
@@ -2339,7 +2368,7 @@
             tempColorPicker.click();
 
             tempColorPicker.addEventListener('change', (e) => {
-                saveUndoState(); // Store undo frame
+                saveUndoState(); 
 
                 const fillClr = e.target.value;
                 baseCtx.save();
@@ -2354,12 +2383,11 @@
             });
         });
 
-        // Advanced Spot Healing Inpainter (Texture Boundary cloning & propagation)
         document.getElementById('btn-action-heal').addEventListener('click', () => {
             if (!imageLoaded) return showToast("Upload an image first!");
             if (!selectionActive) return showToast("First select an area!");
 
-            saveUndoState(); // Store undo state
+            saveUndoState(); 
 
             const imgData = baseCtx.getImageData(0, 0, baseCanvas.width, baseCanvas.height);
             const d = imgData.data;
@@ -2383,7 +2411,6 @@
                 rh = Math.min(h, Math.ceil(Math.abs(startY - currentY)));
             }
 
-            // Create selection boolean mask
             for (let y = ry; y < ry + rh; y++) {
                 for (let x = rx; x < rx + rw; x++) {
                     if (isPointInsideSelection(x, y)) {
@@ -2392,13 +2419,11 @@
                 }
             }
 
-            // Outer Texture propagation clone pass
             const src = new Uint8ClampedArray(imgData.data);
             for (let y = ry; y < ry + rh; y++) {
                 for (let x = rx; x < rx + rw; x++) {
                     const idx = y * w + x;
                     if (mask[idx] === 1) {
-                        // Find closest unmasked border pixel immediately outside selection boundary
                         const nearest = findNearestUnmasked(x, y, mask, w, h);
                         const destIdx = idx * 4;
                         const nearestIdx = (nearest.y * w + nearest.x) * 4;
@@ -2410,7 +2435,6 @@
                 }
             }
 
-            // Smooth texture boundaries / Feather seams
             applySmartInpaintBlur(imgData, mask, rx, ry, rw, rh);
 
             baseCtx.putImageData(imgData, 0, 0);
@@ -2418,11 +2442,9 @@
             showToast("Successfully healed selected region details!", "success");
         });
 
-        // Fast Spiral outward search to clone boundary textures
         function findNearestUnmasked(x, y, mask, w, h) {
             let maxDist = Math.max(w, h);
             for (let r = 1; r < maxDist; r++) {
-                // Top & Bottom boundary rings of radius r
                 for (let dx = -r; dx <= r; dx++) {
                     let nx1 = x + dx;
                     let ny1 = y - r;
@@ -2435,7 +2457,6 @@
                         if (mask[ny2 * w + nx2] === 0) return {x: nx2, y: ny2};
                     }
                 }
-                // Left & Right boundary rings of radius r
                 for (let dy = -r + 1; dy < r; dy++) {
                     let nx1 = x - r;
                     let ny1 = y + dy;
@@ -2473,14 +2494,12 @@
             }
         }
 
-        // Box blend smoothing strictly within seam masks
         function applySmartInpaintBlur(imgData, mask, rx, ry, rw, rh) {
             const w = imgData.width;
             const h = imgData.height;
             const src = new Uint8ClampedArray(imgData.data);
             const d = imgData.data;
 
-            // Feathering boundary seams
             for (let y = ry; y < ry + rh; y++) {
                 for (let x = rx; x < rx + rw; x++) {
                     const idx = y * w + x;
@@ -2508,9 +2527,49 @@
             }
         }
 
-        // ==========================================
-        // SECTION 5: ARTISTIC Preset STUDIO FILTERS
-        // ==========================================
+        // Custom HSL to RGB utility
+        function hslToRgb(h, s, l){
+            h /= 360;
+            let r, g, b;
+            if(s == 0){
+                r = g = b = l; 
+            } else {
+                const hue2rgb = function hue2rgb(p, q, t){
+                    if(t < 0) t += 1;
+                    if(t > 1) t -= 1;
+                    if(t < 1/6) return p + (q - p) * 6 * t;
+                    if(t < 1/2) return q;
+                    if(t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+                    return p;
+                }
+                const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+                const p = 2 * l - q;
+                r = hue2rgb(p, q, h + 1/3);
+                g = hue2rgb(p, q, h);
+                b = hue2rgb(p, q, h - 1/3);
+            }
+            return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+        }
+
+        // Custom RGB to HSL utility
+        function rgbToHsl(r, g, b) {
+            r /= 255, g /= 255, b /= 255;
+            let max = Math.max(r, g, b), min = Math.min(r, g, b);
+            let h, s, l = (max + min) / 2;
+            if (max == min) { h = s = 0; }
+            else {
+                let d = max - min;
+                s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                switch (max) {
+                    case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                    case g: h = (b - r) / d + 2; break;
+                    case b: h = (r - g) / d + 4; break;
+                }
+                h /= 6;
+            }
+            return [h * 360, s, l];
+        }
+
         const fxButtons = document.querySelectorAll('.fx-preset-btn');
         fxButtons.forEach(btn => {
             btn.addEventListener('click', () => {
@@ -2521,7 +2580,7 @@
         });
 
         function applyArtisticPreset(preset) {
-            saveUndoState(); // Store undo frame
+            saveUndoState(); 
 
             const imgData = baseCtx.getImageData(0, 0, baseCanvas.width, baseCanvas.height);
             const d = imgData.data;
@@ -2538,25 +2597,43 @@
                 baseCtx.putImageData(imgData, 0, 0);
                 scheduleRender();
                 showToast("Applied Vintage Sepia styling!", "success");
-            } else if (preset === 'pixel') {
-                const pixelSize = 10;
-                const tempCanv = document.createElement('canvas');
-                tempCanv.width = Math.max(1, w / pixelSize);
-                tempCanv.height = Math.max(1, h / pixelSize);
-                const tempCtx = tempCanv.getContext('2d');
-                
-                tempCtx.imageSmoothingEnabled = false;
-                baseCtx.imageSmoothingEnabled = false;
-
-                tempCtx.drawImage(baseCanvas, 0, 0, w, h, 0, 0, tempCanv.width, tempCanv.height);
-                baseCtx.clearRect(0, 0, w, h);
-                baseCtx.drawImage(tempCanv, 0, 0, tempCanv.width, tempCanv.height, 0, 0, w, h);
-                
-                baseCtx.imageSmoothingEnabled = true;
+            } else if (preset === 'blockbuster') {
+                for (let i = 0; i < d.length; i += 4) {
+                    let [hue, sat, lum] = rgbToHsl(d[i], d[i+1], d[i+2]);
+                    
+                    const hueMap = [
+                        { h: 0, mult: 1.10 },   // Red +10%
+                        { h: 60, mult: 1.20 },  // Yellow +20%
+                        { h: 120, mult: 1.05 }, // Green +5%
+                        { h: 180, mult: 1.30 }, // Cyan +30%
+                        { h: 240, mult: 0.60 }, // Blue -40%
+                        { h: 300, mult: 0.40 }, // Magenta -60%
+                        { h: 360, mult: 1.10 }  // Red wrap
+                    ];
+                    
+                    let lower = hueMap[0], upper = hueMap[6];
+                    for (let j = 0; j < hueMap.length - 1; j++) {
+                        if (hue >= hueMap[j].h && hue <= hueMap[j+1].h) {
+                            lower = hueMap[j];
+                            upper = hueMap[j+1];
+                            break;
+                        }
+                    }
+                    
+                    const range = upper.h - lower.h;
+                    const dist = hue - lower.h;
+                    const weight = range === 0 ? 0 : dist / range;
+                    const satMult = lower.mult * (1 - weight) + upper.mult * weight;
+                    
+                    sat = Math.max(0, Math.min(1, sat * satMult));
+                    
+                    const [nr, ng, nb] = hslToRgb(hue, sat, lum);
+                    d[i] = nr; d[i+1] = ng; d[i+2] = nb;
+                }
+                baseCtx.putImageData(imgData, 0, 0);
                 scheduleRender();
-                showToast("Applied Retro Pixelation!", "success");
+                showToast("Applied Blockbuster saturation style!", "success");
             } else if (preset === 'cyber') {
-                // High-Fidelity Multi-Color Edge-Aware Cyberpunk Highlights Filter
                 const src = new Uint8ClampedArray(d);
                 for (let y = 1; y < h - 1; y++) {
                     for (let x = 1; x < w - 1; x++) {
@@ -2564,7 +2641,6 @@
                         const r = src[idx], g = src[idx+1], b_val = src[idx+2];
                         const luma = 0.299 * r + 0.587 * g + 0.114 * b_val;
 
-                        // Sobel structural edge calculation to highlight contours in neon green/pink/cyan
                         const leftIdx = (y * w + (x - 1)) * 4;
                         const rightIdx = (y * w + (x + 1)) * 4;
                         const topIdx = ((y - 1) * w + x) * 4;
@@ -2580,38 +2656,24 @@
                         const edgeStrength = Math.sqrt(edgeX * edgeX + edgeY * edgeY);
 
                         if (edgeStrength > 35) {
-                            // Edge contours colored with high intensity neon accents
                             const selector = (x + y) % 3;
                             if (selector === 0) {
-                                // Neon Pink / Magenta
-                                d[idx] = 255;
-                                d[idx+1] = 0;
-                                d[idx+2] = 180;
+                                d[idx] = 255; d[idx+1] = 0; d[idx+2] = 180;
                             } else if (selector === 1) {
-                                // Neon Cyan
-                                d[idx] = 0;
-                                d[idx+1] = 240;
-                                d[idx+2] = 255;
+                                d[idx] = 0; d[idx+1] = 240; d[idx+2] = 255;
                             } else {
-                                // Neon Green
-                                d[idx] = 50;
-                                d[idx+1] = 255;
-                                d[idx+2] = 50;
+                                d[idx] = 50; d[idx+1] = 255; d[idx+2] = 50;
                             }
                         } else {
-                            // Non-edge zones styled with rich deep cyber gradients
                             if (luma < 60) {
-                                // Shadows: Deep Violet
                                 d[idx] = Math.max(0, luma * 0.4);
                                 d[idx+1] = 0;
                                 d[idx+2] = Math.min(255, luma * 1.5 + 40);
                             } else if (luma < 150) {
-                                // Midtones: Rich Electric Blue
                                 d[idx] = Math.max(0, luma * 0.2);
                                 d[idx+1] = Math.min(255, luma * 0.5 + 20);
                                 d[idx+2] = Math.min(255, luma * 1.6 + 60);
                             } else {
-                                // Highlights: Pastel Violet / White
                                 d[idx] = Math.min(255, luma * 1.2 + 30);
                                 d[idx+1] = Math.max(0, luma * 0.6);
                                 d[idx+2] = 255;
@@ -2637,14 +2699,8 @@
             }
         }
 
-        // ==========================================
-        // AI GENERATIVE EDIT VIA GEMINI API
-        // ==========================================
-        const aiGenerateBtn = document.getElementById('aiGenerateBtn');
-        const aiPromptInput = document.getElementById('aiPrompt');
-        const loadingOverlay = document.getElementById('loadingOverlay');
-
         aiGenerateBtn.addEventListener('click', async () => {
+            if (!apiKey) return showToast("Please add your API key via the URL parameter (?key=YOUR_KEY).", "error");
             if (!imageLoaded) return showToast("Upload an image first!");
             const promptText = aiPromptInput.value.trim();
             if (!promptText) return showToast("Please describe the AI edit you wish to generate!");
@@ -2653,7 +2709,6 @@
             loadingOverlay.querySelector('.scale-95')?.classList.remove('scale-95');
 
             try {
-                // Compress slightly so token transfers are rapid
                 const resizeWidth = Math.min(1024, baseCanvas.width);
                 const resizeHeight = (resizeWidth / baseCanvas.width) * baseCanvas.height;
                 const uploadCanv = document.createElement('canvas');
@@ -2669,7 +2724,6 @@
                 let base64Result = null;
                 let lastError = "Could not connect to AI.";
 
-                // ATTEMPT 1: Image-to-Image using gemini-2.5-flash-image-preview
                 try {
                     const i2iPayload = {
                         contents: [{
@@ -2696,8 +2750,7 @@
                         const data = await response.json();
                         base64Result = data.candidates?.[0]?.content?.parts?.find(p => p.inlineData)?.inlineData?.data;
                         if (base64Result) success = true;
-                    } else if (response.status === 404 || response.status === 403) {
-                        // Public API keys often lack access to this preview model. We will throw to trigger the fallback.
+                    } else if (response.status === 404 || response.status === 403 || response.status === 400) {
                         throw new Error("I2I_UNAVAILABLE");
                     } else {
                         throw new Error(`API returned HTTP Status ${response.status}`);
@@ -2705,16 +2758,12 @@
                 } catch (err) {
                     lastError = err.message;
                     
-                    // ATTEMPT 2: Fallback to Text-to-Image using Imagen 4 if I2I is unavailable
-                    if (err.message === "I2I_UNAVAILABLE" || lastError.includes("404") || lastError.includes("403")) {
+                    if (err.message === "I2I_UNAVAILABLE" || lastError.includes("404") || lastError.includes("403") || lastError.includes("400")) {
                         showToast("Image editing restricted by API Key. Generating new image instead...", "warning");
                         
                         try {
-                            // Fix: Imagen API requires 'instances' to be an array of objects
                             const t2iPayload = {
-                                instances: [
-                                    { prompt: `Generate a grungy, artistic image based on this concept: ${promptText}` }
-                                ],
+                                instances: { prompt: `Generate a grungy, artistic image based on this concept: ${promptText}` },
                                 parameters: { sampleCount: 1 }
                             };
                             
@@ -2740,7 +2789,7 @@
                 }
 
                 if (success && base64Result) {
-                    saveUndoState(); // Store undo state
+                    saveUndoState(); 
 
                     const aiImage = new Image();
                     aiImage.onload = () => {
@@ -2765,7 +2814,6 @@
             }
         });
 
-        // Helper: Hex color to RGB
         function hexToRgb(hex) {
             const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
             return result ? {
@@ -2775,22 +2823,65 @@
             } : null;
         }
 
-        // ==========================================
-        // STYLE LOAD & SAVE (JSON CONFIGS)
-        // ==========================================
-
         saveStyleBtn.addEventListener('click', () => {
+            saveStyleModal.classList.remove('hidden');
+            setTimeout(() => {
+                saveStyleModal.classList.remove('opacity-0');
+                saveStyleModal.querySelector('.scale-95')?.classList.remove('scale-95');
+                saveStyleModal.querySelector('.scale-95')?.classList.add('scale-100');
+                styleFilenameInput.focus();
+                styleFilenameInput.select();
+            }, 10);
+        });
+
+        function closeStyleSaveModal() {
+            saveStyleModal.classList.add('opacity-0');
+            const innerModal = saveStyleModal.querySelector('.scale-100') || saveStyleModal.querySelector('.scale-95');
+            innerModal?.classList.remove('scale-100');
+            innerModal?.classList.add('scale-95');
+            setTimeout(() => {
+                saveStyleModal.classList.add('hidden');
+            }, 300);
+        }
+
+        cancelStyleSaveBtn.addEventListener('click', closeStyleSaveModal);
+
+        saveStyleModal.addEventListener('click', (e) => {
+            if (e.target === saveStyleModal) {
+                closeStyleSaveModal();
+            }
+        });
+
+        function triggerStyleDownload() {
+            let name = styleFilenameInput.value.trim();
+            if (!name) name = 'my-preset';
+            
+            if (name.startsWith('style-')) name = name.substring(6);
+            if (name.toLowerCase().endsWith('.json')) name = name.substring(0, name.length - 5);
+            
+            const finalName = `style-${name}.json`;
+            closeStyleSaveModal();
+
             const styleString = JSON.stringify(state, null, 2);
             const blob = new Blob([styleString], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             
             const link = document.createElement('a');
             link.href = url;
-            link.download = 'gekko-style.json';
+            link.download = finalName;
             link.click();
             
             URL.revokeObjectURL(url);
-            showToast("Saved custom style file successfully!", "success");
+            showToast(`Saved custom style "${finalName}" successfully!`, "success");
+        }
+
+        confirmStyleSaveBtn.addEventListener('click', triggerStyleDownload);
+
+        styleFilenameInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                triggerStyleDownload();
+            }
         });
 
         loadStyleBtn.addEventListener('click', () => styleInput.click());
@@ -2809,7 +2900,7 @@
                                     if (sliders[key].suffix === '°') {
                                         sliders[key].valEl.textContent = `${parsed[key] * 15}°`;
                                     } else {
-                                        sliders[key].valEl.textContent = `${parsed[key] > 0 && key !== 'vignette' && key !== 'fading' ? '+' : ''}${parsed[key]}${sliders[key].suffix}`;
+                                        sliders[key].valEl.textContent = `${parsed[key] > 0 && key !== 'vignette' && key !== 'fading' && key !== 'pixelSort' ? '+' : ''}${parsed[key]}${sliders[key].suffix}`;
                                     }
                                 }
                             }
@@ -2833,22 +2924,15 @@
             }
         });
 
-        // ==========================================
-        // WINDOW & CANVAS RESIZE EVENT
-        // ==========================================
         window.addEventListener('resize', () => {
             if (imageLoaded) {
                 scheduleRender();
             }
         });
 
-        // ==========================================
-        // ABOUT PANEL UTILITY: APP CODE DOWNLOADER
-        // ==========================================
         const downloadCodeBtn = document.getElementById('downloadCodeBtn');
         downloadCodeBtn.addEventListener('click', () => {
             try {
-                // Package complete outer HTML layout dynamically
                 const completeHTML = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
                 const blob = new Blob([completeHTML], { type: 'text/html' });
                 const url = URL.createObjectURL(blob);
@@ -2865,13 +2949,9 @@
             }
         });
 
-        // ==========================================
-        // EXPORT / DOWNLOAD IMAGE MODAL
-        // ==========================================
         downloadBtn.addEventListener('click', () => {
             if (!imageLoaded) return showToast("Upload an image first!");
             
-            // Build simple dynamic date-timestamp for export suggestion
             const d = new Date();
             const year = d.getFullYear();
             const month = String(d.getMonth() + 1).padStart(2, '0');
@@ -2880,7 +2960,6 @@
             const minutes = String(d.getMinutes()).padStart(2, '0');
             filenameInput.value = `gekko-edit-${year}${month}${day}-${hours}${minutes}`;
 
-            // Open custom save modal
             saveModal.classList.remove('hidden');
             setTimeout(() => {
                 saveModal.classList.remove('opacity-0');
@@ -2914,7 +2993,6 @@
             if (!name) {
                 name = 'gekko-edit-export';
             }
-            // Strip any user-typed extension to prevent double extensions
             if (name.toLowerCase().endsWith('.png')) {
                 name = name.substring(0, name.length - 4);
             }
@@ -2924,7 +3002,6 @@
             const wasSelectionActive = selectionActive;
             selectionActive = false;
             
-            // Re-render immediately to clear workspace selection bounding lines during export
             render();
 
             const imageURL = canvas.toDataURL('image/png');
