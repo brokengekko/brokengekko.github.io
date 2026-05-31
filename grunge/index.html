@@ -175,13 +175,13 @@
                             <i class="fa-solid fa-palette"></i>
                             <span>Finger Paints</span>
                         </button>
-                        <button class="menu-opt w-full flex items-center gap-3 px-4 py-3 text-sm font-semibold hover:bg-zinc-900 text-slate-300 hover:text-white transition" data-panel="meta">
-                            <i class="fa-solid fa-tags"></i>
-                            <span>Meta Data</span>
-                        </button>
                         <button class="menu-opt w-full flex items-center gap-3 px-4 py-3 text-sm font-semibold hover:bg-zinc-900 text-slate-300 hover:text-white transition" data-panel="ai">
                             <i class="fa-solid fa-wand-magic-sparkles"></i>
                             <span>AI Magic+</span>
+                        </button>
+                        <button class="menu-opt w-full flex items-center gap-3 px-4 py-3 text-sm font-semibold hover:bg-zinc-900 text-slate-300 hover:text-white transition" data-panel="meta">
+                            <i class="fa-solid fa-tags"></i>
+                            <span>Meta Data</span>
                         </button>
                         <button class="menu-opt w-full flex items-center gap-3 px-4 py-3 text-sm font-semibold hover:bg-zinc-900 text-slate-300 hover:text-white transition" data-panel="about">
                             <i class="fa-solid fa-circle-info"></i>
@@ -595,44 +595,7 @@
                     </div>
                 </div>
 
-                <!-- SECTION 6: META DATA -->
-                <div id="metaPanel" class="panel-section flex flex-col gap-5 hidden">
-                    <!-- Clear All Exif Control -->
-                    <div class="bg-black p-4 rounded-xl border border-zinc-800/80 transition-colors duration-300" id="clearMetaContainer">
-                        <label class="flex items-center gap-3 cursor-pointer">
-                            <input type="checkbox" id="clearMetaCheck" checked class="w-4 h-4 accent-[#d4af37] bg-zinc-900 border-zinc-800 rounded">
-                            <span class="text-xs font-bold text-slate-200 uppercase tracking-widest">Clear all exif/meta data</span>
-                        </label>
-                        <p class="text-[10px] text-slate-500 mt-2 ml-7 leading-relaxed">
-                            When checked, the exported JPEG will be completely scrubbed of any original EXIF tracking.
-                        </p>
-                    </div>
-                    
-                    <!-- Metadata Fields Container (Disabled by default) -->
-                    <div id="metaFieldsContainer" class="flex flex-col gap-3 opacity-50 pointer-events-none transition-opacity duration-300">
-                        
-                        <!-- Caption (Always present) -->
-                        <div class="bg-black p-4 rounded-xl border border-zinc-800/80 flex items-center justify-between group">
-                            <label class="flex items-center gap-3 cursor-pointer flex-1">
-                                <input type="checkbox" id="metaCaptionCheck" class="w-4 h-4 accent-[#d4af37] bg-zinc-900 border-zinc-800 rounded">
-                                <div class="flex flex-col flex-1" onclick="openMetaModal('caption'); event.preventDefault();">
-                                    <span class="text-[11px] font-bold text-slate-400 uppercase tracking-widest hover:text-[#d4af37] transition">Caption</span>
-                                    <span id="metaCaptionValue" class="text-xs text-[#d4af37] mt-0.5 truncate max-w-[200px] cursor-text">Click to set caption...</span>
-                                </div>
-                            </label>
-                            <button onclick="openMetaModal('caption')" class="text-zinc-600 hover:text-[#d4af37] p-2 transition">
-                                <i class="fa-solid fa-pen-to-square"></i>
-                            </button>
-                        </div>
-
-                        <!-- Auto-Generated Fields Container -->
-                        <div id="autoMetaFields" class="flex flex-col gap-3">
-                            <p class="text-xs text-slate-500 italic p-2 text-center" id="metaEmptyState">No other EXIF found in original image.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- SECTION 7: AI MAGIC+ -->
+                <!-- SECTION 6: AI MAGIC+ -->
                 <div id="aiPanel" class="panel-section flex flex-col gap-6 hidden">
                     
                     <!-- Pre-Designed Filters -->
@@ -684,6 +647,43 @@
                         <button id="aiGenerateBtn" class="w-full flex items-center justify-center gap-2 py-3 bg-[#d4af37] hover:bg-[#e6ca65] rounded-xl text-xs font-bold text-black transition duration-150 shadow-lg shadow-[#d4af37]/10">
                             <i class="fa-solid fa-sparkles"></i> Generate AI Edit
                         </button>
+                    </div>
+                </div>
+
+                <!-- SECTION 7: META DATA -->
+                <div id="metaPanel" class="panel-section flex flex-col gap-5 hidden">
+                    <!-- Clear All Exif Control -->
+                    <div class="bg-black p-4 rounded-xl border border-zinc-800/80 transition-colors duration-300" id="clearMetaContainer">
+                        <label class="flex items-center gap-3 cursor-pointer">
+                            <input type="checkbox" id="clearMetaCheck" checked class="w-4 h-4 accent-[#d4af37] bg-zinc-900 border-zinc-800 rounded">
+                            <span class="text-xs font-bold text-slate-200 uppercase tracking-widest">Clear all exif/meta data</span>
+                        </label>
+                        <p class="text-[10px] text-slate-500 mt-2 ml-7 leading-relaxed">
+                            When checked, the exported JPEG will be completely scrubbed of any original EXIF tracking.
+                        </p>
+                    </div>
+                    
+                    <!-- Metadata Fields Container (Disabled by default) -->
+                    <div id="metaFieldsContainer" class="flex flex-col gap-3 opacity-50 pointer-events-none transition-opacity duration-300">
+                        
+                        <!-- Caption (Always present) -->
+                        <div class="bg-black p-4 rounded-xl border border-zinc-800/80 flex items-center justify-between group">
+                            <label class="flex items-center gap-3 cursor-pointer flex-1">
+                                <input type="checkbox" id="metaCaptionCheck" class="w-4 h-4 accent-[#d4af37] bg-zinc-900 border-zinc-800 rounded">
+                                <div class="flex flex-col flex-1" onclick="openMetaModal('caption'); event.preventDefault();">
+                                    <span class="text-[11px] font-bold text-slate-400 uppercase tracking-widest hover:text-[#d4af37] transition">Caption</span>
+                                    <span id="metaCaptionValue" class="text-xs text-[#d4af37] mt-0.5 truncate max-w-[200px] cursor-text">Click to set caption...</span>
+                                </div>
+                            </label>
+                            <button onclick="openMetaModal('caption')" class="text-zinc-600 hover:text-[#d4af37] p-2 transition">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </button>
+                        </div>
+
+                        <!-- Auto-Generated Fields Container -->
+                        <div id="autoMetaFields" class="flex flex-col gap-3">
+                            <p class="text-xs text-slate-500 italic p-2 text-center" id="metaEmptyState">No other EXIF found in original image.</p>
+                        </div>
                     </div>
                 </div>
 
@@ -2759,11 +2759,20 @@
             if (!state.metadata.clearAll) {
                 let exifObj = window.exifDataOriginal || {"0th":{}, "Exif":{}, "GPS":{}, "Interop":{}, "1st":{}};
                 
-                // Write/Delete Caption in ImageDescription
+                // Write/Delete Caption in ImageDescription and multiple other common description fields
                 if (state.metadata.caption.enabled && state.metadata.caption.value) {
-                    exifObj["0th"][piexif.ImageIFD.ImageDescription] = state.metadata.caption.value;
+                    const capText = state.metadata.caption.value;
+                    exifObj["0th"][piexif.ImageIFD.ImageDescription] = capText;
+                    exifObj["0th"][piexif.ImageIFD.DocumentName] = capText;
+                    
+                    if (!exifObj["Exif"]) exifObj["Exif"] = {};
+                    exifObj["Exif"][piexif.ExifIFD.UserComment] = "ASCII\x00\x00\x00" + capText;
                 } else if (exifObj["0th"]) {
                     delete exifObj["0th"][piexif.ImageIFD.ImageDescription];
+                    delete exifObj["0th"][piexif.ImageIFD.DocumentName];
+                    if (exifObj["Exif"]) {
+                        delete exifObj["Exif"][piexif.ExifIFD.UserComment];
+                    }
                 }
 
                 // Sync the auto-populated 5 active fields back into the main export
