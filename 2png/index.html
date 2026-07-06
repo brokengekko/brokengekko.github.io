@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEURAL-SCREEN // Black to Transparent Extract Deck</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #030308;
+            background-image: 
+                radial-gradient(circle at center, transparent 20%, #030308 90%),
+                linear-gradient(to right, rgba(0, 240, 255, 0.04) 1px, transparent 1px), 
+                linear-gradient(to bottom, rgba(0, 240, 255, 0.04) 1px, transparent 1px);
+            background-size: 100% 100%, 30px 30px, 30px 30px;
+            overflow-x: hidden;
+        }
+
+        .cyber-font-title {
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 0.15em;
+        }
+
+        .cyber-font-mono {
+            font-family: 'Share Tech Mono', monospace;
+        }
+
+        /* Scanline scrolling effect across the drop area */
+        @keyframes scanline {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+
+        .scanline::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 10px;
+            background: linear-gradient(to bottom, rgba(0, 240, 255, 0) 0%, rgba(0, 240, 255, 0.15) 50%, rgba(0, 240, 255, 0) 100%);
+            animation: scanline 4s linear infinite;
+            pointer-events: none;
+        }
+
+        /* Cyberpunk Glitchy Glowing Borders */
+        .neon-border-cyan {
+            border: 1px solid rgba(0, 240, 255, 0.3);
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.1);
+        }
+        
+        .neon-border-cyan:hover, .neon-border-cyan:focus-within {
+            border-color: rgba(0, 240, 255, 0.8);
+            box-shadow: 0 0 25px rgba(0, 240, 255, 0.25);
+        }
+
+        .neon-border-pink {
+            border: 1px solid rgba(255, 0, 127, 0.3);
+            box-shadow: 0 0 15px rgba(255, 0, 127, 0.1);
+        }
+
+        .neon-border-pink:hover {
+            border-color: rgba(255, 0, 127, 0.8);
+            box-shadow: 0 0 25px rgba(255, 0, 127, 0.25);
+        }
+
+        /* Cyberpunk Checkerboard for transparency */
+        .checkerboard {
+            background-color: #0c0d14;
+            background-image: 
+                linear-gradient(45deg, #181b29 25%, transparent 25%), 
+                linear-gradient(-45deg, #181b29 25%, transparent 25%), 
+                linear-gradient(45deg, transparent 75%, #181b29 75%), 
+                linear-gradient(-45deg, transparent 75%, #181b29 75%);
+            background-size: 24px 24px;
+            background-position: 0 0, 0 12px, 12px -12px, -12px 0px;
+        }
+
+        /* Cyber Corner Bracket Details */
+        .cyber-corner {
+            position: relative;
+        }
+        .cyber-corner::before, .cyber-corner::after {
+            content: '';
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-color: rgba(0, 240, 255, 0.6);
+            border-style: solid;
+            pointer-events: none;
+        }
+        .cyber-corner::before {
+            top: -2px;
+            left: -2px;
+            border-width: 2px 0 0 2px;
+        }
+        .cyber-corner::after {
+            bottom: -2px;
+            right: -2px;
+            border-width: 0 2px 2px 0;
+        }
+
+        /* Glow Text helper */
+        .neon-glow-cyan {
+            text-shadow: 0 0 8px rgba(0, 240, 255, 0.6);
+        }
+        .neon-glow-pink {
+            text-shadow: 0 0 8px rgba(255, 0, 127, 0.6);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #060710;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00f0ff;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-300 flex flex-col items-center py-8 px-4 selection:bg-pink-500 selection:text-white">
+
+    <div class="max-w-4xl w-full space-y-6">
+        <!-- Main Top Bar / Terminal Header -->
+        <header class="relative bg-slate-950/80 backdrop-blur-md p-4 rounded-lg border border-slate-800 flex flex-col md:flex-row items-center justify-between gap-4 cyber-corner shadow-lg">
+            <div class="flex items-center space-x-4">
+                <div class="p-2.5 bg-cyan-950/40 border border-cyan-500/40 rounded flex items-center justify-center animate-pulse">
+                    <i data-lucide="cpu" class="w-6 h-6 text-cyan-400"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl md:text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-pink-500 cyber-font-title tracking-wider">NEURAL-SCREEN // v2.4</h1>
+                    <p class="text-xs text-slate-400 cyber-font-mono uppercase tracking-widest flex items-center gap-1.5">
+                        <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+                        MODULE RUNNING // ALPHA_EXTRACT_DECK
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Tech readouts -->
+            <div class="flex gap-4 text-right text-[10px] text-slate-500 cyber-font-mono uppercase select-none hidden md:flex">
+                <div>
+                    <span class="block text-cyan-400/70">DECK STAT</span>
+                    <span class="text-slate-300">ONLINE [S1]</span>
+                </div>
+                <div class="border-l border-slate-800 pl-4">
+                    <span class="block text-pink-500/70">CORE BUZZ</span>
+                    <span class="text-slate-300" id="timeReadout">00:00:00 UTC</span>
+                </div>
+            </div>
+        </header>
+
+        <main class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <!-- Left Panel: Drag-and-Drop + Processing Params -->
+            <div class="lg:col-span-5 space-y-6">
+                <!-- Drop Container -->
+                <div id="dropZone" class="scanline relative group overflow-hidden border-2 border-dashed border-cyan-950/60 rounded-xl p-8 text-center cursor-pointer bg-slate-950/40 backdrop-blur-sm transition-all duration-300 hover:border-cyan-500 hover:bg-cyan-950/5 shadow-2xl flex flex-col justify-center items-center min-h-[250px]">
+                    <input type="file" id="fileInput" class="hidden" accept="image/png, image/jpeg, image/gif, image/webp" />
+                    
+                    <!-- Decorative Corner Tech Lines -->
+                    <div class="absolute top-2 left-2 text-[8px] text-cyan-500/40 cyber-font-mono tracking-widest pointer-events-none">[0x4F-INPUT]</div>
+                    <div class="absolute bottom-2 right-2 text-[8px] text-cyan-500/40 cyber-font-mono tracking-widest pointer-events-none">[STATUS: AWAKEN]</div>
+
+                    <div class="flex flex-col items-center space-y-4 z-10">
+                        <div class="p-5 bg-cyan-950/30 border border-cyan-500/20 rounded-full group-hover:scale-110 group-hover:border-cyan-400 group-hover:shadow-[0_0_15px_rgba(0,240,255,0.4)] transition-all duration-300">
+                            <i data-lucide="upload" class="w-8 h-8 text-cyan-400"></i>
+                        </div>
+                        <div>
+                            <p class="text-md font-bold text-slate-200 cyber-font-title tracking-wider uppercase group-hover:text-cyan-300 transition-colors">DRAG MATRIX FILE HERE</p>
+                            <p class="text-xs text-slate-500 cyber-font-mono mt-1 uppercase">OR SELECT LOCAL JPG, GIF, PNG, WEBP</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Control Console Parameters (Added dynamic tuners for true Cyberpunk control) -->
+                <div class="bg-slate-950/60 backdrop-blur-sm p-5 rounded-xl border border-slate-800 space-y-4">
+                    <div class="flex items-center space-x-2 border-b border-slate-800 pb-2">
+                        <i data-lucide="sliders" class="w-4 h-4 text-pink-500"></i>
+                        <h3 class="text-sm font-bold tracking-wider text-slate-200 cyber-font-title uppercase">EXTRACTION TUNERS</h3>
+                    </div>
+
+                    <!-- Sensitivity Slider -->
+                    <div class="space-y-1">
+                        <div class="flex justify-between text-xs cyber-font-mono">
+                            <span class="text-slate-400">BLACK CUTOFF THRESHOLD</span>
+                            <span class="text-cyan-400" id="thresholdVal">0</span>
+                        </div>
+                        <input type="range" id="thresholdSlider" min="0" max="100" value="0" class="w-full accent-cyan-500 h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer">
+                    </div>
+
+                    <!-- Alpha Gain -->
+                    <div class="space-y-1">
+                        <div class="flex justify-between text-xs cyber-font-mono">
+                            <span class="text-slate-400">ALPHA TRANSMISSIVITY COEFF</span>
+                            <span class="text-pink-400" id="gainVal">1.0x</span>
+                        </div>
+                        <input type="range" id="gainSlider" min="50" max="200" value="100" class="w-full accent-pink-500 h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer">
+                    </div>
+
+                    <!-- Status Display -->
+                    <div class="mt-4 p-3 bg-slate-900/60 rounded border border-slate-800/60 text-xs cyber-font-mono text-slate-400 space-y-1">
+                        <div class="flex justify-between"><span class="text-slate-500">PROCESSOR STATE:</span> <span class="text-emerald-400" id="procState">WAITING...</span></div>
+                        <div class="flex justify-between"><span class="text-slate-500">RENDER SPEED:</span> <span class="text-cyan-400" id="renderSpeed">N/A</span></div>
+                    </div>
+                </div>
+
+                <!-- Live System Terminal Log -->
+                <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+                    <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+                        <span class="text-[10px] cyber-font-mono tracking-widest text-slate-500 uppercase">SYS_LOG // FEED_MONITOR</span>
+                        <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>
+                    </div>
+                    <div id="sysLog" class="h-28 overflow-y-auto text-[11px] cyber-font-mono text-cyan-500/80 space-y-1 pr-1">
+                        <div>> INITIALIZING NEURAL-SCREEN BOOT SEQUENCE...</div>
+                        <div>> CORE ENGINES: SECURE // COMPILED SUCCESSFULLY.</div>
+                        <div>> READY FOR DATA INJECTION. CORES IDLE.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel: Canvas Preview & Live Output -->
+            <div class="lg:col-span-7 flex flex-col space-y-6">
+                <!-- If no image, display diagnostic grid; otherwise show results -->
+                <div id="resultArea" class="hidden flex-1 flex flex-col bg-slate-950/40 backdrop-blur-sm p-6 rounded-xl border border-slate-800 space-y-4">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+                        <div>
+                            <h2 class="text-lg font-bold text-slate-200 cyber-font-title tracking-wider uppercase">DECRYPTION PREVIEW</h2>
+                            <p class="text-xs text-slate-500 cyber-font-mono uppercase">LUMINANCE TO ALPHA TRANSMUTATION MATRIX ACTIVE</p>
+                        </div>
+                        
+                        <!-- High tech Download Button -->
+                        <button id="downloadBtn" class="flex items-center justify-center space-x-2 bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 text-white font-bold tracking-wider text-xs uppercase px-5 py-3 rounded-lg transition-all duration-300 border border-pink-500/20 shadow-[0_0_15px_rgba(255,0,127,0.3)] hover:shadow-[0_0_25px_rgba(255,0,127,0.65)] hover:-translate-y-0.5 cyber-font-title">
+                            <i data-lucide="download" class="w-4 h-4"></i>
+                            <span>DOWNLOAD_DECR_MATRIX.PNG</span>
+                        </button>
+                    </div>
+
+                    <!-- Preview Mode Settings / Toggles -->
+                    <div class="flex flex-wrap items-center gap-4 bg-slate-950 p-3 rounded-lg border border-slate-800/80">
+                        <span class="text-[11px] cyber-font-mono text-slate-500 uppercase">CANVAS BACKGROUND GRID:</span>
+                        
+                        <div class="flex space-x-3 text-xs cyber-font-mono">
+                            <label class="flex items-center space-x-1.5 cursor-pointer text-slate-300 hover:text-cyan-400 transition-colors">
+                                <input type="radio" name="bgToggle" value="checkerboard" checked class="accent-cyan-500 focus:ring-0">
+                                <span>DARK CHECKERBOARD</span>
+                            </label>
+                            <label class="flex items-center space-x-1.5 cursor-pointer text-slate-300 hover:text-cyan-400 transition-colors">
+                                <input type="radio" name="bgToggle" value="black" class="accent-cyan-500 focus:ring-0">
+                                <span>ABS_BLACK</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Canvas Container -->
+                    <div id="canvasContainer" class="checkerboard relative flex-1 min-h-[350px] rounded-lg border border-slate-800 overflow-hidden flex justify-center items-center p-6 cyber-corner">
+                        <!-- Target crosshair simulation -->
+                        <div class="absolute top-4 left-4 w-4 h-4 border-t-2 border-l-2 border-slate-700/60"></div>
+                        <div class="absolute top-4 right-4 w-4 h-4 border-t-2 border-r-2 border-slate-700/60"></div>
+                        <div class="absolute bottom-4 left-4 w-4 h-4 border-b-2 border-l-2 border-slate-700/60"></div>
+                        <div class="absolute bottom-4 right-4 w-4 h-4 border-b-2 border-r-2 border-slate-700/60"></div>
+                        
+                        <canvas id="canvas" class="max-w-full max-h-[450px] object-contain drop-shadow-[0_0_20px_rgba(0,0,0,0.8)]"></canvas>
+                    </div>
+                </div>
+
+                <!-- Idle Matrix Graphics Placeholder (Shown before loading a file) -->
+                <div id="idleState" class="flex-1 min-h-[450px] flex flex-col justify-center items-center bg-slate-950/20 border border-slate-900 rounded-xl p-8 text-center text-slate-600 cyber-corner">
+                    <div class="w-16 h-16 rounded-full border border-slate-800 flex items-center justify-center mb-4 text-slate-700 animate-pulse">
+                        <i data-lucide="layout-grid" class="w-8 h-8"></i>
+                    </div>
+                    <p class="cyber-font-title uppercase tracking-widest text-slate-500 font-bold text-sm">MONITOR_STASIS_MODE</p>
+                    <p class="cyber-font-mono text-xs text-slate-600 mt-2 max-w-sm">No active file matrix detected. Load a matrix from the primary control panel to activate real-time frame buffer pipeline mapping.</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Custom Cyberpunk Alert Modal -->
+    <div id="alertBox" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-slate-950 border border-pink-500 max-w-md w-full p-6 rounded-lg cyber-corner shadow-[0_0_50px_rgba(255,0,127,0.3)] space-y-4">
+            <div class="flex items-center space-x-3 text-pink-500">
+                <i data-lucide="shield-alert" class="w-6 h-6 animate-bounce"></i>
+                <h4 class="text-md font-bold cyber-font-title uppercase tracking-wider">SYSTEM CORRUPTION</h4>
+            </div>
+            <p id="alertText" class="text-xs text-slate-400 cyber-font-mono leading-relaxed">> Error details trace to diagnostic failures.</p>
+            <div class="flex justify-end pt-2">
+                <button id="alertClose" class="px-4 py-2 bg-pink-500/20 hover:bg-pink-500/30 text-pink-400 border border-pink-500/50 text-xs font-bold uppercase tracking-wider rounded cyber-font-title transition-colors">
+                    ACKNOWLEDGE
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Init Icons
+        lucide.createIcons();
+
+        // DOM Nodes
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const resultArea = document.getElementById('resultArea');
+        const idleState = document.getElementById('idleState');
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d', { willReadFrequently: true });
+        const downloadBtn = document.getElementById('downloadBtn');
+        const bgToggles = document.querySelectorAll('input[name="bgToggle"]');
+        const canvasContainer = document.getElementById('canvasContainer');
+        
+        // System Log Node
+        const sysLog = document.getElementById('sysLog');
+        
+        // Sliders
+        const thresholdSlider = document.getElementById('thresholdSlider');
+        const thresholdVal = document.getElementById('thresholdVal');
+        const gainSlider = document.getElementById('gainSlider');
+        const gainVal = document.getElementById('gainVal');
+        
+        // Readouts
+        const procState = document.getElementById('procState');
+        const renderSpeed = document.getElementById('renderSpeed');
+        const timeReadout = document.getElementById('timeReadout');
+
+        // Modals
+        const alertBox = document.getElementById('alertBox');
+        const alertText = document.getElementById('alertText');
+        const alertClose = document.getElementById('alertClose');
+
+        // Dynamic State Data
+        let processedFileName = 'transparent_image.png';
+        let originalImg = null;
+
+        // Custom Cyber Alert
+        function systemAlert(message) {
+            alertText.textContent = `> EXCEPTION: ${message.toUpperCase()}`;
+            alertBox.classList.remove('hidden');
+        }
+
+        alertClose.addEventListener('click', () => alertBox.classList.add('hidden'));
+
+        // Console logger
+        function logSys(msg) {
+            const time = new Date().toISOString().split('T')[1].slice(0, 8);
+            const line = document.createElement('div');
+            line.innerHTML = `<span class="text-slate-600">[${time}]</span> <span class="text-cyan-400">></span> ${msg}`;
+            sysLog.appendChild(line);
+            sysLog.scrollTop = sysLog.scrollHeight;
+        }
+
+        // Keep system clock ticking
+        function updateClock() {
+            const now = new Date();
+            timeReadout.textContent = now.toISOString().split('T')[1].slice(0, 8) + ' UTC';
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // Drag and Drop Logic
+        dropZone.addEventListener('click', () => fileInput.click());
+        
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, () => dropZone.classList.add('drop-zone-active'), false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, () => dropZone.classList.remove('drop-zone-active'), false);
+        });
+
+        dropZone.addEventListener('drop', handleDrop, false);
+        fileInput.addEventListener('change', handleFileSelect, false);
+
+        // Grid Background Toggles
+        bgToggles.forEach(toggle => {
+            toggle.addEventListener('change', (e) => {
+                if (e.target.value === 'black') {
+                    canvasContainer.classList.remove('checkerboard');
+                    canvasContainer.classList.add('bg-black');
+                    logSys('CANVAS GRAPHICS PIPELINE ALTERED: OPAQUE BLACK MATRIX ACTUATED.');
+                } else {
+                    canvasContainer.classList.remove('bg-black');
+                    canvasContainer.classList.add('checkerboard');
+                    logSys('CANVAS GRAPHICS PIPELINE ALTERED: TRANSPARENT CHECKERBOARD CHASSIS.');
+                }
+            });
+        });
+
+        // Sliders Listeners
+        thresholdSlider.addEventListener('input', (e) => {
+            thresholdVal.textContent = e.target.value;
+            if (originalImg) processImage();
+        });
+
+        gainSlider.addEventListener('input', (e) => {
+            const gainFactor = (e.target.value / 100).toFixed(1);
+            gainVal.textContent = `${gainFactor}x`;
+            if (originalImg) processImage();
+        });
+
+        // Processing Trigger Interfaces
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            if (files.length > 0) processFile(files[0]);
+        }
+
+        function handleFileSelect(e) {
+            const files = e.target.files;
+            if (files.length > 0) processFile(files[0]);
+            fileInput.value = '';
+        }
+
+        function processFile(file) {
+            if (!file.type.match('image.*')) {
+                logSys('ERROR: CORRUPT SECTOR INJECTION BLOCKED. INJECT VALID JPG, PNG, GIF, OR WEBP.');
+                systemAlert('Invalid file signature. Inject image/matrix structures only.');
+                return;
+            }
+
+            logSys(`INJECTED TARGET MATRIX: "${file.name.toUpperCase()}"`);
+
+            const nameParts = file.name.split('.');
+            nameParts.pop(); 
+            processedFileName = nameParts.join('.') + '_transparent.png';
+
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const img = new Image();
+                img.onload = () => {
+                    originalImg = img;
+                    idleState.classList.add('hidden');
+                    resultArea.classList.remove('hidden');
+                    logSys(`MATRIX RASTER DECODED (${img.width}x${img.height}px). READY FOR EXTRACTION.`);
+                    processImage();
+                };
+                img.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function processImage() {
+            if (!originalImg) return;
+
+            const t0 = performance.now();
+            procState.textContent = 'TRANSMUTING';
+            procState.className = 'text-pink-500 animate-pulse';
+
+            canvas.width = originalImg.width;
+            canvas.height = originalImg.height;
+
+            // Paint baseline image onto processing frame buffer
+            ctx.drawImage(originalImg, 0, 0);
+
+            // Read pipeline pixels
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const data = imageData.data;
+
+            const cutoff = parseInt(thresholdSlider.value); // Black cutoff (0-100 scale converted to pixel val)
+            const cutoffVal = Math.floor((cutoff / 100) * 255);
+            const gain = parseFloat(gainSlider.value) / 100;
+
+            // Render loop over pixel matrix
+            for (let i = 0; i < data.length; i += 4) {
+                const r = data[i];
+                const g = data[i + 1];
+                const b = data[i + 2];
+
+                // Screen style luminance extraction: maximum vector channel magnitude
+                let alpha = Math.max(r, g, b);
+
+                // Apply cutoff slider filters
+                if (alpha < cutoffVal) {
+                    alpha = 0;
+                } else if (cutoffVal > 0) {
+                    // Linear re-range mapped threshold cutoff
+                    alpha = Math.min(255, ((alpha - cutoffVal) / (255 - cutoffVal)) * 255);
+                }
+
+                // Apply Transmissivity Gain Scalar
+                alpha = Math.min(255, Math.max(0, Math.floor(alpha * gain)));
+
+                if (alpha > 0) {
+                    // Cyberpunk screen matrix unmultiply back to source coordinates:
+                    // Ensures that when rendered against backdrops, original vibrant light details survive cleanly.
+                    data[i] = Math.min(255, Math.floor((r / (Math.max(r, g, b) || 1)) * 255));
+                    data[i + 1] = Math.min(255, Math.floor((g / (Math.max(r, g, b) || 1)) * 255));
+                    data[i + 2] = Math.min(255, Math.floor((b / (Math.max(r, g, b) || 1)) * 255));
+                } else {
+                    data[i] = 0;
+                    data[i + 1] = 0;
+                    data[i + 2] = 0;
+                }
+                
+                // Write final customized calculated transparency back to index vector
+                data[i + 3] = alpha; 
+            }
+
+            // Write altered buffer frames to DOM Canvas
+            ctx.putImageData(imageData, 0, 0);
+
+            // System Readout performance calculations
+            const t1 = performance.now();
+            const elapsed = (t1 - t0).toFixed(1);
+            
+            procState.textContent = 'SYNCED';
+            procState.className = 'text-emerald-400';
+            renderSpeed.textContent = `${elapsed}ms`;
+
+            logSys(`EXTRACTION COMPLETE. RENDERING IN ${elapsed}ms. ALPHA GAIN: ${gain}x, BLACK CUTOFF: ${cutoffVal}.`);
+        }
+
+        // Raw matrix downstream extraction and download triggers
+        downloadBtn.addEventListener('click', () => {
+            logSys(`INITIATING LOCAL EXPORT PROTOCOL...`);
+            try {
+                const dataUrl = canvas.toDataURL('image/png');
+                const link = document.createElement('a');
+                link.download = processedFileName;
+                link.href = dataUrl;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                logSys(`SUCCESSFUL EXPORT: FILE SYSTEM PACKET WRITTEN SUCCESSFULLY.`);
+            } catch (err) {
+                logSys(`EXPORT FAILED: SECURITY CRITICAL EXCEPTION.`);
+                systemAlert(`Canvas protection protocols blocked export: ${err.message}`);
+            }
+        });
+    </script>
+</body>
+</html>
