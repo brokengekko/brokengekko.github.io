@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apophysis Web Edition</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Top Toolbar -->
+        <header class="toolbar">
+            <button id="btn-new">New Flame</button>
+            <button id="btn-open">Open .flame</button>
+            <button id="btn-render">Render</button>
+            <button id="btn-mutate">Mutate</button>
+        </header>
+
+        <!-- Main Workspace -->
+        <main class="workspace">
+            <!-- Transform Editor Sidebar -->
+            <aside class="panel transform-editor">
+                <h3>Transforms</h3>
+                <ul id="transform-list">
+                    <li class="active">Transform 1</li>
+                    <li>Transform 2</li>
+                    <li>Transform 3</li>
+                </ul>
+                <div class="transform-properties">
+                    <label>Weight: <input type="range" min="0" max="1" step="0.01" value="0.5"></label>
+                    <label>X: <input type="number" value="1.0"></label>
+                    <label>Y: <input type="number" value="0.0"></label>
+                    <!-- Additional variations (linear, sinusoidal, spherical) would go here -->
+                </div>
+            </aside>
+
+            <!-- Render Viewport -->
+            <section class="viewport">
+                <canvas id="renderCanvas" width="800" height="600"></canvas>
+            </section>
+        </main>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
