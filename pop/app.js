@@ -28,15 +28,25 @@ function renderFractal() {
 
     // Render loop per frame (batching points for performance)
     function iterate() {
+        // Halt if no flame data is loaded
+        if (!currentFlameData || currentFlameData.transforms.length === 0) return;
+        
+        const transforms = currentFlameData.transforms;
+
         for (let i = 0; i < 5000; i++) {
-            // Pick a random transform
+            // Pick a random transform. 
+            // Note: A true Apophysis engine picks this based on the 'weight' attribute!
+            // For now, we pick uniformly for testing.
             const t = transforms[Math.floor(Math.random() * transforms.length)];
+            const coefs = t.coefs; 
             
-            // Apply affine transformation: 
-            // x' = ax + by + e
-            // y' = cx + dy + f
-            const nx = t.a * x + t.b * y + t.e;
-            const ny = t.c * x + t.d * y + t.f;
+            // Apply Apophysis Affine Transformation: 
+            // x' = a*x + c*y + e
+            // y' = b*x + d*y + f
+            // Note the index mapping: [a=0, b=1, c=2, d=3, e=4, f=5]
+            const nx = coefs[0] * x + coefs[2] * y + coefs[4];
+            const ny = coefs[1] * x + coefs[3] * y + coefs[5];
+            
             x = nx;
             y = ny;
             
@@ -140,6 +150,68 @@ function parseFlameXML(xmlString) {
 
     console.log("Successfully parsed flame data:", flameData);
     
-    // TODO: Update your UI state and trigger a new render using flameData
-    // applyFlameDataToRenderEngine(flameData); 
+    // Global state variables
+let currentFlameData = null;
+let activeTransformIndex = 0;
+
+// Call this function at the very end of your parseFlameXML function
+function applyFlameDataToRenderEngine(flameData) {
+    currentFlameData = flameData;
+    activeTransformIndex = 0;
+    
+    const transformListUI = document.getElementById('transform-list');
+    transformListUI.innerHTML = ''; // Clear the dummy HTML transforms
+    
+    // Generate list items for each parsed transform
+    flameData.transforms.forEach((transform, index) => {
+        const li = document.createElement('li');
+        li.textContent = `Transform ${index + 1}`;
+        if (index === 0) li.classList.add('active');
+        
+        // Add click listener for UI interaction
+        li.addEventListener('click', () => {
+            // Manage 'active' CSS classes
+            document.querySelectorAll('#transform-list li').forEach(el => el.classList.remove('active'));
+            li.classList.add('active');
+            
+            // Update state and refresh the properties panel
+            activeTransformIndex = index;
+            updatePropertiesPanel(transform);
+        });
+        
+        transformListUI.appendChild(li);
+    });
+    
+    // Initialize the properties panel with the first transform
+    if (flameData.transforms.length > 0) {
+        updatePropertiesPanel(flameData.transforms[0]);
+    }
+}
+
+// Dynamically populate the inputs based on the selected transform
+function updatePropertiesPanel(transform) {
+    const propertiesPanel = document.querySelector('.transform-properties');
+    
+    // Map the 6 coefficients (a, b, c, d, e, f) and dynamically list variations
+    let html = `
+        <label>Weight: <input type="number" step="0.01" value="${transform.weight}"></label>
+        <hr style="border-color:#444;">
+        <label>a (X scale): <input type="number" step="0.01" value="${transform.coefs[0]}"></label>
+        <label>b (X shear): <input type="number" step="0.01" value="${transform.coefs[1]}"></label>
+        <label>c (Y shear): <input type="number" step="0.01" value="${transform.coefs[2]}"></label>
+        <label>d (Y scale): <input type="number" step="0.01" value="${transform.coefs[3]}"></label>
+        <label>e (X move): <input type="number" step="0.01" value="${transform.coefs[4]}"></label>
+        <label>f (Y move): <input type="number" step="0.01" value="${transform.coefs[5]}"></label>
+        <hr style="border-color:#444;">
+        <h4>Variations</h4>
+    `;
+    
+    // Loop through variations like spherical, popcorn2, etc.
+    for (const [variationName, value] of Object.entries(transform.variations)) {
+        html += `<label>${variationName}: <input type="number" step="0.01" value="${value}"></label>`;
+    }
+    
+    propertiesPanel.innerHTML = html;
+}
+ 
 }
