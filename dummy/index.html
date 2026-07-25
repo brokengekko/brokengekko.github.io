@@ -4,412 +4,489 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Artist's Manakin Studio</title>
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        :root {
-            --workbench-bg: #2b2b2b;
-            --panel-bg: #3a3a3a;
-            --accent: #d97736; /* Wood/Shop accent */
-            --text-light: #e0e0e0;
-            --canvas-bg: #ffffff;
+        @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap');
+        
+        body {
+            font-family: 'Space Mono', monospace;
+            background-color: #1c1917; /* stone-900 */
         }
-
-        body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            font-family: 'Courier New', Courier, monospace; /* Shop/Blueprint vibe */
-            background-color: var(--workbench-bg);
-            display: flex;
-            overflow: hidden;
-        }
-
-        /* Sidebar UI */
-        #toolbar {
-            width: 320px;
-            background: var(--panel-bg);
-            border-right: 4px solid #1f1f1f;
-            display: flex;
-            flex-direction: column;
-            padding: 20px;
-            box-sizing: border-box;
-            box-shadow: 4px 0 15px rgba(0,0,0,0.5);
-            z-index: 10;
-            overflow-y: auto;
-        }
-
-        h1 {
-            color: var(--accent);
-            font-size: 1.2rem;
+        
+        .shop-btn {
+            background-color: #44403c; 
+            color: #e7e5e4; 
+            border-bottom: 4px solid #292524; 
+            transition: all 0.1s ease;
             text-transform: uppercase;
-            text-align: center;
-            border-bottom: 2px dashed #555;
-            padding-bottom: 15px;
-            margin-top: 0;
-            letter-spacing: 2px;
-        }
-
-        .control-group {
-            background: #2f2f2f;
-            padding: 15px;
-            border-radius: 6px;
-            margin-bottom: 15px;
-            border: 1px solid #444;
-        }
-
-        .control-group h3 {
-            margin: 0 0 10px 0;
-            font-size: 0.9rem;
-            color: #aaa;
-        }
-
-        button {
-            background: #4a4a4a;
-            color: var(--text-light);
-            border: 2px solid #222;
-            padding: 10px;
-            margin: 5px 0;
-            width: 100%;
-            font-family: inherit;
+            font-size: 0.8rem;
             font-weight: bold;
-            cursor: pointer;
-            border-radius: 4px;
-            transition: all 0.2s;
-            text-transform: uppercase;
-            font-size: 0.85rem;
+        }
+        .shop-btn:hover {
+            background-color: #57534e; 
+        }
+        .shop-btn:active {
+            border-bottom-width: 0px;
+            transform: translateY(4px);
+        }
+        .shop-btn.active-mode {
+            background-color: #b45309; 
+            border-bottom-color: #78350f; 
+            color: white;
         }
 
-        button:hover {
-            background: #5a5a5a;
-            border-color: var(--accent);
-        }
-
-        button.active {
-            background: var(--accent);
-            color: #fff;
-            border-color: #fff;
-        }
-
-        .btn-row {
-            display: flex;
-            gap: 10px;
-        }
-
-        /* Help Button */
-        #help-btn {
-            background: #111;
-            color: var(--accent);
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            position: absolute;
-            bottom: 20px;
-            left: 20px;
-            font-size: 1.2rem;
-            padding: 0;
-        }
-
-        /* Canvas Area */
         #canvas-container {
-            flex-grow: 1;
-            background-color: var(--canvas-bg);
-            position: relative;
-            background-image: 
-                linear-gradient(#f0f0f0 1px, transparent 1px),
-                linear-gradient(90deg, #f0f0f0 1px, transparent 1px);
-            background-size: 20px 20px; /* Blueprint grid effect on white */
+            cursor: grab;
         }
-
-        canvas {
-            display: block;
-            width: 100%;
-            height: 100%;
+        #canvas-container:active {
+            cursor: grabbing;
         }
-
-        /* Modal */
-        #help-modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8);
-            z-index: 100;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal-content {
-            background: var(--workbench-bg);
-            color: var(--text-light);
-            padding: 30px;
-            border-radius: 8px;
-            max-width: 500px;
-            border: 2px solid var(--accent);
-        }
-
-        .modal-content h2 { margin-top: 0; color: var(--accent); }
-        .close-modal { background: var(--accent); margin-top: 20px; }
         
         #file-input { display: none; }
     </style>
 </head>
-<body>
+<body class="flex h-screen w-full overflow-hidden">
 
-    <div id="toolbar">
-        <h1>Manakin Studio</h1>
-
-        <div class="control-group">
-            <h3>File / Export</h3>
-            <button onclick="downloadImage()">Download Image</button>
-            <button onclick="downloadPose()">Download Pose (.json)</button>
-            <button onclick="document.getElementById('file-input').click()">Upload Pose (.json)</button>
-            <input type="file" id="file-input" accept=".json" onchange="uploadPose(event)">
+    <div id="toolbar" class="w-80 flex-shrink-0 bg-stone-800 border-r-4 border-amber-900 flex flex-col h-full shadow-2xl z-10 overflow-y-auto">
+        <div class="p-6 pb-2 border-b-2 border-dashed border-stone-600 text-center">
+            <h1 class="text-amber-500 text-xl font-bold tracking-widest mb-1">MANAKIN STUDIO</h1>
+            <p class="text-stone-400 text-xs">Pose & Reference Tool</p>
         </div>
 
-        <div class="control-group">
-            <h3>Camera</h3>
-            <div class="btn-row">
-                <button onclick="swivelModel(-15)">Swivel L (15%)</button>
-                <button onclick="swivelModel(15)">Swivel R (15%)</button>
+        <div class="p-4 flex-grow flex flex-col gap-6">
+            
+            <div class="bg-stone-900 p-3 rounded shadow-inner border border-stone-700">
+                <h3 class="text-stone-400 text-xs mb-2">EXPORT / IMPORT</h3>
+                <button onclick="downloadImage()" class="shop-btn w-full p-2 rounded mb-2">Download Image (.png)</button>
+                <div class="flex gap-2">
+                    <button onclick="downloadPose()" class="shop-btn w-1/2 p-2 rounded">Save Pose</button>
+                    <button onclick="document.getElementById('file-input').click()" class="shop-btn w-1/2 p-2 rounded">Load Pose</button>
+                    <input type="file" id="file-input" accept=".json" onchange="uploadPose(event)">
+                </div>
             </div>
-        </div>
 
-        <div class="control-group">
-            <h3>Rendering Style</h3>
-            <button id="btn-classic" class="active" onclick="setStyle('classic')">Classic (Wood)</button>
-            <button id="btn-pencil" onclick="setStyle('pencil')">Pencil Sketch</button>
-            <button id="btn-charcoal" onclick="setStyle('charcoal')">Charcoal Sketch</button>
-        </div>
-
-        <div class="control-group">
-            <h3>Model Type</h3>
-            <div class="btn-row">
-                <button id="btn-muchacha" class="active" onclick="setModel('muchacha')">Muchacha</button>
-                <button id="btn-chabon" onclick="setModel('chabon')">Chabon</button>
+            <div class="bg-stone-900 p-3 rounded shadow-inner border border-stone-700">
+                <h3 class="text-stone-400 text-xs mb-2">PLATFORM SWIVEL</h3>
+                <div class="flex gap-2">
+                    <button onclick="swivelModel(-15)" class="shop-btn w-1/2 p-2 rounded">↶ Swivel L</button>
+                    <button onclick="swivelModel(15)" class="shop-btn w-1/2 p-2 rounded">Swivel R ↷</button>
+                </div>
             </div>
+
+            <div class="bg-stone-900 p-3 rounded shadow-inner border border-stone-700">
+                <h3 class="text-stone-400 text-xs mb-2">RENDER STYLE</h3>
+                <button id="btn-classic" onclick="setStyle('classic')" class="shop-btn active-mode w-full p-2 rounded mb-2">Classic Wood</button>
+                <button id="btn-pencil" onclick="setStyle('pencil')" class="shop-btn w-full p-2 rounded mb-2">Pencil Sketch</button>
+                <button id="btn-charcoal" onclick="setStyle('charcoal')" class="shop-btn w-full p-2 rounded">Charcoal Sketch</button>
+            </div>
+
+            <div class="bg-stone-900 p-3 rounded shadow-inner border border-stone-700">
+                <h3 class="text-stone-400 text-xs mb-2">MODEL TYPE</h3>
+                <div class="flex gap-2">
+                    <button id="btn-muchacha" onclick="setModel('muchacha')" class="shop-btn active-mode w-1/2 p-2 rounded">Muchacha</button>
+                    <button id="btn-chabon" onclick="setModel('chabon')" class="shop-btn w-1/2 p-2 rounded">Chabon</button>
+                </div>
+            </div>
+
         </div>
     </div>
 
-    <button id="help-btn" onclick="toggleModal(true)">?</button>
+    <div id="canvas-container" class="flex-grow relative bg-white touch-none">
+        <button onclick="toggleModal(true)" class="absolute bottom-6 left-6 w-12 h-12 bg-stone-800 text-amber-500 rounded-full border-2 border-amber-700 shadow-lg text-xl font-bold hover:bg-stone-700 hover:scale-110 transition-transform z-20">
+            ?
+        </button>
+    </div>
 
-    <div id="canvas-container"></div>
-
-    <div id="help-modal">
-        <div class="modal-content">
-            <h2>How to Use Manakin Studio</h2>
-            <p><strong>Moving Joints:</strong> Click and drag the outermost extension of a joint (e.g., the wrist to move the forearm, or the ankle to move the lower leg) to pose the figure.</p>
-            <p><strong>Swivel:</strong> Use the Swivel L/R buttons to rotate the entire platform by 15% (54 degrees).</p>
-            <p><strong>Styles:</strong> Switch between Classic (wooden realistic), Pencil (light sketch lines), and Charcoal (heavy, dark shading) in real-time.</p>
-            <p><strong>Save & Load:</strong> Download your pose as a JSON file to save your work, or download the Canvas as an image reference for your art.</p>
-            <button class="close-modal" onclick="toggleModal(false)">Close</button>
+    <div id="help-modal" class="fixed inset-0 bg-black/80 hidden justify-center items-center z-50 p-4">
+        <div class="bg-stone-800 text-stone-200 max-w-lg w-full p-8 rounded-lg border-2 border-amber-600 shadow-2xl relative">
+            <h2 class="text-2xl text-amber-500 font-bold mb-4 border-b border-stone-600 pb-2">How to Use the Manakin</h2>
+            <ul class="space-y-3 text-sm leading-relaxed mb-6">
+                <li><strong class="text-white">Posing Joints:</strong> Click and drag handles mapped to specific joints. Dragging the <em>Elbow</em> moves the Upper Arm. Dragging the <em>Wrist</em> moves the Lower Arm. Dragging the <em>Hand</em> moves the Wrist.</li>
+                <li><strong class="text-white">Torso & Head:</strong> Grab the upper-center <em>Chest Peg</em> to bend the waist. Grab the <em>Head</em> to pivot the neck.</li>
+                <li><strong class="text-white">Leg Inversion:</strong> Dragging lower legs (knees) left/right is naturally inverted for easier posing.</li>
+                <li><strong class="text-white">Exporting:</strong> Save the current pose as a tiny JSON file, or download a crisp PNG image to trace over in your art software.</li>
+            </ul>
+            <button onclick="toggleModal(false)" class="shop-btn w-full p-3 rounded">Back to Studio</button>
         </div>
     </div>
 
     <script>
-        // --- THREE.JS SETUP ---
-        const container = document.getElementById('canvas-container');
-        const scene = new THREE.Scene();
-        scene.background = null; // Transparent to show CSS grid background
-
-        const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 100);
-        camera.position.set(0, 5, 20);
-
-        // PreserveDrawingBuffer is required to export the canvas as an image
-        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
-        renderer.setSize(container.clientWidth, container.clientHeight);
-        renderer.shadowMap.enabled = true;
-        container.appendChild(renderer.domElement);
-
-        // Lighting
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
-        scene.add(ambientLight);
-        const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
-        dirLight.position.set(10, 20, 10);
-        dirLight.castShadow = true;
-        scene.add(dirLight);
-
-        // --- MATERIALS (STYLES) ---
-        // Classic: Wooden look
-        const matClassic = new THREE.MeshStandardMaterial({ 
-            color: 0xd2a679, roughness: 0.8, metalness: 0.1 
-        });
+        let scene, camera, renderer, container;
+        let manakinGroup;
+        let joints = [];
         
-        // Pencil: Light mesh with wireframe overlay to simulate sketch guidelines
-        const matPencil = new THREE.MeshToonMaterial({ 
-            color: 0xffffff, wireframe: true, transparent: true, opacity: 0.3
-        });
-        const outlinePencil = new THREE.LineBasicMaterial({ color: 0x888888, linewidth: 1 });
+        let currentStyle = 'classic';
+        let currentModel = 'muchacha';
+        
+        const matClassic = new THREE.MeshStandardMaterial({ color: 0xd2a679, roughness: 0.9, metalness: 0.1 });
+        const matPencil = new THREE.MeshBasicMaterial({ color: 0xffffff });
+        const matCharcoal = new THREE.MeshBasicMaterial({ color: 0x888888 });
 
-        // Charcoal: High contrast, dark rough shading
-        const matCharcoal = new THREE.MeshStandardMaterial({ 
-            color: 0x222222, roughness: 1.0, metalness: 0.0, wireframe: true
-        });
+        window.onload = function() {
+            initEngine();
+            buildManakin(currentModel);
+            setupInteraction();
+            animate();
+        };
 
-        // --- MANAKIN GENERATION (Programmatic Dummy) ---
-        // In a production app, this would load a rigged GLTF model.
-        let manakinGroup = new THREE.Group();
-        scene.add(manakinGroup);
-        const joints = []; // Store joints for raycasting/dragging
+        function initEngine() {
+            container = document.getElementById('canvas-container');
+            const width = container.clientWidth;
+            const height = container.clientHeight;
 
-        function createLimb(radius, length, yOffset, isJoint = false) {
-            const geo = isJoint ? new THREE.SphereGeometry(radius, 16, 16) : new THREE.CylinderGeometry(radius, radius, length, 16);
-            const mesh = new THREE.Mesh(geo, matClassic);
-            mesh.position.y = yOffset;
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0xffffff); 
+
+            camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 100);
+            camera.position.set(0, 1, 26);
+            camera.lookAt(0, 1, 0);
+
+            renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+            renderer.setSize(width, height);
+            renderer.shadowMap.enabled = true;
+            container.appendChild(renderer.domElement);
+
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+            scene.add(ambientLight);
+
+            const dirLight = new THREE.DirectionalLight(0xffffff, 0.7);
+            dirLight.position.set(10, 15, 10);
+            dirLight.castShadow = true;
+            dirLight.shadow.mapSize.width = 1024;
+            dirLight.shadow.mapSize.height = 1024;
+            scene.add(dirLight);
+
+            window.addEventListener('resize', () => {
+                if(container.clientWidth === 0) return;
+                camera.aspect = container.clientWidth / container.clientHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(container.clientWidth, container.clientHeight);
+            });
+        }
+
+        function createMesh(geometry, controlsJoint) {
+            const mesh = new THREE.Mesh(geometry, matClassic);
             mesh.castShadow = true;
+            mesh.receiveShadow = true;
+            
+            // If this mesh is meant to be dragged to control a joint, map it here
+            if (controlsJoint) {
+                mesh.userData.controls = controlsJoint;
+            }
+
+            const edgesGeo = new THREE.EdgesGeometry(geometry);
+            const edgeLines = new THREE.LineSegments(
+                edgesGeo, 
+                new THREE.LineBasicMaterial({ color: 0x000000, linewidth: 1 })
+            );
+            edgeLines.userData.isEdge = true;
+            edgeLines.visible = false;
+            mesh.add(edgeLines);
+
             return mesh;
         }
 
         function buildManakin(type) {
-            scene.remove(manakinGroup);
+            if (manakinGroup) scene.remove(manakinGroup);
             manakinGroup = new THREE.Group();
-            joints.length = 0;
-
-            // Proportions based on model type
-            const scale = type === 'muchacha' ? 0.9 : 1.1;
-            const shoulderWidth = type === 'muchacha' ? 1.5 : 2.2;
-
-            // Torso
-            const torso = createLimb(1.2 * scale, 4 * scale, 4 * scale);
-            manakinGroup.add(torso);
-
-            // Head & Neck
-            const headJoint = new THREE.Group();
-            headJoint.position.set(0, 6 * scale, 0);
-            headJoint.name = "NeckJoint";
-            const head = createLimb(0.8 * scale, 0, 1 * scale, true); // Sphere head
-            headJoint.add(head);
-            manakinGroup.add(headJoint);
-            joints.push(headJoint);
-
-            // Left Arm
-            const lShoulder = new THREE.Group();
-            lShoulder.position.set(-shoulderWidth, 5.5 * scale, 0);
-            lShoulder.name = "LeftShoulder";
-            const lUpperArm = createLimb(0.4 * scale, 3 * scale, -1.5 * scale);
-            
-            const lElbow = new THREE.Group();
-            lElbow.position.set(0, -3 * scale, 0);
-            lElbow.name = "LeftElbow";
-            const lLowerArm = createLimb(0.35 * scale, 2.5 * scale, -1.25 * scale);
-            
-            lElbow.add(lLowerArm);
-            lShoulder.add(lUpperArm);
-            lShoulder.add(lElbow);
-            manakinGroup.add(lShoulder);
-            joints.push(lShoulder, lElbow);
-
-            // Right Arm
-            const rShoulder = new THREE.Group();
-            rShoulder.position.set(shoulderWidth, 5.5 * scale, 0);
-            rShoulder.name = "RightShoulder";
-            const rUpperArm = createLimb(0.4 * scale, 3 * scale, -1.5 * scale);
-            
-            const rElbow = new THREE.Group();
-            rElbow.position.set(0, -3 * scale, 0);
-            rElbow.name = "RightElbow";
-            const rLowerArm = createLimb(0.35 * scale, 2.5 * scale, -1.25 * scale);
-            
-            rElbow.add(rLowerArm);
-            rShoulder.add(rUpperArm);
-            rShoulder.add(rElbow);
-            manakinGroup.add(rShoulder);
-            joints.push(rShoulder, rElbow);
-
             scene.add(manakinGroup);
+            joints = []; 
+
+            const isFemale = type === 'muchacha';
+            const scale = isFemale ? 0.95 : 1.05;
+            const sW = isFemale ? 1.2 : 1.8; // Shoulder Width
+            const hW = isFemale ? 1.3 : 1.0; // Hip Width
+
+            // --- PELVIS (Root) ---
+            const pelvisGroup = new THREE.Group();
+            pelvisGroup.name = "Pelvis";
+            pelvisGroup.position.y = 1.0;
+            manakinGroup.add(pelvisGroup);
+            joints.push(pelvisGroup);
+
+            const pelvisGeo = new THREE.SphereGeometry(1.2 * scale, 16, 16);
+            pelvisGeo.scale(1, 0.8, isFemale ? 1.1 : 0.9);
+            const pelvisMesh = createMesh(pelvisGeo, pelvisGroup);
+            pelvisGroup.add(pelvisMesh);
+
+            // --- WAIST & TORSO ---
+            const waistGroup = new THREE.Group();
+            waistGroup.name = "Waist";
+            waistGroup.position.y = 0.8 * scale;
+            pelvisGroup.add(waistGroup);
+            joints.push(waistGroup);
+
+            const torsoGeo = new THREE.CylinderGeometry(isFemale ? 1.0 : 1.4, isFemale ? 0.9 : 1.1, 2.8 * scale, 16);
+            const torsoMesh = createMesh(torsoGeo, null); // Unresponsive to clicks
+            torsoMesh.position.y = 1.4 * scale;
+            waistGroup.add(torsoMesh);
+
+            // Chest Control Peg (Upper Center)
+            const sternumGeo = new THREE.SphereGeometry(0.5 * scale, 16, 16);
+            sternumGeo.scale(1, 1, 0.3);
+            const sternumMesh = createMesh(sternumGeo, waistGroup); // Clicking sternum moves waist
+            sternumMesh.position.set(0, 2.2 * scale, (isFemale ? 1.0 : 1.4) * scale);
+            waistGroup.add(sternumMesh);
+
+            // --- NECK & HEAD ---
+            const neckGroup = new THREE.Group();
+            neckGroup.name = "Neck";
+            neckGroup.position.y = 3.0 * scale;
+            waistGroup.add(neckGroup);
+            joints.push(neckGroup);
+
+            const neckGeo = new THREE.SphereGeometry(0.4 * scale, 16, 16);
+            const neckMesh = createMesh(neckGeo, neckGroup);
+            neckGroup.add(neckMesh);
+            
+            const headGeo = new THREE.SphereGeometry(0.9 * scale, 16, 16);
+            headGeo.scale(isFemale ? 0.9 : 1.05, 1.3, isFemale ? 0.9 : 1.05);
+            const headMesh = createMesh(headGeo, neckGroup); // Dragging head pivots at neck
+            headMesh.position.y = 1.3 * scale; 
+            neckGroup.add(headMesh);
+
+            // Gender facial features
+            if (isFemale) {
+                // Simplified lips
+                const lipsGeo = new THREE.SphereGeometry(0.25 * scale, 16, 16);
+                lipsGeo.scale(1.2, 0.3, 0.3);
+                const lipsMesh = createMesh(lipsGeo, null); 
+                lipsMesh.position.set(0, -0.3 * scale, 0.85 * scale);
+                headMesh.add(lipsMesh);
+            } else {
+                // Triangular nose
+                const noseGeo = new THREE.ConeGeometry(0.2 * scale, 0.4 * scale, 3);
+                noseGeo.rotateX(Math.PI / 2); // Point forward
+                const noseMesh = createMesh(noseGeo, null); 
+                noseMesh.position.set(0, -0.1 * scale, 1.0 * scale);
+                headMesh.add(noseMesh);
+            }
+
+            function buildArm(isLeft) {
+                const sign = isLeft ? -1 : 1;
+                
+                const shoulderGroup = new THREE.Group();
+                shoulderGroup.name = isLeft ? "LeftShoulder" : "RightShoulder";
+                shoulderGroup.position.set(sign * sW, 2.6 * scale, 0);
+                waistGroup.add(shoulderGroup);
+                joints.push(shoulderGroup);
+
+                const shoulderSphere = createMesh(new THREE.SphereGeometry(0.5*scale, 16,16), null); 
+                shoulderGroup.add(shoulderSphere);
+                
+                const upperArmGeo = new THREE.CylinderGeometry(0.4*scale, 0.35*scale, 2.5*scale, 16);
+                const upperArm = createMesh(upperArmGeo, null); 
+                upperArm.position.y = -1.25*scale;
+                shoulderGroup.add(upperArm);
+
+                // Clicking ELBOW sphere controls SHOULDER
+                const elbowSphere = createMesh(new THREE.SphereGeometry(0.4*scale, 16,16), shoulderGroup); 
+                elbowSphere.position.y = -2.5*scale;
+                shoulderGroup.add(elbowSphere);
+
+                const elbowGroup = new THREE.Group();
+                elbowGroup.name = isLeft ? "LeftElbow" : "RightElbow";
+                elbowGroup.position.y = -2.5*scale;
+                shoulderGroup.add(elbowGroup);
+                joints.push(elbowGroup);
+
+                const lowerArmGeo = new THREE.CylinderGeometry(0.35*scale, 0.3*scale, 2.2*scale, 16);
+                const lowerArm = createMesh(lowerArmGeo, null);
+                lowerArm.position.y = -1.1*scale;
+                elbowGroup.add(lowerArm);
+
+                // Clicking WRIST sphere controls ELBOW
+                const wristSphere = createMesh(new THREE.SphereGeometry(0.3*scale, 16,16), elbowGroup);
+                wristSphere.position.y = -2.2*scale;
+                elbowGroup.add(wristSphere);
+
+                const wristGroup = new THREE.Group();
+                wristGroup.name = isLeft ? "LeftWrist" : "RightWrist";
+                wristGroup.position.y = -2.2*scale;
+                elbowGroup.add(wristGroup);
+                joints.push(wristGroup);
+
+                // Clicking HAND (fingers) controls WRIST
+                const handGeo = new THREE.SphereGeometry(0.4*scale, 16,16);
+                handGeo.scale(0.8, 1.4, 0.4);
+                const hand = createMesh(handGeo, wristGroup);
+                hand.position.y = -0.6*scale;
+                wristGroup.add(hand);
+            }
+            buildArm(true); buildArm(false);
+
+            function buildLeg(isLeft) {
+                const sign = isLeft ? -1 : 1;
+                
+                const hipGroup = new THREE.Group();
+                hipGroup.name = isLeft ? "LeftHip" : "RightHip";
+                hipGroup.position.set(sign * hW, -0.2*scale, 0);
+                pelvisGroup.add(hipGroup);
+                joints.push(hipGroup);
+
+                const hipSphere = createMesh(new THREE.SphereGeometry(0.6*scale, 16,16), null);
+                hipGroup.add(hipSphere);
+                
+                const upperLegGeo = new THREE.CylinderGeometry(0.5*scale, 0.4*scale, 3.5*scale, 16);
+                const upperLeg = createMesh(upperLegGeo, null);
+                upperLeg.position.y = -1.75*scale;
+                hipGroup.add(upperLeg);
+
+                // Clicking KNEE controls HIP
+                const kneeSphere = createMesh(new THREE.SphereGeometry(0.5*scale, 16,16), hipGroup);
+                kneeSphere.position.y = -3.5*scale;
+                hipGroup.add(kneeSphere);
+
+                const kneeGroup = new THREE.Group();
+                kneeGroup.name = isLeft ? "LeftKnee" : "RightKnee";
+                kneeGroup.position.y = -3.5*scale;
+                hipGroup.add(kneeGroup);
+                joints.push(kneeGroup);
+
+                const lowerLegGeo = new THREE.CylinderGeometry(0.4*scale, 0.3*scale, 3.5*scale, 16);
+                const lowerLeg = createMesh(lowerLegGeo, null);
+                lowerLeg.position.y = -1.75*scale;
+                kneeGroup.add(lowerLeg);
+
+                // Clicking ANKLE controls KNEE
+                const ankleSphere = createMesh(new THREE.SphereGeometry(0.4*scale, 16,16), kneeGroup);
+                ankleSphere.position.y = -3.5*scale;
+                kneeGroup.add(ankleSphere);
+
+                const footGroup = new THREE.Group();
+                footGroup.name = isLeft ? "LeftFoot" : "RightFoot";
+                footGroup.position.y = -3.5*scale;
+                kneeGroup.add(footGroup);
+                joints.push(footGroup);
+
+                const footGeo = new THREE.BoxGeometry(0.6*scale, 0.4*scale, 1.4*scale);
+                const foot = createMesh(footGeo, footGroup); // Dragging foot moves ankle
+                foot.position.set(0, -0.2*scale, 0.4*scale);
+                footGroup.add(foot);
+            }
+            buildLeg(true); buildLeg(false);
+
             applyCurrentStyle();
         }
 
-        // --- APP LOGIC ---
-        let currentStyle = 'classic';
-        
-        buildManakin('muchacha');
+        function setupInteraction() {
+            const raycaster = new THREE.Raycaster();
+            const mouse = new THREE.Vector2();
+            let isDragging = false;
+            let activeJoint = null;
+            let previousMousePosition = { x: 0, y: 0 };
 
-        // --- INTERACTION / DRAGGING ---
-        const raycaster = new THREE.Raycaster();
-        const mouse = new THREE.Vector2();
-        let draggedJoint = null;
+            container.addEventListener('pointerdown', (e) => {
+                const rect = container.getBoundingClientRect();
+                mouse.x = ((e.clientX - rect.left) / container.clientWidth) * 2 - 1;
+                mouse.y = -((e.clientY - rect.top) / container.clientHeight) * 2 + 1;
 
-        container.addEventListener('mousedown', (e) => {
-            const rect = container.getBoundingClientRect();
-            mouse.x = ((e.clientX - rect.left) / container.clientWidth) * 2 - 1;
-            mouse.y = -((e.clientY - rect.top) / container.clientHeight) * 2 + 1;
+                raycaster.setFromCamera(mouse, camera);
+                const intersects = raycaster.intersectObjects(manakinGroup.children, true);
 
-            raycaster.setFromCamera(mouse, camera);
-            // In a real IK setup, we cast against wrists/ankles. Here we cast against the whole model and find the parent joint.
-            const intersects = raycaster.intersectObjects(manakinGroup.children, true);
-            
-            if (intersects.length > 0) {
-                // Find the nearest joint group in the hierarchy
-                let obj = intersects[0].object;
-                while (obj && !joints.includes(obj)) {
-                    obj = obj.parent;
+                if (intersects.length > 0) {
+                    for (let i = 0; i < intersects.length; i++) {
+                        let obj = intersects[i].object;
+                        // Check if this specific mesh is mapped to control a joint
+                        if (obj.userData.controls) {
+                            isDragging = true;
+                            activeJoint = obj.userData.controls;
+                            previousMousePosition = { x: e.clientX, y: e.clientY };
+                            break;
+                        }
+                    }
                 }
-                if (obj) draggedJoint = obj;
-            }
-        });
+            });
 
-        container.addEventListener('mousemove', (e) => {
-            if (!draggedJoint) return;
-            // Simple FK rotation mapping for demonstration. 
-            // Dragging left/right rotates Z, up/down rotates X.
-            draggedJoint.rotation.z += e.movementX * 0.01;
-            draggedJoint.rotation.x += e.movementY * 0.01;
-        });
+            container.addEventListener('pointermove', (e) => {
+                if (isDragging && activeJoint) {
+                    const deltaX = e.clientX - previousMousePosition.x;
+                    const deltaY = e.clientY - previousMousePosition.y;
 
-        window.addEventListener('mouseup', () => { draggedJoint = null; });
-        
+                    let flipZ = -1; // Default for Torso & Neck (pointing up)
+                    
+                    // Reverse direction for all downward pointing limbs so dragging right moves them right
+                    if (activeJoint.name.match(/(Shoulder|Elbow|Wrist|Hip|Knee|Foot)/)) {
+                        flipZ = 1;
+                    }
+
+                    activeJoint.rotation.z += deltaX * 0.01 * flipZ;
+                    activeJoint.rotation.x -= deltaY * 0.01;
+
+                    previousMousePosition = { x: e.clientX, y: e.clientY };
+                }
+            });
+
+            const stopDrag = () => { isDragging = false; activeJoint = null; };
+            container.addEventListener('pointerup', stopDrag);
+            container.addEventListener('pointerleave', stopDrag);
+        }
+
         function setStyle(style) {
             currentStyle = style;
-            document.querySelectorAll('#btn-classic, #btn-pencil, #btn-charcoal').forEach(b => b.classList.remove('active'));
-            document.getElementById(`btn-${style}`).classList.add('active');
+            document.querySelectorAll('#btn-classic, #btn-pencil, #btn-charcoal').forEach(b => b.classList.remove('active-mode'));
+            document.getElementById(`btn-${style}`).classList.add('active-mode');
             applyCurrentStyle();
         }
 
         function applyCurrentStyle() {
-            let activeMat;
-            if (currentStyle === 'classic') activeMat = matClassic;
-            if (currentStyle === 'pencil') activeMat = matPencil;
-            if (currentStyle === 'charcoal') activeMat = matCharcoal;
+            let activeBaseMat = matClassic;
+            if (currentStyle === 'pencil') activeBaseMat = matPencil;
+            if (currentStyle === 'charcoal') activeBaseMat = matCharcoal;
 
             manakinGroup.traverse((child) => {
-                if (child.isMesh) {
-                    child.material = activeMat;
-                    if (currentStyle === 'pencil' || currentStyle === 'charcoal') {
-                        // Adds edge guidelines for the sketch effect
-                        scene.background = new THREE.Color(0xffffff); // Force white bg for sketch
-                    } else {
-                        scene.background = null; // Transparent for grid
+                if (child.isMesh && !child.userData.isEdge) {
+                    child.material = activeBaseMat;
+                }
+                if (child.userData.isEdge) {
+                    if (currentStyle === 'classic') {
+                        child.visible = false;
+                    } else if (currentStyle === 'pencil') {
+                        child.visible = true;
+                        child.material.color.setHex(0xc8c8c8); 
+                        child.material.linewidth = 1;
+                    } else if (currentStyle === 'charcoal') {
+                        child.visible = true;
+                        child.material.color.setHex(0x111111); 
+                        child.material.linewidth = 2;
                     }
                 }
             });
         }
 
         function setModel(type) {
-            document.querySelectorAll('#btn-muchacha, #btn-chabon').forEach(b => b.classList.remove('active'));
-            document.getElementById(`btn-${type}`).classList.add('active');
-            buildManakin(type);
+            currentModel = type;
+            document.querySelectorAll('#btn-muchacha, #btn-chabon').forEach(b => b.classList.remove('active-mode'));
+            document.getElementById(`btn-${type}`).classList.add('active-mode');
+            buildManakin(type); 
         }
 
         function swivelModel(percent) {
-            // 15% of a full 360 circle (2 * Math.PI) = 0.15 * 6.28 = 0.942 radians (approx 54 degrees)
+            if (!manakinGroup) return;
             const radians = (percent / 100) * (Math.PI * 2);
             manakinGroup.rotation.y += radians;
         }
 
         function downloadImage() {
-            renderer.render(scene, camera); // Force render to clear buffer
+            renderer.render(scene, camera); 
             const dataURL = renderer.domElement.toDataURL('image/png');
             const link = document.createElement('a');
-            link.download = 'manakin-pose.png';
+            link.download = `manakin-${currentModel}-${currentStyle}.png`;
             link.href = dataURL;
             link.click();
         }
 
         function downloadPose() {
-            const poseData = {};
+            const poseData = { 
+                model: currentModel,
+                globalRotationY: manakinGroup.rotation.y 
+            };
+            
             joints.forEach(j => {
                 poseData[j.name] = { x: j.rotation.x, y: j.rotation.y, z: j.rotation.z };
             });
-            poseData.globalRotation = manakinGroup.rotation.y;
             
             const blob = new Blob([JSON.stringify(poseData, null, 2)], { type: 'application/json' });
             const link = document.createElement('a');
@@ -421,38 +498,39 @@
         function uploadPose(event) {
             const file = event.target.files[0];
             if (!file) return;
+            
             const reader = new FileReader();
             reader.onload = (e) => {
                 const data = JSON.parse(e.target.result);
+                
+                if (data.model && data.model !== currentModel) {
+                    setModel(data.model);
+                }
+                if (data.globalRotationY !== undefined) {
+                    manakinGroup.rotation.y = data.globalRotationY;
+                }
+
                 joints.forEach(j => {
                     if (data[j.name]) {
                         j.rotation.set(data[j.name].x, data[j.name].y, data[j.name].z);
                     }
                 });
-                if (data.globalRotation !== undefined) {
-                    manakinGroup.rotation.y = data.globalRotation;
-                }
             };
             reader.readAsText(file);
+            event.target.value = ''; 
         }
 
         function toggleModal(show) {
-            document.getElementById('help-modal').style.display = show ? 'flex' : 'none';
+            document.getElementById('help-modal').classList.toggle('hidden', !show);
+            document.getElementById('help-modal').classList.toggle('flex', show);
         }
 
-        // --- RENDER LOOP ---
         function animate() {
             requestAnimationFrame(animate);
-            renderer.render(scene, camera);
+            if (renderer && scene && camera) {
+                renderer.render(scene, camera);
+            }
         }
-        
-        window.addEventListener('resize', () => {
-            camera.aspect = container.clientWidth / container.clientHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(container.clientWidth, container.clientHeight);
-        });
-
-        animate();
     </script>
 </body>
 </html>
