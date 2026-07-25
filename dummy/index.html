@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Artist's Manakin Studio</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        :root {
+            --workbench-bg: #2b2b2b;
+            --panel-bg: #3a3a3a;
+            --accent: #d97736; /* Wood/Shop accent */
+            --text-light: #e0e0e0;
+            --canvas-bg: #ffffff;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Courier New', Courier, monospace; /* Shop/Blueprint vibe */
+            background-color: var(--workbench-bg);
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* Sidebar UI */
+        #toolbar {
+            width: 320px;
+            background: var(--panel-bg);
+            border-right: 4px solid #1f1f1f;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            box-sizing: border-box;
+            box-shadow: 4px 0 15px rgba(0,0,0,0.5);
+            z-index: 10;
+            overflow-y: auto;
+        }
+
+        h1 {
+            color: var(--accent);
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            text-align: center;
+            border-bottom: 2px dashed #555;
+            padding-bottom: 15px;
+            margin-top: 0;
+            letter-spacing: 2px;
+        }
+
+        .control-group {
+            background: #2f2f2f;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            border: 1px solid #444;
+        }
+
+        .control-group h3 {
+            margin: 0 0 10px 0;
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+
+        button {
+            background: #4a4a4a;
+            color: var(--text-light);
+            border: 2px solid #222;
+            padding: 10px;
+            margin: 5px 0;
+            width: 100%;
+            font-family: inherit;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+        }
+
+        button:hover {
+            background: #5a5a5a;
+            border-color: var(--accent);
+        }
+
+        button.active {
+            background: var(--accent);
+            color: #fff;
+            border-color: #fff;
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* Help Button */
+        #help-btn {
+            background: #111;
+            color: var(--accent);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            font-size: 1.2rem;
+            padding: 0;
+        }
+
+        /* Canvas Area */
+        #canvas-container {
+            flex-grow: 1;
+            background-color: var(--canvas-bg);
+            position: relative;
+            background-image: 
+                linear-gradient(#f0f0f0 1px, transparent 1px),
+                linear-gradient(90deg, #f0f0f0 1px, transparent 1px);
+            background-size: 20px 20px; /* Blueprint grid effect on white */
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Modal */
+        #help-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: var(--workbench-bg);
+            color: var(--text-light);
+            padding: 30px;
+            border-radius: 8px;
+            max-width: 500px;
+            border: 2px solid var(--accent);
+        }
+
+        .modal-content h2 { margin-top: 0; color: var(--accent); }
+        .close-modal { background: var(--accent); margin-top: 20px; }
+        
+        #file-input { display: none; }
+    </style>
+</head>
+<body>
+
+    <div id="toolbar">
+        <h1>Manakin Studio</h1>
+
+        <div class="control-group">
+            <h3>File / Export</h3>
+            <button onclick="downloadImage()">Download Image</button>
+            <button onclick="downloadPose()">Download Pose (.json)</button>
+            <button onclick="document.getElementById('file-input').click()">Upload Pose (.json)</button>
+            <input type="file" id="file-input" accept=".json" onchange="uploadPose(event)">
+        </div>
+
+        <div class="control-group">
+            <h3>Camera</h3>
+            <div class="btn-row">
+                <button onclick="swivelModel(-15)">Swivel L (15%)</button>
+                <button onclick="swivelModel(15)">Swivel R (15%)</button>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <h3>Rendering Style</h3>
+            <button id="btn-classic" class="active" onclick="setStyle('classic')">Classic (Wood)</button>
+            <button id="btn-pencil" onclick="setStyle('pencil')">Pencil Sketch</button>
+            <button id="btn-charcoal" onclick="setStyle('charcoal')">Charcoal Sketch</button>
+        </div>
+
+        <div class="control-group">
+            <h3>Model Type</h3>
+            <div class="btn-row">
+                <button id="btn-muchacha" class="active" onclick="setModel('muchacha')">Muchacha</button>
+                <button id="btn-chabon" onclick="setModel('chabon')">Chabon</button>
+            </div>
+        </div>
+    </div>
+
+    <button id="help-btn" onclick="toggleModal(true)">?</button>
+
+    <div id="canvas-container"></div>
+
+    <div id="help-modal">
+        <div class="modal-content">
+            <h2>How to Use Manakin Studio</h2>
+            <p><strong>Moving Joints:</strong> Click and drag the outermost extension of a joint (e.g., the wrist to move the forearm, or the ankle to move the lower leg) to pose the figure.</p>
+            <p><strong>Swivel:</strong> Use the Swivel L/R buttons to rotate the entire platform by 15% (54 degrees).</p>
+            <p><strong>Styles:</strong> Switch between Classic (wooden realistic), Pencil (light sketch lines), and Charcoal (heavy, dark shading) in real-time.</p>
+            <p><strong>Save & Load:</strong> Download your pose as a JSON file to save your work, or download the Canvas as an image reference for your art.</p>
+            <button class="close-modal" onclick="toggleModal(false)">Close</button>
+        </div>
+    </div>
+
+    <script>
+        // --- THREE.JS SETUP ---
+        const container = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+        scene.background = null; // Transparent to show CSS grid background
+
+        const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 100);
+        camera.position.set(0, 5, 20);
+
+        // PreserveDrawingBuffer is required to export the canvas as an image
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        renderer.shadowMap.enabled = true;
+        container.appendChild(renderer.domElement);
+
+        // Lighting
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+        scene.add(ambientLight);
+        const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        dirLight.position.set(10, 20, 10);
+        dirLight.castShadow = true;
+        scene.add(dirLight);
+
+        // --- MATERIALS (STYLES) ---
+        // Classic: Wooden look
+        const matClassic = new THREE.MeshStandardMaterial({ 
+            color: 0xd2a679, roughness: 0.8, metalness: 0.1 
+        });
+        
+        // Pencil: Light mesh with wireframe overlay to simulate sketch guidelines
+        const matPencil = new THREE.MeshToonMaterial({ 
+            color: 0xffffff, wireframe: true, transparent: true, opacity: 0.3
+        });
+        const outlinePencil = new THREE.LineBasicMaterial({ color: 0x888888, linewidth: 1 });
+
+        // Charcoal: High contrast, dark rough shading
+        const matCharcoal = new THREE.MeshStandardMaterial({ 
+            color: 0x222222, roughness: 1.0, metalness: 0.0, wireframe: true
+        });
+
+        // --- MANAKIN GENERATION (Programmatic Dummy) ---
+        // In a production app, this would load a rigged GLTF model.
+        let manakinGroup = new THREE.Group();
+        scene.add(manakinGroup);
+        const joints = []; // Store joints for raycasting/dragging
+
+        function createLimb(radius, length, yOffset, isJoint = false) {
+            const geo = isJoint ? new THREE.SphereGeometry(radius, 16, 16) : new THREE.CylinderGeometry(radius, radius, length, 16);
+            const mesh = new THREE.Mesh(geo, matClassic);
+            mesh.position.y = yOffset;
+            mesh.castShadow = true;
+            return mesh;
+        }
+
+        function buildManakin(type) {
+            scene.remove(manakinGroup);
+            manakinGroup = new THREE.Group();
+            joints.length = 0;
+
+            // Proportions based on model type
+            const scale = type === 'muchacha' ? 0.9 : 1.1;
+            const shoulderWidth = type === 'muchacha' ? 1.5 : 2.2;
+
+            // Torso
+            const torso = createLimb(1.2 * scale, 4 * scale, 4 * scale);
+            manakinGroup.add(torso);
+
+            // Head & Neck
+            const headJoint = new THREE.Group();
+            headJoint.position.set(0, 6 * scale, 0);
+            headJoint.name = "NeckJoint";
+            const head = createLimb(0.8 * scale, 0, 1 * scale, true); // Sphere head
+            headJoint.add(head);
+            manakinGroup.add(headJoint);
+            joints.push(headJoint);
+
+            // Left Arm
+            const lShoulder = new THREE.Group();
+            lShoulder.position.set(-shoulderWidth, 5.5 * scale, 0);
+            lShoulder.name = "LeftShoulder";
+            const lUpperArm = createLimb(0.4 * scale, 3 * scale, -1.5 * scale);
+            
+            const lElbow = new THREE.Group();
+            lElbow.position.set(0, -3 * scale, 0);
+            lElbow.name = "LeftElbow";
+            const lLowerArm = createLimb(0.35 * scale, 2.5 * scale, -1.25 * scale);
+            
+            lElbow.add(lLowerArm);
+            lShoulder.add(lUpperArm);
+            lShoulder.add(lElbow);
+            manakinGroup.add(lShoulder);
+            joints.push(lShoulder, lElbow);
+
+            // Right Arm
+            const rShoulder = new THREE.Group();
+            rShoulder.position.set(shoulderWidth, 5.5 * scale, 0);
+            rShoulder.name = "RightShoulder";
+            const rUpperArm = createLimb(0.4 * scale, 3 * scale, -1.5 * scale);
+            
+            const rElbow = new THREE.Group();
+            rElbow.position.set(0, -3 * scale, 0);
+            rElbow.name = "RightElbow";
+            const rLowerArm = createLimb(0.35 * scale, 2.5 * scale, -1.25 * scale);
+            
+            rElbow.add(rLowerArm);
+            rShoulder.add(rUpperArm);
+            rShoulder.add(rElbow);
+            manakinGroup.add(rShoulder);
+            joints.push(rShoulder, rElbow);
+
+            scene.add(manakinGroup);
+            applyCurrentStyle();
+        }
+
+        buildManakin('muchacha');
+
+        // --- INTERACTION / DRAGGING ---
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
+        let draggedJoint = null;
+
+        container.addEventListener('mousedown', (e) => {
+            const rect = container.getBoundingClientRect();
+            mouse.x = ((e.clientX - rect.left) / container.clientWidth) * 2 - 1;
+            mouse.y = -((e.clientY - rect.top) / container.clientHeight) * 2 + 1;
+
+            raycaster.setFromCamera(mouse, camera);
+            // In a real IK setup, we cast against wrists/ankles. Here we cast against the whole model and find the parent joint.
+            const intersects = raycaster.intersectObjects(manakinGroup.children, true);
+            
+            if (intersects.length > 0) {
+                // Find the nearest joint group in the hierarchy
+                let obj = intersects[0].object;
+                while (obj && !joints.includes(obj)) {
+                    obj = obj.parent;
+                }
+                if (obj) draggedJoint = obj;
+            }
+        });
+
+        container.addEventListener('mousemove', (e) => {
+            if (!draggedJoint) return;
+            // Simple FK rotation mapping for demonstration. 
+            // Dragging left/right rotates Z, up/down rotates X.
+            draggedJoint.rotation.z += e.movementX * 0.01;
+            draggedJoint.rotation.x += e.movementY * 0.01;
+        });
+
+        window.addEventListener('mouseup', () => { draggedJoint = null; });
+
+        // --- APP LOGIC ---
+        let currentStyle = 'classic';
+        
+        function setStyle(style) {
+            currentStyle = style;
+            document.querySelectorAll('#btn-classic, #btn-pencil, #btn-charcoal').forEach(b => b.classList.remove('active'));
+            document.getElementById(`btn-${style}`).classList.add('active');
+            applyCurrentStyle();
+        }
+
+        function applyCurrentStyle() {
+            let activeMat;
+            if (currentStyle === 'classic') activeMat = matClassic;
+            if (currentStyle === 'pencil') activeMat = matPencil;
+            if (currentStyle === 'charcoal') activeMat = matCharcoal;
+
+            manakinGroup.traverse((child) => {
+                if (child.isMesh) {
+                    child.material = activeMat;
+                    if (currentStyle === 'pencil' || currentStyle === 'charcoal') {
+                        // Adds edge guidelines for the sketch effect
+                        scene.background = new THREE.Color(0xffffff); // Force white bg for sketch
+                    } else {
+                        scene.background = null; // Transparent for grid
+                    }
+                }
+            });
+        }
+
+        function setModel(type) {
+            document.querySelectorAll('#btn-muchacha, #btn-chabon').forEach(b => b.classList.remove('active'));
+            document.getElementById(`btn-${type}`).classList.add('active');
+            buildManakin(type);
+        }
+
+        function swivelModel(percent) {
+            // 15% of a full 360 circle (2 * Math.PI) = 0.15 * 6.28 = 0.942 radians (approx 54 degrees)
+            const radians = (percent / 100) * (Math.PI * 2);
+            manakinGroup.rotation.y += radians;
+        }
+
+        function downloadImage() {
+            renderer.render(scene, camera); // Force render to clear buffer
+            const dataURL = renderer.domElement.toDataURL('image/png');
+            const link = document.createElement('a');
+            link.download = 'manakin-pose.png';
+            link.href = dataURL;
+            link.click();
+        }
+
+        function downloadPose() {
+            const poseData = {};
+            joints.forEach(j => {
+                poseData[j.name] = { x: j.rotation.x, y: j.rotation.y, z: j.rotation.z };
+            });
+            poseData.globalRotation = manakinGroup.rotation.y;
+            
+            const blob = new Blob([JSON.stringify(poseData, null, 2)], { type: 'application/json' });
+            const link = document.createElement('a');
+            link.download = 'manakin-pose.json';
+            link.href = URL.createObjectURL(blob);
+            link.click();
+        }
+
+        function uploadPose(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const data = JSON.parse(e.target.result);
+                joints.forEach(j => {
+                    if (data[j.name]) {
+                        j.rotation.set(data[j.name].x, data[j.name].y, data[j.name].z);
+                    }
+                });
+                if (data.globalRotation !== undefined) {
+                    manakinGroup.rotation.y = data.globalRotation;
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function toggleModal(show) {
+            document.getElementById('help-modal').style.display = show ? 'flex' : 'none';
+        }
+
+        // --- RENDER LOOP ---
+        function animate() {
+            requestAnimationFrame(animate);
+            renderer.render(scene, camera);
+        }
+        
+        window.addEventListener('resize', () => {
+            camera.aspect = container.clientWidth / container.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.clientWidth, container.clientHeight);
+        });
+
+        animate();
+    </script>
+</body>
+</html>
