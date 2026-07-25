@@ -318,6 +318,9 @@
             applyCurrentStyle();
         }
 
+        // --- APP LOGIC ---
+        let currentStyle = 'classic';
+        
         buildManakin('muchacha');
 
         // --- INTERACTION / DRAGGING ---
@@ -353,9 +356,6 @@
         });
 
         window.addEventListener('mouseup', () => { draggedJoint = null; });
-
-        // --- APP LOGIC ---
-        let currentStyle = 'classic';
         
         function setStyle(style) {
             currentStyle = style;
