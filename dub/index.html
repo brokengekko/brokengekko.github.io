@@ -280,14 +280,42 @@
         
         .sys-text {
             position: absolute;
-            top: -10px;
-            left: 20px;
+            top: 15px;
+            left: 15px;
             background: var(--dark-bg);
             padding: 0 5px;
             font-size: 0.7rem;
             color: var(--neon-yellow);
             font-family: 'Orbitron', sans-serif;
             border: 1px solid var(--neon-yellow);
+            z-index: 10;
+        }
+
+        /* Drag and Drop Zone */
+        .drop-zone {
+            width: 100%;
+            border: 2px dashed rgba(0, 255, 255, 0.3);
+            border-radius: 5px;
+            padding: 1.5rem 1rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            background: rgba(0, 255, 255, 0.02);
+            position: relative;
+        }
+
+        .drop-zone.dragover {
+            border-color: var(--neon-cyan);
+            background: rgba(0, 255, 255, 0.1);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.2) inset;
+        }
+
+        .drop-text {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--neon-cyan);
+            font-size: 0.8rem;
+            margin-top: 1rem;
+            letter-spacing: 1px;
+            opacity: 0.7;
         }
 
     </style>
@@ -300,12 +328,15 @@
         <p class="subtitle">ENHANCE RESOLUTION VIA MATRICIAL INTERPOLATION</p>
 
         <div class="btn-group">
-            <div class="file-upload-wrapper">
-                <button class="btn btn-primary" id="uploadBtnText">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
-                    [ SELECT DATA TARGET ]
-                </button>
-                <input type="file" id="imageInput" accept="image/png, image/jpeg, image/webp" />
+            <div class="drop-zone" id="dropZone">
+                <div class="file-upload-wrapper">
+                    <button class="btn btn-primary" id="uploadBtnText">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                        [ SELECT DATA TARGET ]
+                    </button>
+                    <input type="file" id="imageInput" accept="image/png, image/jpeg, image/webp" />
+                </div>
+                <div class="drop-text">[ OR DRAG DATA HERE ]</div>
             </div>
 
             <div class="progress-container" id="progressContainer">
@@ -331,6 +362,7 @@
 
     <script>
         const imageInput = document.getElementById('imageInput');
+        const dropZone = document.getElementById('dropZone');
         const uploadBtnText = document.getElementById('uploadBtnText');
         const downloadBtn = document.getElementById('downloadBtn');
         
@@ -350,10 +382,43 @@
         // Target scale factor
         const SCALE_FACTOR = 2;
 
-        imageInput.addEventListener('change', handleImageUpload);
+        // File Selection Event
+        imageInput.addEventListener('change', (event) => {
+            if (event.target.files.length > 0) {
+                processSelectedFile(event.target.files[0]);
+            }
+        });
 
-        function handleImageUpload(event) {
-            const file = event.target.files[0];
+        // Drag and Drop Events
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, () => dropZone.classList.add('dragover'), false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, () => dropZone.classList.remove('dragover'), false);
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            
+            if (files && files.length > 0) {
+                // Sync input list
+                imageInput.files = files; 
+                processSelectedFile(files[0]);
+            }
+        }, false);
+
+        function processSelectedFile(file) {
             if (!file) return;
 
             // Check if it's an image
@@ -367,6 +432,7 @@
             
             // Disable input during processing
             imageInput.disabled = true;
+            dropZone.style.pointerEvents = 'none';
             uploadBtnText.innerHTML = '[ PROCESSING... ]';
             uploadBtnText.classList.add('disabled');
             document.querySelector('.file-upload-wrapper').style.cursor = 'not-allowed';
@@ -535,6 +601,7 @@
                 
                 // Reset upload button state so user can upload another
                 imageInput.disabled = false;
+                dropZone.style.pointerEvents = 'auto';
                 imageInput.value = ''; // clear input
                 uploadBtnText.innerHTML = `
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
