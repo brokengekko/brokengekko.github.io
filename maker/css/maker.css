@@ -1,0 +1,157 @@
+
+/* Maker Specific Styles */
+.maker-title-input {
+    background: transparent;
+    border: none;
+    border-bottom: 2px dashed rgba(0, 243, 255, 0.5);
+    color: #fff;
+    font-family: inherit;
+    text-align: right;
+    width: 60%;
+    outline: none;
+}
+.maker-title-input:focus {
+    border-bottom-color: var(--neon-cyan);
+    background: rgba(0, 243, 255, 0.1);
+}
+.lightbox-content {
+    display: flex !important;
+    flex-direction: column;
+}
+.maker-btn {
+    background: transparent;
+    border: 1px solid var(--neon-cyan);
+    color: var(--neon-cyan);
+    padding: 8px 15px;
+    font-family: 'Courier New', Courier, monospace;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.maker-btn:hover {
+    background: rgba(0, 243, 255, 0.2);
+    box-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
+}
+.maker-btn.primary { border-color: var(--neon-yellow); color: var(--neon-yellow); }
+.maker-btn.primary:hover { background: rgba(255, 204, 0, 0.2); box-shadow: 0 0 10px rgba(255, 204, 0, 0.5); }
+.maker-btn.warning { border-color: var(--neon-magenta); color: var(--neon-magenta); }
+.maker-btn.warning:hover { background: rgba(224, 0, 255, 0.2); box-shadow: 0 0 10px rgba(224, 0, 255, 0.5); }
+
+.maker-icon-btn {
+    background: rgba(0,0,0,0.8);
+    border: 1px solid var(--neon-cyan);
+    color: var(--neon-cyan);
+    border-radius: 50%;
+    width: 30px; height: 30px;
+    display: flex; justify-content: center; align-items: center;
+    cursor: pointer;
+}
+.maker-icon-btn:hover { background: var(--neon-cyan); color: #000; }
+
+.maker-input {
+    background: rgba(0,0,0,0.5);
+    border: 1px solid var(--neon-cyan);
+    color: #fff;
+    padding: 8px;
+    font-family: monospace;
+    outline: none;
+}
+
+/* Section Containers */
+.maker-section {
+    position: relative;
+    margin-bottom: 30px;
+    padding-left: 30px; /* Space for drag handle */
+}
+.maker-section .drag-handle {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 20px;
+    background: rgba(0, 243, 255, 0.1);
+    border: 1px dashed rgba(0, 243, 255, 0.3);
+    cursor: grab;
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+}
+.maker-section .drag-handle::before {
+    content: '⋮';
+    color: var(--neon-cyan);
+    font-size: 20px;
+}
+.maker-section .delete-section-btn {
+    position: absolute;
+    top: -10px; right: -10px;
+    z-index: 10;
+}
+
+/* Rich Text */
+.rich-text-editor {
+    min-height: 100px;
+    padding: 15px;
+    border: 1px solid rgba(0, 243, 255, 0.2);
+    background: rgba(0,0,0,0.3);
+    color: #e6ffff;
+    font-family: inherit;
+    outline: none;
+}
+.rich-text-editor:focus {
+    border-color: var(--neon-cyan);
+    box-shadow: 0 0 10px rgba(0, 243, 255, 0.1);
+}
+.rich-text-editor h2, h2.rich-text-editor {
+    color: var(--neon-yellow);
+    margin: 10px 0;
+}
+h2.module-title.rich-text-editor {
+    min-height: auto;
+    padding: 5px;
+    margin-bottom: 0;
+}
+.rich-text-editor a, .rich-text-editor a:visited {
+    color: var(--neon-cyan);
+    text-decoration: none;
+    transition: color 0.3s ease-in-out, text-shadow 0.3s ease-in-out;
+}
+.rich-text-editor a:hover {
+    color: #fff;
+    text-shadow: 0 0 8px #fff, 0 0 12px var(--neon-cyan);
+}
+
+/* Modals */
+.maker-modal {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.8); z-index: 1000;
+    display: none; justify-content: center; align-items: center;
+}
+.maker-modal.active { display: flex; }
+.maker-modal-content {
+    background: var(--dark-bg);
+    border: 2px solid var(--neon-cyan);
+    padding: 30px;
+    width: 400px; max-width: 90%;
+    box-shadow: 0 0 30px rgba(0, 243, 255, 0.3);
+}
+
+/* Context Menu */
+#context-menu {
+    position: fixed;
+    background: var(--navy-bg);
+    border: 1px solid var(--neon-cyan);
+    z-index: 2000;
+    display: none;
+    flex-direction: column;
+    min-width: 150px;
+    box-shadow: 0 0 15px rgba(0, 243, 255, 0.5);
+}
+#context-menu button {
+    background: transparent;
+    border: none;
+    color: #fff;
+    padding: 10px 15px;
+    text-align: left;
+    cursor: pointer;
+    font-family: monospace;
+}
+#context-menu button:hover {
+    background: rgba(0, 243, 255, 0.2);
+    color: var(--neon-cyan);
+}
