@@ -1,0 +1,75 @@
+{
+  "title": "Spring Pines",
+  "stub": "spring-pines",
+  "header": {
+    "filename": "../spring-pines-header-image.jpeg",
+    "yOffset": 50
+  },
+  "sections": [
+    {
+      "type": "table-right",
+      "content": {
+        "tables": [
+          {
+            "title": "./NFO{\"SPRING PINES\"}",
+            "rows": [
+              {
+                "label": "Method",
+                "value": "Spherical Split"
+              },
+              {
+                "label": "Genus",
+                "value": "Fractal Plants"
+              },
+              {
+                "label": "Software",
+                "value": "Chaotica"
+              },
+              {
+                "label": "Designer",
+                "value": "San Jaya Prime"
+              },
+              {
+                "label": "Rendering",
+                "value": "The Skybreak Tribe"
+              }
+            ],
+            "color": "cyan",
+            "width": 95
+          }
+        ],
+        "text": "## Spring Pines\n\nI had a special request come in for a dark forest green, natural fractal that was going to be printed on fabric for a dress. I'd had the idea banging around my skull for months and it was the final push needed to make it happen. I'd used the \"spherical plants\" method for fractal flames before, as C-91's tutorial ([DeviantArt](https://www.deviantart.com/c-91/art/Spherical-Plants-Apophysis-Tutorial-347919168)) lays it out quite clearly. It only took a few tweaks to get it to work in Chaotica, which allowed for an even wider range of colors and lighting.\n\n### The Render\n\nAt the time, my own computer was limping along and on the edge of dying for good. In fact, we called it \"Arkenstein\" as it was patched together using two dead computers... making it quite the monster and never fully functional. Fortunately, this is during the summer when I'd been gifted with the chance to use the Skybreak's computer during off-hours, which opened up the possibility of fractals exactly like this one. So much mad love and gratitude for those nights, as I rendered like crazy during that summer.\n\n\\[[Prints + More on Redbubble](https://www.redbubble.com/shop/ap/26119961)\\]"
+      }
+    },
+    {
+      "type": "image",
+      "content": {
+        "imageFilename": "../spring-pines-image-1.jpeg",
+        "caption": "_\"Spring Pines\"_ by **San Jaya Prime** ([Redbubble](https://www.redbubble.com/shop/ap/26119961))"
+      }
+    },
+    {
+      "type": "text",
+      "content": {
+        "texts": [
+          "## The Scent of Cinder\n\nPulling into Ruidoso, New Mexico, the first thing that hits you is the scent of pines, sweet and thick, contrasted against the crisp ozone of the mountain air. When I first came to Ruidoso, it was with my brother Skybreak, and that scent hit me immediately. We took shelter under one of those ancient pines at Summermoon Cafe, where we enjoyed some of our ad hoc yerba mate latte (years before it came to the states) and some quesadillas. With green chile of course... this _is_ New Mexico afterall.\n\nSir Garnish had told us to make contact with Captain Rowdy, the _King of Ruidoso_ himself. He was right about that. Rowdy hooked us up in every way, grabbing us later that day for a party deeper up the mountain and into the woods. The fires burning in barrels were burning fallen pine... with the scent of cinder filling the air. It was incredible! Dare I say? _Luxurious!_ Nigh intoxicating in fact. While Jason climbed the great pines to hang lights for the party, my brother and I gathered around that fire, taking warmth in the gathering throngs who were joining us.\n\nWhen Captain Rowdy broke out the guitar, it officially became a night to remember for a lifetime.\n\n## Autumn Pines\n\nThe original design has been a smash hit. It remains in my best-seller list to this very day, with one desk mat owned by my friend Jeff (aka, \"Teron Solus\"). Following on that success, I returned to the concept one final time. I wanted to make a misty, autumn version. This lesser-known version remains available on Redbubble ([link](https://www.redbubble.com/shop/ap/34729486)) and shown here below."
+        ]
+      }
+    },
+    {
+      "type": "image",
+      "content": {
+        "imageFilename": "../spring-pines-image-3.jpeg",
+        "caption": "_\"Autumn Pines\"_ by **San Jaya Prime** ([Redbubble](https://www.redbubble.com/shop/ap/34729486))"
+      }
+    },
+    {
+      "type": "text",
+      "content": {
+        "texts": [
+          "## Extended Exploration\n\nIf you've liked the \"Spring Pines\" then you'll almost certainly love \"[Cacti Nova](cacti-nova)\"; or, if you'd prefer flowers, then both \"[Bloom of Fire](bloom-of-fire)\" and \"[Filigree Floranocte](filigree-floranocte)\" are up on the site. My book \"[Spectral Iteration](spectral-iteration)\" explores the connection between fractals and nature in greater detail."
+        ]
+      }
+    }
+  ]
+}
