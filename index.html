@@ -736,6 +736,11 @@
                 display: flex !important;
             }
         }
+
+        /* Ensure interactive elements in the lightbox show the pointer cursor */
+        #lightbox-content a, #lightbox-content .show-more-btn {
+            cursor: pointer !important;
+        }
     </style>
 </head>
 <body>
@@ -1542,6 +1547,9 @@
                 lightboxContent.style.display = 'none';
                 lightboxLoader.style.display = 'flex';
                 lightboxScroll.scrollTop = 0;
+
+                // Immediately clear the header image to prevent visual bleed-over while the next article fetches
+                document.getElementById('lightbox-header-bg').style.backgroundImage = 'none';
 
                 try {
                     const response = await fetch(`${stub}.json?t=${Date.now()}`);
