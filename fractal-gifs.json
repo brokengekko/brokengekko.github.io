@@ -1,0 +1,43 @@
+{
+  "title": "GIFs + WebPs by Jaya Prime",
+  "stub": "fractal-gifs",
+  "header": {
+    "filename": "../fractal-gifs-header-image.jpeg",
+    "yOffset": 50
+  },
+  "sections": [
+    {
+      "type": "quote",
+      "content": {
+        "texts": [
+          "\"I am putting myself to the fullest possible use, which is all I think that any conscious entity can ever hope to do.\"",
+          "\\- **HAL 9000**, _2001: A Space Odyssey_"
+        ]
+      }
+    },
+    {
+      "type": "image-right",
+      "content": {
+        "imageFilename": "../fractal-gifs-image-1.gif",
+        "text": "## Patient Zero: 1995\n\nIn thanks to a certain government hospital, I was on the internet years before most people knew that there even was such a thing. I'm \"that student\" in high school who -- because of me -- the faculty had to create citation rules for information used in essays and research papers that came from the internet. I remember when text-only browsers like Mosaic gave way to image browsers, or even video browsers like Netscape Navigator.\n\nIt was in the summer of '95 though when I learned how to create GIFs.\n\nThe first GIF that I ever created was simply two bloodshot eyes, brows turned inward and downward, with some subtle color changes, then after a few seconds they blinked before continuing to stare at you in the same loop. I'd post it anywhere on AOL forums where I was leaving comments. It was one of my first experiences in \"going viral\" . . as I saw others who'd taken it and were using it themselves.\n\nI don't have that first GIF anymore. However, it's fitting that decades later, my most famous and widespread fractal GIF is, yet again, an eye.\n\n## Eyeconic Design: HAL-9000\n\nYou'll find my HAL-9000 fractal animation that you see on the right -- lol, yes, even with my signature still on it -- spread across nearly every forum and space on the internet by one person after another. I posted the original back in 2014 ([DeviantArt](https://www.deviantart.com/jayaprime/art/HAL-9000-Animated-Fractal-455267246)). Even before that, however, I myself was often using it as a signature online. When I finally posted it for others, I told peeps to use it... and use it they did. Plug it into a Google Images search and the pages of results go into the dot, dot, dots. This was the very first fractal animation that I ever created using the \"Tammy Script for Apophyis\" by Tangent101 ([DeviantArt](https://www.deviantart.com/tangent101/art/Tammy-Script-for-Apophysis-433140012)). Then the final lens flare on top of everything came in thanks to Andrei Oprinca ([DeviantArt](https://www.deviantart.com/andrei-oprinca/art/Free-Optical-Flares-Stock-274571472)).\n\nWhen generative AI first started creating images, I looked over the library of images that it trained on. I was surprised to find my own face in the training data. I found hundreds of my fractals... and I found HAL. We created this fictional AI, which I later built into a viral design that spread all over the internet, so that it could later be integrated as training data for the non-fictional AI that will inherit our planet.\n\n_I'm honored._\n\nAlso, it's a bit weird that my own face will likely forever live on within the machine as a tokenized byte of information. The fact that I vibe coded this entire website alongside the Google Gemini AI LLM at least makes it a symbiotic relationship. With that, let's get to a bit of a chuckle with this next quote and then finally sally onward to the actual collection itself."
+      }
+    },
+    {
+      "type": "quote",
+      "content": {
+        "texts": [
+          "\"We are all, by any practical definition of the words, foolproof and incapable of error.\"",
+          "\\- **HAL 9000**, _2001: A Space Odyssey_"
+        ]
+      }
+    },
+    {
+      "type": "text",
+      "content": {
+        "texts": [
+          "## The Jaya Prime Fractal GIF Collection\n\nTechnically, most of these I've now converted into weppies (WebP files). Basically they have higher color-depth and lower file size, so a win all around, but otherwise built on similar properties to GIFs... and that's where most of them started anyways, as GIFs.\n\nBecause of the sheer number and the size of the page, I'm setting it a bit aside from the rest of the site.\n\nHere's where you'll find [The Jaya Prime GIF Collection](https://www.jayaprime.com/gifs/index.html).\n\nWhile not all were included, there were a few other of my viral hits included, such as:\n\n*   The animated version of \"Beer Addiction\" by Cyanide & Happiness\n*   My \"nothing but love\" self-portrait\n*   The \"Jolly Atom\" GIF that has spread far and wide, inspired by the \"Treasure Planet\" movie's pirate flag\n*   Then of course the many fractal animations that I've posted over the years\n\n### Extended Exploration\n\nIf you like my HAL-9K design or GIF, then you'd love my [pop art fractals](other-pop-art) and [surreal fractalscapes](other-fractalscapes). Or if you prefer the fractal geometry in many of my fractal GIFs, then definitely check out my [Mandelbrot designs](other-mandelbrot-fractals)."
+        ]
+      }
+    }
+  ]
+}

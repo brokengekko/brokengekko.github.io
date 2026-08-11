@@ -1,0 +1,60 @@
+{
+  "title": "Fractal Sky",
+  "stub": "fractal-sky",
+  "header": {
+    "filename": "../fractal-sky-header-image.jpeg",
+    "yOffset": 39.99999999999999
+  },
+  "sections": [
+    {
+      "type": "image",
+      "content": {
+        "imageFilename": "../fractal-sky-image-0.jpeg",
+        "caption": "_\"The Aquarius, Pt II\"_, album art by **San Jaya Prime**, music by **Fractal Sky**"
+      }
+    },
+    {
+      "type": "html-right",
+      "content": {
+        "text": "## Fractal Sky - The Aquarius, Pt II\n\n_Gravitas Recordings, Austin, Texas, USA_\n\n  \n\nFractal Sky (aka, \"Aaron Spence\") and I first met up as musicians, at not one but two different SXSW events in the ATX. Gravitas held that second one, and Fractal Sky nearly brought down the house with his retro hip-hop beats that night. Bredd and I still talk about it to this day.\n\n  \n\nIt's a testament to how segmented my circles and arts are that, years later, when he came across my fractal art it didn't even trigger his memory of me as a musician. Until I reminded him of that night. \"OMG,\" he wrote. \"Y'all nearly caused a riot that night!\"\n\n  \n\nWhen he asked me to be a part in the single for \"Aquarius II\", I was all-in!\n\n  \n\n### About the Fractal Sky Logo\n\nIntertwining it and bringing new energy and life to the symbol. Symbol meaning: The 4 circles represent the 4 elements in which Empedocles called \"roots\" (air, water, fire, earth). These \"roots\" intertwine into an eye in the center. This eye represents perseverance and determination throughout our lives.\n\n  \n\n### Listen to Fractal Sky\n\n\\[[Spotify](https://open.spotify.com/artist/66Ssa6kjw7ighSNyzBJScP?si=2RRdBkf0TMyNMaTqCzrnCw)\\] \\[[Apple Music](https://music.apple.com/ca/artist/fractal-sky/670350906)\\] \\[[BandCamp](https://fractalskymusic.bandcamp.com/)\\] \\[[\"Perseverance\" on YouTube](https://www.youtube.com/watch?v=MDcgD00FRy0)\\]",
+        "html": "<iframe style=\"border: 0; width: 550px; height: 755px;\" src=\"https://bandcamp.com/EmbeddedPlayer/album=3455593661/size=large/bgcol=333333/linkcol=4ec5ec/transparent=true/\" seamless><a href=\"https://fractalskymusic.bandcamp.com/album/the-aquarius-pt-ii\">The Aquarius pt.II by Fractal Sky</a></iframe>"
+      }
+    },
+    {
+      "type": "image",
+      "content": {
+        "imageFilename": "../fractal-sky-image-2.jpeg",
+        "caption": "_\"Perseverance\"_, album art by **San Jaya Prime**, music by **Fractal Sky**"
+      }
+    },
+    {
+      "type": "image-right",
+      "content": {
+        "imageFilename": "../fractal-sky-image-3.jpeg",
+        "text": "## Shattered Glass Fractals\n\n  \n\nThe late great Javier Ontiveros, my master and the man who taught me fractals, taught me how to work with Apophysis, how to create symbol fractals -- such as for the art on \"Perseverance\" -- and then especially, how to work fractals into organic environments. This showed even more strongly when I developed the technique for what I've called \"shattered glass fractals\".\n\n  \n\nAfter finishing the Fractal Sky designs, I returned to this technique to apply it to my own art. On the right, you're seeing \"Endless Sunset\" -- my favorite of the three I've created with the technique.\n\n  \n\n[Endless Sunset + Shattered Glass Fractals](endless-sunset)\n\n  \n\n* * *\n\n  \n\nWith that, let's close this out with the final two Fractal Sky designs."
+      }
+    },
+    {
+      "type": "image",
+      "content": {
+        "imageFilename": "../fractal-sky-image-4.jpeg",
+        "caption": "_\"The Eye of the Fractal Sky\"_ by **San Jaya Prime**"
+      }
+    },
+    {
+      "type": "image",
+      "content": {
+        "imageFilename": "../fractal-sky-image-5.jpeg",
+        "caption": "_\"The Shattered Fractal Sky\"_ by **San Jaya Prime**"
+      }
+    },
+    {
+      "type": "text",
+      "content": {
+        "texts": [
+          "**Fractal Sky** has played festivals and shows along side acts such as: WAKARUSA, Global Dance Festival, DANCEFESTOPIA, Backwoods Festival, 710 Cup, VibeSquaD, OTT, Emancipator, Ill-Esha, Eliot Lipp, Gramatik, Michal Menert, GRiZ, Gladkill, Two Fresh, Big Gigantic, EOTO, Govinda, The Floozies, Dem Franchise boyz, Crizzly, Buku, Freddy Todd, Fresh2Death, R/D, Lobounce, Zoogma, Archnemesis, Knife Party, Krewella, Emalkay, EXMAG, Andreilien, and many more.."
+        ]
+      }
+    }
+  ]
+}
