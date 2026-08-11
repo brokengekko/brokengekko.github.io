@@ -1,0 +1,54 @@
+{
+  "title": "Album Art, Game Art, Book Covers",
+  "stub": "cover-art-others",
+  "header": {
+    "filename": "../cover-art-others-header-image.jpeg",
+    "yOffset": 50.24390243902441
+  },
+  "sections": [
+    {
+      "type": "text",
+      "content": {
+        "texts": [
+          "There are many, many other examples of my design work on book covers, for video games, and on album art.\n\nBut there are a few glaring omissions to cover first."
+        ]
+      }
+    },
+    {
+      "type": "image-left",
+      "content": {
+        "imageFilename": "../cover-art-others-image-1.jpeg",
+        "text": "## Fractal Sky - The Aquarius, Pt II\n\nOne of my best known and widespread album art designs was easily for \"The Aquarius, Pt II\" by none other than **Fractal Sky** himself (aka, \"Aaron Spence\").\n\nBeing that our collaborations in both art and music are rather well known at this point, I'd be remiss to leave this out. So much so, that I've set aside an entire article on our collaborations:\n\n[Fractal Sky x San Jaya Prime](fractal-sky)\n\nOnce the album was released -- hailed widely for both its music and praised for the design -- I returned to the concept and made three of my own original designs based on the same technique: \"[Endless Sunset](other-fractalscapes)\" (aka, \"Elysian Fields\"), \"Monument Valley\" ([Redbubble](https://www.redbubble.com/shop/ap/35683444)), and \"Shattered Tianjin\" ([Redbubble](https://www.redbubble.com/shop/ap/35344191))."
+      }
+    },
+    {
+      "type": "image-right",
+      "content": {
+        "imageFilename": "../cover-art-others-image-2.jpeg",
+        "text": "## DharmaMix Designs (2008 - 2015)\n\nThe other glaring omission is from DharmaMix itself, the whole-body media experience company that I contracted with, then managed up until 2015. Many know our collaborations, mixing in the voice of the Dali Lama, Madeleine Albright, Sadhguru, Alex Allman, and many others into inspirational music. What many don't know is that 95% of the visual designs for the songs, vision boards, and website were in fact crafted by myself with guidance from both CEOs behind the design specifications.\n\nThere is much more to cover than here in this little snippet. As such:\n\n[DharmaMix -- The Designs & The Music](dharmamix)"
+      }
+    },
+    {
+      "type": "image",
+      "content": {
+        "imageFilename": "../cover-art-others-image-3.jpeg",
+        "caption": "Other Appearances (Top-Left to Bottom-Right): \"Endgame: Singularity\" for Android; \"Memento Mori\" (aka, \"Man in the Moon\") by San Jaya Prime + GreatJester; \"Glassmaker's Apprentice\" by J M Parry; \"Porn\" by First 5 Frets; \"Fiercy Fell\" by Rafael Viana Ribeiro; \"Dernière Naissance\" by Ménora Ébriève; \"Ascend Online\" by Luke Chmilenko; \"Cosmic Love\" by Jennifer Gelinas; \"Lady Winter\" by IgnisFatuus"
+      }
+    },
+    {
+      "type": "text",
+      "content": {
+        "texts": [
+          "In six of the nine designs above, you'll find my award-winning \"[Chaos Clock](chaos-clock)\" design. If you've ever used an AI image generator, you'll also find that it's been trained into most of these. The cybernetic angel for the \"Endgame: Singularity\" strategy game for Android comes from my album \"[IO Vapoura](io-vapoura)\" on the song \"May Angels Take You\" (the original mix). Then my \"Rose Mandala\" and \"Flower of the Long Sleep\" make other appearances. I stopped counting how many covert art appearances I've since made over the years."
+        ]
+      }
+    },
+    {
+      "type": "image-left",
+      "content": {
+        "imageFilename": "../cover-art-others-image-5.jpeg",
+        "text": "## Trochlear Recordings Limited (aka, \"The T.Rex DigiLab\")\n\nThe other glaring omission comes from the many designs that I made for our record label. From 2005 to 2007, Mushuto made the majority. I made quite a few, then picked up the pieces after Mushuto's death late in 2007. Ghostface Geisha created many, as well, both for her own album art and for the label.\n\nSadly, many of these designs were made by three broke blokes on limited hardware. That means most were at a lower resolution and at a time when we didn't even have the hardware needed to save the designs in any type of long-term storage.\n\nNonetheless, some of these I still have available for sharing:\n\n[T.Rex DigiLab Design Work](trochlear-recordings)"
+      }
+    }
+  ]
+}

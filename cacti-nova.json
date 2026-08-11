@@ -1,0 +1,75 @@
+{
+  "title": "Cacti Nova",
+  "stub": "cacti-nova",
+  "header": {
+    "filename": "../cacti-nova-header-image.jpeg",
+    "yOffset": 50
+  },
+  "sections": [
+    {
+      "type": "table-right",
+      "content": {
+        "tables": [
+          {
+            "title": "./NFO{\"CACTI NOVA\"}",
+            "rows": [
+              {
+                "label": "Method",
+                "value": "Julia Cross"
+              },
+              {
+                "label": "Genus",
+                "value": "Fractal Flora"
+              },
+              {
+                "label": "Software",
+                "value": "Chaotica"
+              },
+              {
+                "label": "Designer",
+                "value": "San Jaya Prime"
+              },
+              {
+                "label": "Rendering",
+                "value": "The Skybreak Tribe"
+              }
+            ],
+            "color": "yellow",
+            "width": 50
+          }
+        ],
+        "text": "## Cacti Nova\n\n_aka, \"Barrel Roll\"_\n\nI love deserts. Let's get that out there front 'n center. My first was the Mojave, and I was instantly hooked. Then I met the Sonoran and could not believe how many colors could exist in such a brutal place... reds, greens, and striking tans. _That's_ where I really came to love the cacti that became my companions across the wastelands.\n\nThen I explored the Chihuahuan Desert and White Sands... and there is absolutely zero comparison to that stark, arid, crystalline-white landscape. One desert after another has become my home for days at a time. Sometimes weeks. There's way more life out there than you'd expect. Sure, maybe not in the alkaline dust of the Black Rock Desert -- where the playa itself attacks any life that dare's to set foot in it -- but most deserts are actually teeming with an incredible amount of life. But... we're now far astray at this point.\n\n\\[[Prints + More on Redbubble](https://www.redbubble.com/shop/ap/28667423)\\]"
+      }
+    },
+    {
+      "type": "image",
+      "content": {
+        "imageFilename": "../cacti-nova-image-1.jpeg",
+        "caption": "_\"Cacti Nova\"_ by **San Jaya Prime** ([Redbubble](https://www.redbubble.com/shop/ap/28667423))"
+      }
+    },
+    {
+      "type": "text",
+      "content": {
+        "texts": [
+          "It was in the Sonoran where I was first struck by the blooms erupting from the top of the barrel cacti. These brilliant orange 'n yellow crowns dared to flash their colors in such an unforgiving place. They look like small fires blooming outward from the sun, anchored instead to a dark green, spiked barrel. I haven't yet seen one of the birds or boars that I've heard enjoy these fruits and brave the spikes, but maybe one day I'll cross paths with one. Until then, my smash-hit _Cacti Nova_ remains one of my top-performing fractals -- and a personal favorite to this very day. Mi amigo Teron Solus even rocks it as a desk mat."
+        ]
+      }
+    },
+    {
+      "type": "image",
+      "content": {
+        "imageFilename": "../cacti-nova-image-3.jpeg",
+        "caption": "Inspiration: Spiral Cacti (left) and the fruit of the Barrel Cacti (right)"
+      }
+    },
+    {
+      "type": "text",
+      "content": {
+        "texts": [
+          "The final design was actually inspired by not one, but two of my favorite cacti. It was the spiral cactus -- with its hypnotic waves radiating outward from the core -- that gave the fractal its foundational form. Then, the vibrant colors and almost petal-like qualities were pulled straight from the barrel cacti. Having met plenty of folks in Arizona who share my obsession with the barrel cactus, I'm glad to know that... at least on this front, I'm not alone.\n\n\\[[Prints + More on Redbubble](https://www.redbubble.com/shop/ap/28667423)\\]\n\n* * *\n\n### Extended Exploration\n\nFans of \"Cacti Nova\" often really love \"[Spring Pines](spring-pines)\"... another of my natural flora fractals. For two of my fan favorite fractal flowers, however, you'd really want to check out \"[Bloom of Fire](bloom-of-fire)\" and \"[Filigree Floranocte](filigree-floranocte)\" (to name just two of 'em). Then there'a a massive [gallery of fractal flowers](other-fractal-flowers) awaiting you to discover."
+        ]
+      }
+    }
+  ]
+}
