@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SJP Cyberpunk Interface</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    animation: {
+                        'shine': 'shine 0.75s ease-out',
+                        'pulse-orb': 'pulse-orb 4s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        shine: {
+                            '0%': { left: '-100%', opacity: '0' },
+                            '10%': { opacity: '1' },
+                            '80%': { left: '200%', opacity: '1' },
+                            '100%': { left: '200%', opacity: '0' },
+                        },
+                        'pulse-orb': {
+                            '0%, 100%': { 
+                                boxShadow: '0 0 50px #00ffff, inset 0 0 50px #00ffff, inset 10px 0 40px rgba(255,255,255,0.8)' 
+                            },
+                            '50%': { 
+                                boxShadow: '0 0 100px #00ffff, inset 0 0 80px #00ffff, inset 10px 0 40px rgba(255,255,255,0.8)' 
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { margin: 0; background-color: #000000; overflow: hidden; }
+        
+        .orb {
+            background: radial-gradient(circle at 30% 30%, #e0ffff, #00ffff 30%, #008b8b 70%, #000000 100%);
+        }
+		
+		.menu-speckle {
+		    position:absolute;
+		    inset:0;
+		    pointer-events:none;
+		    overflow:hidden;
+		    border-radius:inherit;
+		    opacity:.16;
+		    mix-blend-mode:screen;
+		}
+
+		.menu-speckle::before {
+		    content:"";
+		    position:absolute;
+		    inset:-40%;
+		    background-image:
+		        radial-gradient(circle,#ffffffcc 0.4px,transparent 1px),
+		        radial-gradient(circle,#ffffff66 0.6px,transparent 1.4px),
+		        radial-gradient(circle,#00ffff55 0.8px,transparent 2px);
+		    background-size: 14px 14px, 24px 24px, 34px 34px;
+		    animation:speckleFloat 20s linear infinite;
+		    filter:blur(.2px);
+		}
+
+		@keyframes speckleFloat {
+		    from{ transform:translate(0px,0px) rotate(0deg); }
+		    to{ transform:translate(-30px,-20px) rotate(360deg); }
+		}
+		
+		.menu-edge {
+		    position:absolute;
+		    inset:0;
+		    border-radius:inherit;
+		    border:1px solid rgba(255,255,255,.18);
+		    box-shadow:
+		        inset 0 0 2px rgba(255,255,255,.45),
+		        inset 0 0 18px rgba(255,255,255,.08),
+		        0 0 12px rgba(0,255,255,.18);
+		    pointer-events:none;
+		}
+
+        /* ===========================================
+           Planet & Orbit Ring 3D Styles
+        =========================================== */
+        #planet-scene {
+            transform-style: preserve-3d;
+            animation: floatPlanet 10s ease-in-out infinite;
+        }
+
+        @keyframes floatPlanet {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+
+        #orbit-ring {
+            transform-style: preserve-3d;
+            transform: rotateZ(-20deg) rotateX(70deg);
+            animation: spinRing 30s linear infinite;
+        }
+
+        @keyframes spinRing {
+            0% { transform: rotateZ(-20deg) rotateX(70deg) rotateZ(0deg); }
+            100% { transform: rotateZ(-20deg) rotateX(70deg) rotateZ(360deg); }
+        }
+
+        .scale-wrapper {
+            position: absolute;
+            top: 0; left: 0;
+            transform-style: preserve-3d;
+            transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .orbit-square {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            top: -25px;
+            left: -25px;
+            background-color: #111111;
+        }
+
+        .orbit-square::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.1), inset 0 0 10px rgba(0, 255, 255, 0.1);
+            animation: squarePulse 4s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes squarePulse {
+            0%, 100% { 
+                border-color: rgba(0, 255, 255, 0.3);
+                box-shadow: 0 0 10px rgba(0,255,255,0.1), inset 0 0 10px rgba(0,255,255,0.1); 
+            }
+            50% { 
+                border-color: rgba(0, 255, 255, 0.9);
+                box-shadow: 0 0 25px rgba(0,255,255,0.6), inset 0 0 15px rgba(0,255,255,0.4); 
+            }
+        }
+
+        @keyframes tumble1 { 100% { transform: rotateX(360deg) rotateY(180deg) rotateZ(360deg); } }
+        @keyframes tumble2 { 100% { transform: rotateX(-180deg) rotateY(360deg) rotateZ(-360deg); } }
+        @keyframes tumble3 { 100% { transform: rotateX(360deg) rotateY(-360deg) rotateZ(180deg); } }
+
+
+        /* ===========================================
+           Digital Atmosphere (Cyber-Clouds) Styles
+        =========================================== */
+        .cyber-cloud {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform-style: preserve-3d;
+            background-color: rgba(0, 255, 255, 0.05);
+            /* Complex dual-layer dot matrix grid */
+            background-image: 
+                radial-gradient(circle, #ffffff 1px, transparent 1.5px),
+                radial-gradient(circle, #00ffff 2px, transparent 2px);
+            background-size: 16px 16px, 24px 24px;
+            
+            /* Radical alpha-mask forces the hard plane into a soft, glowing spherical patch */
+            -webkit-mask-image: radial-gradient(ellipse at center, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 65%);
+            mask-image: radial-gradient(ellipse at center, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 65%);
+            
+            mix-blend-mode: screen;
+            animation: flowGrid 20s linear infinite;
+        }
+
+        /* Seamless background shifting gives the illusion of flowing atmospheric data */
+        @keyframes flowGrid {
+            from { background-position: 0 0, 0 0; }
+            to { background-position: 48px 0, 72px 0; } 
+        }
+
+        @keyframes spinAtmosphere {
+            0% { transform: rotateY(0deg); }
+            100% { transform: rotateY(360deg); }
+        }
+
+
+        /* ===========================================
+           SJP Moon Logo Styles
+        =========================================== */
+        .tilt-wrapper {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            transform-style: preserve-3d;
+            transition: transform 0.1s ease-out;
+            cursor: pointer;
+        }
+
+        .layer {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            object-fit: contain;
+            will-change: transform;
+            pointer-events: none;
+            border-radius: 8px;
+        }
+
+        .layer-3 { transform: translateZ(-20px) translate(0px, 0px); opacity: 0.9; }
+        .layer-2 { transform: translateZ(0px) translate(0px, 0px); opacity: 1; }
+        .layer-1 { transform: translateZ(30px) translate(0px, 0px); opacity: 1; }
+
+        #moon-logo-container {
+            filter: saturate(1.5) brightness(1.2);
+            transition: filter 0.3s ease;
+        }
+
+        #moon-logo-container:hover {
+            filter: saturate(1.8) brightness(1.5);
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="h-screen w-screen bg-black text-white font-sans flex flex-col relative overflow-hidden selection:bg-cyan-500/30">
+      
+        <div class="fixed inset-0 pointer-events-none z-0">
+            <img src="gfx-bg-disc-grid.jpg" alt="Fractal Grid" class="absolute top-[-15%] left-[-15%] w-[1200px] max-w-[150vw] rotate-180 opacity-70" onerror="this.style.display='none'"/>
+            <img src="gfx-bg-disc-grid.jpg" alt="Fractal Grid" class="absolute bottom-[-15%] right-[-15%] w-[1200px] max-w-[150vw] opacity-70" onerror="this.style.display='none'"/>
+        </div>
+
+        <div class="fixed inset-0 pointer-events-none z-0" style="background-image: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06)); background-size: 100% 4px, 3px 100%;"></div>
+        <div class="fixed inset-0 pointer-events-none z-[5] opacity-5" style="background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, #ffffff 2px, #ffffff 4px);"></div>
+        <div class="fixed top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-cyan-600/10 blur-[120px] rounded-full pointer-events-none z-0"></div>
+        
+        <div class="absolute bottom-8 left-8 z-50 text-[11px] text-gray-600 font-mono tracking-widest cursor-pointer transition-all duration-700 hover:text-gray-300 hover:drop-shadow-[0_0_12px_rgba(255,255,255,0.8)]">
+            ( 1 = √∞ / Ø )
+        </div>
+
+        <header class="absolute top-[12%] md:top-[16%] left-[-5%] md:left-[-13.5%] z-50 w-[95%] md:w-[70%] flex flex-col items-center transform -rotate-[20deg] origin-top">
+            <nav id="tier1-nav" class="flex flex-wrap justify-center w-full px-4 mb-2"></nav>
+            <div id="tier2-nav" class="flex flex-wrap justify-center w-full max-w-3xl px-4 transition-all duration-300 ease-in-out transform origin-top opacity-0 scale-y-0 h-0 overflow-hidden"></div>
+            <div id="tier3-nav" class="flex flex-wrap justify-center w-full max-w-2xl px-4 transition-all duration-300 ease-in-out transform origin-top opacity-0 scale-y-0 h-0 overflow-hidden"></div>
+        </header>
+
+        <main class="flex-grow relative z-10 flex flex-col items-center justify-center pointer-events-none" style="perspective: 1200px;">
+            
+            <div id="planet-scene" class="relative w-64 h-64 flex items-center justify-center z-10" style="transform-style: preserve-3d;">
+                
+                <div class="absolute w-64 h-64 rounded-full orb animate-pulse-orb" style="transform: translateZ(-2px);"></div>
+                <img src="gfx-sigil-planet.png" alt="SJP Sigil Planet" class="absolute w-[250px] h-[250px] rounded-full object-cover" style="transform: translateZ(0px);">
+                
+                <div id="atmosphere-system" class="absolute inset-0 w-full h-full pointer-events-none" style="transform-style: preserve-3d;">
+                    
+                    <div class="absolute inset-0" style="transform-style: preserve-3d; transform: rotateZ(15deg) rotateX(10deg);">
+                        <div class="absolute inset-0" style="transform-style: preserve-3d; animation: spinAtmosphere 20s linear infinite;">
+                            <div class="cyber-cloud" style="width: 180px; height: 60px; transform: translate(-50%, -50%) translateZ(135px);"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="absolute inset-0" style="transform-style: preserve-3d; transform: rotateZ(-25deg) rotateX(-15deg);">
+                        <div class="absolute inset-0" style="transform-style: preserve-3d; animation: spinAtmosphere 35s linear infinite reverse;">
+                            <div class="cyber-cloud" style="width: 140px; height: 140px; opacity: 0.8; transform: translate(-50%, -50%) translateZ(140px);"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="absolute inset-0" style="transform-style: preserve-3d; transform: rotateZ(45deg) rotateX(5deg);">
+                        <div class="absolute inset-0" style="transform-style: preserve-3d; animation: spinAtmosphere 28s linear infinite;">
+                            <div class="cyber-cloud" style="width: 200px; height: 50px; opacity: 0.9; transform: translate(-50%, -50%) translateZ(130px);"></div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div id="orbit-ring" class="absolute inset-0 w-full h-full" style="transform-style: preserve-3d;"></div>
+
+                <div id="moon-orbit-system" class="absolute top-1/2 left-1/2 pointer-events-auto" style="transform-style: preserve-3d;">
+                    <div id="moon-mover" class="absolute top-1/2 left-1/2 w-[107px] h-[107px] -translate-x-1/2 -translate-y-1/2" style="transform-style: preserve-3d;">
+                        <div id="moon-logo-container" class="relative w-full h-full" style="transform-style: preserve-3d;">
+                            <div class="tilt-wrapper w-full h-full absolute inset-0" style="transform-style: preserve-3d;">
+                                <img src="gfx-logo-sjp.png" class="layer layer-1" alt="SJP Base Logo">
+                                <img src="gfx-logo-glass.png" class="layer layer-2" alt="Glass Layer">
+                                <img src="gfx-logo-comets.png" class="layer layer-3" alt="Comets Layer">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+
+        <footer class="absolute bottom-[12%] md:bottom-[16%] right-[-5%] md:right-[-13.5%] z-50 w-[95%] md:w-[70%] flex flex-col items-center transform -rotate-[20deg] origin-bottom pb-0 pt-0">
+            <nav id="footer-nav" class="flex flex-wrap justify-center w-full px-4"></nav>
+        </footer>
+
+    </div>
+
+    <script>
+        // ==========================================
+        // --- MASTER DATA STRUCTURE ---
+        // Edit URLs and Images directly here to update the planetoids automatically.
+        // ==========================================
+        const MENU_DATA = {
+            tier1: [
+                { id: 'music', label: 'Music', tier2: [
+                    { id: 'music-originals', label: 'Originals', tier3: [
+                        { id: 'mo-iolimiters', label: 'IO Limiters', url: '#dummy', image: 'gfx-planet-music.jpg' }, 
+                        { id: 'mo-intothesouthwest', label: 'Into the Southwest', url: '#dummy', image: 'gfx-planet-music.jpg' },
+                        { id: 'mo-iovapoura', label: 'IO Vapoura', url: '#dummy', image: 'gfx-planet-music.jpg' }, 
+                        { id: 'mo-others', label: 'Others', url: '#dummy', image: 'gfx-planet-music.jpg' },
+                    ]},
+                    { id: 'music-djsets', label: 'DJ Sets', tier3: [
+                        { id: 'md-bloodofthemoon', label: 'Blood of the Moon', url: '#dummy', image: 'gfx-planet-music.jpg' }, 
+                        { id: 'md-dreamstep', label: 'Dreamstep', url: '#dummy', image: 'gfx-planet-music.jpg' },
+                        { id: 'md-thehf', label: 'The HF', url: '#dummy', image: 'gfx-planet-music.jpg' }, 
+                        { id: 'md-others', label: 'Others', url: '#dummy', image: 'gfx-planet-music.jpg' },
+                    ]},
+                    { id: 'music-remixes', label: 'Remixes', tier3: [
+                        { id: 'mr-th3gr1d', label: 'TH3 GR1D', url: '#dummy', image: 'gfx-planet-music.jpg' }, 
+                        { id: 'mr-adrowning', label: 'A Drowning', url: '#dummy', image: 'gfx-planet-music.jpg' },
+                        { id: 'mr-driveitlike', label: 'Drive It Like You Stole It', url: '#dummy', image: 'gfx-planet-music.jpg' }, 
+                        { id: 'mr-others', label: 'Others', url: '#dummy', image: 'gfx-planet-music.jpg' },
+                    ]},
+                    { id: 'music-mashups', label: 'Mashups', tier3: [
+                        { id: 'mm-teardrop', label: 'Teardrop on Roads', url: '#dummy', image: 'gfx-planet-music.jpg' }, 
+                        { id: 'mm-allthewarmth', label: 'All the Warmth', url: '#dummy', image: 'gfx-planet-music.jpg' },
+                        { id: 'mm-cyborgheart', label: 'Cyborg Heart', url: '#dummy', image: 'gfx-planet-music.jpg' }, 
+                        { id: 'mm-others', label: 'Others', url: '#dummy', image: 'gfx-planet-music.jpg' },
+                    ]},
+                    { id: 'music-live', label: 'Live' },
+                ]},
+                { id: 'fractals', label: 'Fractals', tier2: [
+                    { id: 'fractals-popart', label: 'Pop Art', tier3: [
+                        { id: 'fp-1000swords', label: '1000 Swords', url: '#dummy', image: 'gfx-planet-fractals.jpg' }, 
+                        { id: 'fp-mayangels', label: 'May Angels Take You', url: '#dummy', image: 'gfx-planet-fractals.jpg' },
+                        { id: 'fp-queenofnile', label: 'Queen of the Nile', url: '#dummy', image: 'gfx-planet-fractals.jpg' }, 
+                        { id: 'fp-others', label: 'Others', url: '#dummy', image: 'gfx-planet-fractals.jpg' },
+                    ]},
+                    { id: 'fractals-fractalscapes', label: 'Fractalscapes', tier3: [
+                        { id: 'ff-celestial', label: 'Celestial Return', url: '#dummy', image: 'gfx-planet-fractals.jpg' }, 
+                        { id: 'ff-1000colors', label: '1000 Colors', url: '#dummy', image: 'gfx-planet-fractals.jpg' },
+                        { id: 'ff-destination', label: 'Destination Everywhere', url: '#dummy', image: 'gfx-planet-fractals.jpg' }, 
+                        { id: 'ff-others', label: 'Others', url: '#dummy', image: 'gfx-planet-fractals.jpg' },
+                    ]},
+                    { id: 'fractals-flora', label: 'Flowers', tier3: [
+                        { id: 'fl-bloom', label: 'Bloom of Fire', url: '#dummy', image: 'gfx-planet-fractals.jpg' }, 
+                        { id: 'fl-spring', label: 'Spring Pines', url: '#dummy', image: 'gfx-planet-fractals.jpg' },
+                        { id: 'fl-bohemia', label: 'Bohemia', url: '#dummy', image: 'gfx-planet-fractals.jpg' }, 
+                        { id: 'fl-cacti', label: 'Cacti Nova', url: '#dummy', image: 'gfx-planet-fractals.jpg' }, 
+                        { id: 'fl-others', label: 'Others', url: '#dummy', image: 'gfx-planet-fractals.jpg' },
+                    ]},
+                    { id: 'fractals-mandelbrots', label: 'Mandelbrots', tier3: [
+                        { id: 'fm-heart', label: 'Heart of the Rose', url: '#dummy', image: 'gfx-planet-fractals.jpg' }, 
+                        { id: 'fm-scorpio', label: 'Scorpio', url: '#dummy', image: 'gfx-planet-fractals.jpg' },
+                        { id: 'fm-mother', label: 'Mother of Pearl', url: '#dummy', image: 'gfx-planet-fractals.jpg' }, 
+                        { id: 'fm-saltlife', label: 'Saltlife', url: '#dummy', image: 'gfx-planet-fractals.jpg' }, 
+                        { id: 'fm-others', label: 'Others', url: '#dummy', image: 'gfx-planet-fractals.jpg' },
+                    ]},
+                    { id: 'fractals-gifs', label: 'GIFs' },
+                ]},
+                { id: 'writings', label: 'Writings', tier2: [
+                    { id: 'writings-fiction', label: 'Fiction', tier3: [
+                        { id: 'wf-everything', label: "Everything's OK", url: '#dummy', image: 'gfx-planet-writings.jpg' }, 
+                        { id: 'wf-memoriam', label: 'Memoriam Redacta', url: '#dummy', image: 'gfx-planet-writings.jpg' }, 
+                        { id: 'wf-bottle66', label: 'Bottle 66', url: '#dummy', image: 'gfx-planet-writings.jpg' },
+                    ]},
+                    { id: 'writings-nonfiction', label: 'Non-Fiction', tier3: [
+                        { id: 'wn-landlore', label: 'Landlore', url: '#dummy', image: 'gfx-planet-writings.jpg' }, 
+                        { id: 'wn-spectral', label: 'Spectral Iteration', url: '#dummy', image: 'gfx-planet-writings.jpg' }, 
+                        { id: 'wn-ateotw', label: 'AtEotW', url: '#dummy', image: 'gfx-planet-writings.jpg' },
+                    ]},
+                    { id: 'writings-bookcovers', label: 'Book Covers', tier3: [
+                        { id: 'wb-rem', label: 'R.E.M.', url: '#dummy', image: 'gfx-planet-writings.jpg' }, 
+                        { id: 'wb-rainbows', label: 'Rainbows', url: '#dummy', image: 'gfx-planet-writings.jpg' },
+                        { id: 'wb-days', label: 'Days & Times', url: '#dummy', image: 'gfx-planet-writings.jpg' }, 
+                        { id: 'wb-others', label: 'Others', url: '#dummy', image: 'gfx-planet-writings.jpg' },
+                    ]},
+                    { id: 'writings-wips', label: 'WIPs' },
+                    { id: 'writings-others', label: 'Others' },
+                ]},
+                { id: 'other', label: 'Other' },
+            ],
+        };
+
+        const FOOTER_MENU = [
+            { id: 'foot-about', label: 'About' },
+            { id: 'foot-contact', label: 'Contact' },
+            { id: 'foot-press', label: 'Press' },
+            { id: 'foot-booking', label: 'Booking' },
+            { id: 'foot-links', label: 'Links' },
+            { id: 'foot-copyright', label: `© SJP ${new Date().getFullYear()}` },
+        ];
+
+        let state = { tier1: null, tier2: null, tier3: null };
+        let planetoids = []; 
+
+        function createMenuItem(label, isActive, level, onClick) {
+            const btn = document.createElement('button');
+            
+            let className = 'relative overflow-hidden transition-all duration-300 ease-out backdrop-blur-md border border-white/10 font-mono uppercase tracking-widest group ';
+            
+            if (isActive) {
+                className += 'bg-cyan-400/30 text-white border-cyan-200/80 shadow-[0_0_10px_rgba(0,255,255,.9),0_0_30px_rgba(0,255,255,.6),0_0_60px_rgba(0,255,255,.35)] ';
+            } else {
+                className += 'bg-gray-800/40 text-gray-400 hover:text-white ';
+            }
+
+            if (level === 1) {
+                className += 'rounded-tl-lg rounded-br-lg text-sm px-6 py-2 m-1 ';
+            } else if (level === 'footer') {
+                className += 'rounded-sm text-[9px] px-3 py-1.5 m-1 '; 
+            } else {
+                className += 'rounded-sm m-1 ';
+            }
+            
+            if (level === 2) className += 'text-xs px-5 py-1.5 scale-95 ';
+            if (level === 3) className += 'text-[10px] px-4 py-1 scale-90 border-dashed border-white/20 ';
+
+            btn.className = className;
+
+            btn.innerHTML = `
+                <div class="absolute inset-0 bg-gradient-to-b from-white/10 to-transparent opacity-50 pointer-events-none transition-opacity duration-300 ${isActive ? 'opacity-100' : 'group-hover:opacity-100'}"></div>
+				<div class="menu-speckle"></div>
+                <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none overflow-hidden">
+                    <div class="absolute top-0 left-[-100%] w-1/2 h-full bg-[linear-gradient(to_right,transparent_0%,transparent_20%,rgba(255,255,255,0.1)_20%,rgba(255,255,255,0.1)_40%,rgba(255,255,255,0.5)_40%,rgba(255,255,255,0.5)_60%,rgba(255,255,255,0.1)_60%,rgba(255,255,255,0.1)_80%,transparent_80%,transparent_100%)] skew-x-[-45deg] group-hover:animate-[shine_0.75s_ease-out]"></div>
+                </div>
+                <div class="absolute inset-0 transition-opacity duration-300 pointer-events-none ${isActive ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}">
+                    <div class="absolute -inset-2 bg-cyan-300/20 blur-xl"></div>
+                    <div class="absolute inset-0 bg-gradient-to-b from-cyan-100/15 via-cyan-300/10 to-cyan-500/20"></div>
+                </div>
+				<div class="menu-edge"></div>
+                <span class="relative z-10 drop-shadow-[0_0_4px_rgba(255,255,255,.8)]">${label}</span>
+            `;
+
+            btn.addEventListener('click', onClick);
+            return btn;
+        }
+
+        function updatePlanetoidScales() {
+            planetoids.forEach(p => {
+                let scale = 1.0;
+
+                if (state.tier1) {
+                    if (p.data.t1 === state.tier1) {
+                        scale += 0.80; 
+                        if (state.tier2) {
+                            if (p.data.t2 === state.tier2) {
+                                scale += 0.90; 
+                            } else {
+                                scale -= 0.90; 
+                            }
+                        }
+                    } else {
+                        scale -= 0.80; 
+                        if (state.tier2) scale -= 0.90;
+                    }
+                }
+                
+                scale = Math.max(0.1, scale);
+                p.wrapper.style.transform = `scale(${scale})`;
+            });
+        }
+
+        function renderNav() {
+            const t1Container = document.getElementById('tier1-nav');
+            const t2Container = document.getElementById('tier2-nav');
+            const t3Container = document.getElementById('tier3-nav');
+
+            t1Container.innerHTML = '';
+            MENU_DATA.tier1.forEach(item => {
+                t1Container.appendChild(createMenuItem(item.label, state.tier1 === item.id, 1, () => {
+                    if (state.tier1 === item.id) {
+                        state.tier1 = null; state.tier2 = null; state.tier3 = null;
+                    } else {
+                        state.tier1 = item.id; state.tier2 = null; state.tier3 = null;
+                    }
+                    renderNav();
+                }));
+            });
+
+            t2Container.innerHTML = '';
+            const activeT1Data = MENU_DATA.tier1.find(i => i.id === state.tier1);
+            
+            if (activeT1Data && activeT1Data.tier2) {
+                t2Container.classList.remove('opacity-0', 'scale-y-0', 'h-0', 'overflow-hidden');
+                t2Container.classList.add('opacity-100', 'scale-y-100', 'h-auto', 'mb-2');
+                
+                activeT1Data.tier2.forEach(item => {
+                    t2Container.appendChild(createMenuItem(item.label, state.tier2 === item.id, 2, () => {
+                        if (state.tier2 === item.id) {
+                            state.tier2 = null; state.tier3 = null;
+                        } else {
+                            state.tier2 = item.id; state.tier3 = null;
+                        }
+                        renderNav();
+                    }));
+                });
+            } else {
+                t2Container.classList.add('opacity-0', 'scale-y-0', 'h-0', 'overflow-hidden');
+                t2Container.classList.remove('opacity-100', 'scale-y-100', 'h-auto', 'mb-2');
+            }
+
+            t3Container.innerHTML = '';
+            const activeT2Data = activeT1Data?.tier2?.find(i => i.id === state.tier2);
+
+            if (activeT2Data && activeT2Data.tier3) {
+                t3Container.classList.remove('opacity-0', 'scale-y-0', 'h-0', 'overflow-hidden');
+                t3Container.classList.add('opacity-100', 'scale-y-100', 'h-auto');
+
+                activeT2Data.tier3.forEach(item => {
+                    t3Container.appendChild(createMenuItem(item.label, state.tier3 === item.id, 3, () => {
+                        state.tier3 = state.tier3 === item.id ? null : item.id;
+                        renderNav();
+                    }));
+                });
+            } else {
+                t3Container.classList.add('opacity-0', 'scale-y-0', 'h-0', 'overflow-hidden');
+                t3Container.classList.remove('opacity-100', 'scale-y-100', 'h-auto');
+            }
+
+            updatePlanetoidScales();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderNav();
+
+            const footerContainer = document.getElementById('footer-nav');
+            FOOTER_MENU.forEach(item => {
+                footerContainer.appendChild(createMenuItem(item.label, false, 'footer', () => {}));
+            });
+            
+            const flatTier3Items = [];
+            MENU_DATA.tier1.forEach(t1 => {
+                if (t1.tier2) {
+                    t1.tier2.forEach(t2 => {
+                        if (t2.tier3) {
+                            t2.tier3.forEach(t3 => {
+                                flatTier3Items.push({
+                                    t1: t1.id,
+                                    t2: t2.id,
+                                    t3: t3.id,
+                                    label: t3.label,
+                                    url: t3.url,
+                                    image: t3.image
+                                });
+                            });
+                        }
+                    });
+                }
+            });
+
+            for (let i = flatTier3Items.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [flatTier3Items[i], flatTier3Items[j]] = [flatTier3Items[j], flatTier3Items[i]];
+            }
+
+            const orbitRing = document.getElementById('orbit-ring');
+            if (orbitRing) {
+                const totalSquares = flatTier3Items.length;
+                const orbitRadius = 480; 
+                
+                flatTier3Items.forEach((itemData, index) => {
+                    const anchor = document.createElement('div');
+                    anchor.style.position = 'absolute';
+                    anchor.style.top = '50%';
+                    anchor.style.left = '50%';
+                    anchor.style.transformStyle = 'preserve-3d';
+                    
+                    const angle = (360 / totalSquares) * index;
+                    anchor.style.transform = `rotateZ(${angle}deg) translateX(${orbitRadius}px)`;
+                    
+                    const scaleWrapper = document.createElement('a');
+                    scaleWrapper.href = itemData.url || '#dummy'; 
+                    scaleWrapper.className = 'scale-wrapper block pointer-events-auto';
+
+                    const square = document.createElement('div');
+                    square.className = 'orbit-square overflow-hidden';
+                    
+                    const img = document.createElement('img');
+                    img.src = itemData.image || 'gfx-placeholder.jpg';
+                    img.alt = itemData.label;
+                    img.className = 'w-full h-full object-cover mix-blend-screen';
+                    
+                    const duration = 4 + Math.random() * 8;
+                    const direction = Math.random() > 0.5 ? 'normal' : 'reverse';
+                    const tumbleType = Math.floor(Math.random() * 3) + 1; 
+                    
+                    square.style.animation = `tumble${tumbleType} ${duration}s linear infinite ${direction}`;
+                    square.style.animationDelay = `-${Math.random() * 10}s`;
+                    
+                    square.appendChild(img);
+                    scaleWrapper.appendChild(square);
+                    anchor.appendChild(scaleWrapper);
+                    orbitRing.appendChild(anchor);
+
+                    planetoids.push({
+                        wrapper: scaleWrapper,
+                        data: itemData
+                    });
+                });
+            }
+
+            // ==========================================
+            // --- JAVASCRIPT PHYSICS ORBIT ENGINE ---
+            // ==========================================
+            
+            const moonOrbitSystem = document.getElementById('moon-orbit-system');
+            let lastTime = performance.now();
+            let accumulatedTime = 0;
+            let playbackRate = 1.0; 
+            const orbitDuration = 25000; 
+            
+            function animateMoon(time) {
+                let dt = time - lastTime;
+                lastTime = time;
+                if (dt > 100) dt = 16; 
+                
+                accumulatedTime += dt * playbackRate;
+                let angle = (accumulatedTime / orbitDuration) * Math.PI * 2;
+                
+                let x = 240 * Math.cos(angle);
+                let y = 240 * Math.sin(angle);
+                let z = 0;
+                
+                const rad70 = 70 * Math.PI / 180;
+                const c70 = Math.cos(rad70), s70 = Math.sin(rad70);
+                let x2 = x * c70 + z * s70;
+                let y2 = y;
+                let z2 = -x * s70 + z * c70;
+                
+                const radM30 = -30 * Math.PI / 180;
+                const cM30 = Math.cos(radM30), sM30 = Math.sin(radM30);
+                let x3 = x2 * cM30 - y2 * sM30;
+                let y3 = x2 * sM30 + y2 * cM30;
+                let z3 = z2;
+                
+                // Pure Z-translation inside the shared preserve-3d container natively depth-sorts with the rings!
+                moonOrbitSystem.style.transform = `translate3d(${x3}px, ${y3}px, ${z3}px)`;
+                
+                requestAnimationFrame(animateMoon);
+            }
+            requestAnimationFrame(animateMoon);
+
+            // ==========================================
+            // --- SJP LOGO: PARALLAX & HOVER LOGIC ---
+            // ==========================================
+
+            const moonLogoContainer = document.getElementById('moon-logo-container');
+            const tiltWrapper = document.querySelector('.tilt-wrapper');
+            const layer1 = document.querySelector('.layer-1'); 
+            const layer2 = document.querySelector('.layer-2'); 
+            const layer3 = document.querySelector('.layer-3'); 
+            let resetTimeout;
+
+            function setTransitions(speed) {
+                tiltWrapper.style.transition = `transform ${speed}`;
+                layer1.style.transition = `transform ${speed}, opacity ${speed}`;
+                layer2.style.transition = `transform ${speed}, opacity ${speed}`;
+                layer3.style.transition = `transform ${speed}, opacity ${speed}`;
+            }
+
+            moonLogoContainer.addEventListener('mouseenter', () => {
+                playbackRate = 0.15;
+            });
+
+            moonLogoContainer.addEventListener('mousemove', (e) => {
+                clearTimeout(resetTimeout);
+                setTransitions('0.1s ease-out');
+
+                const rect = moonLogoContainer.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                const xOffset = (x - centerX) / centerX;
+                const yOffset = (y - centerY) / centerY;
+                
+                const rotateX = yOffset * -45;
+                const rotateY = xOffset * 45;
+                tiltWrapper.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+                
+                layer1.style.transform = `scale(1.1) translate(${xOffset * -20}px, ${yOffset * -20}px)`;
+                layer2.style.transform = `scale(1) translate(${xOffset * -2}px, ${yOffset * -2}px)`;
+                layer3.style.transform = `scale(0.9) translate(${xOffset * 20}px, ${yOffset * 20}px)`;
+            });
+
+            moonLogoContainer.addEventListener('mouseleave', () => {
+                playbackRate = 1.0;
+
+                setTransitions('0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)');
+                tiltWrapper.style.transform = `rotateX(0deg) rotateY(0deg)`;
+                
+                layer1.style.transform = `scale(1) translate(0px, 0px)`;
+                layer2.style.transform = `scale(1) translate(0px, 0px)`;
+                layer3.style.transform = `scale(1) translate(0px, 0px)`;
+                
+                resetTimeout = setTimeout(() => {
+                    setTransitions('0.1s ease-out');
+                }, 600);
+            });
+        });
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Cyberpunk SJP Logo</title>
+    <style>
+        :root {
+            --neon-cyan: #00ffff;
+            --bg-color: #03060a;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(circle at 50% 50%, #0a192f 0%, #000000 70%),
+                linear-gradient(0deg, transparent 24%, rgba(0, 255, 255, 0.03) 25%, rgba(0, 255, 255, 0.03) 26%, transparent 27%, transparent 74%, rgba(0, 255, 255, 0.03) 75%, rgba(0, 255, 255, 0.03) 76%, transparent 77%, transparent),
+                linear-gradient(90deg, transparent 24%, rgba(0, 255, 255, 0.03) 25%, rgba(0, 255, 255, 0.03) 26%, transparent 27%, transparent 74%, rgba(0, 255, 255, 0.03) 75%, rgba(0, 255, 255, 0.03) 76%, transparent 77%, transparent);
+            background-size: 100% 100%, 50px 50px, 50px 50px;
+            min-height: 100vh;
+            position: relative;
+            overflow: hidden;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        /* * SCENE CONTAINER: Plunkin' it right in the center of the Sacred Timeline! */
+        .scene-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90vw;
+            max-width: 470px;
+            z-index: 10;
+            /* FIX: Prunin' that ugly black box so the timeline stays pure! */
+            mix-blend-mode: screen; 
+        }
+
+        /* * SCENE: Keepin' the aspect ratio tight, even if the variants start actin' up! */
+        .scene {
+            width: 100%;
+            /* 370 height / 470 width = 0.78723 */
+            padding-bottom: 78.723%; 
+            position: relative;
+            /* Pushing that 3D depth so hard it might cause a Nexus event! */
+            perspective: 700px; 
+        }
+
+        /* * IDLE WRAPPER: Just floatin' through the Void at the End of Time! */
+        .idle-wrapper {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        /* * TILT WRAPPER: Let's see what happens when you poke the timeline, hmm? */
+        /* Spin it round and round, time is a flat circle anyway! */
+        .tilt-wrapper {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            transition: transform 0.1s ease-out;
+            cursor: pointer; /* STANDARD LINK CURSOR (Just a lil' finger pointin' the way to your doom!) */
+        }
+
+        /* * LAYER BASE: Wranglin' all these little variants together! */
+        .layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            /* Meltin' the black away like a good ol' reset charge! */
+            mix-blend-mode: screen; 
+            will-change: transform;
+            pointer-events: none; /* No touchin', that's TVA business! */
+            border-radius: 8px; /* Smoothin' it out, TVA style! */
+        }
+
+        /* Base depth - when everyone's behavin' themselves */
+        /* Shovin' 'em back and forth through the temporal Z-axis! */
+        .layer-3 { transform: translateZ(-20px) translate(0px, 0px); opacity: 0.8; } /* Comets - Way back in the past! */
+        .layer-2 { transform: translateZ(0px) translate(0px, 0px); opacity: 0.95; } /* Glass - Right here in the present! */
+        .layer-1 { transform: translateZ(30px) translate(0px, 0px); opacity: 1; } /* SJP - In your face, right in the future! */
+
+        /* * SJP GLOW ON HOVER (Warning: High Temporal Energy!) */
+        /* Blinding you with the bright light of the Time-Keepers! */
+        .scene-container:hover .layer-1 {
+            filter: brightness(1.6) contrast(1.2);
+        }
+
+        /* Add an ambient glow (mostly just temporal radiation leaking out) */
+        .ambient-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60vw;
+            max-width: 400px;
+            aspect-ratio: 1;
+            background: var(--neon-cyan);
+            filter: blur(100px);
+            opacity: 0.15;
+            border-radius: 50%;
+            z-index: 0;
+            pointer-events: none;
+            animation: glowPulse 6s ease-in-out infinite;
+        }
+        
+        .scene-container:hover ~ .ambient-glow {
+            animation-play-state: paused;
+            background: var(--neon-cyan);
+            opacity: 0.4;
+            filter: blur(120px);
+        }
+
+        /* * KEYFRAMES: Wibbly-wobbly, timey-wimey floatin'! */
+        @keyframes float {
+            0% { 
+                transform: translateY(0px) rotateX(4deg) rotateY(-4deg); 
+                filter: brightness(1) contrast(1);
+            }
+            50% { 
+                transform: translateY(-15px) rotateX(-4deg) rotateY(4deg); 
+                /* Just a little temporal flare to keep you on your toes! */
+                filter: brightness(1.35) contrast(1.15);
+            }
+            100% { 
+                transform: translateY(0px) rotateX(4deg) rotateY(-4deg); 
+                filter: brightness(1) contrast(1);
+            }
+        }
+
+        /* * KEYFRAMES: The Temporal Loom is overloading! */
+        @keyframes glowPulse {
+            0% { background: var(--neon-cyan); opacity: 0.15; filter: blur(100px); }
+            50% { background: #ffffff; opacity: 0.25; filter: blur(120px); }
+            100% { background: var(--neon-cyan); opacity: 0.15; filter: blur(100px); }
+        }
+
+        /* Decorative cyber UI elements (Standard TVA TemPad interface) */
+        .cyber-borders {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            border: 1px solid rgba(0, 255, 255, 0.1);
+        }
+        
+        .scanline {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                to bottom,
+                rgba(255,255,255,0),
+                rgba(255,255,255,0) 50%,
+                rgba(0, 255, 255, 0.05) 50%,
+                rgba(0, 255, 255, 0.05)
+            );
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        /* UI Warning for when the timeline splinters! */
+        #preview-warning {
+            display: none;
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(3, 6, 10, 0.9);
+            border: 1px solid var(--neon-cyan);
+            color: var(--neon-cyan);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            z-index: 200;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+            width: 90%;
+            max-width: 600px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="cyber-borders"></div>
+    <div class="scanline"></div>
+
+    <!-- Error message if images fail to load in preview -->
+    <div id="preview-warning">
+        <h3>⚠️ Preview Limitation</h3>
+        <p style="margin-top: 10px; line-height: 1.5; color: #fff;">
+            The images are showing as broken icons because the online preview environment cannot directly load your local files.<br><br>
+            Please <b>download this HTML file</b> and save it in the same folder as your three `.jpg` images, then open it in your browser!
+        </p>
+    </div>
+
+    <!-- Absolute centered container fixes layout shift issues -->
+    <div class="scene-container">
+        <div class="scene">
+            <div class="idle-wrapper">
+                <div class="tilt-wrapper">
+                    
+                    <!-- LAYER 1: BASE (SJP) -->
+                    <img src="gfx-logo-sjp.jpg" class="layer layer-1" alt="SJP Base Logo" onerror="showError()">
+                    
+                    <!-- LAYER 2: MIDDLE (Glass) -->
+                    <img src="gfx-logo-glass.jpg" class="layer layer-2" alt="Glass Effect Layer" onerror="showError()">
+                    
+                    <!-- LAYER 3: TOP (Comets) -->
+                    <img src="gfx-logo-comets.jpg" class="layer layer-3" alt="Comets Effect Layer" onerror="showError()">
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="ambient-glow"></div>
+
+    <script>
+        // --- 3D TEMPORAL INTERACTIVE LOGIC, Y'ALL! ---
+        // Roundin' up the HTML variants before they branch!
+        const sceneContainer = document.querySelector('.scene-container');
+        const scene = document.querySelector('.scene');
+        const tiltWrapper = document.querySelector('.tilt-wrapper');
+        const layer1 = document.querySelector('.layer-1'); // SJP
+        const layer2 = document.querySelector('.layer-2'); // Glass
+        const layer3 = document.querySelector('.layer-3'); // Comets
+        let resetTimeout;
+
+        // Pop up a warnin' if the preview sandbox is bein' a party pooper!
+        function showError() {
+            document.getElementById('preview-warning').style.display = 'block';
+        }
+
+        // Tweakin' the temporal transition speeds so you don't get spaghettified!
+        // Keeps things snappy when you poke it, but sets 'em right back on the Sacred Timeline when you let go.
+        function setTransitions(speed) {
+            tiltWrapper.style.transition = `transform ${speed}`;
+            // Sneakin' a filter in there so that glow doesn't blind the Time-Keepers all at once!
+            layer1.style.transition = `transform ${speed}, opacity ${speed}, filter ${speed}`;
+            layer2.style.transition = `transform ${speed}, opacity ${speed}`;
+            layer3.style.transition = `transform ${speed}, opacity ${speed}`;
+        }
+
+        // Oh look! A cursor! Let's track its coordinates across the multiverse!
+        sceneContainer.addEventListener('mousemove', (e) => {
+            clearTimeout(resetTimeout);
+            setTransitions('0.1s ease-out'); // Fast transition, quick like a pruning stick!
+
+            const rect = sceneContainer.getBoundingClientRect();
+            
+            // Figurin' out exactly where your little pointer is...
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            // Findin' the center of the universe...
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            
+            // Math! Glorious, chaotic math! (-1.0 to 1.0)
+            const xOffset = (x - centerX) / centerX;
+            const yOffset = (y - centerY) / centerY;
+            
+            // TILT LOGIC: Crankin' that parallax up to 45 for maximum temporal distortion!
+            // Flippin' it backward so it stares right into your soul!
+            const rotateX = yOffset * -45;
+            const rotateY = xOffset * 45;
+            
+            tiltWrapper.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+            
+            // LAYER SEPARATION LOGIC: Ripping the timeline apart layer by layer!
+            // Shovin' 'em hither and yon to trick your eyeballs, 
+            // 'cause browsers try to flatten time, but we won't let 'em!
+            
+            // SJP (Front) jumpin' out to say howdy!
+            layer1.style.transform = `translateZ(160px) scale(1.1) translate(${xOffset * -60}px, ${yOffset * -60}px)`;
+            // Glass (Middle) just holdin' on for dear life.
+            layer2.style.transform = `translateZ(0px) scale(1) translate(${xOffset * -5}px, ${yOffset * -5}px)`;
+            // Comets (Back) fallin' right into the Void!
+            layer3.style.transform = `translateZ(-150px) scale(0.9) translate(${xOffset * 60}px, ${yOffset * 60}px)`;
+            
+            // Messin' with opacities just for the fun of it
+            layer1.style.opacity = '1';
+            layer2.style.opacity = '0.95';
+            layer3.style.opacity = '0.4';
+        });
+
+        // Mouse Leave - Oops, puttin' everything back before He Who Remains notices!
+        sceneContainer.addEventListener('mouseleave', () => {
+            // Long, slow cubic-bezier to sweep the mess under the rug.
+            setTransitions('0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)');
+            tiltWrapper.style.transform = `rotateX(0deg) rotateY(0deg)`;
+            
+            // Back to the Sacred Timeline coordinates!
+            layer1.style.transform = `translateZ(30px) scale(1) translate(0px, 0px)`;
+            layer2.style.transform = `translateZ(0px) scale(1) translate(0px, 0px)`;
+            layer3.style.transform = `translateZ(-20px) scale(1) translate(0px, 0px)`;
+            
+            layer1.style.opacity = '1';
+            layer2.style.opacity = '0.95';
+            layer3.style.opacity = '0.8';
+            
+            // And queuein' up a reset before the next variant comes along!
+            resetTimeout = setTimeout(() => {
+                setTransitions('0.1s ease-out');
+            }, 600);
+        });
+    </script>
+</body>
+</html>
+<style>
+.scene-container.force-hover .layer-1 { filter: brightness(3.5) saturate(0.5) drop-shadow(0 0 20px rgba(200, 255, 255, 1)) drop-shadow(0 0 40px rgba(0, 255, 255, 0.8)) contrast(1.2) !important; }
+.scene-container.force-hover .layer-2 { filter: brightness(1.4) !important; }
+.scene-container.force-hover .layer-3 { filter: brightness(1.2) !important; }
+</style>
+<script>
+window.addEventListener('load', async () => {
+    const target = document.querySelector('.scene-container');
+    if (!target) return;
+    const rect = target.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    target.classList.add('force-hover');
+    
+    function wait(ms) { return new Promise(r => setTimeout(r, ms)); }
+    const steps = 60;
+    const radius = 48;
+    for (let i = 0; i <= steps; i++) {
+        const angle = (i / steps) * Math.PI * 2;
+        const x = centerX + Math.cos(angle) * radius;
+        const y = centerY + Math.sin(angle) * radius;
+        target.dispatchEvent(new MouseEvent('mousemove', { bubbles: true, clientX: x, clientY: y }));
+        await wait(25);
+    }
+    target.dispatchEvent(new MouseEvent('mousemove', { bubbles: true, clientX: centerX, clientY: centerY }));
+    target.classList.remove('force-hover');
+    await wait(300);
+    target.dispatchEvent(new MouseEvent('mouseleave', { bubbles: true }));
+});
+</script>

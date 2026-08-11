@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SJP Cyberpunk Interface</title>
+    
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Custom Tailwind Configuration for Animations and Glows -->
+    <script>
+        // Tailwind configuration to extend default theme with custom animations
+        tailwind.config = {
+            theme: {
+                extend: {
+                    animation: {
+                        // The sweeping shine animation for the hover effect on menu items
+                        'shine': 'shine 0.75s ease-out',
+                        // The slow pulsing animation for the central cyan sphere
+                        'pulse-orb': 'pulse-orb 4s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        // Defines the glossy light reflection sweeping from left to right across buttons
+                        shine: {
+                            '0%': { left: '-100%', opacity: '0' },
+                            '10%': { opacity: '1' },
+                            '80%': { left: '200%', opacity: '1' },
+                            '100%': { left: '200%', opacity: '0' },
+                        },
+                        // Defines the glowing pulse effect, scaling the inset/outset box-shadows to simulate a breathing light source
+                        'pulse-orb': {
+                            '0%, 100%': { 
+                                boxShadow: '0 0 50px #00ffff, inset 0 0 50px #00ffff, inset 10px 0 40px rgba(255,255,255,0.8)' 
+                            },
+                            '50%': { 
+                                boxShadow: '0 0 100px #00ffff, inset 0 0 80px #00ffff, inset 10px 0 40px rgba(255,255,255,0.8)' 
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Base body styles: 
+           - Set background to absolute black (#000000) for the empty outer space areas.
+           - overflow: hidden prevents scrolling, turning the viewport into a fixed 3D canvas. */
+        body { margin: 0; background-color: #000000; overflow: hidden; }
+        
+        /* 3D styling for the central sphere, using a radial gradient to simulate directional light hitting a curved cyan surface */
+        .orb {
+            background: radial-gradient(circle at 30% 30%, #e0ffff, #00ffff 30%, #008b8b 70%, #000000 100%);
+        }
+
+        /* --- 3D SJP LOGO STYLES --- */
+        #logo-wrapper {
+            position: absolute;
+            bottom: 3%; /* Anchored to bottom-left */
+            left: 3%;
+            width: 6.6vw; /* Reduced by 33% (was 10vw) */
+            min-width: 60px; /* Reduced by 33% (was 90px) */
+            max-width: 107px; /* Reduced by 33% (was 160px) */
+            z-index: 100;
+            mix-blend-mode: screen; /* FIXED: Applied here to overcome z-index stacking context isolation */
+        }
+
+        /* Scene Container: Relative to the wrapper now, fills 100% of it */
+        .scene-container {
+            width: 100%;
+            position: relative;
+            mix-blend-mode: screen; 
+        }
+
+        /* Scene: Keeps the precise aspect ratio (370h / 470w) so height auto-adjusts based on width */
+        .scene {
+            width: 100%;
+            padding-bottom: 78.723%; 
+            position: relative;
+            perspective: 700px; /* 3D depth */
+        }
+
+        /* Idle Wrapper: The continuous floating animation */
+        .idle-wrapper {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            transform-style: preserve-3d;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        /* Tilt Wrapper: Handled by JavaScript for the mouse follow effect */
+        .tilt-wrapper {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            transform-style: preserve-3d;
+            transition: transform 0.1s ease-out;
+            cursor: pointer;
+        }
+
+        /* Layers: The individual images */
+        .layer {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            object-fit: contain;
+            mix-blend-mode: screen; 
+            will-change: transform;
+            pointer-events: none;
+            border-radius: 8px;
+        }
+
+        /* Base depth positions for layers */
+        .layer-3 { transform: translateZ(-20px) translate(0px, 0px); opacity: 0.8; }
+        .layer-2 { transform: translateZ(0px) translate(0px, 0px); opacity: 0.95; }
+        .layer-1 { transform: translateZ(30px) translate(0px, 0px); opacity: 1; }
+
+        /* Hover effects for the logo */
+        .scene-container:hover .layer-1 {
+            filter: brightness(1.6) contrast(1.2);
+        }
+
+        /* Ambient background glow for the logo */
+        .ambient-glow {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 150%;
+            aspect-ratio: 1;
+            background: #00ffff; /* Matches the neon cyan */
+            filter: blur(40px); /* Scaled down blur for smaller size */
+            opacity: 0.15;
+            border-radius: 50%;
+            z-index: 0;
+            pointer-events: none;
+            animation: glowPulse 6s ease-in-out infinite;
+        }
+        
+        .scene-container:hover ~ .ambient-glow {
+            animation-play-state: paused;
+            background: #00ffff;
+            opacity: 0.4;
+            filter: blur(50px);
+        }
+
+        /* 3D Float Animation */
+        @keyframes float {
+            0% { transform: translateY(0px) rotateX(4deg) rotateY(-4deg); filter: brightness(1) contrast(1); }
+            50% { transform: translateY(-10px) rotateX(-4deg) rotateY(4deg); filter: brightness(1.35) contrast(1.15); }
+            100% { transform: translateY(0px) rotateX(4deg) rotateY(-4deg); filter: brightness(1) contrast(1); }
+        }
+
+        /* Ambient Glow Pulse Animation */
+        @keyframes glowPulse {
+            0% { background: #00ffff; opacity: 0.15; filter: blur(40px); }
+            50% { background: #ffffff; opacity: 0.25; filter: blur(50px); }
+            100% { background: #00ffff; opacity: 0.15; filter: blur(40px); }
+        }
+		
+		/* ===========================================
+		   Frosted Glass Speckle Layer
+		=========================================== */
+
+		.menu-speckle{
+		    position:absolute;
+		    inset:0;
+		    pointer-events:none;
+		    overflow:hidden;
+		    border-radius:inherit;
+		    opacity:.16;
+		    mix-blend-mode:screen;
+		}
+
+		.menu-speckle::before{
+		    content:"";
+		    position:absolute;
+		    inset:-40%;
+		    background-image:
+
+		        radial-gradient(circle,#ffffffcc 0.4px,transparent 1px),
+		        radial-gradient(circle,#ffffff66 0.6px,transparent 1.4px),
+		        radial-gradient(circle,#00ffff55 0.8px,transparent 2px);
+
+		    background-size:
+		        14px 14px,
+		        24px 24px,
+		        34px 34px;
+
+		    animation:speckleFloat 20s linear infinite;
+		    filter:blur(.2px);
+		}
+
+		@keyframes speckleFloat{
+
+		    from{
+		        transform:translate(0px,0px) rotate(0deg);
+		    }
+
+		    to{
+		        transform:translate(-30px,-20px) rotate(360deg);
+		    }
+
+		}
+		
+		.menu-edge{
+		    position:absolute;
+		    inset:0;
+		    border-radius:inherit;
+		    border:1px solid rgba(255,255,255,.18);
+		    box-shadow:
+
+		        inset 0 0 2px rgba(255,255,255,.45),
+
+		        inset 0 0 18px rgba(255,255,255,.08),
+
+		        0 0 12px rgba(0,255,255,.18);
+
+		    pointer-events:none;
+		}
+    </style>
+</head>
+<body>
+
+    <!-- Main Wrapper: Takes up full viewport height/width, establishes root positioning for all absolute elements -->
+    <div class="h-screen w-screen bg-black text-white font-sans flex flex-col relative overflow-hidden selection:bg-cyan-500/30">
+      
+        <!-- Background Images - Fractal Discs -->
+        <!-- Positioned absolutely at z-0 so they sit far behind all UI elements -->
+        <div class="fixed inset-0 pointer-events-none z-0">
+            <!-- Top Left Grid - Rotated 180 degrees to anchor to the top-left corner -->
+            <img 
+                src="gfx-bg-disc-grid.jpg" 
+                alt="Fractal Grid Background" 
+                class="absolute top-[-15%] left-[-15%] w-[1200px] max-w-[150vw] rotate-180 opacity-70" 
+                onerror="this.style.display='none'"
+            />
+            <!-- Bottom Right Grid - Normal rotation -->
+            <img 
+                src="gfx-bg-disc-grid.jpg" 
+                alt="Fractal Grid Background" 
+                class="absolute bottom-[-15%] right-[-15%] w-[1200px] max-w-[150vw] opacity-70" 
+                onerror="this.style.display='none'"
+            />
+        </div>
+
+        <!-- Background Styling - Color grid overlay -->
+        <!-- Adds a subtle cyan/magenta/yellow microscopic pixel grid over the entire background for a digital matrix feel -->
+        <div class="fixed inset-0 pointer-events-none z-0" 
+            style="background-image: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06)); background-size: 100% 4px, 3px 100%;">
+        </div>
+
+        <!-- Subtle high-frequency horizontal scanlines for CRT texture (Opacity 5%) -->
+        <div class="fixed inset-0 pointer-events-none z-[5] opacity-5" 
+            style="background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, #ffffff 2px, #ffffff 4px);">
+        </div>
+      
+        <!-- Ambient background glow from logo colors to tie the composition together -->
+        <div class="fixed top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-cyan-600/10 blur-[120px] rounded-full pointer-events-none z-0"></div>
+
+        <!-- Top-Right Equation Element: A subtle easter egg -->
+        <!-- Stays dim gray but illuminates smoothly with a drop shadow when the mouse hovers over it -->
+        <div class="absolute top-6 right-8 z-50 text-[11px] text-gray-600 font-mono tracking-widest cursor-pointer transition-all duration-700 hover:text-gray-300 hover:drop-shadow-[0_0_12px_rgba(255,255,255,0.8)]">
+            ( 1 = √∞ / Ø )
+        </div>
+
+        <!-- Header Navigation - Tilted -20deg, Origin-Top, Centered over top-left grid via specific left-coordinates -->
+        <!-- NOTE: Replaced md:left-[5%] with exact md:left-[-13.5%] from Chrome inspector testing -->
+        <header class="absolute top-[12%] md:top-[16%] left-[-5%] md:left-[-13.5%] z-50 w-[95%] md:w-[70%] flex flex-col items-center transform -rotate-[20deg] origin-top">
+            
+            <!-- Tier 1 - Main Menu Container -->
+            <nav id="tier1-nav" class="flex flex-wrap justify-center w-full px-4 mb-2"></nav>
+
+            <!-- Tier 2 - Sub Menu Container -->
+            <!-- Uses Tailwind's transition classes to expand/collapse smoothly downwards from the origin-top -->
+            <div id="tier2-nav" class="flex flex-wrap justify-center w-full max-w-3xl px-4 transition-all duration-300 ease-in-out transform origin-top opacity-0 scale-y-0 h-0 overflow-hidden"></div>
+
+            <!-- Tier 3 - Sub Sub Menu Container -->
+            <div id="tier3-nav" class="flex flex-wrap justify-center w-full max-w-2xl px-4 transition-all duration-300 ease-in-out transform origin-top opacity-0 scale-y-0 h-0 overflow-hidden"></div>
+        </header>
+
+        <!-- Main Content - Glowing Cyan Sphere -->
+        <!-- flex-grow pushes it to take up available center space, pointer-events-none prevents it from blocking invisible clicks -->
+        <main class="flex-grow relative z-10 flex flex-col items-center justify-center pointer-events-none">
+            <div class="w-64 h-64 rounded-full orb animate-pulse-orb"></div>
+        </main>
+
+        <!-- Footer Navigation - Tilted -20deg, Origin-Bottom, Centered over bottom-right grid via specific right-coordinates -->
+        <!-- NOTE: Replaced md:right-[5%] with exact md:right-[-13.5%] from Chrome inspector testing -->
+        <footer class="absolute bottom-[12%] md:bottom-[16%] right-[-5%] md:right-[-13.5%] z-50 w-[95%] md:w-[70%] flex flex-col items-center transform -rotate-[20deg] origin-bottom pb-0 pt-0">
+            <nav id="footer-nav" class="flex flex-wrap justify-center w-full px-4"></nav>
+        </footer>
+
+        <!-- 3D Interactive Cyberpunk SJP Logo Container -->
+        <!-- Anchored to bottom-left corner and scaled to max 10vw width -->
+        <div id="logo-wrapper">
+            <div class="scene-container">
+                <div class="scene">
+                    <div class="idle-wrapper">
+                        <div class="tilt-wrapper">
+                            <!-- LAYER 1: BASE (SJP) - The front layer -->
+                            <img src="gfx-logo-sjp.jpg" class="layer layer-1" alt="SJP Base Logo">
+                            <!-- LAYER 2: MIDDLE (Glass) - The frosted glass layer -->
+                            <img src="gfx-logo-glass.jpg" class="layer layer-2" alt="Glass Effect Layer">
+                            <!-- LAYER 3: TOP (Comets) - The deep background layer -->
+                            <img src="gfx-logo-comets.jpg" class="layer layer-3" alt="Comets Effect Layer">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Temporal leak glow acting as a shadow/highlight behind the logo -->
+            <div class="ambient-glow"></div>
+        </div>
+
+    </div>
+
+    <!-- Application Logic -->
+    <script>
+        // Data Structures
+        // Hierarchical object representing the entire site's nested navigation map
+        const MENU_DATA = {
+            tier1: [
+                { id: 'music', label: 'Music', tier2: [
+                    { id: 'music-originals', label: 'Originals', tier3: [
+                        { id: 'mo-iolimiters', label: 'IO Limiters' }, { id: 'mo-intothesouthwest', label: 'Into the Southwest' },
+                        { id: 'mo-iovapoura', label: 'IO Vapoura' }, { id: 'mo-others', label: 'Others' },
+                    ]},
+                    { id: 'music-djsets', label: 'DJ Sets', tier3: [
+                        { id: 'md-bloodofthemoon', label: 'Blood of the Moon' }, { id: 'md-dreamstep', label: 'Dreamstep' },
+                        { id: 'md-thehf', label: 'The HF' }, { id: 'md-others', label: 'Others' },
+                    ]},
+                    { id: 'music-remixes', label: 'Remixes', tier3: [
+                        { id: 'mr-th3gr1d', label: 'TH3 GR1D' }, { id: 'mr-adrowning', label: 'A Drowning' },
+                        { id: 'mr-driveitlike', label: 'Drive It Like You Stole It' }, { id: 'mr-others', label: 'Others' },
+                    ]},
+                    { id: 'music-mashups', label: 'Mashups', tier3: [
+                        { id: 'mm-teardrop', label: 'Teardrop on Roads' }, { id: 'mm-allthewarmth', label: 'All the Warmth' },
+                        { id: 'mm-cyborgheart', label: 'Cyborg Heart' }, { id: 'mm-others', label: 'Others' },
+                    ]},
+                    { id: 'music-live', label: 'Live' },
+                ]},
+                { id: 'fractals', label: 'Fractals', tier2: [
+                    { id: 'fractals-popart', label: 'Pop Art', tier3: [
+                        { id: 'fp-1000swords', label: '1000 Swords' }, { id: 'fp-mayangels', label: 'May Angels Take You' },
+                        { id: 'fp-queenofnile', label: 'Queen of the Nile' }, { id: 'fp-others', label: 'Others' },
+                    ]},
+                    { id: 'fractals-fractalscapes', label: 'Fractalscapes', tier3: [
+                        { id: 'ff-celestial', label: 'Celestial Return' }, { id: 'ff-1000colors', label: '1000 Colors' },
+                        { id: 'ff-destination', label: 'Destination Everywhere' }, { id: 'ff-others', label: 'Others' },
+                    ]},
+                    { id: 'fractals-flora', label: 'Flowers', tier3: [
+                        { id: 'fl-bloom', label: 'Bloom of Fire' }, { id: 'fl-spring', label: 'Spring Pines' },
+                        { id: 'fl-bohemia', label: 'Bohemia' }, { id: 'fl-cacti', label: 'Cacti Nova' }, { id: 'fl-others', label: 'Others' },
+                    ]},
+                    { id: 'fractals-mandelbrots', label: 'Mandelbrots', tier3: [
+                        { id: 'fm-heart', label: 'Heart of the Rose' }, { id: 'fm-scorpio', label: 'Scorpio' },
+                        { id: 'fm-mother', label: 'Mother of Pearl' }, { id: 'fm-saltlife', label: 'Saltlife' }, { id: 'fm-others', label: 'Others' },
+                    ]},
+                    { id: 'fractals-gifs', label: 'GIFs' },
+                ]},
+                { id: 'writings', label: 'Writings', tier2: [
+                    { id: 'writings-fiction', label: 'Fiction', tier3: [
+                        { id: 'wf-everything', label: "Everything's OK" }, { id: 'wf-memoriam', label: 'Memoriam Redacta' }, { id: 'wf-bottle66', label: 'Bottle 66' },
+                    ]},
+                    { id: 'writings-nonfiction', label: 'Non-Fiction', tier3: [
+                        { id: 'wn-landlore', label: 'Landlore' }, { id: 'wn-spectral', label: 'Spectral Iteration' }, { id: 'wn-ateotw', label: 'AtEotW' },
+                    ]},
+                    { id: 'writings-bookcovers', label: 'Book Covers', tier3: [
+                        { id: 'wb-rem', label: 'R.E.M.' }, { id: 'wb-rainbows', label: 'Rainbows' },
+                        { id: 'wb-days', label: 'Days & Times' }, { id: 'wb-others', label: 'Others' },
+                    ]},
+                    { id: 'writings-wips', label: 'WIPs' },
+                    { id: 'writings-others', label: 'Others' },
+                ]},
+                { id: 'other', label: 'Other' },
+            ],
+        };
+
+        const FOOTER_MENU = [
+            { id: 'foot-about', label: 'About' },
+            { id: 'foot-contact', label: 'Contact' },
+            { id: 'foot-press', label: 'Press' },
+            { id: 'foot-booking', label: 'Booking' },
+            { id: 'foot-links', label: 'Links' },
+            { id: 'foot-copyright', label: `© SJP ${new Date().getFullYear()}` },
+        ];
+
+        // State Management
+        // Keeps track of which specific menu items are currently expanded/active
+        let state = { tier1: null, tier2: null, tier3: null };
+
+        // Helper function to create a menu button DOM element dynamically
+        // Accepts the display text (label), whether it is currently selected (isActive), 
+        // the depth level in the hierarchy (level), and the click event handler (onClick).
+        function createMenuItem(label, isActive, level, onClick) {
+            const btn = document.createElement('button');
+            
+            // Base classes common to all menu items (frosted glass blur, borders, typography)
+            let className = 'relative overflow-hidden transition-all duration-300 ease-out backdrop-blur-md border border-white/10 font-mono uppercase tracking-widest group ';
+            
+            // Active vs Inactive state styling (Cyan neon glow vs muted dark grey)
+            if (isActive) {
+                className += 'bg-cyan-400/30 text-white border-cyan-200/80 shadow-[0_0_10px_rgba(0,255,255,.9),0_0_30px_rgba(0,255,255,.6),0_0_60px_rgba(0,255,255,.35)] ';
+            } else {
+                className += 'bg-gray-800/40 text-gray-400 hover:text-white ';
+            }
+
+            // Level specific styling (adjustments for shape, size, padding, and layout depending on the tier)
+            if (level === 1) {
+                // Top level menus get distinctive rounded diagonal corners
+                className += 'rounded-tl-lg rounded-br-lg text-sm px-6 py-2 m-1 ';
+            } else if (level === 'footer') {
+                // Footer is significantly smaller to act as footnotes
+                className += 'rounded-sm text-[9px] px-3 py-1.5 m-1 '; 
+            } else {
+                // Shared basic rounded corners for middle-tier items
+                className += 'rounded-sm m-1 ';
+            }
+            
+            // Tier 2 sizing reductions
+            if (level === 2) className += 'text-xs px-5 py-1.5 scale-95 ';
+            // Tier 3 sizing reductions and dashed borders to indicate depth
+            if (level === 3) className += 'text-[10px] px-4 py-1 scale-90 border-dashed border-white/20 ';
+
+            btn.className = className;
+
+            // Inner HTML structure generation:
+            // 1. Glossy top-down gradient highlight for glass effect
+            // 2. The sweeping animated shine effect (hidden offscreen until hovered)
+            // 3. The blurred background neon glow for active/hover states
+            // 4. The actual text label span with a subtle drop shadow
+            btn.innerHTML = `
+                <div class="absolute inset-0 bg-gradient-to-b from-white/10 to-transparent opacity-50 pointer-events-none transition-opacity duration-300 ${isActive ? 'opacity-100' : 'group-hover:opacity-100'}"></div>
+			
+				<div class="menu-speckle"></div>
+                
+                <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none overflow-hidden">
+                    <div class="absolute top-0 left-[-100%] w-1/2 h-full bg-[linear-gradient(to_right,transparent_0%,transparent_20%,rgba(255,255,255,0.1)_20%,rgba(255,255,255,0.1)_40%,rgba(255,255,255,0.5)_40%,rgba(255,255,255,0.5)_60%,rgba(255,255,255,0.1)_60%,rgba(255,255,255,0.1)_80%,transparent_80%,transparent_100%)] skew-x-[-45deg] group-hover:animate-[shine_0.75s_ease-out]"></div>
+                </div>
+
+                <div class="absolute inset-0 transition-opacity duration-300 pointer-events-none ${isActive ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}">
+<div class="absolute -inset-2 bg-cyan-300/20 blur-xl"></div>
+
+<div class="absolute inset-0
+            bg-gradient-to-b
+            from-cyan-100/15
+            via-cyan-300/10
+            to-cyan-500/20">
+</div>
+                </div>
+
+				<div class="menu-edge"></div>
+                <span class="relative z-10 drop-shadow-[0_0_4px_rgba(255,255,255,.8)]">${label}</span>
+            `;
+
+            // Attach the provided click handler to the button element
+            btn.addEventListener('click', onClick);
+            return btn;
+        }
+
+        // Main Render Function - Rebuilds the DOM navigation trees based on the current 'state' object
+        function renderNav() {
+            const t1Container = document.getElementById('tier1-nav');
+            const t2Container = document.getElementById('tier2-nav');
+            const t3Container = document.getElementById('tier3-nav');
+
+            // --- Render Tier 1 ---
+            t1Container.innerHTML = '';
+            MENU_DATA.tier1.forEach(item => {
+                t1Container.appendChild(createMenuItem(item.label, state.tier1 === item.id, 1, () => {
+                    // Toggle logic: If clicking the active item, close it and its children. Otherwise, open it.
+                    if (state.tier1 === item.id) {
+                        state.tier1 = null; state.tier2 = null; state.tier3 = null;
+                    } else {
+                        state.tier1 = item.id; state.tier2 = null; state.tier3 = null;
+                    }
+                    // Trigger a re-render of the UI with the new state
+                    renderNav();
+                }));
+            });
+
+            // --- Render Tier 2 ---
+            t2Container.innerHTML = '';
+            // Find the data block for the currently active Tier 1 item
+            const activeT1Data = MENU_DATA.tier1.find(i => i.id === state.tier1);
+            
+            if (activeT1Data && activeT1Data.tier2) {
+                // Show Tier 2 container by removing collapse classes and adding reveal scaling classes
+                t2Container.classList.remove('opacity-0', 'scale-y-0', 'h-0', 'overflow-hidden');
+                t2Container.classList.add('opacity-100', 'scale-y-100', 'h-auto', 'mb-2');
+                
+                activeT1Data.tier2.forEach(item => {
+                    t2Container.appendChild(createMenuItem(item.label, state.tier2 === item.id, 2, () => {
+                        // Toggle logic for Tier 2 items
+                        if (state.tier2 === item.id) {
+                            state.tier2 = null; state.tier3 = null;
+                        } else {
+                            state.tier2 = item.id; state.tier3 = null;
+                        }
+                        renderNav();
+                    }));
+                });
+            } else {
+                // Hide Tier 2 container completely to prevent taking up spatial layout
+                t2Container.classList.add('opacity-0', 'scale-y-0', 'h-0', 'overflow-hidden');
+                t2Container.classList.remove('opacity-100', 'scale-y-100', 'h-auto', 'mb-2');
+            }
+
+            // --- Render Tier 3 ---
+            t3Container.innerHTML = '';
+            // Locate the currently active Tier 2 item (within the active Tier 1 context)
+            const activeT2Data = activeT1Data?.tier2?.find(i => i.id === state.tier2);
+
+            if (activeT2Data && activeT2Data.tier3) {
+                // Show Tier 3 container
+                t3Container.classList.remove('opacity-0', 'scale-y-0', 'h-0', 'overflow-hidden');
+                t3Container.classList.add('opacity-100', 'scale-y-100', 'h-auto');
+
+                activeT2Data.tier3.forEach(item => {
+                    t3Container.appendChild(createMenuItem(item.label, state.tier3 === item.id, 3, () => {
+                        // Simple toggle for Tier 3 (deepest level, no children to reset)
+                        state.tier3 = state.tier3 === item.id ? null : item.id;
+                        renderNav();
+                    }));
+                });
+            } else {
+                // Hide Tier 3 container
+                t3Container.classList.add('opacity-0', 'scale-y-0', 'h-0', 'overflow-hidden');
+                t3Container.classList.remove('opacity-100', 'scale-y-100', 'h-auto');
+            }
+        }
+
+        // Initialize App - Runs once the DOM structure is fully loaded by the browser
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initial render of the main hierarchical navigation menus
+            renderNav();
+
+            // Render Footer (Static, no complex open/close state needed for the footer buttons here)
+            const footerContainer = document.getElementById('footer-nav');
+            FOOTER_MENU.forEach(item => {
+                footerContainer.appendChild(createMenuItem(item.label, false, 'footer', () => {}));
+            });
+            
+            // --- 3D SJP LOGO INTERACTIVE LOGIC ---
+            // Isolate logo logic inside the DOMContentLoaded to ensure elements exist
+            const sceneContainer = document.querySelector('.scene-container');
+            const tiltWrapper = document.querySelector('.tilt-wrapper');
+            const layer1 = document.querySelector('.layer-1'); // SJP
+            const layer2 = document.querySelector('.layer-2'); // Glass
+            const layer3 = document.querySelector('.layer-3'); // Comets
+            let resetTimeout;
+
+            // Helper to set transition speeds smoothly when grabbing/releasing the logo
+            function setTransitions(speed) {
+                tiltWrapper.style.transition = `transform ${speed}`;
+                layer1.style.transition = `transform ${speed}, opacity ${speed}, filter ${speed}`;
+                layer2.style.transition = `transform ${speed}, opacity ${speed}`;
+                layer3.style.transition = `transform ${speed}, opacity ${speed}`;
+            }
+
+            // Mousemove tracker: Tilts the wrapper and displaces layers on the Z-axis
+            sceneContainer.addEventListener('mousemove', (e) => {
+                clearTimeout(resetTimeout);
+                setTransitions('0.1s ease-out'); // Fast transition for snappy following
+
+                const rect = sceneContainer.getBoundingClientRect();
+                
+                // Calculate cursor position relative to the logo bounding box
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                // Find absolute center of the logo
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                // Normalize offsets from -1.0 to 1.0 based on center
+                const xOffset = (x - centerX) / centerX;
+                const yOffset = (y - centerY) / centerY;
+                
+                // Tilt the whole wrapper (Parallax root)
+                const rotateX = yOffset * -45;
+                const rotateY = xOffset * 45;
+                tiltWrapper.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+                
+                // Layer Separation: Moves front layers opposite to back layers to simulate depth
+                // Note: Scaled down the px translations slightly since the logo is physically smaller
+                // SJP (Front)
+                layer1.style.transform = `scale(1.1) translate(${xOffset * -20}px, ${yOffset * -20}px)`;
+                // Glass (Middle)
+                layer2.style.transform = `scale(1) translate(${xOffset * -2}px, ${yOffset * -2}px)`;
+                // Comets (Back)
+                layer3.style.transform = `scale(0.9) translate(${xOffset * 20}px, ${yOffset * 20}px)`;
+                
+                // Adjust opacities to enhance the depth effect when active
+                layer1.style.opacity = '1';
+                layer2.style.opacity = '0.95';
+                layer3.style.opacity = '0.4';
+            });
+
+            // Mouseleave: Reset everything back to the normal floating idle state
+            sceneContainer.addEventListener('mouseleave', () => {
+                // Slower, smooth cubic-bezier transition returning to 0
+                setTransitions('0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)');
+                tiltWrapper.style.transform = `rotateX(0deg) rotateY(0deg)`;
+                
+                // Reset to standard Z-depths
+                layer1.style.transform = `scale(1) translate(0px, 0px)`;
+                layer2.style.transform = `scale(1) translate(0px, 0px)`;
+                layer3.style.transform = `scale(1) translate(0px, 0px)`;
+                
+                layer1.style.opacity = '1';
+                layer2.style.opacity = '0.95';
+                layer3.style.opacity = '0.8';
+                
+                // Prepare transition speed for the next hover event
+                resetTimeout = setTimeout(() => {
+                    setTransitions('0.1s ease-out');
+                }, 600);
+            });
+        });
+
+    </script>
+</body>
+</html>
+<script>
+window.addEventListener('load', async () => {
+    function wait(ms) { return new Promise(r => setTimeout(r, ms)); }
+    function findButton(text) {
+        return Array.from(document.querySelectorAll('button')).find(b => b.textContent && b.textContent.toLowerCase().includes(text.toLowerCase()));
+    }
+    await wait(1000);
+    let fracBtn = findButton('fractals');
+    if (fracBtn) {
+        fracBtn.click();
+        await wait(1500);
+        let fsBtn = findButton('fractalscapes');
+        if (fsBtn) {
+            fsBtn.click();
+            await wait(1500);
+            let destBtn = findButton('destination everywhere');
+            if (destBtn) destBtn.click();
+        }
+    }
+});
+</script>

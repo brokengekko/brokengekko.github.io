@@ -1,3 +1,162 @@
 <!DOCTYPE html>
-<head><title>Loading...</title></head><body id="body"><!--
---><section id="ubermain">Loading...</section>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SJP Evolution Showcase</title>
+    <style>
+        body, html {
+            margin: 0; padding: 0; width: 100vw; height: 100vh; background: #000; overflow: hidden; font-family: sans-serif;
+        }
+        .stage-iframe {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; opacity: 0;
+            transition: opacity 1.5s ease-in-out, transform 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transform: scale(0.95); pointer-events: none;
+        }
+        .stage-iframe.active {
+            opacity: 1; transform: scale(1); pointer-events: auto; z-index: 5;
+        }
+        .stage-iframe.fade-out {
+            opacity: 0; transform: scale(1.05); z-index: 4;
+        }
+        #overlay-iframe {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; opacity: 0;
+            pointer-events: none; z-index: 10; transition: opacity 1s ease-in-out;
+        }
+        #overlay-iframe.active {
+            opacity: 1; pointer-events: auto;
+        }
+        .loader-text {
+            position: absolute; bottom: 20px; right: 20px; color: #00ffff; font-family: monospace; font-size: 14px;
+            z-index: 100; opacity: 0.7; text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+        }
+        #start-screen {
+            position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background: #000;
+            z-index: 200; display: flex; align-items: center; justify-content: center;
+            transition: opacity 1s ease-out;
+        }
+        .initiate-btn {
+            background: transparent; border: 2px solid #00ffff; color: #00ffff;
+            padding: 15px 40px; font-size: 24px; font-family: monospace; letter-spacing: 4px;
+            cursor: pointer; text-transform: uppercase; outline: none;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.3), inset 0 0 15px rgba(0, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+        .initiate-btn:hover {
+            background: rgba(0, 255, 255, 0.1);
+            box-shadow: 0 0 25px rgba(0, 255, 255, 0.6), inset 0 0 25px rgba(0, 255, 255, 0.4);
+            text-shadow: 0 0 8px #00ffff;
+        }
+    </style>
+</head>
+<body>
+    <!-- 
+       INSTRUCTIONS FOR EDITING:
+       This orchestrator simply loads the HTML files within this /genesis/ folder into IFrames sequentially.
+       If you want to edit the layout or contents of any stage (e.g. lightbox-code.html), simply edit that file directly in the /genesis/ folder.
+       The orchestrator will automatically pick up your changes on the next refresh!
+    -->
+    <iframe id="iframeA" class="stage-iframe"></iframe>
+    <iframe id="iframeB" class="stage-iframe"></iframe>
+    <iframe id="overlay-iframe"></iframe>
+    <div id="status" class="loader-text">AWAITING INITIALIZATION...</div>
+    <audio id="bg-audio" loop src="timeinterrupt.mp3"></audio>
+    
+    <div id="start-screen">
+        <button class="initiate-btn" id="start-btn">INITIATE ></button>
+    </div>
+
+    <script>
+        const stages = [
+            'old-index.html',
+            'cyberpunk_3d_logo%20(5).html',
+            'cyberpunk_navigation_ui.html',
+            'cyberpunk_navigation_ui%20copy%207.html',
+            'cyberpunk_planet.html',
+            'cyberpunk_planet2.html',
+            'cyberpunk_planet3.html',
+            'cyberpunk_planet4.html',
+            'cyberpunk_planet9.html',
+            'stage10-index.html'
+        ];
+
+        let currentStageIndex = 0;
+        let useIframeA = true;
+        const iframeA = document.getElementById('iframeA');
+        const iframeB = document.getElementById('iframeB');
+        const overlayIframe = document.getElementById('overlay-iframe');
+        const statusText = document.getElementById('status');
+
+        function updateStatus(text) {
+            statusText.innerText = `STAGE ${currentStageIndex + 1}/${stages.length}: ${text.replace(/%20/g, ' ')}`;
+        }
+
+        function loadStage(index) {
+            if (index >= stages.length) return;
+
+            const activeIframe = useIframeA ? iframeA : iframeB;
+            const inactiveIframe = useIframeA ? iframeB : iframeA;
+            
+            updateStatus(stages[index]);
+            
+            inactiveIframe.onload = () => {
+                inactiveIframe.classList.remove('fade-out');
+                inactiveIframe.classList.add('active');
+                activeIframe.classList.remove('active');
+                activeIframe.classList.add('fade-out');
+                useIframeA = !useIframeA;
+
+                let displayDuration = 5000;
+                if (index === 1) displayDuration = 4000;
+                else if (index === 2 || index === 3) displayDuration = 5500;
+                
+                if (index === stages.length - 1) {
+                    // Final stage: load the lightbox overlay after 16.5 seconds (to allow menu navigation sequence)
+                    setTimeout(() => {
+                        statusText.innerText = `OVERLAY: lightbox-code.html`;
+                        overlayIframe.src = 'lightbox-code.html';
+                        overlayIframe.onload = () => {
+                            overlayIframe.classList.add('active');
+                        };
+                    }, 16500);
+                } else {
+                    setTimeout(() => {
+                        currentStageIndex++;
+                        loadStage(currentStageIndex);
+                    }, displayDuration);
+                }
+            };
+            inactiveIframe.src = stages[index];
+        }
+
+        window.onload = () => {
+            const bgAudio = document.getElementById('bg-audio');
+            bgAudio.volume = 0.5;
+            const startBtn = document.getElementById('start-btn');
+            const startScreen = document.getElementById('start-screen');
+
+            // Pre-load the first stage but wait for click to reveal and start timer
+            iframeB.src = stages[0];
+
+            startBtn.addEventListener('click', () => {
+                // Play audio
+                bgAudio.play().catch(e => console.log('Audio error:', e));
+
+                // Fade out start screen
+                startScreen.style.opacity = 0;
+                setTimeout(() => {
+                    startScreen.style.display = 'none';
+                }, 1000);
+
+                // Start sequence
+                iframeB.classList.add('active');
+                updateStatus(stages[0]);
+                setTimeout(() => {
+                    currentStageIndex++;
+                    loadStage(currentStageIndex);
+                }, 5000);
+            });
+        };
+    </script>
+</body>
+</html>
