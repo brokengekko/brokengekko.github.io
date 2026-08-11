@@ -16,6 +16,14 @@
       }
     },
     {
+      "type": "text",
+      "content": {
+        "texts": [
+          "<p style=\"text-align:center\">[The Jaya Prime GIF Collection](https://www.jayaprime.com/gifs/)</p>"
+        ]
+      }
+    },
+    {
       "type": "image-right",
       "content": {
         "imageFilename": "../fractal-gifs-image-1.gif",
@@ -35,7 +43,7 @@
       "type": "text",
       "content": {
         "texts": [
-          "## The Jaya Prime Fractal GIF Collection\n\nTechnically, most of these I've now converted into weppies (WebP files). Basically they have higher color-depth and lower file size, so a win all around, but otherwise built on similar properties to GIFs... and that's where most of them started anyways, as GIFs.\n\nBecause of the sheer number and the size of the page, I'm setting it a bit aside from the rest of the site.\n\nHere's where you'll find [The Jaya Prime GIF Collection](https://www.jayaprime.com/gifs/index.html).\n\nWhile not all were included, there were a few other of my viral hits included, such as:\n\n*   The animated version of \"Beer Addiction\" by Cyanide & Happiness\n*   My \"nothing but love\" self-portrait\n*   The \"Jolly Atom\" GIF that has spread far and wide, inspired by the \"Treasure Planet\" movie's pirate flag\n*   Then of course the many fractal animations that I've posted over the years\n\n### Extended Exploration\n\nIf you like my HAL-9K design or GIF, then you'd love my [pop art fractals](other-pop-art) and [surreal fractalscapes](other-fractalscapes). Or if you prefer the fractal geometry in many of my fractal GIFs, then definitely check out my [Mandelbrot designs](other-mandelbrot-fractals)."
+          "## The Jaya Prime Fractal GIF Collection\n\nTechnically, most of these I've now converted into weppies (WebP files). Basically they have higher color-depth and lower file size, so a win all around, but otherwise built on similar properties to GIFs... and that's where most of them started anyways, as GIFs.\n\nBecause of the sheer number and the size of the page, I'm setting it a bit aside from the rest of the site.\n\nHere's where you'll find [The Jaya Prime GIF Collection](https://www.jayaprime.com/gifs/).\n\nWhile not all were included, there were a few other of my viral hits included, such as:\n\n*   The animated version of \"Beer Addiction\" by Cyanide & Happiness\n*   My \"nothing but love\" self-portrait\n*   The \"Jolly Atom\" GIF that has spread far and wide, inspired by the \"Treasure Planet\" movie's pirate flag\n*   Then of course the many fractal animations that I've posted over the years\n\n### Extended Exploration\n\nIf you like my HAL-9K design or GIF, then you'd love my [pop art fractals](other-pop-art) and [surreal fractalscapes](other-fractalscapes). Or if you prefer the fractal geometry in many of my fractal GIFs, then definitely check out my [Mandelbrot designs](other-mandelbrot-fractals)."
         ]
       }
     }
