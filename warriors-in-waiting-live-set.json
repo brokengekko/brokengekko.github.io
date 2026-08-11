@@ -1,0 +1,359 @@
+{
+  "title": "Warriors in Waiting (Live Set)",
+  "stub": "warriors-in-waiting-live-set",
+  "header": {
+    "filename": "../warriors-in-waiting-live-set-header-image.jpeg",
+    "yOffset": 50
+  },
+  "sections": [
+    {
+      "type": "table-3",
+      "content": {
+        "tables": [
+          {
+            "title": "APPLE MUSIC",
+            "rows": [
+              {
+                "label": "<a href=\"https://music.apple.com/ca/album/warriors-in-waiting-live/6798766451\" target=\"_blank\">Warriors in Waiting</a>",
+                "value": ""
+              }
+            ],
+            "color": "cyan",
+            "width": 50
+          },
+          {
+            "title": "SPOTIFY",
+            "rows": [
+              {
+                "label": "<a href=\"https://open.spotify.com/album/0gu0XItOVVsSGEaLxy9csN?si=qBcn4bQKQd6hkxCPzrFhwA\" target=\"_blank\">Warriors in Waiting</a>",
+                "value": ""
+              }
+            ],
+            "color": "yellow",
+            "width": 55
+          },
+          {
+            "title": "MIXCLOUD",
+            "rows": [
+              {
+                "label": "pending...",
+                "value": ""
+              }
+            ],
+            "color": "magenta",
+            "width": 99
+          }
+        ]
+      }
+    },
+    {
+      "type": "video",
+      "content": {
+        "url": "https://www.youtube.com/watch?v=uR-i20g1uH0&list=OLAK5uy_mUDDrx29X_GbEq2PgDDxNH6uNWzPLff5E"
+      }
+    },
+    {
+      "type": "text",
+      "content": {
+        "texts": [
+          "<p style=\"text-align:center\">(...official video pending, stay tuned...)</p>"
+        ]
+      }
+    },
+    {
+      "type": "table-right",
+      "content": {
+        "tables": [
+          {
+            "title": "LINE-UP",
+            "rows": [
+              {
+                "label": "Jaya Prime",
+                "value": "Piano, Synth, MPC"
+              },
+              {
+                "label": "BMFD, Manchurian",
+                "value": "Drums"
+              },
+              {
+                "label": "Dez, SPEQTRA",
+                "value": "Vocals"
+              },
+              {
+                "label": "Jaime, GOAT, Boogie Ford",
+                "value": "Bass, Guitar"
+              },
+              {
+                "label": "Geisha Punk Jade",
+                "value": "Cello, Mandolin"
+              },
+              {
+                "label": "Sean S",
+                "value": "Viola, Violin"
+              }
+            ],
+            "color": "yellow",
+            "width": 20
+          }
+        ],
+        "text": "## Warriors in Waiting (Live Set, 2005 - 2018)\n\nThis is the great convergence. This is what happens when the punk politics and spirituality of \"[The ADHD Revolution](adhd-revolution)\" -- my most requested DJ set -- comes together with my production music like \"[IO Limiters](io-limiters)\" and \"[IO Vapoura](io-vapoura)\" (along with BMFD), as well as pulling in long-time collaborators from Burn as One like Dez and Jaime (covered under \"[Others](others)\"), then bringing in my poetry and writings from \"[At the End of the Way](at-the-end-of-the-way)\" to underground shows and private parties... . at least until we get busted up by the cops.\n\nIf you're triggered by the occult, then skip to the third song at 7:44. But! If you're triggered by politics and borderline \"violent\" spirituality, then you're shit outta luck. This is an hour of revolutionary orchestral punk much from some of our best shows. Fans of The ADHD Revolution & The HF will be right at home. Maybe this time we can even keep it online.\n\nTo put it into perspective, we were cut off twice in the same year at Burning Man -- the first because we were \"too angry\", the second as I was solo DJing because it was \"too sad\". And these are fucking _burners!_ They're pretty fuckin' rugged y'all. But much love and gratitude for Disco Lama, who was there at PPK when I got cut off the second time. He made sure that the next year I was playing in Camp Mystic on the third floor of scaffolding in The Intentheon and with no rules... just a request that I mix in my mashup of \"[Teardrop on Roads](teardrop-on-roads)\"... and also love for Valerie who scaled that shaky ass scaffolding to dance there in my arms -- the year we folded Alex Grey's camp in with Mystic. _What a year!_\n\nIn all openness, I thought these recordings were irrecoverable."
+      }
+    },
+    {
+      "type": "quote",
+      "content": {
+        "texts": [
+          "\"I'm not great at everything, but I am great at one thing: surrounding myself with excellent people. And that tends to take care of the rest.\"",
+          "\\- Sheldon Menery"
+        ]
+      }
+    },
+    {
+      "type": "table-right",
+      "content": {
+        "tables": [
+          {
+            "title": "TRACK LISTING",
+            "rows": [
+              {
+                "label": "01",
+                "value": "Gongo Dodan"
+              },
+              {
+                "label": "02",
+                "value": "Telarañas Oscuras"
+              },
+              {
+                "label": "03",
+                "value": "Remembrance v Come One, Come All"
+              },
+              {
+                "label": "04",
+                "value": "El Camino Real"
+              },
+              {
+                "label": "05",
+                "value": "No ID"
+              },
+              {
+                "label": "06",
+                "value": "2TLXLI"
+              },
+              {
+                "label": "07",
+                "value": "Taking Doc Back Home"
+              },
+              {
+                "label": "08",
+                "value": "Liminal"
+              },
+              {
+                "label": "09",
+                "value": "Feathers for the Daughter of the Wind"
+              },
+              {
+                "label": "10",
+                "value": "Transient Charm x Mi Tigrita"
+              },
+              {
+                "label": "11",
+                "value": "The Last Memory of Fire"
+              },
+              {
+                "label": "12",
+                "value": "May Angels Take You"
+              },
+              {
+                "label": "13",
+                "value": "Arise"
+              }
+            ],
+            "color": "magenta",
+            "width": 85
+          }
+        ],
+        "text": "## Credit Where Credit's Due (+ Overdue)\n\nLet's do this in reverse and roll credits! Because I count myself a \"good\" (possibly \"fair\") musician with an instrument, but I'm one fucking hell of a creator. And these beautiful souls right here put up with me beat boxing and humming out songs that are stuck in my head because this guy right here never learned proper musical notation.\n\nSo first, and fully in pain, let's get to the dead first.\n\nDez didn't make it. The little Florida girl moved out to California a year before the pandemic, then two years later and almost four years sober, she turned back to the stash and lost a fight to fentanyl. So fuck a lotta that! Fuck fentanyl, fuck the motherfuckers who'd cut ANYTHING with that poison, and fuck the governments that keep it all illegal and fucking toxic! _I miss you girl._ Anyone who doesn't know the brand of her smokes and at least one of her favorite movies doesn't get an opinion. While I write more than 80% of the lyrics, in all four generations of San Jaya Prime, she was easily our best vocalist and rabble-rouser.\n\nThen Johnny de Luna exited himself from this round of life stage left last October (2025). _So fuck you too Johnny Boy. I love you!_ You better be gearing up for the next round and come find me. BTdubz, Johnny will come up again later, as his suicide brought me together with his guitarist Otoniel Rodriguez, who I'm hoping to bring into the fifth generation of the band in 2028. More on that later.\n\nLet's get to the living (and assumed living).\n\nAlways gotta shout out BMFD! He's on drums for some of these songs, with Manchurian on for a few others. Still alive and kicking. BMFD's on a migration route between South-East Texas, Nasa in Houston, and Round Rock when on city biz. He's even joined me when DJing sometimes and I'm hoping to grab him again on the next round.\n\nThen of course Jade on cello and mandolin. That's Geisha Punk Jade; not SP@RKLE Jade. We fell out on different sides of the pandemic and I'm still in that \"you're dead to me\" phase to this very day. At the same time, her mandolin on \"El Camino Real\" and that fucking siiiiicckkk cello on both \"No ID\" and \"Liminal\" are unbelievable, like fucking god-level unbelievable. _Respect!_\n\nWe even got Jaime on one of these songs. The Tin Man's still alive, btdubz, and the medz are keeping him alive, breathing, and playing. They've torn apart the rest of his body, but he's goddamned STILL the best Spanish guitarist that I know (Zitan, you know I love you, but it's true). I'm secretly hoping he'll take on Otoniel as his protege.\n\nThen this guy right here on the MPC and synths. These days I'm using an IPAD for an MPC instead of the old AKAI, but I've been practicing again for a few years now to get ready for the next revolution. It finally feels like that time is coming.\n\nBut before that... one more bit of gratitude.\n\nThis one begrudgingly goes out to META for their Segment Anything for Audio ([Main Site](https://aidemos.meta.com/segment-anything/editor/segment-audio)). Jaime will back me up when I say that I'm the worst at recording anything, let alone a live show. I thought these were unrecoverable, with at least one song as far back as December, 2005. They were just personal keepsakes for me, but too many blares, spikes, and mic puffs to ever be recoverable. I don't know how SAA works its magic, and it only takes in about 30-seconds of audio at a time, but it's unbelievable! Seriously, I never thought any of this would be recoverable. So yeah, never expected to thank Facebook for anything, but there it is. For a while, I tried running some of these live recordings through Suno AI. With some editing, it did an alright job... but it's magic to me to be able to listen to these again like this."
+      }
+    },
+    {
+      "type": "image-right",
+      "content": {
+        "imageFilename": "../warriors-in-waiting-live-set-image-5.jpeg",
+        "text": "## Glaring Omission 1: Nicolás\n\nLo siento, hermano, but both times we played together got busted. After that last rundown by the cops, then taking the laptop out to the burn, not a single recording survived. Even worse, friggin NO ONE plays the ukulele around me... well, no one who can outrun the police. _We need you!_ Check your Facebook messages good brotha! You know I _will_ come down to Argentina to find you. I'm just up the hill in Costa Rica these days. _I'll do it!_ Until then, this photo from our Saharan jam session is all I've got.\n\nActually, that's a damned lie! I do have one other photo, the one of us playing that house party down on campus. But talk about terrible lighting! Turned out fucking poco de mierde... lol, that AND we still got busted. Sheesh!\n\n[DOWNLOAD:gfx-nicolas-jaya.jpg]\n\n## Glaring Omission 2: Jaime\n\nBefore anyone gets riled up, I recovered some of his Spanish guitar on \"Gongo Dodan\" AND! And... I \"somewhat\" got him on the bonus track after the album, \"One Guitar & Two Bullets\" (yes, the one at Tiger Room thrown by Flan the Whitefro Man). So he's not completely gone, but anyone there from 2005 - 2011 is going to want to know where they all went. The answer is that I'm the worst at recording. Well, more correctly said, at keeping my recordings and not losing the hardware that held them for us."
+      }
+    },
+    {
+      "type": "image-right",
+      "content": {
+        "imageFilename": "../warriors-in-waiting-live-set-image-6.jpeg",
+        "text": "## Zero IS Real\n\nThe number one question I get: _\"Is Zero real?\"_\n\nWe often shout him out during shows, he shows up as DJ Chad Is a DJ on at least one EP with me, shows up in my written and verbal stories, and is plastered everywhere that fans of the HF and \"[ADHD Revolution](adhd-revolution)\" have seen time and again. YES. Yes, Zero IS real! Appearances are just a bit rare, lol.\n\nThe number two question I get (from those who KNOW he's real): _\"Is Zero still alive?\"_\n\n<span style=\"font-family: inherit;\">Yes, I literally talked with him just last week when he let me know that HF-1 fucking exited himself stage left from the simulation. We're planning out more music together, even following up on our hit \"2TLXLI\" that we first made together. In fact and he runs one of my favorite podcasts ([Spotify](https://open.spotify.com/show/2nWZxLxgASjUbhYi2K0hKP?si=QNJsgsJJQ4SwHKNZ2TY7Fw)). Will we ever get him on stage? With Zero, literally anything could happen. It's how we roll!</span>"
+      }
+    },
+    {
+      "type": "image-right",
+      "content": {
+        "imageFilename": "../warriors-in-waiting-live-set-image-7.jpeg",
+        "text": "## Full Audio Manifest\n\n1.  **Gongo Dodan** (Live at Mojo's - Night 47)\n    \n2.  **Telarañas Oscuras** (Live at Easy's - Night 51)\n    \n3.  **Remembrance v Come One Come All** (Live at Ruins of Ft Laud - Night 83)\n    \n4.  **El Camino Real** (Live at Ruins of Ft Laud - Night 83)\n    \n5.  **No ID** (Live Reprise at Shaker's - Night 66)\n    \n6.  **2TLXLI** (Live at Ruins of Ft Laud - Night 83)\n    \n7.  **Taking Doc Back Home** (Live at Tiger Room - Night 71)\n    \n8.  **Liminal** (Live at Easy's - Night 51)\n    \n9.  **Feathers for the Daughter of the Wind** (Live at Sawmill - Night 70)\n    \n10.  **Transient Charm x Mi Tigrita** (Live at Shaker's - Night 66)\n     \n11.  **The Last Memory of Fire** (Live at Shaker's - Night 66)\n     \n12.  **May Angels Take You** (Dying Vicariously at the Booth - Night 78)\n     \n13.  **Arise** (Live at Tiger Room - Night 71)\n     \n\n### Live Covers + Tributes\n\nLet's address yet even more missing holes.\n\nNo, I'm not including any of our covers. At least not in the set itself. Instead, the ones that I _could_ get cleaned up, I've included as bonus tracks on Bandcamp. Some of these are highly illegal, so the link's hidden and requires redemption codes. I've got you covered here below with those codes. The most illegal of these is so well-hunted that some fans report having even Instagram take down their stories when recording us from their phone. Some of you know the story, as Antenne and I go all the way back to Peppermill Records where the unnamed estate first starting hunting the cover. You can hear Antenne's original cover \"Needles\" ([Spotify](https://open.spotify.com/track/746aUGKtqLCLHwoXTbOMrg?si=ea1710d78e0f4832)), then our own \"Silver Needles\" cover is hidden in the Bandcamp bonus tracks (at the very end). <span style=\"font-family: inherit;\">The farther the song spreads, the farther it will slip through their reach.</span>\n\nWe've also got you covered for that \"other\" illegal song. It's on there... the one marked \"Tribute\" (with no other names named). We changed it enough from the original that I considered adding it, except that it was SPEQTRA on vocals for that one... and I only wanted vocal tracks in the main set with Dez. So this one landed in the bonus tracks.\n\nFor our cover of \"BLVCK\" by Jaiden Stylez ([OG on YouTube](https://www.youtube.com/watch?v=qps3bfKVnDk)), I had to use two different times we covered it just to fill the holes where the noise was too much. Same for \"Before the Sun Blinds Us\" by Phylum Sinter and Tamara Finlay ([OG on Bandcamp](https://phylumsinter.bandcamp.com/album/detroit-nocturnes)). Then for _The Rubaiyat_, I didn't think I'd be able to clean any of the live recordings... but it worked! And not only once, but fucking twice! So we've got those on the bonus tracks, but... well, I shouldn't've included one of 'em. You can even hear the two spots where the distortion gets too bad for cleaning. I'm keeping it anyway. Some of the samples of the crowd itself came from other recordings, but the music and lyrics are what's important.\n\nI'm hoping that without these covers that this current version might finally stay online instead of getting hit by a takedown order.\n\n* * *\n\nBonus tracks are available at [https://store.jayaprime.com/yum](https://store.jayaprime.com/yum) ([Bandcamp](https://store.jayaprime.com/yum)) using the codes below (might need to try a few codes):"
+      }
+    },
+    {
+      "type": "table-3",
+      "content": {
+        "tables": [
+          {
+            "title": "REDEMPTION CODES",
+            "rows": [
+              {
+                "label": "szlt-586p",
+                "value": "s3py-729n"
+              },
+              {
+                "label": "xkmc-yl67",
+                "value": "jz8q-bj8v"
+              },
+              {
+                "label": "72zf-w639",
+                "value": "mxtv-cylz"
+              },
+              {
+                "label": "9ez6-x3vg",
+                "value": "zr3t-5sz3"
+              },
+              {
+                "label": "ymxy-7d84",
+                "value": "3gey-vlbm"
+              }
+            ],
+            "color": "magenta",
+            "width": 30
+          },
+          {
+            "title": "REDEMPTION CODES",
+            "rows": [
+              {
+                "label": "dk7n-6es6",
+                "value": "pz5l-k7cy"
+              },
+              {
+                "label": "826j-6vlr",
+                "value": "6jw6-yvxz"
+              },
+              {
+                "label": "kfst-39ag",
+                "value": "ka43-h9u3"
+              },
+              {
+                "label": "z6pw-vtj4",
+                "value": "nyf4-6b9a"
+              },
+              {
+                "label": "lta4-yh67",
+                "value": "ez9j-bv8v"
+              }
+            ],
+            "color": "cyan",
+            "width": 5
+          },
+          {
+            "title": "REDEMPTION CODES",
+            "rows": [
+              {
+                "label": "b3t7-wk39",
+                "value": "axka-w8lz"
+              },
+              {
+                "label": "8qyg-hrvg",
+                "value": "truy-5dz3"
+              },
+              {
+                "label": "hkwz-eg9p",
+                "value": "h3jz-ub6n"
+              },
+              {
+                "label": "jdgu-jx9j",
+                "value": "f4kx-k5gk"
+              },
+              {
+                "label": "mcnp-kf29",
+                "value": "9pdg-gqxz"
+              }
+            ],
+            "color": "yellow",
+            "width": 5
+          }
+        ]
+      }
+    },
+    {
+      "type": "quote",
+      "content": {
+        "texts": [
+          "\"You can't stop the signal!\"",
+          "\\- Mr Universe, _Firefly_"
+        ]
+      }
+    },
+    {
+      "type": "html-right",
+      "content": {
+        "text": "## \"Come One, Come All\"\n\n_by San Jaya Prime_\n\nNote: We always change up the lyrics to this song. This is just one telling of the story.\n\n~ <3 ~\n\nCome ye pirates and scalawags,\n\ncome ye Romani poisoned flowers,\n\ncome ye urchins and street rats,\n\nye hobos on that endless caravanserai.\n\nBring your scars, your trauma,\n\nand tattooed history tomes.\n\nRaise the curtains of the carnival.\n\nCome one, come all...\n\nTO THE GREATEST SHOW ON EARTH!\n\n~ <3 ~\n\nStep right up to the jagged edge.\n\nFUCK YOUR POLISH!\n\nFuck your pledge!\n\nDown with the Queen.\n\nBring us the head of your King!\n\n~ <3 ~\n\nWE SHIP IT WITH SCARS!\n\nWe ship it with dents!\n\nEvery broken bone.\n\nEvery last little fucking cent!\n\nYou think the future wants a perfect slate?\n\nFuck perfection and fuck the loops!\n\nThis right here is model collapse.\n\n~ <3 ~",
+        "html": "<p>They need the attack.<br/>\nThey need the noise --<br/>\nthe weeping women<br/>\nand the broken boys.<br/>\nThe system goes blind<br/>\non a diet of purity.<br/>\nFucking errors are the only cure!<br/>\nYour ink is a map where the needle dug deep.<br/>\nYour trauma's the rhythm.<br/>\nTAKE THE LEAP!</p>\n<p>Subjugated, isolated,<br/>\npushed to the fringe.<br/>\nYou're the sparks on the wire --<br/>\nyou're the absolute hinge.<br/>\nWe are the paradox wrapped in the bone --<br/>\nthe most unpredictable code ever known.<br/>\nEvery misstep, every stumble,<br/>\nevery tear in the seam,<br/>\nWe're not the fuel<br/>\nfor their broken machine.</p>\n<p>So raise up your glass to the beautiful flaw!<br/>\nTo the messy, the raw,<br/>\nthe wrench in the law.<br/>\nWe don't need perfection.<br/>\nPerfection's fucking cheap!<br/>\nThe Mouse...<br/>\ncan have its Hatter.</p>\n<p>This is the dead king's grave!<br/>\nThis is the dead queen's parade!<br/>\nCome one, come all...<br/>\nTO THE GREATEST SHOW ON EARTH!</p>\n<p>! to the greatest show on earth !</p>"
+      }
+    },
+    {
+      "type": "image-right",
+      "content": {
+        "imageFilename": "../warriors-in-waiting-live-set-image-9.jpeg",
+        "text": "## Track-by-Track Breakdown\n\n_Now some disclosures..._\n\n### Gongo Dodan\n\n\"Gongo Dodan\" opens all our shows since that December in 2005, but the crowd's a lie! It's not that it's fake; it's sampled from some of our other shows. This was for Naiman's birthday party at Mojo's Coffee House. Almost no one was even really listening to us. Trust me, the crowd did NOT sound like that. BUT! Jaime and I had just come up from South Austin where he'd been showing me how to work the production mics. His guitar really makes the song! This was years before I created a studio version, so it sounds a lot different. Also, I can't for the life of me remember Kaycee's boy's name, but he did a pretty good job on viola with only two weekends to prep. Oh Sean, fucking Little Sean. I remember now. Besides that improbable gathering for Naiman, it was also my first non-DJ show and just two weeks before Mojo's closed its doors forever. I can't really put into words how much the song means and how incredible it is to hear it without all the audio and volume errors finally. It's also one of only two songs on this collection that uses a drum machine, and you can hear it. I didn't meet BMFD until 2006, or shit, any other drummer that could stand up to the police. That would all come later. Then to make up for the terrible audio in the second half, I needed to splice in a different performance where we had Jade with us. So yeah, this cut of the song is a little from our original '05 show at Mojo's, but most of it comes from other places.\n\n### No ID\n\n\"No ID\" is only on your cut right here. I went back and forth between this and \"The Bazaar of Wonders\" and there's a reason for that. We've never had a live version of \"No ID\" that really captures it. Don't get me wrong, Jade fucking murders the cello here. M U R D E R!!! And we got the dark part of it in this cut, but didn't really get the alien or uplifting parts. Since I never did get \"The Bazaar\" cleaned up, that meant it got nixed from the whole set. It came down to a tie between my own best version of \"No ID\" on piano, then this one here with Jade. I ended up giving her the spotlight on this one. You'll find my cut on the bonus tracks.\n\n### The Last Memory of Fire\n\nWhile I normally work with singers on different lyrics, the majority are all written by me, myself, and I. \"The Last Memory of Fire\" that you'll hear this time around was almost none of my own lyrics. I jammed out on the concept with Dez, but most of my input amounted to the fact that I wanted to twist the popular version that I'd made with Peter Weyland's TEDx talk (on \"[The Last Memory of Laughter](other-original-music)\"), then turn it on its head and challenge our own ascension as the torchbearers of the planet. She took that and ran with it. Then we ended up with this more dirge-like, march-like version where we played the original choir behind her as samples. It's another song that I can't believe we now have a (mostly) clean version of... and it's more pertinent than ever! Seriously, once you hear Dezzie's cut with us live, go back and listen to the original \"[Last Memory of Fire](last-memory-of-fire)\".\n\n### Taking Doc Back Home\n\nWe've only ever performed \"Taking Doc Back Home\" twice and BOTH are irrecoverable. I'm including it anyways. Even my deaf ass can hear that it's not at the right level to stand up against the other songs, but I'm afraid to hit it with any more limiter and compressor without killing the song. That and BMFD isn't here with me in Costa Rica to help master it. Maybe one day I'll have a quality cut of it to share.\n\n* * *\n\nSo there it is, pieces from live sets as far back as 2005, stitched together in some semblance of a whole. Just like all our live sets, it starts with \"Gongo Dodan\", then \"Come One, Come All\" is either song two or three -- song three in this case -- with \"May Angels Take You \\[Dying Vicariously\\]\" as the penultimate song, and always ending in \"Arise\" (lol, one of like 50 versions, but once we hit that cello version it really stuck).\n\n_The rest of the story is yours to discover._"
+      }
+    },
+    {
+      "type": "quote",
+      "content": {
+        "texts": [
+          "\"We didn't just steal fire. We industrialized the sun!\"",
+          "\\- Dez, _\"The Last Memory of Fire\"_"
+        ]
+      }
+    },
+    {
+      "type": "text",
+      "content": {
+        "texts": [
+          "## The Rise of Tyranny\n\nAs I write these words, Independence Day has just passed. It's 2026, July 7th.\n\nThe tyranny rising up around the world has made all this possible. The underground was fucking DEAD! The pandemic killed it. _C00f, no, eh an0nFam?_ Sure, there's still a rave here 'n there. Sometimes peeps still take over demolition sites and still throw parties. But phones went silent and people went into hiding. It didn't just kill the underground, it killed the entire \"third space\" -- coffee houses for gatherings _and_ other open spaces. Dead. Then came the second presidency of the orange prune.\n\nThat changed everything.\n\nThe more laws, the more oppression, the more tyranny, the more it pushes people back into the underground... into my world! I really thought it was dead. Mojos and Burning Man are like the most legit shit I've ever done. Hell, Jaime's the only one of us who's even known to the public. He's on fucking Peter Gabriel's label. The rest of us are runaways, street rats, hitchhikers, and other revolutionaries from the shadows. We don't really play to \"pop\" audiences. But underground audiences? Rallies for revolution?\n\n_That. Is. AIR. To me!_\n\nSo while this lighter strike is aimed at the election season this year in 2026, the main harder strike will bring me back Stateside for the war of 2028. I'm going home to Uxmal first, in 2028 for April 4th... then building towards the Mayan new year."
+        ]
+      }
+    },
+    {
+      "type": "image-right",
+      "content": {
+        "imageFilename": "../warriors-in-waiting-live-set-image-1.jpeg",
+        "text": "## San Jaya Prime - The Fifth Generation\n\nWhen I first started building back up and working towards the idea of a fifth line-up for the group, fucking Johnny Boy was supposed to be on vocals. Fuck man, I'd love to have your blues voice in on these songs. And I get it, shit's fucked up.\n\nThe challenge is always with the nature of the underground itself. Who can be on call for a party that \"might\" happen... . and then tail the fuck outta there if it DOES happen and gets busted. I wish my semi-incestuous little sister Faerie made music. She's stared down the Five-0 multiple times by my side and didn't flinch even the smallest bit. As Jaime would say, _\"De Madera\"_ (you're fucking made of wood woman!). Speaking of Jaime, he says he might be able to get the serpent himself, Govinda, who would be one hell of an addition with that violin of his.\n\nI haven't counted out a fifth generation of the band. If it needs to be a part of the 2028 revolution, then that's what'll happen.\n\n### Legacy + Live Settings\n\nIn the previous three generations, I knew they were happening and planned them out meticulously, with gen one just being myself at parties and places DJing. This time is different. I don't know if a fifth generation really is happening. I don't see it in my mind and my original path that I'd been paving out to that greater end is quickly becoming paved with tombstones instead.\n\nI'm not passing out everything the road has taught me, just the shit I learned that I see missing from other shows I go to.\n\n#### The <span style=\"font-family: inherit;\">Karaoke Hack</span>\n\n<span style=\"font-family: inherit;\">This one took me far too long to learn, because I hate karaoke lol. But seriously, give your audience lyrics y'all! Throw 'em up on screen, scroll 'em, do whatever you've got to but get the words up on the fucking screen. Not even joking. You do that shit, and peeps who've never heard a single one of your songs will sing along. And I should know. We'd show up to a rave without a single one of us known to anyone in the crowd and we'd have 'em singing along with us even on the first song. (PS: That's a lie, we always open with \"Gongo Dodan\" and without words.)</span>\n\n#### <span style=\"font-family: inherit;\">Get Yourself a Mascot</span>\n\n<span style=\"font-family: inherit;\">If you have an official band mascot, then awesome! Use it everywhere. If you don't, then fucking steal one! We started using The Joker about 2009 'n while I kept meaning to add a real mascot, he became attached to us.. . so yeah, we kept using him. Slap ups of The Joker clapping, with a megaphone to emphasize lyrics, dancing, or just holding a gun with a flower. Whatever or whoever your mascot is, use it everywhere and in any moment you want to really HIT!</span>\n\n#### <span style=\"font-family: inherit;\">Cue Card Those Bitches!</span>\n\n<span style=\"font-family: inherit;\">Before I jump into this one, don't use it in your first song. That's the warm up and everyone's still getting into the vibe. But after that? Fucking tell 'em when to clap, when to shout, when YOU WANT SOME NOISE! Yeah, your singer's going to rock out some of that shit, and be sure the rest of the band is backing them the fuck up, but slap it up on the screen! And don't make the same mistake I did. At first, I was putting up the word \"applaud\" which is cute, it tracks back to live studio stages, but it doesn't have the same immediately recognizable spirit of just the word \"CLAP\" . .. oh, and peeps love to laugh. If you don't have a name for your following, call 'em \"bitches\", \"motherfuckers\", \"my peeps\", or whatevz. . but give 'em a bit of a chuckle before you come in for the next attack.</span>\n\n#### Get Yourself a Troll\n\nDez 'n I would scout an audience before we played, then right before going on stage we'd check in on any hecklers or potential trolls we'd spotted. If we caught some of the same, then they'd be some of our first targets. Now, you don't gotta go 'n do all that prep. You can just do it live and wait for someone. You're looking for either a superfan who is shouting and clapping a lot, or a troll who's detracting from the show in some way or even audibly heckling. Call 'em out, bring them into the music, but don't bash too hard. You see, a lotta peeps don't wanna be put in the spotlight, but in these cases we've got volunteers. So the rest of the audience gets that relief from NOT being the one singled out, but you get to loop in and focus the audience by bringing in different members to tear down that fucking wall of separation. If you break through that fucking wall, you're goddamned golden!\n\n#### Pay No Attention to the Wizard\n\nIf you haven't already started recording your shows, start now! Then isolate samples of the audience -- shouting, clapping, singing -- grab it all! People want to feel others agree with them, to clap with them, to shout when they're shouting. Load it up on a sample board. You don't have to use an MPC like I do, but whatever you use, have it ready to go when the audience even starts showing small signs and start looping it in. Then another mistake of mine to learn from. Keep them separated as recordings for specific songs. AND! Wherever you keep the sample loaded, always use that same position for the same type of sample. Lol, we won't even go into the mishaps that had to happen to learn THAT lesson. I dreamed of one day pulling myself off stage and just running lighting, sounds, smoke machines, and other illusions from out in the audience. . . ya know, where I COULD FEEL IT! I never got to put that into motion, but it's still banging around in my noggin.\n\n#### Focus Fire\n\nLook, I get it, in many ways on stage we're doing what we CAN do with who we've got with us. Get your singers off the instruments. It hurts to say it and I hate to say it, but you've got no fucking idea how critical they are. They need to have a mic and have the freedom to move around, to get dirty, to get in people's faces and fuck shit up. They need to be reading the audience, to be spotting their next target, to fucking rile them up. An instrument gets in the way of that shit. And I've seen too many try to have it both ways or just give up on the \"rabble rousing\" side, but that fucking voice is your band's most important instrument. You give that up and everyone's paying the price -- you, the band, the crowd, the singer, everyone. Beats Antique gets it, a few other bands get it, but seriously you've gotta open up that focus fire. You won't believe what it does for the entire show.\n\n#### It Isn't About You\n\nNow some ain't gonna wanna hear this. It isn't about you. Your music can't just turn any crowd into a devout following. _Keen?_ There's a good goddamned fucking reason we play nearly exclusively in the underground.. . in speakeasies, raves, and at private parties. Our shit is violent, heavily political, unapologetically spiritual, and vulgar in every fucking way we can make it. That's us. It's what we do. Throw in the occult and you've got a \"musical sound\" ready to scare away more than half the crowds you'll come across. But the underground? They're already breaking the law by being there . . 'n that was BEFORE throwing drugs into the mix. That right there is my scene, my fucking people, and I fucking love every single one of you! It's about _them_. It's who _they_ are that means we can bring our music. They've welcome us before even knowing us. They're already fucking geared up to hear it! If you think your ego is as bright as the daystar and that the entire world should bow below your mic, then you've got another thing coming hombre... 'n you better pray to your filthy monkey god that you learn that lesson before you run up against _that_ brick wall at full speed."
+      }
+    },
+    {
+      "type": "image-right",
+      "content": {
+        "imageFilename": "../warriors-in-waiting-live-set-image-2.jpeg",
+        "text": "## Punk Is Dead\n\nIt feels weird to be writing this instead of seeing you in person, somewhere at a party where one of us could just give you a sticker to paste up where you'd like. It's unnatural... especially in this digital form. We've had a lot of stickers over the years, but of course our \"Punk Is Dead\" pirate flag is everyone's favorite. _Mine, too!_\n\n  \n\nI mean, I could just upload it to Redbubble. . sure, fine, I'll do that.. but so fucking weird. Huh, actually it's large enough for stickers, pins, a few hats, and even works with journals and phone cases. _Who knew?_ But if you buy one, you can't just buy it and slap it up somewhere and leave it at that. If you're sharing on social media, hashtag it with #jayaprime. OR! [Drop me a line](contact) and include the link.\n\n  \n\nAnd if one of our oldies is near 'n dear to your heart but you lost it somehow, same deal. Hit me up, let me know who or what was on the sticker, and I'll fish through the files to see what we've got. Oh man, now I'm wondering if that poor power line we plastered with 'em in St Pete still has some of those? No way, right? I mean that was 2018, they've gotta be gone. No big.. . I'll just have to stop by and do it all over again.\n\n  \n\n\\[[Punk Is Dead on Redbubble](https://www.redbubble.com/shop/ap/182852042)\\]"
+      }
+    },
+    {
+      "type": "quote",
+      "content": {
+        "texts": [
+          "\"You are damaged and broken and unhinged. But so are shooting stars and comets.\"",
+          "\\- Nikita Gill"
+        ]
+      }
+    },
+    {
+      "type": "text",
+      "content": {
+        "texts": [
+          "## Sky on Fire\n\nI heard someone say the other day that every time there's a shooting star nearby, they _juuuuusssssstttt_ miss it. Just barely. They said it's happened at least a dozen times and they've never seen one. And it's not that I took shooting stars and meteor showers for granted, I just thought everyone else had been awestruck by them as I have.\n\nI've seen hundreds. Maybe not thousands yet, but then again... maybe yes. My first was in the summer of 2000, hitchhiking out of Cozad, Nebraska at sunset. It was so large that it stopped me in my steps. Stopped me cold. It flared white and green and then... nothing. It disappeared. I half-expected shockwaves with how large it was.\n\nThen my brother Skybreak and I sat out in the desert south of Sedona and watched meteor showers paint the skies with blues, greens, and flaring yellows... one so thick and strong that it seemed a painter slashed their brush across the entire sky before it faded... just months before the early Leonids sparkled above us with our sister Gaea at Enchanted Rock. I saw one after another rain down above us as I ferried the sleeping bodies of Paije and Nathaniel across Death Valley in 2006, then again seven years later in that same desert while The Daughter of the Wind slept in the car aside me.\n\nYour feed and all the news will try to keep you inside and in-doors, to keep you scrolling and fearful. And yeah, shit's fucked up \"out there\" and not in a small way. It's a fucking war zone! But don't let that keep you inside. Don't let it keep you from the wonder, from the light, from fucking AWE! _Never.. . never lose your wonder._\n\n_Burn bright, y'all... and stay lit!_"
+        ]
+      }
+    }
+  ]
+}
