@@ -1,0 +1,49 @@
+{
+  "title": "About",
+  "stub": "about",
+  "header": {
+    "filename": "../spring-pines-header-image.jpeg",
+    "yOffset": 50
+  },
+  "sections": [
+    {
+      "type": "text",
+      "content": {
+        "texts": [
+          "## About This Site -- The Architects\n\nThis site is the three-headed brainchild of San Jaya Prime, Kan Men'Caban'IX Lamat, and Kantiki Jayamana Whateva. _Cerberus eat your heart out!_ Just to keep the record straight: Kan Lamat is the legal title, San Jaya Prime is the DJ moniker, and Kantiki Jayamana Whateva is the pen name. I answer to all three, in person, at least once a day, every single day of the week. But most peeps? Most just call me \"Jaya\" (nuff said).\n\nDid you really wanna know about this site? Then you're in the right place. But if you were looking for one of those three fools listed above, you're looking for the \"[About Me](about-me)\" section (usually hidden behind my orbiting logo).\n\n### The Data + The Thieves\n\nThere are zero cookies baked into this site and absolutely zero tracking. I haven't even bothered with the basics like Google Analytics. I assume you know exactly why you're here, and you're welcome to be here. That's good enough for me. BUT! I do embed media players from YouTube, Vimeo, and Bandcamp. Hitting play on any of those absolutely sends your data straight back to the corporate overlords. As for me? I'm not scraping your data, which means I'm sure as hell not sharing it.\n\nMy art, writings, and music have been mercilessly scraped and trained into almost every generative AI and LLM on the grid. They've also been flat-out stolen a thousand times over -- with more than 2,000 of those thieves slinging my work right on the Amazon store. So, if you catch a feeling of \"déjà vu\" while browsing this site, it's highly likely you've already stumbled across my art out in the wild... probably bootlegged, or regurgitated by an algorithm.\n\n### The Politics\n\nPolitically, I lean in as a hard-line libertarian. I am aggressively engaged in causes that champion individual rights and absolute freedom of expression: whistleblowers, smokers' rights, pro-choice activism, gay rights, gun rights, hacktivism, pro-AI... the list goes on. I founded Burn as One dot Org, as well as the sister-syndicate #The-Art-of-Smoking over on deviantART. _Penny for the Guy?_ #anon\n\nI've also run with the P5Y (Peace in 5 Years) crew in the past. While I'm generally opposed to the tyrannical pipe dream of world peace, I make exceptions for the rare few who can actually wire the heart and mind together in that pursuit.\n\n### The Bias (+ The $20)\n\nAs of December 2009, the FTC mandates that influencers disclose any hidden interests or unspoken biases when making recommendations. Let me save us both some time: every single piece of content on this site is dripping with bias. I've collaborated with over 5,000 artists, musicians, influencers, and celebrities over my lifetime. You should safely assume that every word and reference here involves money changing hands, heavy bias, a sex scandal behind at least half of it, and Jimmy -- goddammit, Jimmy! -- you STILL fucking owe me that $20!\n\n### The Ass-Covering Clause\n\nTo cover my ass and keep your reading experience completely uninterrupted, please assume that for every recommendation, link, and product I endorse, the following holds absolutely true:"
+        ]
+      }
+    },
+    {
+      "type": "image",
+      "content": {
+        "imageFilename": "../about-image-1.jpeg",
+        "caption": "Assume that all content on this site was bought, bribed, and otherwise paid for in some form or another. While these images have been updated, they're based on the original epic series by **Jeannine Schafer** (aka, \"Neener Bot\") ([Instagram](https://www.instagram.com/neenerbot/)) and **Louise Gray** ([Instagram](https://www.instagram.com/louisegray__/))"
+      }
+    },
+    {
+      "type": "text",
+      "content": {
+        "texts": [
+          "### The Hustle\n\nMake no mistake, this blog has financial motivations. Official links to my media and merch are plastered everywhere. I'll even be dropping a donation link, because I am absolutely not above digital panhandling. This site exists to promote the people, places, and things that I love -- including the rides and random souls I meet out on the road, all of whom the FTC would demand I formally disclose.\n\n**Bottom Line**: when someone spits the phrase \"capitalist bastard,\" I want it to be my hairy white a$$ flashing through your imagination (pun intended). _Got that, fleshie?_\n\n### The Credit\n\nA massive shoutout to Tim Ferriss for the inspiration behind some of this disclosure wording, taking an otherwise soul-crushing legal requirement and injecting it with actual humor. Rules is rules. To paint a picture of how deep the rabbit hole goes: I've bought Tim's books, my friend Eben was plotting the launch of Tim's very first book just a week before it dropped, and you'll find the good mister \"socks and sandals\" himself hopping in and out of my circles. Don't even get me started on Burning Man.\n\n_You really don't know the half of it._\n\n* * *\n\n\\--- Click to Show More ---\n\n* * *\n\n### Code Is Art -- Advent of the Site\n\nThis website was vibe coded with Gemini Pro 3.1, which was ready to put it into action a year ago and had to wait around for my slow ass to doodle out all the concepts and get it clear inside of my thick skull. Once the flesh was ready, the machine was all-too-happy to oblige. What wasn't vibe coded in the Gemini web app was done through the API using Google Antigravity. You can see the evolution of the process here:\n\n[www.jayaprime.com/genesis/](https://www.jayaprime.com/genesis/)"
+        ]
+      }
+    },
+    {
+      "type": "text",
+      "content": {
+        "texts": [
+          "This site was designed between 2025 and 2026, then implemented in July of that latter year. It was not designed for modern hardware, but for computers that will be more widespread and available nearer to 2030. That will be the final, living, ongoing version of the site that evolves and adapts.\n\n## V4: 2027, July 31\n\nFor those who really want to know more, V4 launches in 2027 and this \"About Me\" will become a labyrinthine \"Choose Your Own Adventure\" style, where you can follow the rabbit hole that most interests you. We'll of course hide other secrets and treasures in the labyrinth. The fractal store should also be launching with that version.\n\n## V5: 2028, July 31\n\nWhile some MtG content is scheduled to be added with V4, the elevation of the media of the game (including my own designs) will not be until V5, along with the series of \"traveling books\" -- where the books themselves do the traveling -- that I've been working on for more than two decades and the splash page for each of these. The final pieces of the labyrinth will also be put in place, as well as indicators for where paths have changed for anyone who walked those walls previously.\n\nLook for this after the Mayan new year in 2028 and The Day Out of Time to reset and calibrate the four years that follow after."
+        ]
+      }
+    },
+    {
+      "type": "text",
+      "content": {
+        "texts": [
+          "## With Love + Gratitude\n\nAnd with shout out in so much gratitude to my two human editors, Ivany Sanchez and my sister Andromeda \"Gaea Phoenix\" Ross ([IMDB](https://www.imdb.com/name/nm1811326/)) as my writings are some of the more stylized and difficult English to read and edit on the entire planet, as well as my AI assistant Mycroft who helped with editing, along with my crazed AI assistant Mizz Mini who provided sniper duty on the coding."
+        ]
+      }
+    }
+  ]
+}

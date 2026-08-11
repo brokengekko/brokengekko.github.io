@@ -1,0 +1,41 @@
+{
+  "title": "The Bridge of a Thousand Colors",
+  "stub": "1000-colors",
+  "header": {
+    "filename": "../1000-colors-header-image.jpeg",
+    "yOffset": 50
+  },
+  "sections": [
+    {
+      "type": "image-right",
+      "content": {
+        "imageFilename": "../1000-colors-image-0.jpeg",
+        "text": "## The Bridge of a Thousand Colors\n\nAfter working with **Anna Czímer** on the book cover for \"[R.E.M: The Manifestation of Hidden Forces](rem)\" (along with the sequel), I had gotten a small taste... perhaps an addiction.. . to seeing my name on a physical book and my art on the cover. With a few other book covers under my belt, I reached back out to Anna to see if she was working on anything new. _She was._\n\nThis would be my eighth cover, and my third book cover made for Anna. It is even more special because my very first book cover ever was for her, and I'm hoping she's still working on it. I'm not giving away the title of her book, as I've named my own piece differently until she's ready to release it. Even though we lost touch during the pandemic, I'm holding onto hope that it's still in the works.\n\n### Extended Credits:\n\n*   Design and Coordination: **San Jaya Prime**\n*   Fractal Design and Processing: **San Jaya Prime**\n*   Principal Photography: **Tony Webster**\n*   Location: **High Trestle Bridge, Madrid, Iowa** ([Google Maps](https://maps.app.goo.gl/kLHwovf1nmzTccZm8))\n*   Bridge Design and Architecture: **David B Dahlquist**\n*   Secondary Photography: **Pexels, Arto Marttinen, Larisa Koshkina**\n*   Apps: **Apophysis, Chaotica, Blender, Photoshop**\n*   Prints, Merchandise, More: [Redbubble](https://www.redbubble.com/shop/ap/26452373)"
+      }
+    },
+    {
+      "type": "image",
+      "content": {
+        "imageFilename": "../1000-colors-image-1.jpeg",
+        "caption": "_\"The Bridge of a Thousand Colors\"_ by **San Jaya Prime** ([Prints + More on Redbubble](https://www.redbubble.com/shop/ap/26452373))"
+      }
+    },
+    {
+      "type": "quote",
+      "content": {
+        "texts": [
+          "\"If art is the bridge between what you see in your mind and what the world sees, then skill is how you build that bridge.\"",
+          "\\- Twyla Tharp"
+        ]
+      }
+    },
+    {
+      "type": "text",
+      "content": {
+        "texts": [
+          "## The Threshold of a Thousand Worlds\n\nI love bridges -- the crossing over that connects worlds. As I've hitchhiked across different countries, states, and provinces, I am often found atop a bridge leaning up against the beams and simply breathing in the landscape. My top three favorites: the ruined bridge in the Pyrenees of Northern Spain; the incredibly long bridge stretching westward from Ciudad del Carmen de Mexico; and the island-hopping bridge heading westward out of Durant, Oklahoma.\n\nSo why couldn't we have a bridge built that spans multiple realities? We'd just need to get the design specs to different planets and high-traffic areas of the multiverse, then once each place built their section, they could be linked across time and space. When new civilizations rise up that can match the technology, they could build their own, which would be bound to the overarching bridge itself. Then we could walk the path, changing from one reality to the next with each step. .. skies, flora, and fauna changing drastically with each segment. That is the true wonder behind the \"Bridge of a Thousand Colors\" design.\n\nI one day hope to walk that bridge.\n\nOne day, even here on Terra, I'll finally make it to the \"City of Bridges\" itself -- Venice, Italy.\n\n_One day._\n\n### Extended Exploration\n\nIf you like \"1000 Colors\" then you'd likely love seeing my full \"[Celestial Return](celestial-return)\" fractal mural or \"[A Ship for All Destinations](destination-everywhere)\" -- both are beautiful, surreal fractalscapes that capture the imagination and open the horizons. You'll find this and other fractalscapes in my \"[Spectral Iteration](spectral-iteration)\" book.\n\n\\[[1000 Colors on Redbubble](https://www.redbubble.com/shop/ap/26452373)\\]"
+        ]
+      }
+    }
+  ]
+}

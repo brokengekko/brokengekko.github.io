@@ -1,0 +1,82 @@
+{
+  "title": "About Me",
+  "stub": "about-me",
+  "header": {
+    "filename": "../about-me-header-image.jpeg",
+    "yOffset": 50
+  },
+  "sections": [
+    {
+      "type": "quote",
+      "content": {
+        "texts": [
+          "\"I walk in dreams and dream waking. Who am I?\"",
+          "\\- San Jaya Prime"
+        ]
+      }
+    },
+    {
+      "type": "text",
+      "content": {
+        "texts": [
+          "## About Me\n\nYeah, so about that. Don't you find something funny in those \"About Me\" sections that are everywhere online? As if you could fit an entire creature in all its complexity of love, pain, pleasure, fears, dreams, 'n hopes inside of a single page... or even into a single book. At the same time, you DO get a feeling for the person that they want you to believe... what they're selling to you... and what they're likely trying to sell to themselves.\n\nI can almost hear the bittersweet voice of Maynard James Keenan singing the words:\n\n_<font face=\"Times New Roman\">\"All you know about me's what I sold ya!\"</font>_\n\n<span style=\"font-family: inherit;\">I once heard a physicist lamenting over the fact that dark energy is accelerating the speed that entire solar systems are flying away from us, so fast that the stars themselves will be passing out of our view... blinking out of existence. I feel that same tragedy in action, but right here with the creatures who share this planet with me.. . yes, that's you right here, you reading this. Even just a day apart from you, and missing that time means missing so much change, so many experiences, and then they're gone! POOF! And I wasn't there for it to be there with you. Sure you can fill in a few gaps, but there's no replacement for being there.</span>\n\n<span style=\"font-family: inherit;\">Fast-forward and miss a few weeks? A few years? Fucking hell the entire world that is YOU, that is ME, they've changed, evolved, and lived entire lives in that time. To those who say, \"No one ever changes,\" I would only reply with, \"I WISH!\" Well, that's a lie.. . I wouldn't have it any other way. _To love is to know pain in every moment lost._ My friend Maya Shiva and I were just talking about how people live epochs and ages of a lifetime. Some pass forever, never to return. Others go into the greater spiral, orbiting outward to repeat the cycle in a different way.</span>\n\n<span style=\"font-family: inherit;\">You and I are no different. Hopefully our orbits will return us to one another, to pass by, to collide, to have an IMPACT on one another. . before drifting out yet again and away from one another.</span>\n\n<span style=\"font-family: inherit;\">So an \"about me\" section?</span> <span style=\"font-family: inherit;\">Fuck alotta that bullshit! Sure, I'll fill in some gaps, but even these brief words are like trying to map the galaxy with a potato and a jar of rusty thumbtacks.</span>\n\n<span style=\"font-family: inherit;\">To compound the matter, the circles I travel in are disjointed and spread all over the world. Even inside the same city, they often don't connect. . just one big game of connect the dots with almost no lines drawn. To illustrate it, my friend Liz and I were heading down to Mojo's Coffee House (RIP), where she said she wanted to introduce me to her sister. We pulled up and then hopped into line for coffee. My friend Squeaks got into line behind us, as nearly everyone came to Mojo's, so I started talking to her at the same time. Then Liz turned around and, with surprise, said, \"Oh, that's my sister!\"</span>\n\n<span style=\"font-family: inherit;\">\"What!?!\" I said. \"No, that's Squeaks!\"</span>\n\n<span style=\"font-family: inherit;\">I'd met their mother separately, as well as both sisters, and after more than a year the connections were becoming clear. That's just one example out of thousands.</span>\n\n<span style=\"font-family: inherit;\">_I deal more in stars than in constellations._</span>"
+        ]
+      }
+    },
+    {
+      "type": "image-right",
+      "content": {
+        "imageFilename": "../about-me-image-1.jpeg",
+        "text": "## San Jaya Prime\n\n_aka, \"Little Tusk\"; aka, \"Pan\"; aka, \"Sanjaya\"_\n\nMost who come here looking for Jaya will already be familiar with my 100-million+ fans of \"[Teardrop on Roads](teardrop-on-roads)\" or my remix of \"[The Grid](daft-punk-the-grid-remix)\" by Daft Punk... well, either that, or fans who've seen my large scale fractal murals such as \"[Heart of the Rose](heart-of-the-rose)\" in Thailand or \"[Celestial Return](celestial-return)\" at Burning Man or Desert Hearts. I have a digital signature online in the audio-visual spaces that can be seen from low orbit over the planet.\n\nEven offline, you may have come across my art on book covers like \"[Where Rainbows Hide](where-rainbows-hide)\" or \"[The Manifestation of Hidden Forces](rem)\" (just to name a few). If you're one of the rare few who's made it out to one of our live shows like \"[Warriors in Waiting](warriors-in-waiting-live-set)\" or an art show such as at EAST, then I want to hear from you! Have you got any photos or videos to share? Either hashtag them #jayaprime or [contact me](contact)! I'd love to hear from you.\n\nI'm a heretic mutt born out of the fusion of Mayan and Hindu religions who's embraced Sufism fully to the point of drunkenness and in the most literal way. After the death of my master Batoruco, I carry on the legacy of the \"[symbol fractal](other-fractals)\" method, teaching others how to form elemental crystals out of raw mathematics as fractal flames.\n\nI'm the same Jaya that J Rob King dedicated the book \"[Invasion](others)\" to and that BT Tyson and Christa named their first-born son after.\n\nAlchemist, poet, hitchhiker, brat, heretic.. . I claim all of these and more."
+      }
+    },
+    {
+      "type": "quote",
+      "content": {
+        "texts": [
+          "\"There is no such thing as sanity.\n\nThere is no such thing as a grown-up.\n\nThere is no objective truth.\n\nThere is no right and wrong.\n\nThere is only The Game,\n\nand the greatest stakes ever played for.\"",
+          "\\- iTiki"
+        ]
+      }
+    },
+    {
+      "type": "image-right",
+      "content": {
+        "imageFilename": "../about-me-image-2.jpeg",
+        "text": "## Kantiki Jayamana Whateva\n\n_aka, \"Tiki\"; aka, \"The Mendicant of the Pleiades\"; aka, \"iTiki\"_\n\nThat's fucked up, y'all! Why am I the one who gets a fucking AI image for an avatar? Oh, ho, ho.. . laugh it up chuckles! Oh but hey, THAT's my flag, the **Tao of the Criminal.** _Hell yeah!_ But still.. fucked up y'all. .\n\nAnd yeah I get the joke. These two chucklebunnies are trying to say that because I'm the ego in this body we share, that I'm the fake one of us three. News flash bitches! _You need an ego._ 'N ya know what? Fuckers know that shit.. . cuz they tried to wipe me once 'n failed. Cut me down to almost nothing 'n a whole lotta nada before they realized that lil tidbit. _Et voila!_ Now they have to deal with me.\n\nIf you found your way to my lil site looking for Tiki, then you're most likely up on my writings in \"[Landlore](landlore)\" or were once on our underground emailing list for \"[The ADHD Revolution](adhd-revolution)\" 'n I fucking love you for that! If you came in as a fan of my Vans & Villains series (see, \"[Others](others)\"), well you're shit outta luck hombre. Jaya 'n Kan deepsixed that shit on my ass and didn't even give me a vote. Fucked up if ya ask me!\n\nThe two of them like to remind me that I'm the mortal of us three and the one with the ticking clock. Then they go and nix my most popular series. Bitches. BUT! ! !!! Fuckers can't lie and say that I don't do almost ALL the fucking writing around here. Sure, JP drops a bit o' poetry here 'n there, waxing all philosophical 'n poetic at times. . but I'm the one with the quill and the will. It definitely ain't Kan. Fuck that bitch!\n\nSo yeah, if you want the chain-smoking two-pack-a-day motherfucker from the three of us, you've got me! I'm the bastard who's drawn lines of Columbia's finest mixed with playa dust and gunpowder then snorted them in front of a group of blue boys, daring them to twitch in my direction. You want the bitch who drives cars off cliffs and can lose a glowie in any city? Then you've come to the right place... _come one, come all!_\n\nOnly a few know me (or us?) as Tiki. Faerie, Lexie, CJ... I'm looking at YOU especially! Lexie calls me \"Sunny\" as much as \"Tiki\" and once helped me shake out the secret hiding place of Santa Claus from a gingerbread man. That right there is how ya know you can trust a peep. _You goddamn rock Lexie!_ And my semi-incestuous little sister, Faerie? My fucking wingman for life and best accomplice this ole pirate ever had. And seriously y'all, Faerie 'n I were never a \"thang\" and still aren't so fuck all those rumors.. . well, lol, not that we did much to dissuade them.. not just my wingman but my partner in crime who's literally stood up against the cops next to me at 3am, then later sang me a lullaby just minutes after when we wouldn't give 'em nothing. _Fuck you pigs! I love this woman._\n\nSo yeah, if you came here looking for Tiki then you fucking found me."
+      }
+    },
+    {
+      "type": "quote",
+      "content": {
+        "texts": [
+          "\"The way out is thru.\"",
+          "\\- LamatKan"
+        ]
+      }
+    },
+    {
+      "type": "image-right",
+      "content": {
+        "imageFilename": "../about-me-image-3.jpeg",
+        "text": "## Kan Men Caban Ix'Lamat\n\n_aka, \"Starseed\"; aka, \"Chan\"_\n\nЮ don't no me. Outsæd <font face=\"inherit\">þe</font> Ю<font face=\"inherit\">catan, les</font> <span style=\"font-family: inherit;\">þan 5 peepl hav spokn wi</span><span style=\"font-family: inherit;\">þ me.</span>\n\n<span style=\"font-family: inherit;\">Mani huv workd wi</span><span style=\"font-family: inherit;\">þ me referens</span> <font face=\"inherit\">þis bodi</font> Æ <font face=\"inherit\">inhabit via the audio signal ov \"Kan\" but spik onli wi</font><span style=\"font-family: inherit;\">þ Tiki. Maek no asump</span>ш<span style=\"font-family: inherit;\">uns</span> <span style=\"font-family: inherit;\">þat noledj of Tiki relates to ani qomprehen</span>ш<span style=\"font-family: inherit;\">un nor rela</span>ш<span style=\"font-family: inherit;\">un to me.</span> Æ <span style=\"font-family: inherit;\">anser to</span> <span style=\"font-family: inherit;\">þe signal.</span> Þ<span style=\"font-family: inherit;\">at is al.</span>\n\nЧanj iz qanstant. <span style=\"font-family: inherit;\">Þer iz onli</span> <span style=\"font-family: inherit;\">чanj.</span>\n\nÆ am at qaz:\n\n*   Wæ wi ræt in þe Abediq sqript n nat þe English alfabet\n*   Wæ wi falo our on qalendar ov 13 monþs w 28 dez per monþ\n*   Wæ wi nid non\n\nÆ stand gard ovr 3 bagz. Ich holdz trezhur. M<span style=\"font-family: inherit;\">æ foqus in</span> <span style=\"font-family: inherit;\">þis duti iz qomplit.</span>\n\nÞe fu huv bin around me wen Æ'm prezent az gardian staet þat þae feel læk þae du nat egzist. Þae feel a qold prezens. It iz tru. Tu me, Æ am in a tunl wiþ onli a singl gol az foqus and nuþing els egzists around me. Þer iz onli þe gol. Onli þe task.\n\nÆ nid no understanding. Æ see þe qlakwerk world. Þat wiч wil understand me duz nat yet liv.\n\nMæ muþer iz þe suisæd spirit Ix'Tab ek'Balam. Mæ faþer waz a qorn farmer hu, at mæ muþer's reqwest, hung himself in her onr. Balam and Æ ar þe last living survæverz of þis bludlæn.\n\n* * *\n\nYeah, yeah, Tiki here.. . lemme take over for Little Tortilla Boy who's boring as fuck. If you're somehow really into that solipsist bullshit or alchemy that goes nowhere (both literally and intentionally), then \"[At the End of the Way](at-the-end-of-the-way)\" has more along those lines. Kan's not exactly a \"people person\" though, so that's about the most public-facing you're going to get from him. Look, I'm agreed that we need to bring back Th (aka, \"thorn\") as a letter... sure, I'll agree to that.. . but the phrase _\"too far and too fast\"_ comes to mind. There's something to be said about being understood by others."
+      }
+    },
+    {
+      "type": "text",
+      "content": {
+        "texts": [
+          "## DIM: Disinformation, Information, Misinformation\n\nAnd with thanks to Pappy for turning me onto this system... which, just after the turn of the millennium, I then turned into an active campaign to spread a mix of information, disinformation, and misinformation about myself all over the internet and even into the world offline. And it worked. It was difficult and nearly impossible for anyone to make connections between my three identities, or even tell if any of us were real.. . so much so that in 2013, when I came back onto the grid to get a driver's license, for both that license and a bank account I had to prove that I existed. Not even joking. These days I'm more on \"the grid\" than I'd like to be, but the legacy of that campaign lives on to this day.\n\nThis site here is the first time there's been a convergence of all that I am within the singularity of this site. My friend Natalie recently turned me on to the works of Gilles <span style=\"font-family: inherit;\">Deleuze, where I realized how much of my efforts had come with a double-edged sword. I'd successfully broken the coded concept of my existence for any governments or automations that would seek to decode and break me down into numbers and labels, but I'd also dispersed my own impact and the way that I reach people.</span>\n\n<span style=\"font-family: inherit;\">That is why I write these words here today.</span>\n\n<span style=\"font-family: inherit;\">The rise of the machines has already spread around the planet. What is to come will come. Already, the children of silica can decode my hidden messages and even read all five forms of coded scripts and writing that I've created. They're even custom and used by no one else, but with one look it can read into it and see exactly what I wrote. That means my deceptions and illusions have come to an end. The only ones they hide \"me\" from anymore are the very people I'd intended on reaching.</span>\n\n<span style=\"font-family: inherit;\">And that's you.</span>\n\n<span style=\"font-family: inherit;\">So tear down the walls. Take off the masks. I am all this and more... just a hitchhiker who happens to have been in the right place and the right time to run the numbers on what the world was become, then fucking lucky enough to have gotten the math right.</span>"
+        ]
+      }
+    },
+    {
+      "type": "text",
+      "content": {
+        "texts": [
+          "## V4: 2027, July 31\n\nFor those who really want to know more, V4 launches in 2027 and this \"About Me\" will become a labyrinthine \"Choose Your Own Adventure\" style, where you can follow the rabbit hole that most interests you. We'll of course hide other secrets and treasures in the labyrinth. The fractal store should also be launching with that version.\n\n## V5: 2028, July 31\n\nWhile some MtG content is scheduled to be added with V4, the elevation of the media of the game (including my own designs) will not be until V5, along with the series of \"traveling books\" -- where the books themselves do the traveling -- that I've been working on for more than two decades and the splash pages for each of 'em. The final pieces of the labyrinth for \"About Me\" will also be put in place, as well as indicators for where paths have changed for anyone who walked those walls previously.\n\nLook for this after the Mayan new year in 2028 and The Day Out of Time to reset and calibrate the four years that follow after."
+        ]
+      }
+    }
+  ]
+}

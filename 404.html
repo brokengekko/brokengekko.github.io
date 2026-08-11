@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Signal Lost | The Portfolio of San Jaya Prime</title>
+    <link rel="icon" href="favicon.ico" sizes="32x32">
+    <link rel="icon" href="icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <link rel="manifest" href="site.webmanifest">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Special+Elite&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    animation: {
+                        'shine': 'shine 0.75s ease-out',
+                    },
+                    keyframes: {
+                        shine: {
+                            '0%': { left: '-100%', opacity: '0' },
+                            '10%': { opacity: '1' },
+                            '80%': { left: '200%', opacity: '1' },
+                            '100%': { left: '200%', opacity: '0' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        :root {
+            --neon-cyan: #00f3ff;
+            --neon-cyan-bright: #8bf6fe;
+            --neon-yellow: #ffcc00;
+            --neon-orange: #c2904a;
+            --neon-magenta: #e000ff;
+            --dark-bg: #110e25;
+            --navy-bg: #030a16;
+        }
+
+        body { margin: 0; background-color: #000000; overflow-x: hidden; color: #fff; font-family: 'Roboto', sans-serif; }
+        
+        ::selection { background-color: #00ffff; color: #000000; text-shadow: none; }
+        ::-moz-selection { background-color: #00ffff; color: #000000; text-shadow: none; }
+
+        .glitch-title {
+            color: #fff; text-transform: uppercase; letter-spacing: 6px;
+            font-size: 3rem; margin: 0; font-family: 'Special Elite', monospace;
+            text-shadow: 0 0 8px #fff, 0 0 20px var(--neon-cyan), 0 0 40px var(--neon-cyan);
+            text-align: center;
+        }
+        
+        .glitch-title span {
+            color: var(--neon-magenta);
+            text-shadow: 0 0 8px #fff, 0 0 20px var(--neon-magenta), 0 0 40px var(--neon-magenta);
+        }
+
+        .data-module {
+            background: linear-gradient(135deg, rgba(0, 243, 255, 0.02) 0%, rgba(0, 243, 255, 0.08) 100%);
+            border: 1px solid rgba(0, 243, 255, 0.3); padding: 25px; position: relative; backdrop-filter: blur(4px);
+            box-sizing: border-box; transition: all 0.3s ease;
+            height: 100%;
+        }
+        
+        .data-module:hover {
+            border-color: rgba(0, 243, 255, 0.7);
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.2), inset 0 0 20px rgba(0, 243, 255, 0.05);
+        }
+        
+        .data-module::before, .data-module::after { content: ''; position: absolute; width: 12px; height: 12px; transition: all 0.3s ease;}
+        .data-module::before { top: -1px; left: -1px; border-top: 2px solid var(--neon-yellow); border-left: 2px solid var(--neon-yellow); }
+        .data-module::after { bottom: -1px; right: -1px; border-bottom: 2px solid var(--neon-yellow); border-right: 2px solid var(--neon-yellow); }
+        
+        .data-module:hover::before, .data-module:hover::after {
+            width: 20px; height: 20px;
+            box-shadow: 0 0 10px var(--neon-yellow);
+        }
+
+        .module-title { 
+            font-size: 1.5rem; 
+            font-weight: 800; 
+            color: var(--neon-yellow); 
+            margin: .1em 0 20px 0; 
+            text-transform: uppercase; 
+            letter-spacing: 2px; 
+            text-shadow: 0 0 8px rgba(255, 204, 0, 0.8), 0 0 15px rgba(255, 204, 0, 0.4); 
+            border-bottom: 1px dashed rgba(0, 243, 255, 0.3);
+            padding-bottom: 10px;
+        }
+
+        .nav-group {
+            margin-bottom: 18px;
+        }
+        
+        .nav-link {
+            display: inline-block;
+            color: var(--neon-cyan);
+            text-decoration: none;
+            padding: 4px 0;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            text-shadow: 0 0 5px rgba(0, 243, 255, 0.4);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .nav-link:hover {
+            color: #fff;
+            text-shadow: 0 0 8px #fff, 0 0 15px var(--neon-cyan);
+            transform: translateX(5px);
+        }
+
+        .sub-link {
+            display: block;
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.7);
+            padding: 3px 0 3px 15px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .sub-link::before {
+            content: '>';
+            position: absolute;
+            left: 0;
+            color: var(--neon-magenta);
+            opacity: 0.5;
+            transition: all 0.3s ease;
+        }
+
+        .sub-link:hover {
+            color: var(--neon-yellow);
+            text-shadow: 0 0 8px var(--neon-yellow);
+            padding-left: 20px;
+        }
+        
+        .sub-link:hover::before {
+            opacity: 1;
+            text-shadow: 0 0 8px var(--neon-magenta);
+            left: 5px;
+        }
+        
+        .back-home {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 30px;
+            background: rgba(0, 243, 255, 0.1);
+            border: 1px solid var(--neon-cyan);
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-weight: bold;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            text-shadow: 0 0 5px var(--neon-cyan);
+            box-shadow: inset 0 0 10px rgba(0, 243, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .back-home::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 50%; height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255,255,255,0.3), transparent);
+            transform: skewX(-25deg);
+            animation: shine 3s infinite;
+        }
+        
+        .back-home:hover {
+            background: rgba(0, 243, 255, 0.3);
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.5), inset 0 0 15px rgba(0, 243, 255, 0.4);
+            transform: translateY(-2px);
+            border-color: #fff;
+        }
+        
+        .scanline {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.1));
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 50;
+        }
+        
+        .grid-bg {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: -1;
+            background-image: 
+                linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
+                linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 4px, 3px 100%;
+        }
+    </style>
+</head>
+<body class="selection:bg-cyan-500/30">
+    <!-- Background Elements -->
+    <div class="fixed inset-0 pointer-events-none z-[-1]">
+        <img src="gfx-bg-disc-grid.jpg" alt="Fractal Grid" class="absolute top-[-0%] left-[-0%] w-[700px] max-w-[100vw] rotate-180 opacity-60" onerror="this.style.display='none'"/>
+        <img src="gfx-bg-disc-grid.jpg" alt="Fractal Grid" class="absolute bottom-[-0%] right-[-0%] w-[700px] max-w-[100vw] opacity-60" onerror="this.style.display='none'"/>
+    </div>
+    <div class="grid-bg"></div>
+    <div class="fixed inset-0 pointer-events-none z-[-1] opacity-5" style="background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, #ffffff 2px, #ffffff 4px);"></div>
+    <div class="fixed top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-cyan-600/10 blur-[120px] rounded-full pointer-events-none z-[-1]"></div>
+    <div class="scanline"></div>
+
+    <div class="container mx-auto px-4 py-16 min-h-screen flex flex-col justify-center items-center relative z-10">
+        
+        <!-- Header Section -->
+        <div class="mb-12 text-center w-full max-w-4xl">
+            <h1 class="glitch-title">404 <span>//</span> Signal Lost</h1>
+            <div class="h-[1px] w-full bg-gradient-to-r from-transparent via-cyan-500 to-transparent my-6 opacity-50"></div>
+            <p class="text-xl text-cyan-300 mt-2 tracking-wide mx-auto" style="text-shadow: 0 0 5px rgba(0, 243, 255, 0.5);">
+                The neural pathway you requested does not exist in this sector.
+            </p>
+            <p class="text-md text-gray-400 mt-2 tracking-wide font-mono">
+                [ ERROR: SECTOR_NOT_FOUND ] Please reroute using nav matrices below
+            </p>
+            <a href="index.html" class="back-home mt-8">Initialize Main Sequence</a>
+        </div>
+
+        <!-- Directory Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full max-w-7xl mt-4">
+            
+            <!-- Music Column -->
+            <div class="data-module">
+                <h2 class="module-title">Music</h2>
+                
+                <div class="nav-group">
+                    <a href="index.html#?/other-original-music" class="nav-link">Originals</a>
+                    <a href="index.html#?/io-limiters" class="sub-link">IO Limiters</a>
+                    <a href="index.html#?/into-the-southwest" class="sub-link">Into the Southwest</a>
+                    <a href="index.html#?/io-vapoura" class="sub-link">IO Vapoura</a>
+                    <a href="index.html#?/other-original-music" class="sub-link">Others</a>
+                </div>
+
+                <div class="nav-group">
+                    <a href="index.html#?/other-dj-mixes" class="nav-link">DJ Sets</a>
+                    <a href="index.html#?/blood-of-the-moon" class="sub-link">Blood of the Moon</a>
+                    <a href="index.html#?/the-passions" class="sub-link">The Passions</a>
+                    <a href="index.html#?/adhd-revolution" class="sub-link">ADHD Revolution</a>
+                    <a href="index.html#?/other-dj-mixes" class="sub-link">Others</a>
+                </div>
+
+                <div class="nav-group">
+                    <a href="index.html#?/other-remixes" class="nav-link">Remixes</a>
+                    <a href="index.html#?/daft-punk-the-grid-remix" class="sub-link">TH3 GR1D</a>
+                    <a href="index.html#?/a-drowning-remix" class="sub-link">A Drowning</a>
+                    <a href="index.html#?/last-memory-of-fire" class="sub-link">Last Memory of Fire</a>
+                    <a href="index.html#?/other-remixes" class="sub-link">Others</a>
+                </div>
+
+                <div class="nav-group">
+                    <a href="index.html#?/other-mashups" class="nav-link">Mashups</a>
+                    <a href="index.html#?/teardrop-on-roads" class="sub-link">Teardrop on Roads</a>
+                    <a href="index.html#?/making-of-a-violent-cyborg-heart" class="sub-link">Cyborg Heart</a>
+                    <a href="index.html#?/a-drill-about-childhood-in-persia" class="sub-link">Childhood Drill</a>
+                    <a href="index.html#?/other-mashups" class="sub-link">Others</a>
+                </div>
+
+                <div class="nav-group mb-0">
+                    <a href="index.html#?/warriors-in-waiting-live-set" class="nav-link">Live Sets</a>
+                </div>
+            </div>
+
+            <!-- Fractals Column -->
+            <div class="data-module">
+                <h2 class="module-title">Fractals</h2>
+                
+                <div class="nav-group">
+                    <a href="index.html#?/other-pop-art" class="nav-link">Pop Art</a>
+                    <a href="index.html#?/1000-swords" class="sub-link">1000 Swords</a>
+                    <a href="index.html#?/queen-of-the-nile" class="sub-link">Queen of the Nile</a>
+                    <a href="index.html#?/may-angels-take-you" class="sub-link">May Angels Take You</a>
+                    <a href="index.html#?/other-pop-art" class="sub-link">Others</a>
+                </div>
+
+                <div class="nav-group">
+                    <a href="index.html#?/other-fractalscapes" class="nav-link">Fractalscapes</a>
+                    <a href="index.html#?/celestial-return" class="sub-link">Celestial Return</a>
+                    <a href="index.html#?/destination-everywhere" class="sub-link">Destination Everywhere</a>
+                    <a href="index.html#?/1000-colors" class="sub-link">1000 Colors</a>
+                    <a href="index.html#?/other-fractalscapes" class="sub-link">Others</a>
+                </div>
+
+                <div class="nav-group">
+                    <a href="index.html#?/other-fractal-flowers" class="nav-link">Flora</a>
+                    <a href="index.html#?/bloom-of-fire" class="sub-link">Bloom of Fire</a>
+                    <a href="index.html#?/spring-pines" class="sub-link">Spring Pines</a>
+                    <a href="index.html#?/filigree-floranocte" class="sub-link">Filigree Floranocte</a>
+                    <a href="index.html#?/cacti-nova" class="sub-link">Cacti Nova</a>
+                    <a href="index.html#?/other-fractal-flowers" class="sub-link">Others</a>
+                </div>
+
+                <div class="nav-group">
+                    <a href="index.html#?/other-mandelbrot-fractals" class="nav-link">Mandelbrots</a>
+                    <a href="index.html#?/heart-of-the-rose" class="sub-link">Heart of the Rose</a>
+                    <a href="index.html#?/nocturne-of-scorpio" class="sub-link">Scorpio</a>
+                    <a href="index.html#?/mother-of-pearl" class="sub-link">Mother of Pearl</a>
+                    <a href="index.html#?/great-blue-mandelbrot" class="sub-link">Great Blue</a>
+                    <a href="index.html#?/other-mandelbrot-fractals" class="sub-link">Others</a>
+                </div>
+
+                <div class="nav-group mb-0">
+                    <a href="index.html#?/fractal-gifs" class="nav-link">GIFs</a>
+                    <a href="index.html#?/other-fractals" class="nav-link block mt-2">Other</a>
+                </div>
+            </div>
+
+            <!-- Writings Column -->
+            <div class="data-module">
+                <h2 class="module-title">Writings</h2>
+                
+                <div class="nav-group">
+                    <span class="nav-link cursor-default">Fiction</span>
+                    <a href="index.html#?/everything-will-be-ok" class="sub-link">Everything's OK</a>
+                    <a href="index.html#?/memoriam-redacta" class="sub-link">Memoriam Redacta</a>
+                    <a href="index.html#?/bottle-66" class="sub-link">Bottle 66</a>
+                </div>
+
+                <div class="nav-group">
+                    <span class="nav-link cursor-default">Non-Fiction</span>
+                    <a href="index.html#?/spectral-iteration" class="sub-link">Spectral Iteration</a>
+                    <a href="index.html#?/landlore" class="sub-link">Landlore</a>
+                    <a href="index.html#?/at-the-end-of-the-way" class="sub-link">AtEotW</a>
+                </div>
+
+                <div class="nav-group">
+                    <a href="index.html#?/cover-art-others" class="nav-link">Book Covers</a>
+                    <a href="index.html#?/rem" class="sub-link">R.E.M.</a>
+                    <a href="index.html#?/where-rainbows-hide" class="sub-link">Rainbows</a>
+                    <a href="index.html#?/days-and-times-of-power" class="sub-link">Days & Times</a>
+                    <a href="index.html#?/cover-art-others" class="sub-link">Others</a>
+                </div>
+
+                <div class="nav-group mb-0">
+                    <a href="index.html#?/writing-wips" class="nav-link">WIPs + Others</a>
+                </div>
+            </div>
+
+            <!-- System Column -->
+            <div class="data-module">
+                <h2 class="module-title">System</h2>
+                
+                <div class="nav-group">
+                    <a href="index.html#?/others" class="nav-link">Other Works</a>
+                </div>
+                
+                <div class="mt-8 pt-6 border-t border-cyan-900 border-dashed">
+                    <h3 class="text-gray-500 font-mono text-xs uppercase tracking-widest mb-4">Core Directory</h3>
+                    <a href="index.html#?/about" class="sub-link">About SJP</a>
+                    <a href="index.html#?/contact" class="sub-link">Contact</a>
+                    <a href="index.html#?/press" class="sub-link">Press</a>
+                    <a href="index.html#?/bookings" class="sub-link">Booking</a>
+                    <a href="index.html#?/links" class="sub-link">Links</a>
+                    <a href="index.html#?/legal" class="sub-link mt-4 text-[10px] text-gray-600 before:content-none hover:before:content-none hover:padding-left-[15px]">Legal & Copyright</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>
