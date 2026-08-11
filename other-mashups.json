@@ -1,0 +1,52 @@
+{
+  "title": "Other Mashups",
+  "stub": "other-mashups",
+  "header": {
+    "filename": "../other-mashups-header-image.jpeg",
+    "yOffset": 50
+  },
+  "sections": [
+    {
+      "type": "html-right",
+      "content": {
+        "text": "## Clemens Ruh v Shackleton v Moderat - Rusty Nails (Jaya Prime Mashup)\n\nThat incredible cover of \"Rusty Nails\" originally comes from Clemens Ruh. All I did was mutate it, mashing it up with loops from Shackleton's remix of Moderat's original track. Massive shoutout to LiLi Glitch for helping secure a copy of Clemens' cover -- it was actively being hunted down and scrubbed from the net over licensing issues.\n\nClemens had to shut it down himself to call off the heat.\n\nI get it. I've been there time and again. Just like the fans who keep my own \"[Teardrop on Roads](teardrop-on-roads)\" mashup alive by sharing and posting new videos after the powers-that-be nuked my original uploads. I'm just glad I could return the favor for this track, keeping it breathing in a beautifully mutated form.",
+        "html": "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/kyRlB4R4dcc?si=p8dg2-C5OjkWk-AE\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>"
+      }
+    },
+    {
+      "type": "html-right",
+      "content": {
+        "text": "## El-9 v Glitch Mob v NIN v DSekt – All the Warmth in this Memory\n\nThis one's a three-way collision: The Glitch Mob's remix of Evil Nine's \"All the Cash,\" Nine Inch Nails' \"A Warm Place,\" and Downliners Sekt's \"Rewrite Your Memory.\"\n\nHonestly, this was only my second attempt at a mashup EVER. If you listen closely, you can hear the key-dissonance bleeding into the second half... but somehow, a lot of it just turned out right. These are some of my all-time favorite artists, and this track is a raw tribute to that energy.\n\nThis one's available for [download from Bandcamp](https://sanjayaprime.bandcamp.com/album/remixes-and-mashups).",
+        "html": "<iframe style=\"border: 0; width: 550px; height: 670px;\" src=\"https://bandcamp.com/EmbeddedPlayer/album=444374976/size=large/bgcol=333333/linkcol=4ec5ec/tracklist=false/track=2683173792/transparent=true/\" seamless><a href=\"https://store.jayaprime.com/album/remixes-and-mashups\">Remixes and Mashups by San Jaya Prime</a></iframe>"
+      }
+    },
+    {
+      "type": "html-right",
+      "content": {
+        "text": "## PJ Harvey x Juliette Lewis – Hardly Wait\n\nThis is more of a medley than a straight-up mashup. I absolutely love PJ Harvey's original low points and that long, drawn-out, smoky delivery that made the song a legend in the first place. But Lewis? When Juliette took the stage in the movie _Strange Days_, hitting that chorus and screaming at the top of her lungs... I felt like I didn't even know who this person was anymore... but I knew I needed to.\n\nSadly, the copyright bots have hunted this mashup down relentlessly over the years, and even the fan-saved copies have been wiped from the web. It still exists on hard drives, just not online. But I'd be remiss to leave it off the record.\n\nSo instead, I've queued up an incredible fan vid for you that uses the _Strange Days_ footage, but splices it to match up with the Juliette Lewis cover of \"Hardly Wait\" and does an incredible job doing so. If it won't play, maybe they finally got to that one, too. If not, you'll find it [here on YouTube](https://www.youtube.com/watch?v=TlAii5OJ_Pc).",
+        "html": "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/TlAii5OJ_Pc?si=Slbu7LGyFo3uAYqw\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>"
+      }
+    },
+    {
+      "type": "image-right",
+      "content": {
+        "imageFilename": "../other-mashups-image-3.jpeg",
+        "text": "## On Mashup Culture\n\nWhile my \"[Teardrop on Roads](teardrop-on-roads)\" mashup, with more than a hundred million plays (at minimum), is easily my most widespread and best-known creation, I still don't consider myself a mashup artist. Yeah, sure... there's a lot more mashups with my name on them out in the wild. But The Kleptones? Now _that's_ a mashup artist! Mashups are his \"main\", his bread 'n peanut butter. And of course everyone pretty much knows Girl Talk and DJ Earworm. They eat and breathe mashups. Not sure if I'd call Danger Mouse a mashup artist, but he got the bug up his arse to go and make _The Grey Album_, and I mean... come on! Mashing \"The Black Album\" with \"The White Album\"? Once you hear it, you've gotta wonder if Jay-Z himself was planning to do the same when making the original songs.\n\nMy gratitude and -- seriously! -- fucking _appreciation_ for true mashup artists. With my own small handful of mashes over the years, I can tell you that it's decades of fighting one label after another just to keep them alive. Especially if a mash uses songs from different labels, ooohh.... oh they hate that! \"_The fuck you say? Get that other song outta here!\"_ They send guns in blazing! So yeah, fucking bulletproof motherfuckers who've made their name off of mashups.\n\nI'm closing this out with a lesser known mashup collaboration, where many different mashup artists came in and took songs from The Beatles and mashed them up with different David Lynch movie quotes and songs... aka, _Mashed in Plastic_. You can find the survivors [here on YouTube](https://www.youtube.com/@mashedinplastic/videos) (with my top favorite here below)."
+      }
+    },
+    {
+      "type": "video",
+      "content": {
+        "url": "https://www.youtube.com/watch?v=zvSHpVGxB_g"
+      }
+    },
+    {
+      "type": "text",
+      "content": {
+        "texts": [
+          "## Extended Exploration\n\nIf you've loved my mashups, then have you tried my [remixes](other-remixes)? They're coated with a crunchy, candy shell and ready to gobble up. For my own original album that fuses different cultures into a single sound, you'd love my \"[IO Vapoura \\[Variations\\]](io-vapoura)\" LP. . with a bit of commentary in there on my love of hybrids and fusion-everything. Then if you somehow missed it, some of my mashups get mixed into my \"[Blood of the Moon](blood-of-the-moon)\" DJ set."
+        ]
+      }
+    }
+  ]
+}
