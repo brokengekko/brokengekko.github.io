@@ -1,1 +1,741 @@
-https://www.jayaprime.com/#?/
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Jaya Prime Fractal GIF Collection</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&family=Roboto:wght@300;400;700;900&family=Special+Elite&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* Color Palette */
+            --neon-cyan: #00f3ff;
+            --bright-cyan: #8bf6fe;
+            --neon-yellow: #ffcc00;
+            --neon-magenta: #e000ff;
+            --neon-orange: #c2904a;
+            --bg-deep-space: #000000;
+            --bg-dark-blue: #030a16;
+            --bg-dark-purple: #110e25;
+            
+            /* Typography */
+            --font-display: 'Special Elite', cursive;
+            --font-body: 'Roboto', sans-serif;
+            --font-mono: 'Courier Prime', monospace;
+        }
+
+        /* Reset and Base Styles */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-deep-space);
+            background-image: 
+                radial-gradient(circle at 50% 0%, var(--bg-dark-blue) 0%, transparent 60%),
+                radial-gradient(circle at 100% 100%, var(--bg-dark-purple) 0%, transparent 60%);
+            color: #ffffff;
+            font-family: var(--font-body);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Background Textures: Grid and CRT Scanlines */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-image: 
+                linear-gradient(rgba(0, 243, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 243, 255, 0.03) 1px, transparent 1px);
+            background-size: 30px 30px;
+            z-index: -2;
+            pointer-events: none;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(
+                rgba(18, 16, 16, 0) 50%, 
+                rgba(0, 0, 0, 0.25) 50%
+            );
+            background-size: 100% 4px;
+            z-index: 100;
+            pointer-events: none;
+            opacity: 0.6;
+        }
+
+        /* Typography & Layout */
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 4rem;
+            padding-top: 2rem;
+            position: relative;
+        }
+
+        h1 {
+            font-family: var(--font-display);
+            font-size: clamp(2rem, 5vw, 4rem);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #fff;
+            text-shadow: 
+                0 0 8px #fff, 
+                0 0 20px var(--neon-cyan),
+                0 0 40px var(--neon-cyan);
+            margin-bottom: 1.5rem;
+        }
+
+        .portal-link {
+            display: inline-block;
+            font-family: var(--font-mono);
+            font-size: 1.1rem;
+            color: var(--neon-cyan);
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            padding: 1rem 2rem;
+            border: 1px solid var(--neon-cyan);
+            background: rgba(0, 243, 255, 0.1);
+            position: relative;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(4px);
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.2) inset;
+        }
+
+        .portal-link:hover {
+            background: rgba(0, 243, 255, 0.2);
+            box-shadow: 
+                0 0 20px rgba(0, 243, 255, 0.4) inset,
+                0 0 20px rgba(0, 243, 255, 0.4);
+            color: #fff;
+            text-shadow: 0 0 8px #fff, 0 0 15px var(--neon-cyan);
+        }
+
+        .portal-link::before,
+        .portal-link::after {
+            content: '';
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-color: var(--neon-yellow);
+            border-style: solid;
+            transition: all 0.3s ease;
+        }
+
+        .portal-link::before {
+            top: -2px;
+            left: -2px;
+            border-width: 2px 0 0 2px;
+        }
+
+        .portal-link::after {
+            bottom: -2px;
+            right: -2px;
+            border-width: 0 2px 2px 0;
+        }
+
+        /* Gallery Layout */
+        .gallery-grid {
+            /* Masonry-like CSS layout */
+            columns: 1;
+            column-gap: 3rem;
+            position: relative;
+            z-index: 101; /* Elevates entire gallery above body::after scanlines (z-index: 100) */
+        }
+
+        @media (min-width: 768px) {
+            .gallery-grid { columns: 2; }
+        }
+
+        @media (min-width: 1200px) {
+            .gallery-grid { columns: 3; }
+        }
+
+        /* Data Module Cards */
+        .data-module {
+            break-inside: avoid;
+            margin-bottom: 4rem; /* Generous vertical spacing */
+            position: relative;
+            background: rgba(3, 10, 22, 0.65);
+            border: 1px solid rgba(0, 243, 255, 0.3);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            padding: 1.5rem;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            /* Performance optimization */
+            content-visibility: auto;
+            contain: layout style paint;
+        }
+
+        .data-module:hover {
+            border-color: rgba(0, 243, 255, 0.8);
+            box-shadow: 
+                0 0 30px rgba(0, 243, 255, 0.2),
+                inset 0 0 20px rgba(0, 243, 255, 0.1);
+            transform: translateY(-5px) scale(1.01);
+            z-index: 10;
+        }
+
+        /* Corner Brackets */
+        .data-module::before,
+        .data-module::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-color: var(--neon-yellow);
+            border-style: solid;
+            pointer-events: none;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+
+        .data-module::before {
+            top: -2px;
+            left: -2px;
+            border-width: 2px 0 0 2px;
+        }
+
+        .data-module::after {
+            bottom: -2px;
+            right: -2px;
+            border-width: 0 2px 2px 0;
+        }
+
+        .data-module:hover::before,
+        .data-module:hover::after {
+            opacity: 1;
+            box-shadow: 0 0 10px var(--neon-yellow);
+        }
+
+        /* Additional decorative elements for cards */
+        .module-deco-top-right {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            width: 20px;
+            height: 20px;
+            border-top: 2px solid var(--neon-cyan);
+            border-right: 2px solid var(--neon-cyan);
+            pointer-events: none;
+        }
+        
+        .module-deco-bottom-left {
+            position: absolute;
+            bottom: -2px;
+            left: -2px;
+            width: 20px;
+            height: 20px;
+            border-bottom: 2px solid var(--neon-cyan);
+            border-left: 2px solid var(--neon-cyan);
+            pointer-events: none;
+        }
+
+        /* Image Container & Image */
+        .image-wrapper {
+            position: relative;
+            width: 100%;
+            margin-bottom: 1.5rem;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(139, 246, 254, 0.2);
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .image-wrapper::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(to bottom, 
+                transparent 50%, 
+                rgba(0, 243, 255, 0.05) 100%);
+            pointer-events: none;
+        }
+
+        img {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: contain; /* Prevents distortion */
+            /* Scanline effect on hover */
+            transition: filter 0.3s ease;
+        }
+
+        .data-module:hover img {
+            filter: contrast(1.1) brightness(1.1);
+        }
+
+        /* Metadata */
+        .meta-data {
+            border-top: 1px dashed rgba(139, 246, 254, 0.3);
+            padding-top: 1rem;
+            position: relative;
+        }
+
+        .meta-title {
+            font-family: var(--font-mono);
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--neon-yellow);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 0 5px rgba(255, 204, 0, 0.5);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .meta-title::before {
+            content: '>>';
+            color: var(--neon-cyan);
+            font-size: 1rem;
+        }
+
+        .meta-author {
+            font-family: var(--font-body);
+            font-size: 0.9rem;
+            color: var(--bright-cyan);
+            opacity: 0.8;
+            letter-spacing: 0.05em;
+        }
+
+        footer {
+            text-align: center;
+            padding: 4rem 0 2rem;
+            margin-top: 2rem;
+            border-top: 1px solid rgba(0, 243, 255, 0.2);
+            background: linear-gradient(to top, rgba(0,243,255,0.05) 0%, transparent 100%);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>The Jaya Prime<br>Fractal GIF Collection</h1>
+        <a href="http://www.jayaprime.com/#?/fractal-gifs" class="portal-link">
+            <span aria-hidden="true">&larr;</span> Return to Main Portal
+        </a>
+    </header>
+
+    <main class="gallery-grid">
+        
+        <!-- CARD 1: Alien Clockkeeper (LCP Optimized) -->
+        <article class="data-module">
+            <div class="module-deco-top-right"></div>
+            <div class="module-deco-bottom-left"></div>
+            <div class="image-wrapper">
+                <img src="jayaprime-gif-alienclockkeeper.webp" 
+                     alt="Alien Clockkeeper - Fractal Art by Jaya Prime" 
+                     fetchpriority="high"
+                     decoding="async">
+            </div>
+            <div class="meta-data">
+                <h2 class="meta-title">Alien Clockkeeper</h2>
+                <p class="meta-author">By Jaya Prime</p>
+            </div>
+        </article>
+
+        <!-- CARD 2: Bending Space (LCP Optimized) -->
+        <article class="data-module">
+            <div class="module-deco-top-right"></div>
+            <div class="module-deco-bottom-left"></div>
+            <div class="image-wrapper">
+                <img src="jayaprime-gif-bendingspace.webp" 
+                     alt="Bending Space - Fractal Art by Jaya Prime" 
+                     fetchpriority="high"
+                     decoding="async">
+            </div>
+            <div class="meta-data">
+                <h2 class="meta-title">Bending Space</h2>
+                <p class="meta-author">By Jaya Prime</p>
+            </div>
+        </article>
+
+        <!-- CARD 3: Bloom of Fire -->
+        <article class="data-module">
+            <div class="module-deco-top-right"></div>
+            <div class="module-deco-bottom-left"></div>
+            <div class="image-wrapper">
+                <img src="jayaprime-gif-bloomoffire.webp" 
+                     alt="Bloom of Fire - Fractal Art by Jaya Prime" 
+                     loading="lazy"
+                     decoding="async">
+            </div>
+            <div class="meta-data">
+                <h2 class="meta-title">Bloom of Fire</h2>
+                <p class="meta-author">By Jaya Prime</p>
+            </div>
+        </article>
+
+        <!-- CARD 4: Collapse -->
+        <article class="data-module">
+            <div class="module-deco-top-right"></div>
+            <div class="module-deco-bottom-left"></div>
+            <div class="image-wrapper">
+                <img src="jayaprime-gif-collapse.gif" 
+                     alt="Collapse - Fractal Art by Jaya Prime" 
+                     loading="lazy"
+                     decoding="async">
+            </div>
+            <div class="meta-data">
+                <h2 class="meta-title">Collapse</h2>
+                <p class="meta-author">By Jaya Prime</p>
+            </div>
+        </article>
+
+        <!-- CARD 5: Crescent Moon -->
+        <article class="data-module">
+            <div class="module-deco-top-right"></div>
+            <div class="module-deco-bottom-left"></div>
+            <div class="image-wrapper">
+                <img src="jayaprime-gif-crescentmoon.webp" 
+                     alt="Crescent Moon - Fractal Art by Jaya Prime" 
+                     loading="lazy"
+                     decoding="async">
+            </div>
+            <div class="meta-data">
+                <h2 class="meta-title">Crescent Moon</h2>
+                <p class="meta-author">By Jaya Prime</p>
+            </div>
+        </article>
+
+        <!-- CARD 6: Crystal Ball -->
+        <article class="data-module">
+            <div class="module-deco-top-right"></div>
+            <div class="module-deco-bottom-left"></div>
+            <div class="image-wrapper">
+                <img src="jayaprime-gif-crystalball.webp" 
+                     alt="Crystal Ball - Fractal Art by Jaya Prime" 
+                     loading="lazy"
+                     decoding="async">
+            </div>
+            <div class="meta-data">
+                <h2 class="meta-title">Crystal Ball</h2>
+                <p class="meta-author">By Jaya Prime</p>
+            </div>
+        </article>
+
+        <!-- CARD 7: Crystalline Cross -->
+        <article class="data-module">
+            <div class="module-deco-top-right"></div>
+            <div class="module-deco-bottom-left"></div>
+            <div class="image-wrapper">
+                <img src="jayaprime-gif-crystallinecross.webp" 
+                     alt="Crystalline Cross - Fractal Art by Jaya Prime" 
+                     loading="lazy"
+                     decoding="async">
+            </div>
+            <div class="meta-data">
+                <h2 class="meta-title">Crystalline Cross</h2>
+                <p class="meta-author">By Jaya Prime</p>
+            </div>
+        </article>
+
+        <!-- CARD 8: Cyanide and Happiness -->
+        <article class="data-module">
+            <div class="module-deco-top-right"></div>
+            <div class="module-deco-bottom-left"></div>
+            <div class="image-wrapper">
+                <img src="jayaprime-gif-cyanideandhappiness.gif" 
+                     alt="Cyanide and Happiness - Fractal Art by Jaya Prime" 
+                     loading="lazy"
+                     decoding="async">
+            </div>
+            <div class="meta-data">
+                <h2 class="meta-title">Cyanide and Happiness</h2>
+                <p class="meta-author">By Jaya Prime</p>
+            </div>
+        </article>
+
+        <!-- CARD 9: Dark Carnival -->
+        <article class="data-module">
+            <div class="module-deco-top-right"></div>
+            <div class="module-deco-bottom-left"></div>
+            <div class="image-wrapper">
+                <img src="jayaprime-gif-darkcarnival.webp" 
+                     alt="Dark Carnival - Fractal Art by Jaya Prime" 
+                     loading="lazy"
+                     decoding="async">
+            </div>
+            <div class="meta-data">
+                <h2 class="meta-title">Dark Carnival</h2>
+                <p class="meta-author">By Jaya Prime</p>
+            </div>
+        </article>
+
+        <!-- CARD 10: Extraplanar Cartomancy -->
+        <article class="data-module">
+            <div class="module-deco-top-right"></div>
+            <div class="module-deco-bottom-left"></div>
+            <div class="image-wrapper">
+                <img src="jayaprime-gif-extraplanarcartomancy.webp" 
+                     alt="Extraplanar Cartomancy - Fractal Art by Jaya Prime" 
+                     loading="lazy"
+                     decoding="async">
+            </div>
+            <div class="meta-data">
+                <h2 class="meta-title">Extraplanar Cartomancy</h2>
+                <p class="meta-author">By Jaya Prime</p>
+            </div>
+        </article>
+
+        <!-- CARD 11: Gearbox Illusion -->
+        <article class="data-module">
+            <div class="module-deco-top-right"></div>
+            <div class="module-deco-bottom-left"></div>
+            <div class="image-wrapper">
+                <img src="jayaprime-gif-gearboxillusion.webp" 
+                     alt="Gearbox Illusion - Fractal Art by Jaya Prime" 
+                     loading="lazy"
+                     decoding="async">
+            </div>
+            <div class="meta-data">
+                <h2 class="meta-title">Gearbox Illusion</h2>
+                <p class="meta-author">By Jaya Prime</p>
+            </div>
+        </article>
+
+        <!-- CARD 12: HAL 9000 -->
+        <article class="data-module">
+            <div class="module-deco-top-right"></div>
+            <div class="module-deco-bottom-left"></div>
+            <div class="image-wrapper">
+                <img src="jayaprime-gif-hal9000.gif" 
+                     alt="HAL 9000 - Fractal Art by Jaya Prime" 
+                     loading="lazy"
+                     decoding="async">
+            </div>
+            <div class="meta-data">
+                <h2 class="meta-title">HAL 9000</h2>
+                <p class="meta-author">By Jaya Prime</p>
+            </div>
+        </article>
+
+        <!-- CARD 13: Inverse Snowflakes -->
+        <article class="data-module">
+            <div class="module-deco-top-right"></div>
+            <div class="module-deco-bottom-left"></div>
+            <div class="image-wrapper">
+                <img src="jayaprime-gif-inversesnowflakes.webp" 
+                     alt="Inverse Snowflakes - Fractal Art by Jaya Prime" 
+                     loading="lazy"
+                     decoding="async">
+            </div>
+            <div class="meta-data">
+                <h2 class="meta-title">Inverse Snowflakes</h2>
+                <p class="meta-author">By Jaya Prime</p>
+            </div>
+        </article>
+
+        <!-- CARD 14: Jolly Atom -->
+        <article class="data-module">
+            <div class="module-deco-top-right"></div>
+            <div class="module-deco-bottom-left"></div>
+            <div class="image-wrapper">
+                <img src="jayaprime-gif-jollyatom.gif" 
+                     alt="Jolly Atom - Fractal Art by Jaya Prime" 
+                     loading="lazy"
+                     decoding="async">
+            </div>
+            <div class="meta-data">
+                <h2 class="meta-title">Jolly Atom</h2>
+                <p class="meta-author">By Jaya Prime</p>
+            </div>
+        </article>
+
+        <!-- CARD 15: Lemon Twist -->
+        <article class="data-module">
+            <div class="module-deco-top-right"></div>
+            <div class="module-deco-bottom-left"></div>
+            <div class="image-wrapper">
+                <img src="jayaprime-gif-lemontwist.webp" 
+                     alt="Lemon Twist - Fractal Art by Jaya Prime" 
+                     loading="lazy"
+                     decoding="async">
+            </div>
+            <div class="meta-data">
+                <h2 class="meta-title">Lemon Twist</h2>
+                <p class="meta-author">By Jaya Prime</p>
+            </div>
+        </article>
+
+        <!-- CARD 16: Limelight Illusion -->
+        <article class="data-module">
+            <div class="module-deco-top-right"></div>
+            <div class="module-deco-bottom-left"></div>
+            <div class="image-wrapper">
+                <img src="jayaprime-gif-limelightillusion.webp" 
+                     alt="Limelight Illusion - Fractal Art by Jaya Prime" 
+                     loading="lazy"
+                     decoding="async">
+            </div>
+            <div class="meta-data">
+                <h2 class="meta-title">Limelight Illusion</h2>
+                <p class="meta-author">By Jaya Prime</p>
+            </div>
+        </article>
+
+        <!-- CARD 17: Nothing But Love -->
+        <article class="data-module">
+            <div class="module-deco-top-right"></div>
+            <div class="module-deco-bottom-left"></div>
+            <div class="image-wrapper">
+                <img src="jayaprime-gif-nothingbutlove.gif" 
+                     alt="Nothing But Love - Fractal Art by Jaya Prime" 
+                     loading="lazy"
+                     decoding="async">
+            </div>
+            <div class="meta-data">
+                <h2 class="meta-title">Nothing But Love</h2>
+                <p class="meta-author">By Jaya Prime</p>
+            </div>
+        </article>
+
+        <!-- CARD 18: Show Me More -->
+        <article class="data-module">
+            <div class="module-deco-top-right"></div>
+            <div class="module-deco-bottom-left"></div>
+            <div class="image-wrapper">
+                <img src="jayaprime-gif-showmemore.webp" 
+                     alt="Show Me More - Fractal Art by Jaya Prime" 
+                     loading="lazy"
+                     decoding="async">
+            </div>
+            <div class="meta-data">
+                <h2 class="meta-title">Show Me More</h2>
+                <p class="meta-author">By Jaya Prime</p>
+            </div>
+        </article>
+
+        <!-- CARD 19: Solar Winds -->
+        <article class="data-module">
+            <div class="module-deco-top-right"></div>
+            <div class="module-deco-bottom-left"></div>
+            <div class="image-wrapper">
+                <img src="jayaprime-gif-solarwinds.webp" 
+                     alt="Solar Winds - Fractal Art by Jaya Prime" 
+                     loading="lazy"
+                     decoding="async">
+            </div>
+            <div class="meta-data">
+                <h2 class="meta-title">Solar Winds</h2>
+                <p class="meta-author">By Jaya Prime</p>
+            </div>
+        </article>
+
+        <!-- CARD 20: Star Ribbon -->
+        <article class="data-module">
+            <div class="module-deco-top-right"></div>
+            <div class="module-deco-bottom-left"></div>
+            <div class="image-wrapper">
+                <img src="jayaprime-gif-starribbon.webp" 
+                     alt="Star Ribbon - Fractal Art by Jaya Prime" 
+                     loading="lazy"
+                     decoding="async">
+            </div>
+            <div class="meta-data">
+                <h2 class="meta-title">Star Ribbon</h2>
+                <p class="meta-author">By Jaya Prime</p>
+            </div>
+        </article>
+
+        <!-- CARD 21: Study of Snowflakes -->
+        <article class="data-module">
+            <div class="module-deco-top-right"></div>
+            <div class="module-deco-bottom-left"></div>
+            <div class="image-wrapper">
+                <img src="jayaprime-gif-studyofsnowflakes.webp" 
+                     alt="Study of Snowflakes - Fractal Art by Jaya Prime" 
+                     loading="lazy"
+                     decoding="async">
+            </div>
+            <div class="meta-data">
+                <h2 class="meta-title">Study of Snowflakes</h2>
+                <p class="meta-author">By Jaya Prime</p>
+            </div>
+        </article>
+
+        <!-- CARD 22: Study of Triangles -->
+        <article class="data-module">
+            <div class="module-deco-top-right"></div>
+            <div class="module-deco-bottom-left"></div>
+            <div class="image-wrapper">
+                <img src="jayaprime-gif-studyoftriangles.webp" 
+                     alt="Study of Triangles - Fractal Art by Jaya Prime" 
+                     loading="lazy"
+                     decoding="async">
+            </div>
+            <div class="meta-data">
+                <h2 class="meta-title">Study of Triangles</h2>
+                <p class="meta-author">By Jaya Prime</p>
+            </div>
+        </article>
+
+        <!-- CARD 23: Synaptic Spine -->
+        <article class="data-module">
+            <div class="module-deco-top-right"></div>
+            <div class="module-deco-bottom-left"></div>
+            <div class="image-wrapper">
+                <img src="jayaprime-gif-synapticspine.webp" 
+                     alt="Synaptic Spine - Fractal Art by Jaya Prime" 
+                     loading="lazy"
+                     decoding="async">
+            </div>
+            <div class="meta-data">
+                <h2 class="meta-title">Synaptic Spine</h2>
+                <p class="meta-author">By Jaya Prime</p>
+            </div>
+        </article>
+
+        <!-- CARD 24: Tidal Turbulence -->
+        <article class="data-module">
+            <div class="module-deco-top-right"></div>
+            <div class="module-deco-bottom-left"></div>
+            <div class="image-wrapper">
+                <img src="jayaprime-gif-tidalturbulence.webp" 
+                     alt="Tidal Turbulence - Fractal Art by Jaya Prime" 
+                     loading="lazy"
+                     decoding="async">
+            </div>
+            <div class="meta-data">
+                <h2 class="meta-title">Tidal Turbulence</h2>
+                <p class="meta-author">By Jaya Prime</p>
+            </div>
+        </article>
+
+    </main>
+
+    <footer>
+        <a href="http://www.jayaprime.com/#?/fractal-gifs" class="portal-link">
+            <span aria-hidden="true">&larr;</span> Return to Main Portal
+        </a>
+    </footer>
+</div>
+
+</body>
+</html>
