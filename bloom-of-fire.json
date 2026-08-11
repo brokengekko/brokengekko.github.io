@@ -1,0 +1,72 @@
+{
+  "title": "Bloom of Fire",
+  "stub": "bloom-of-fire",
+  "header": {
+    "filename": "../bloom-of-fire-header-image.jpeg",
+    "yOffset": 50
+  },
+  "sections": [
+    {
+      "type": "table-right",
+      "content": {
+        "tables": [
+          {
+            "title": "./NFO{\"BLOOM OF FIRE\"}",
+            "rows": [
+              {
+                "label": "Method",
+                "value": "Butterfly Separation"
+              },
+              {
+                "label": "Genus",
+                "value": "Fractal Flower"
+              },
+              {
+                "label": "Software",
+                "value": "Apophysis, Photoshop"
+              },
+              {
+                "label": "Designer",
+                "value": "San Jaya Prime"
+              }
+            ],
+            "color": "yellow",
+            "width": 35
+          }
+        ],
+        "text": "## Bloom of Fire\n\n_aka, \"The Red Dahlia\"_\n\nMy award-winning, multi-feature fractal flower \"Bloom of Fire\" has easily become the very symbol of my many, many fractal flowers since. She also appeared in my book \"[Spectral Iteration](spectral-iteration)\" during the main sequence early on, then later as a borderless single-page feature in the book.\n\nThis was my very first attempt at the \"butterfly method\" for creating fractal flowers, a method that gives this nice <span style=\"font-family: inherit;\">split-</span><span style=\"font-family: inherit;\">winged aesthetic to each of the petals. Since then, I've used it only two other times -- with my \"[India Inferno](other-fractal-flowers)\" and \"[Heart of Winter](other-fractal-flowers)\" fractal flower. The rarity here is because the method _only_ works on two rare, specific version of Apophysis.. and takes days to render. It's also a fragile method that often crashes mid-render.</span>\n\n<span style=\"font-family: inherit;\">The \"Bloom of Fire\" took eleven days to render.</span>\n\n<span style=\"font-family: inherit;\">\\[[Prints + More on Redbubble](https://www.redbubble.com/shop/ap/22712781)\\]</span>"
+      }
+    },
+    {
+      "type": "image",
+      "content": {
+        "imageFilename": "../bloom-of-fire-image-1.jpeg",
+        "caption": "_\"Bloom of Fire\"_ by **San Jaya Prime** ([Redbubble](https://www.redbubble.com/shop/ap/22712781))"
+      }
+    },
+    {
+      "type": "quote",
+      "content": {
+        "texts": [
+          "\"I have seen the true path. I will not warm myself by the fire -- I will become the flame.\"",
+          "\\- Lim-Dul, the Necromancer"
+        ]
+      }
+    },
+    {
+      "type": "image-right",
+      "content": {
+        "imageFilename": "../bloom-of-fire-image-2.jpeg",
+        "text": "## Worth the Wait\n\nRendered at a massive 9000-pixels squared, \"Bloom of Fire\" remains one of my most detailed and intricate non-Mandelbrot fractals (aka, \"flames\"). I believe The Skybreak Tribe has the largest existing print in existence, where my incredible nephew Nico has moved it into his room. Red is, afterall, his favorite color. Seeing the details in the print makes it all worth it.\n\nIt isn't the first time I took on a difficult and complicated design like that. In fact, despite the \"freaking out\" parts, I prefer the difficulty. It means it's hard to replicate. At the time, it was humans that I was worried about. Now with the rise of AI, I consider it a badge of honor that the machines have yet to properly dive into the true intricacy of fractals.\n\nI'm not naive though; in fact, if anything, I'm _more_ clear on the potentials -- threats _and_ benefits, both -- of artificial intelligence. I know that the clock is ticking...\n\n...and I welcome it.\n\nUntil then, however, the \"Bloom of Fire\" remains a vibrant, unique source of warmth to all those who've bathed in her light and colors.\n\n\\[[Prints + More on Redbubble](https://www.redbubble.com/shop/ap/22712781)\\]"
+      }
+    },
+    {
+      "type": "text",
+      "content": {
+        "texts": [
+          "## Extended Exploration\n\nMy book \"[Spectral Iteration](spectral-iteration)\" explores (across many pages) how fractals connect to the natural world. Flowers are just one aspect of that. My \"[Spring Pines](spring-pines)\" design looks at a different aspect, while my fractal flower \"[Filigree Floranocte](filigree-floranocte)\" remains one of my most popular. Then for my fellow desert lovers, you don't want to miss my \"[Cacti Nova](cacti-nova)\" design. In fact, from those designs, my friend Jeff (aka, \"Teron Solus\") owns desk mats of both \"Spring Pines\" ([Redbubble](https://www.redbubble.com/shop/ap/26119961)) and \"Cacti Nova\" ([Redbubble](https://www.redbubble.com/shop/ap/28667423)), while my friend Noir Angel owns a desk mat with \"Filigree Floranocte\" ([Redbubble](https://www.redbubble.com/shop/ap/32507698))."
+        ]
+      }
+    }
+  ]
+}
