@@ -1,0 +1,83 @@
+{
+  "title": "The Great Blue Mandelbrot",
+  "stub": "great-blue-mandelbrot",
+  "header": {
+    "filename": "../great-blue-mandelbrot-header-image.jpeg",
+    "yOffset": 50
+  },
+  "sections": [
+    {
+      "type": "image-right",
+      "content": {
+        "imageFilename": "../great-blue-mandelbrot-image-0.jpeg",
+        "text": "## The Great Blue Mandelbrot\n\nAs with any true fractal from the Mandelbrot Set, the coordinates, zoom-level, and rotation can be shared with others. They can use these to return to the same exact place where the fractal itself was \"explored\" and, in this case, that brings you here:\n\n*   **Coordinates** = -1.2558906936785, 0.38082883690995\n*   **Zoom** = 453.44918\n*   **Rotation** = 90\n\nThe original fractal that would lead into this design actually appeared in my book \"[Spectral Iteration](spectral-iteration)\", but as an amber-yellow gridlocked Mandelbrot fractal. For this new version, I was inspired by The Great Blue Hole ([Wikipedia](https://en.wikipedia.org/wiki/Great_Blue_Hole)) and my love of maps... which, for those who don't know, I've been creating my own maps as I traveled ever since the summer of 2000.. . I've filled books with them! I wanted a design that featured the Mandelbrot Set as if it was an island or a reef similar to The Great Blue Hole.. and in the form of a map.\n\nTo those ends, I believe I achieved that.\n\n\\[[Prints + More on Redbubble](https://www.redbubble.com/shop/ap/40756165)\\]\n\nNote: The alternate \"Set Course for the Stars\" version that you see on the right is available separately on Redbubble ([link](https://www.redbubble.com/shop/ap/40981688)) as prints, posters, and much more."
+      }
+    },
+    {
+      "type": "image",
+      "content": {
+        "imageFilename": "../great-blue-mandelbrot-image-1.jpeg",
+        "caption": "_\"The Great Blue Mandelbrot\"_ by **San Jaya Prime** ([Redbubble](https://www.redbubble.com/shop/ap/40756165))"
+      }
+    },
+    {
+      "type": "image-right",
+      "content": {
+        "imageFilename": "../great-blue-mandelbrot-image-2.jpeg",
+        "text": "## Julia Island\n\nThere's one other source of inspiration that needs to be mentioned, which is \"Julia Island\" ([Wikimedia](https://commons.wikimedia.org/wiki/File:Julia_island2.jpg)) by Alexis Monnerot Dumaine that you see here on the right. It's truly one of the crowning jewels of fractal art to ever be created. This semi-spherical blue marble on which we reside rarely follows Euclidean geometry.. . we do not live in a world of perfect lines, squares, and triangles... no matter how the angular cities of humans may try to say otherwise. The world is instead bound on the laws of fractal geometry. It's rough, jagged, and doesn't easily fit inside the \"box\" that the human psyche wants so desperately to shove it inside of. It's messy. It's... . broken.. fractured.\n\n## The Coastline Paradox\n\nThat brings us to the advent of fractal geometry... _coastlines_. It was Lewis Fry Richardson who brought it up, wondering why Portugal claimed their border with Spain was nearly 300-kilometers _less_ than what Spain claimed it was. Both countries had measured the border and come up with drastically different numbers. If you use a meter stick to measure, you would come up with a smaller length than if you used a smaller measurement device, with the length growing longer and longer the smaller the device you used.\n\nThen along came Mandelbrot with his paper \"How Long Is the Coast of Britain?\" on fractal geometry, where he absurdly stated that you only needed to measure a few iterative parts of the coast, and not the entire thing. Then just simply repeat the calculation. Because most coastlines, borders, or other bounding segments in nature are self-similar; _they follow a pattern_. Fractal geometry was the answer to this paradox."
+      }
+    },
+    {
+      "type": "quote",
+      "content": {
+        "texts": [
+          "\"For most of my life, one of the persons most baffled by my own work was myself.\"",
+          "\\- Benoit Mandelbrot"
+        ]
+      }
+    },
+    {
+      "type": "image",
+      "content": {
+        "imageFilename": "../great-blue-mandelbrot-image-4.jpeg",
+        "caption": "Revelation of the grid within _\"The Great Blue Mandelbrot\"_"
+      }
+    },
+    {
+      "type": "image-right",
+      "content": {
+        "imageFilename": "../great-blue-mandelbrot-image-5.jpeg",
+        "text": "## The Crosshatch Method\n\nIt was fellow fractalist Lamblyn ([DeviantArt](https://www.deviantart.com/lamblyn)) who blew my mind when she taught me that Ultra Fractal had a method to apply a mathematically perfect grid that tuned itself to the Mandelbrot Set itself, even automatically aligning based on rotation and zoom. At that point, I'd been making fractals for a decade and couldn't believe no one before had used the method, let alone told me about it. _She was brilliant!_ (still is, btdubz)\n\nThat method was in fact the key to my original \"Mandelbrot's Golden Heart\" that appeared in my book \"[Spectral Iteration](spectral-iteration)\" along with the earlier \"Spectral Recursion\" series of fractals. You can see a bit of it in the bottom-right quadrant of the previews here on the right.\n\nThe crosshatch function and method is very robust. You can have one fractal layer attached to it, with all the lines perfectly vertical and horizontal, then you can add an adjustment layer mirroring the first fractal, yet rotate it at 45-degrees to get an entirely new grid at different angles. Then of course, per the function's namesake, it's also amazing at crosshatch-style shading which was likely the original intention for the function. It just so happens that it also works for making grids.\n\nThat final key, the function itself, would unlock the lines on the map in the final fractal design itself that'd been banging around my skull for years."
+      }
+    },
+    {
+      "type": "video",
+      "content": {
+        "url": "https://www.youtube.com/watch?v=DhKQbxGuZdU"
+      }
+    },
+    {
+      "type": "text",
+      "content": {
+        "texts": [
+          "## The Fractal Museum + The Fractal Foundation\n\nThere is no fractal museum on Terra. There have been exhibits at other museums, but no dedicated space that is unique to fractal geometry and fractal art. None. I searched for years. During the years that I was in and out of France, I searched Paris especially, since this is where Gaston Julia taught the young Benoit Mandelbrot the early seeds of fractal geometry. _I mean, this has to be the place right?_ Where a young refugee jew who would alter the course of science and mathematics first learned it? I was wrong.\n\nAfter years of fruitless searching, in late 2019, I took matters into my own hands and began raising funds. Hence the video above. I didn't get far. Two months into it and I caught the first wave of COVID-19 while doing an art show at EAST. They didn't even know what it was at that time. Then Pocket-One, my first van -- my home and mobile art studio -- literally turned off while I was driving her and never turned back on again. I knew I needed a job to even just survive, so I searched the site Indeed for the word: \"overnight\" (again, I'm nocturnal by nature). I found two promising ones, with the choice between some company called Procore and the other was doing cybersecurity again, but this time for the airport.\n\nI've been with Procore ever since.\n\nIn fact, I moved with the company to Costa Rica where I now reside, working with our international teams all around the globe. 2020 and the pandemic shut it all down... but some things survived.\n\nOut of Albuquerque's Kaos Club was born The Fractal Foundation ([Main Site](https://fractalfoundation.org/fractal-shows/)). On the first Friday of every month, the foundation hosts educational fractal shows, followed by more entertainment-focused shows across the entire planetarium. I've since split my energies between turning other people onto them, so that they can enjoy fractal geometry in person... then designing a mobile, traveling fractal museum that can travel from fairs, to festivals, all the way to temporary spaces like Burning Man.\n\nWhile I was fundraising for those brief months, with \"The Great Blue Mandelbrot\" as a centerpiece and \"thank you\" gift for those who donated, a fan turned me on the \"Mandelmap\" poster made by Bill Tavis ([Amazon](https://www.amazon.com/dp/B01MG2OAYI)). For anyone who likes my fractal maps, you've really got to see what Tavis created. _It's beeeeaaaaauuuutiful!_ Not only has he created an incredible piece of art that is also informative, but sadly -- and a situation I know all too well personally -- it's been stolen quite a few different times. It was even included in subscription box programs where they messed up the poster itself and never paid Bill a penny.\n\nFor any artists out there with any measure of a following, it's a story that repeats over and over. At this very moment, there are more than a thousand stolen pieces of my own art on the Amazon store. My friend Teron shared a video from Nerdforge ([YouTube](https://www.youtube.com/watch?v=qh2RN4pDga4)) who had their amazing booknook illusion stolen and sold on Amazon. Then my friend Jaime Ibarra had to _\"release the monkeys\"_ (literally his words) when Walmart in Australia started selling shirts with his more famous photos on them. I've written more about thievery like this in my \"[Bangles del Aguila](bangles-del-aguila)\" entry right here on the site.\n\nIt's not AI that I'm worried about stealing my art. It's humans.\n\nThe one true place that you can buy my art, including The Great Blue Mandelbrot, is from [my Redbubble fractal store](https://www.redbubble.com/people/jayaprime/shop)."
+        ]
+      }
+    },
+    {
+      "type": "image",
+      "content": {
+        "imageFilename": "../great-blue-mandelbrot-image-8.jpeg",
+        "caption": "_\"Terra Prime\"_ fractal map by **San Jaya Prime** ([Redbubble](https://www.redbubble.com/shop/ap/49238924))"
+      }
+    },
+    {
+      "type": "text",
+      "content": {
+        "texts": [
+          "## Extended Exploration\n\nIf you like classic Mandelbrot designs, you should really see my \"[Heart of the Rose](heart-of-the-rose)\" fractal mural which, at an incredible 15-meters by 9-meters, remains my largest mural ever created. While it's my most famous (and most stolen) Mandelbrot, my best-seller is actually my \"[Mother of Pearl](mother-of-pearl)\" design, yet my most stolen Mandelbrot goes to my \"[Nocturne of Scorpio](nocturne-of-scorpio)\" fractal painting.\n\n### With Love + Gratitude\n\nWhere to even start? So many helped with input on the design, and even in that brief moment of fund raising we gathered some donors. _Thank YOU!_ Even at the worst timing in the world, it matters more than you know. Shout out in so much love and crazy gratitude to our donors: Mark Mandel, Mel Goss, Cyberius Rex, Cosmic Cowboy, Nathan Otto, Alaric Cole, SJ Aken-Linke, Amber Lupton, and Anderson Envy. Then also who helped with insights into the art itself: Aswini of SESA PURE, Debbie of Austin Batworks, LiLi Glitch, Janet Brooks, and Mark Mandel. These are the names you'll be seeing again when the traveling museum itself first sets sail. _Remember them!_"
+        ]
+      }
+    }
+  ]
+}
