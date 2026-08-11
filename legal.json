@@ -1,0 +1,41 @@
+{
+  "title": "Legal",
+  "stub": "legal",
+  "header": {
+    "filename": "../about-me-header-image.jpeg",
+    "yOffset": 50
+  },
+  "sections": [
+    {
+      "type": "text",
+      "content": {
+        "texts": [
+          "## Copyright Kan Mencabanix Lamat\n\nThis website and all content herein is copyright **Kan Mencabanix Lamat**; DBA, **San Jaya Prime**; DBA, **Kantiki Jayamana Whateva**.\n\nThis pertains to the visual and audio arts, to the writings, and to the code itself.\n\nIf you would like a similar website, then start with:\n\n1.  Writing the outline for the articles you want\n2.  Writing the content for those articles\n3.  Putting the images together you want for your site\n4.  Then drawing or having AI generate a rough draft image of what your site would look like\n\nIf you have all of those, then [hit me up](http://localhost:8000/#?/contact). I've taught multiple students vibe coding and can walk you through the same.\n\n© Kan Mencabanix Lamat, All Rights Reserved"
+        ]
+      }
+    },
+    {
+      "type": "text",
+      "content": {
+        "texts": [
+          "### The Bias (+ The $20)\n\nAs of December 2009, the FTC mandates that influencers disclose any hidden interests or unspoken biases when making recommendations. Let me save us both some time: every single piece of content on this site is dripping with bias. I've collaborated with over 5,000 artists, musicians, influencers, and celebrities over my lifetime. You should safely assume that every word and reference here involves money changing hands, heavy bias, a sex scandal behind at least half of it, and Jimmy -- goddammit, Jimmy! -- you STILL fucking owe me that $20!\n\n### The Ass-Covering Clause\n\nTo cover my ass and keep your reading experience completely uninterrupted, please assume that for every recommendation, link, and product I endorse, the following holds absolutely true:"
+        ]
+      }
+    },
+    {
+      "type": "image",
+      "content": {
+        "imageFilename": "../legal-image-1.jpeg",
+        "caption": "Assume that all content on this site was bought, bribed, and otherwise paid for in some form or another. While these images have been updated, they're based on the original epic series by **Jeannine Schafer** (aka, \"Neener Bot\") ([Instagram](https://www.instagram.com/neenerbot/)) and **Louise Gray** ([Instagram](https://www.instagram.com/louisegray__/))"
+      }
+    },
+    {
+      "type": "text",
+      "content": {
+        "texts": [
+          "### The Hustle\n\nMake no mistake, this blog has financial motivations. Official links to my media and merch are plastered everywhere. I'll even be dropping a donation link, because I am absolutely not above digital panhandling. This site exists to promote the people, places, and things that I love -- including the rides and random souls I meet out on the road, all of whom the FTC would demand I formally disclose.\n\n**Bottom Line**: when someone spits the phrase \"capitalist bastard,\" I want it to be my hairy white a$$ flashing through your imagination (pun intended). _Got that, fleshie?_"
+        ]
+      }
+    }
+  ]
+}

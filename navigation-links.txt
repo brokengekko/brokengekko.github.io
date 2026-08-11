@@ -1,0 +1,101 @@
+Main menu (tier-1):
+Music
+Fractals
+Writings
+Other
+
+Music menu (tier-2):
+Originals
+DJ Sets
+Remixes
+Mashups
+Live
+
+Fractals menu (tier-2):
+Pop Art
+Fractalscapes
+Flowers
+Mandelbrots
+GIFs
+
+Writings menu (tier-2):
+Fiction
+Non-Fiction
+Book Covers
+WIPs
+Others
+
+Originals menu (tier-3 Main > Music > Originals):
+IO Limiters
+Into the Southwest
+IO Vapoura
+Others
+
+DJ Sets menu (tier-3 Main > Music > DJ Sets):
+Blood of the Moon
+Dreamstep
+The HF
+Others
+
+Remixes (tier-3 Main > Music > Remixes):
+TH3 GR1D
+A Drowning
+Drive It Like You Stole It
+Others
+
+Mashups (tier-3 Main > Music > Mashups):
+Teardrop on Roads
+All the Warmth
+Cyborg Heart
+Others
+
+Pop Art menu (tier-3 Main > Fractals > Pop Art):
+1000 Swords
+May Angels Take You
+Queen of the Nile
+Others
+
+Fractalscapes (tier-3 Main > Fractals > Fractalscapes):
+Celestial Return
+1000 Colors
+Destination Everywhere
+Others
+
+Flora (tier-3 Main > Fractals > Flora):
+Bloom of Fire
+Spring Pines
+Bohemia
+Cacti Nova
+Others
+
+Mandelbrots (tier-3 Main > Fractals > Mandelbrots):
+Heart of the Rose
+Scorpio
+Mother of Pearl
+Saltlife
+Others
+
+Fiction menu (tier-3 Main > Books > Fiction):
+Everything's OK
+Memoriam Redacta
+Bottle 66
+
+Non-Fiction (tier-3 Main > Books > Non-Fiction):
+Landlore
+Spectral Iteration
+AtEotW
+
+Book Covers (tier-3 Main > Books > Book Covers):
+R.E.M.
+Rainbows
+Days & Times
+Others
+
+
+
+Footer menu buttons:
+About
+Contact
+Press
+Booking
+Links
