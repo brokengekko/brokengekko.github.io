@@ -473,7 +473,9 @@
             content: ''; position: absolute;
             top: 0; left: 15%; width: 70%; height: 8vh;
             background: linear-gradient(180deg, transparent, rgba(139, 246, 254, 0.8), transparent);
-            animation: scanline 5s ease-in-out infinite;
+            animation: scanline 5s ease-in-out forwards;
+            animation-iteration-count: var(--scanline-iterations, 1);
+            animation-play-state: var(--scanline-state, running);
         }
         @keyframes scanline {
             0%   { transform: translateY(20vh); }
@@ -967,6 +969,13 @@
           </div>
       
           <div class="side-panel right"></div>
+
+          <!-- Scanline Toggle Button -->
+          <button id="scanline-toggle" style="position:absolute; bottom:40px; right:6px; width:28px; height:28px; border-radius:50%; border:1px solid var(--neon-cyan); background:rgba(0,10,20,0.9); color:var(--neon-cyan); display:flex; justify-content:center; align-items:center; cursor:pointer; z-index:10; outline:none; transition:all 0.3s;" title="Toggle Scanline" onmouseover="this.style.background='rgba(0, 243, 255, 0.2)'; this.style.color='#fff'; this.style.boxShadow='0 0 10px var(--neon-cyan)';" onmouseout="this.style.background='rgba(0,10,20,0.9)'; this.style.color='var(--neon-cyan)'; this.style.boxShadow='none';">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polygon points="5 3 19 12 5 21 5 3"></polygon>
+              </svg>
+          </button>
       
         </div>
     </div>
@@ -1621,6 +1630,28 @@
                 overlay.addEventListener('click', (e) => {
                     if (e.target === overlay) {
                         closeLightbox(false);
+                    }
+                });
+            }
+
+            const scanlineToggleBtn = document.getElementById('scanline-toggle');
+            let isScanlinePlaying = false;
+            
+            if (scanlineToggleBtn) {
+                scanlineToggleBtn.addEventListener('click', () => {
+                    isScanlinePlaying = !isScanlinePlaying;
+                    const sidePanels = document.querySelectorAll('.side-panel');
+                    if (isScanlinePlaying) {
+                        sidePanels.forEach(el => {
+                            el.style.setProperty('--scanline-iterations', 'infinite');
+                            el.style.setProperty('--scanline-state', 'running');
+                        });
+                        scanlineToggleBtn.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>`;
+                    } else {
+                        sidePanels.forEach(el => {
+                            el.style.setProperty('--scanline-state', 'paused');
+                        });
+                        scanlineToggleBtn.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>`;
                     }
                 });
             }
