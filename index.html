@@ -1668,6 +1668,38 @@
                         </a>`;
                     });
 
+                    // Convert relative internal markdown links and absolute internal URLs to SPA hash routes
+                    parsed = parsed.replace(/href="([^"]+)"/g, (match, url) => {
+                        let isInternalAbsolute = url.startsWith('http') && (url.includes('jayaprime.com') || url.includes('localhost'));
+                        
+                        if (isInternalAbsolute) {
+                            try {
+                                const u = new URL(url);
+                                if (u.hash && u.hash.startsWith('#?/')) {
+                                    return `href="${u.hash}"`;
+                                }
+                                if (u.pathname && u.pathname !== '/') {
+                                    let cleanUrl = u.pathname.replace(/^\/+/, '');
+                                    if (!cleanUrl.match(/\.[a-z0-9]+$/i)) {
+                                        return `href="#?/${cleanUrl}"`;
+                                    }
+                                }
+                            } catch(e) {}
+                        }
+
+                        if (url.startsWith('http') || url.startsWith('mailto:') || url.startsWith('tel:') || url.startsWith('javascript:') || url.startsWith('#')) {
+                            return match;
+                        }
+
+                        if (url.match(/\.[a-z0-9]+$/i)) {
+                            return match;
+                        }
+
+                        let cleanUrl = url.replace(/^\/+/, '');
+                        if (cleanUrl === '') return match;
+                        return `href="#?/${cleanUrl}"`;
+                    });
+
                     return parsed;
                 };
 
