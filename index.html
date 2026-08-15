@@ -1606,11 +1606,7 @@
             };
 
             const updateBackButton = () => {
-                if (lightboxHistory.length > 0) {
-                    lightboxBackBtn.classList.remove('dimmed');
-                } else {
-                    lightboxBackBtn.classList.add('dimmed');
-                }
+                lightboxBackBtn.classList.remove('dimmed');
             };
 
             if (lightboxBackBtn) {
@@ -1619,6 +1615,8 @@
                     if (lightboxHistory.length > 0) {
                         const previousStub = lightboxHistory.pop();
                         openLightbox(previousStub, true);
+                    } else {
+                        closeLightbox(false);
                     }
                 });
             }
