@@ -10,14 +10,7 @@
       "type": "html-right",
       "content": {
         "text": "## IO Vapoura \\[Variations\\] \\[[Free DL](https://sanjayaprime.bandcamp.com/album/io-vapoura-variations)\\]\n\n**San Jaya Prime**\n\n**Original Release Date**: 2010, July 7\n\nWhen I released the 20-Year Anniversary Edition of \"[IO Limiters](io-limiters)\", the question I heard most was, \"Are we getting IO Vapoura?\" Yes, yes you are. It's my favorite album, it's the fan favorite from the IO series, and I'm going all out for it. In fact, you're getting two, as there will be a sunrise side with lighter versions of each song, then a sunset side with darker versions. Just like the original, every song has its own art, inspired by those same pieces (some of which now appear in video game art and magazines). Yes, that's two new pieces of art for each side to each song. Also, some of the lost tracks from the Unversioned cut of the album will be making an appearance, including fan favorite \"More than Human\" among others. Look for that in 2030.\n\n**Bonus**: If you want to see one of the new pieces of art for my award-winning song \"Synapse Collapse\", then it's included as the final frame of the music video that we put together for my collaboration with Alchemorph Soundtracks, KeOSz, and Mtwn -- _\"A Drill About Childhood in Persia\"_ ([YouTube](https://www.youtube.com/watch?v=UdUc1AkdLDY)).\n\n### But what about the story?\n\nLong-time fans will remember the overarching story of IO. In Vapoura, a single scientist is sent into the ODN server. Humanity has been granted a space inside it to run a simulation using a portion of its processing power. IO Vapoura explores the boons alongside the risks of such a treaty, closing out the story shortly after a visit to the Bazaar of Wonders and a final goodbye at a tea house... under paper shadows. The original story was lost with our website more than a decade ago. I even checked The Wayback Machine, but it was never catalogued. It's all still in my head, so this time around I'm putting it in book form. That will also be released along with the new cut of the album in 2030.",
-        "html": "<iframe style=\"border: 0; width: 550px; height: 472px;\" src=\"https://bandcamp.com/EmbeddedPlayer/album=709978230/size=large/bgcol=333333/linkcol=4ec5ec/artwork=small/transparent=true/\" seamless><a href=\"https://store.jayaprime.com/album/io-vapoura-variations\">IO Vapoura [Variations] by San Jaya Prime</a></iframe>"
-      }
-    },
-    {
-      "type": "image",
-      "content": {
-        "imageFilename": "../io-vapoura-image-1.jpeg",
-        "caption": "_\"IO Vapoura\"_ album art by **San Jaya Prime**"
+        "html": "<div style=\"margin-left: 50px\"><iframe style=\"border: 0; width: 550px; height: 472px;\" src=\"https://bandcamp.com/EmbeddedPlayer/album=709978230/size=large/bgcol=333333/linkcol=4ec5ec/artwork=small/transparent=true/\" seamless><a href=\"https://store.jayaprime.com/album/io-vapoura-variations\">IO Vapoura [Variations] by San Jaya Prime</a></iframe></div>"
       }
     },
     {
@@ -27,6 +20,13 @@
           "\"To say I enjoy this album would be an understatement.\"",
           "\\- William DeAngelis"
         ]
+      }
+    },
+    {
+      "type": "image",
+      "content": {
+        "imageFilename": "../io-vapoura-image-1.jpeg",
+        "caption": "_\"IO Vapoura\"_ album art by **San Jaya Prime**"
       }
     },
     {
@@ -97,24 +97,84 @@
       }
     },
     {
+      "type": "quote",
+      "content": {
+        "texts": [
+          "\"There is only one question that every life-bearing planet needs answer: Rise? Or fall?\"",
+          "\\- San Jaya Prime, IO"
+        ]
+      }
+    },
+    {
       "type": "video",
       "content": {
         "url": "https://www.youtube.com/watch?v=PmwDv-csN1E"
       }
     },
     {
-      "type": "text",
+      "type": "table-right",
       "content": {
-        "texts": [
-          "## IO Vapoura \\[Unversioned & Unfinished\\]\n\nWith the original being such a big hit, I started working on some of the songs again... along with some that were never finished. Once the \"IO\" series came to a close with \"The Last Memory of Laughter\" in 2012, January, that freed me to work on these newer versions. I'd scrapped the idea of following variations, as with the original \"IO Vapoura\", which let me go back and explore paths that I'd previously abandoned... leaving them behind just to hold true to that core harmony behind the originals. But by the end of 2014, the tumor that knocked out my hearing when I was six-years old had finally done enough damage to bring down my other ear. Others were letting me know about things that sounded \"off\" in my music, and worse, I myself could _not_ hear those things.\n\nIt was over.\n\nI released the last unversioned, non-variation, and unfinished songs that I'd been working on for \"IO Vapoura\" in the video above. With that, I retired from production music, focusing on playing live shows along with DJ sets... and pushing my design work to the forefront of my public face. <span style=\"font-family: inherit;\">My fractal and graphic design arts had taken second place for nearly a decade.</span> <span style=\"font-family: inherit;\">It was time to put on a different face.</span>\n\nIt's been more than a decade that moment.\n\nMy hearing hasn't magically improved. If anything, it's gotten worse. What _has_ improved is the technology itself. A mastering bus now comes standard for nearly every MPC, even Koala Sampler on my iPad, letting me run samples through it and master right at the source-audio level. On top of that, I've abandoned quite a bit of the glitch elements that was once part of my signature sound. I can't trust my hearing to work with it. Then finally, to wrap off each song I run it through a combo of a simple limiter with a follow-up compressor pass and in Audacity, where my final levels that I can see with my eyes _should_ be showing what others would be hearing. I hope.\n\nMy tribe and inner circle hasn't told me anything different. If anything, the response to my newer music has been excellent! So yes, we're returning together to the floating virtual city of Halcyon inside the electronic simulation of Vapoura. It's going to take a few years to get it all put together, but it's happening. 2030 is just around the corner."
-        ]
+        "tables": [
+          {
+            "title": "TIMESTAMPS IN VIDEO",
+            "rows": [
+              {
+                "label": "Gongo Dodan [The Threefold Silence Under Broken Sky]",
+                "value": "0:00"
+              },
+              {
+                "label": "Feathers for the Daughter of the Wind",
+                "value": "10:07"
+              },
+              {
+                "label": "More than Human [2TLXLI RMX80E V3]",
+                "value": "14:30"
+              },
+              {
+                "label": "May Angels Take You [Fare Well]",
+                "value": "17:44"
+              },
+              {
+                "label": "LAW [Guilt and Innocence]",
+                "value": "22:20"
+              },
+              {
+                "label": "Gongo vs Skybreak",
+                "value": "25:50"
+              },
+              {
+                "label": "Halcyon Electronica [4x4 Banger on Heaven's Door]",
+                "value": "29:01"
+              },
+              {
+                "label": "Synapse Collapse [The Lovers' Quarrel]",
+                "value": "35:12"
+              },
+              {
+                "label": "Gongo Dodan [The Waters of Mars]",
+                "value": "39:40"
+              },
+              {
+                "label": "Pulling the Trigger [The Longest Moment]",
+                "value": "46:22"
+              },
+              {
+                "label": "May Angels Take You [Dying Vicariously]",
+                "value": "52:14"
+              }
+            ],
+            "color": "magenta",
+            "width": 40
+          }
+        ],
+        "text": "## IO Vapoura \\[Unversioned & Unfinished\\]\n\nWith the original being such a big hit, I started working on some of the songs again... along with some that were never finished. Once the \"IO\" series came to a close with \"The Last Memory of Laughter\" in 2012, January, that freed me to work on these newer versions. I'd scrapped the idea of following variations, as with the original \"IO Vapoura\", which let me go back and explore paths that I'd previously abandoned... leaving them behind just to hold true to that core harmony behind the originals. But by the end of 2014, the tumor that knocked out my hearing when I was six-years old had finally done enough damage to bring down my other ear. Others were letting me know about things that sounded \"off\" in my music, and worse, I myself could _not_ hear those things.\n\nIt was over.\n\nI released the last unversioned, non-variation, and unfinished songs that I'd been working on for \"IO Vapoura\" in the video above. With that, I retired from production music, focusing on playing live shows along with DJ sets... and pushing my design work to the forefront of my public face. <span style=\"font-family: inherit;\">My fractal and graphic design arts had taken second place for nearly a decade.</span> <span style=\"font-family: inherit;\">It was time to put on a different face.</span>\n\nIt's been more than a decade since that moment.\n\nMy hearing hasn't magically improved. If anything, it's gotten worse. What _has_ improved is the technology itself. A mastering bus now comes standard for nearly every MPC, even Koala Sampler on my iPad, letting me run samples through it and master right at the source-audio level. On top of that, I've abandoned quite a bit of the glitch elements that was once part of my signature sound. I can't trust my hearing to work with it. Then finally, to wrap off each song I run it through a combo of a simple limiter with a follow-up compressor pass and in Audacity, where my final levels that I can see with my eyes _should_ be showing what others would be hearing. I hope.\n\nMy tribe and inner circle hasn't told me anything different. If anything, the response to my newer music has been excellent! So yes, we're returning together to the floating virtual city of Halcyon inside the electronic simulation of Vapoura. It's going to take a few years to get it all put together, but it's happening. 2030 is just around the corner.\n\n## IO Vapoura (20-Year Anniversary Edition)\n\n_Coming 2030, July_\n\nLook for the complete two-disc \"Sunset\" and \"Sunrise\" anniversary edition of _IO Vapoura_ in 2030. At that point, most of this page will go into a \"Bonus Page\" of easter eggs leading up to that edition. That should also include a part of the writings and more from the _IO_ extended universe."
       }
     },
     {
       "type": "text",
       "content": {
         "texts": [
-          "## Extended Listening\n\nIf you like even a little of what you've heard with \"IO Vapoura\", then you can hear one of our live versions of \"Gongo Dodan\" and \"May Angels Take You\" on our set of lives songs, \"[Warriors in Waiting](warriors-in-waiting-live-set)\" (2005 - 2018). Vapoura, as the air element, naturally connects with \"[IO Limiters](io-limiters)\", the water element, to form the spirit of the moon. They form a natural bond in both listening and visuals. Then many fans of Vapoura have also loved my \"[Last Memory of Fire](last-memory-of-fire)\" remix that pays tribute to the _Alien_ franchise."
+          "## Extended Listening\n\nIf you like even a little of what you've heard with \"IO Vapoura\", then you can hear one of our live versions of \"Gongo Dodan\" and \"May Angels Take You\" on our set of lives songs, \"[Warriors in Waiting](warriors-in-waiting-live-set)\" (2005 - 2018). Vapoura, as the air element, naturally connects with \"[IO Limiters](io-limiters)\", the water element, to form the spirit of the moon. They form a natural bond in both listening and visuals. Then many fans of Vapoura have also loved my \"[Last Memory of Fire](last-memory-of-fire)\" remix that pays tribute to the _Alien_ franchise. Then for the art surrounding the series, you would definitely like a few of [my surreal fractalscapes](#?/other-fractalscapes)."
         ]
       }
     }
