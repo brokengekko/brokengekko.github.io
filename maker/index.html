@@ -4,6 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SJP Article Maker</title>
+<link href="https://fonts.googleapis.com/css2?family=Fleur+De+Leah&display=swap" rel="stylesheet">
 <style>
   /* ==========================================================================
      CSS VARIABLES (THEMING)
@@ -313,12 +314,20 @@
   /* Article Block at the bottom. grid-column: 1 / -1 forces it to span the entire width of the grid */
   .dummy-text {
     grid-column: 1 / -1; 
-    /* UPDATED: Bright, near-white cyan and requested monospace font stack */
     color: #e6ffff; 
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
     line-height: 1.6; font-size: 0.95rem;
     padding: 20px; border: 1px dashed rgba(0, 243, 255, 0.3);
     background: rgba(0,0,0,0.2); box-sizing: border-box;
+  }
+
+  .dummy-text h5 {
+    font-size: 1.5rem;
+    font-family: 'Fleur De Leah', cursive;
+    font-weight: normal;
+    color: var(--neon-cyan);
+    margin: 1.5em 0 15px 0;
+    text-shadow: 0 0 5px rgba(0, 243, 255, 0.5);
   }
 </style>
 
@@ -494,6 +503,7 @@
             <li><strong>CMD+OPT+2 / CTRL+ALT+2</strong> : Header (H2)</li>
             <li><strong>CMD+OPT+3 / CTRL+ALT+3</strong> : Header (H3)</li>
             <li><strong>CMD+OPT+4 / CTRL+ALT+4</strong> : Header (H4)</li>
+            <li><strong>CMD+OPT+5 / CTRL+ALT+5</strong> : Header (H5)</li>
         </ul>
         <div style="text-align: right; margin-top: 20px;">
             <button class="maker-btn modal-close-btn">Close</button>
@@ -531,12 +541,13 @@
         <button onmousedown="document.execCommand('strikeThrough', false, null); event.preventDefault();">Strikethrough</button>
         <button onmousedown="openLinkModal(); event.preventDefault();">Link / Edit Link (CTRL+K)</button>
         <button onmousedown="document.execCommand('formatBlock', false, 'H2'); event.preventDefault();">Header (H2)</button>
+        <button onmousedown="document.execCommand('formatBlock', false, 'H5'); event.preventDefault();">Header (H5) (CTRL+ALT+5)</button>
         <div style="padding: 10px 15px; color: var(--neon-yellow); border-top: 1px solid rgba(0, 243, 255, 0.2); border-bottom: 1px solid rgba(0, 243, 255, 0.2); font-size: 0.8rem;">LISTS</div>
         <button onmousedown="document.execCommand('insertUnorderedList', false, null); event.preventDefault();">Bulleted List (CTRL+8)</button>
         <button onmousedown="document.execCommand('insertOrderedList', false, null); event.preventDefault();">Numbered List (CTRL+7)</button>
         <div style="padding: 10px 15px; color: var(--neon-yellow); border-top: 1px solid rgba(0, 243, 255, 0.2); font-size: 0.8rem;">FONT FAMILY</div>
         <button onmousedown="document.execCommand('fontName', false, 'Courier New'); event.preventDefault();" style="font-family: 'Courier New', Courier, monospace;">Grungy Typewriter (Courier)</button>
-        <button onmousedown="document.execCommand('fontName', false, 'Roboto'); event.preventDefault();" style="font-family: Roboto, sans-serif;">Roboto</button>
+        <button onmousedown="document.execCommand('fontName', false, 'Fleur De Leah'); event.preventDefault();" style="font-family: 'Fleur De Leah', cursive; font-size: 1.2rem;">Fleur De Leah</button>
         <button onmousedown="document.execCommand('fontName', false, 'Times New Roman'); event.preventDefault();" style="font-family: 'Times New Roman', Times, serif;">Times New Roman</button>
     </div>
     <div id="ctx-no-selection" style="display: none;">
