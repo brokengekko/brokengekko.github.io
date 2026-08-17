@@ -7,9 +7,18 @@
   },
   "sections": [
     {
-      "type": "video",
+      "type": "html",
       "content": {
-        "url": "https://www.youtube.com/watch?v=uyfmva7xf-Q"
+        "html": "<iframe width=\"100%\" height=\"300\" scrolling=\"no\" frameborder=\"no\" allow=\"autoplay; encrypted-media\" src=\"https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/soundcloud%253Atracks%253A14361550&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true\"></iframe><div style=\"font-size: 10px; color: #cccccc;line-break: anywhere;word-break: normal;overflow: hidden;white-space: nowrap;text-overflow: ellipsis; font-family: Interstate,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Garuda,Verdana,Tahoma,sans-serif;font-weight: 100;\"><a href=\"https://soundcloud.com/jaya-prime\" title=\"Jaya Prime\" target=\"_blank\" style=\"color: #cccccc; text-decoration: none;\">Jaya Prime</a> · <a href=\"https://soundcloud.com/jaya-prime/th3-gr1d\" title=\"Daft Punk - TH3 GR1D (Jaya Prime&#x27;s Icon-of-Monkey Mix)\" target=\"_blank\" style=\"color: #cccccc; text-decoration: none;\">Daft Punk - TH3 GR1D (Jaya Prime&#x27;s Icon-of-Monkey Mix)</a></div>"
+      }
+    },
+    {
+      "type": "quote",
+      "content": {
+        "texts": [
+          "\"I kept dreaming of a world I thought I'd never see. And then, one day... I got in.\"",
+          "\\- Kevin Flynn, TRON: Legacy"
+        ]
       }
     },
     {
@@ -52,19 +61,19 @@
       }
     },
     {
+      "type": "image",
+      "content": {
+        "imageFilename": "../daft-punk-the-grid-remix-image-1.jpeg",
+        "caption": "\"TH3 GR1D\" by Jaya Prime"
+      }
+    },
+    {
       "type": "quote",
       "content": {
         "texts": [
           "\"Not only a unique piece of art from the Tron universe, but a free song as well. The song and cover art pay brilliant and vivid homage to Daft Punk and the resurrection of the Tron mythos in the mainstream.\"",
           "\\- Lilyas of deviantART, _Daily Deviations_"
         ]
-      }
-    },
-    {
-      "type": "image",
-      "content": {
-        "imageFilename": "../daft-punk-the-grid-remix-image-1.jpeg",
-        "caption": "\"TH3 GR1D\" by Jaya Prime"
       }
     },
     {
@@ -84,26 +93,10 @@
       }
     },
     {
-      "type": "table-left",
+      "type": "html-right",
       "content": {
-        "tables": [
-          {
-            "title": "OTHER LINKS",
-            "rows": [
-              {
-                "label": "<a href=\"https://soundcloud.com/jaya-prime/th3-gr1d\" target=\"_blank\">SoundCloud</a>",
-                "value": ""
-              },
-              {
-                "label": "<a href=\"https://www.instagram.com/fractals_by_jaya/p/BBGOd1hNqts/\" target=\"_blank\">Instagram</a>",
-                "value": ""
-              }
-            ],
-            "color": "magenta",
-            "width": 85
-          }
-        ],
-        "text": "## With the Deepest Gratitude!\n\nMad thanks to LapsedPacifist, who unknowingly inspired the title; thanks to ignotus for the chanting; and to Stomp and ermine for the fireworks. Also, mad frakking thanks to all of these for the feedback: Caderageous, Gaea Qandromeda, DJ Ayanami, LapsedPacifist (again), R-E-L, Zaz Productions, JayKnight, CeeFer, Keeper of the Watch, Jordan Keller, Sean McCoy, Katie Gallanti, Christa Corsaro Tyson, Marf, Darth Murphy, Tristan Skybreak, Lita Harannie, Cyberius Rex, Temalika, plasmas, Devin Smith, Wadey, and Ovidiu Murzea. With love and gratitude to The Daughter of the Wind, herself, who also helped spread the word. Also, gotta shout out thanks to Daft Punk, Disney, and Indaba Music for putting the remix competition together.\n\nAs I write this, it is 2026, July 8. More than ever, \"the grid\" has become our reality. The programs are overwriting the flesh. I do not state this with judgment. These are merely the facts at this point in time.\n\n_The lines between \"program\" and \"user\" and \"grid\" will only continue to blur._"
+        "text": "## With the Deepest Gratitude!\n\nMad thanks to LapsedPacifist, who unknowingly inspired the title; thanks to ignotus for the chanting; and to Stomp and ermine for the fireworks. Also, mad frakking thanks to all of these for the feedback: Caderageous, Gaea Qandromeda, DJ Ayanami, LapsedPacifist (again), R-E-L, Zaz Productions, JayKnight, CeeFer, Keeper of the Watch, Jordan Keller, Sean McCoy, Katie Gallanti, Christa Corsaro Tyson, Marf, Darth Murphy, Tristan Skybreak, Lita Harannie, Cyberius Rex, Temalika, plasmas, Devin Smith, Wadey, and Ovidiu Murzea. With love and gratitude to The Daughter of the Wind, herself, who also helped spread the word. Also, gotta shout out thanks to Daft Punk, Disney, and Indaba Music for putting the remix competition together.\n\nAs I write this, it is 2026, July 8. More than ever, \"the grid\" has become our reality. The programs are overwriting the flesh. I do not state this with judgment. These are merely the facts at this point in time.\n\n_The lines between \"program\" and \"user\" and \"grid\" will only continue to blur._",
+        "html": "<div class=\"data-module\" style=\"margin-bottom: 20px;\">\n                                        <h2 class=\"module-title\">Data Link Established</h2>\n                                        <div class=\"readout\"><span><span style=\"opacity:0.9;\">,.data{type:MUX}</span> <strong><a href=\"https://soundcloud.com/jaya-prime/th3-gr1d\" target=\"_blank\" rel=\"nofollow\">SoundCloud</a></strong></span><span><span style=\"opacity:0.9;\">./data{type:GFX}</span> <strong><a href=\"https://www.instagram.com/fractals_by_jaya/p/BBGOd1hNqts/\" target=\"_blank\" rel=\"nofollow\">Instagram</a></strong></span><span><span style=\"opacity:0.9;\">./data{type:GFX,MUX}</span> <strong><a href=\"https://www.youtube.com/watch?v=uyfmva7xf-Q\" target=\"_blank\" rel=\"nofollow\">YouTube</a></strong></span><span><span style=\"opacity:0.9;\">./data{type:GFX}</span> <strong><a href=\"https://www.deviantart.com/jayaprime/art/TR0N-Disc-Grid-HD-Fractal-Tile-Stock-455263607\" target=\"_blank\" rel=\"nofollow\">DeviantArt</a></strong></span><span><span style=\"opacity:0.9;\">./data{type:MUX}</span> <strong><a href=\"https://sanjayaprime.bandcamp.com/track/th3-gr1d-jaya-primes-icon-of-monkey-remix\" target=\"_blank\" rel=\"nofollow\">Bandcamp</a></strong></span></div>\n                                        <div class=\"progress-track\"><div class=\"progress-fill\" style=\"width: 85%; background: var(--neon-magenta); box-shadow: 0 0 10px var(--neon-magenta), 0 0 20px var(--neon-magenta);\"></div></div>\n                                    </div>"
       }
     },
     {
