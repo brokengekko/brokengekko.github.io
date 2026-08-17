@@ -153,7 +153,7 @@
     {
       "type": "html",
       "content": {
-        "html": "<p style=\"text-align:center\">( 1 = √ ∞ / Ø )<br/>\n( ∞ = 1^2 x 0 )<br/>\n( 0 = + 1 - 1 )</p>"
+        "html": "<p style=\"text-align:center;margin-top:0;margin-bottom:0\">( 1 = √ ∞ / Ø )<br/>\n( ∞ = 1^2 x 0 )<br/>\n( 0 = + 1 - 1 )</p>"
       }
     },
     {
