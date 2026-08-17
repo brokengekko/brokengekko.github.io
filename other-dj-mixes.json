@@ -42,10 +42,20 @@
       }
     },
     {
-      "type": "html-right",
+      "type": "text",
       "content": {
-        "text": "## For what remains...\n\n## For those who remember...\n\nThis list is by no means comprehensive. Not by a long-shot, Love... not at all. With DJ sets, I always customize them to the audience, like playing Sarah Slean's cover of \"Climbing Up the Walls\" ([YouTube](https://www.youtube.com/watch?v=w2tWWBwzhbY)) for Namen's birthday party or \"[Teardrop on Roads](teardrop-on-roads)\" at Burning Man for Disco Lama. Most have been lost along the way. Others that should've been forgotten have remained, such as my just-playing-around mix for a chillout houseparty that you can still find [here on Mixcloud](https://www.mixcloud.com/JayaPrime/4am-atx-take-2-1-hour-triphop-downtempo-mixtape/)... or my dubstep DJ set for The BuzzInn at Burning Man. In fact, that one's also [up on Mixcloud](https://www.mixcloud.com/JayaPrime/smoke-dust-and-ashes/). They each have their fans, so I don't delete them, but neither do I identify with them. I've mixed and remixed \"[The ADHD Revolution](adhd-revolution)\" what must be a thousand different ways depending on the party. So if you don't see one of your favs listed here, it was probably lost along the way. But! If you do remember one that isn't listed, and you can give me context from when and where I played it, then maybe it can be recreated. [Send me a line](contact) and I'll take a look. Because from what remains... and for those who remember. .. those are the moments that matter.\n\n_Every second of them._",
-        "html": "<pre style=\"font-family:courier,Courier New,fixed-width,system\">They Held Each Other<br/>\nAnd Kissed<br/>\n<br/>\n And Pushed Each Others'<br/>\n Darkness into the Corner,<br/>\n<br/>\nBelieving in each others' Light,<br/>\n          each others' Dream<br/>\n<br/>\n~<b>Hubert Selby, Jr.</b><br/>\n(July 23, 1928 – April 26, 2004)<br/>\n<i>Requiem for a Dream</i></pre>"
+        "texts": [
+          "##### For what remains...\n\n##### For those who remember...\n\nThis list is by no means comprehensive. Not by a long-shot, Love... not at all. With DJ sets, I always customize them to the audience, like playing Sarah Slean's cover of \"Climbing Up the Walls\" ([YouTube](https://www.youtube.com/watch?v=w2tWWBwzhbY)) for Namen's birthday party or \"[Teardrop on Roads](teardrop-on-roads)\" at Burning Man for Disco Lama. Most have been lost along the way. Others that should've been forgotten have remained, such as my just-playing-around mix for a chillout houseparty that you can still find [here on Mixcloud](https://www.mixcloud.com/JayaPrime/4am-atx-take-2-1-hour-triphop-downtempo-mixtape/)... or my dubstep DJ set for The BuzzInn at Burning Man. In fact, that one's also [up on Mixcloud](https://www.mixcloud.com/JayaPrime/smoke-dust-and-ashes/). They each have their fans, so I don't delete them, but neither do I identify with them. I've mixed and remixed \"[The ADHD Revolution](adhd-revolution)\" what must be a thousand different ways depending on the party. So if you don't see one of your favs listed here, it was probably lost along the way. But! If you do remember one that isn't listed, and you can give me context from when and where I played it, then maybe it can be recreated. [Send me a line](contact) and I'll take a look. Because from what remains... and for those who remember. .. those are the moments that matter.\n\n_<font face=\"Courier New\">Every second of them.</font>_"
+        ]
+      }
+    },
+    {
+      "type": "quote",
+      "content": {
+        "texts": [
+          "\"They Held Each Other\n\nAnd Kissed\n\n  \n\n&nbsp; And Pushed Each Others'\n\n&nbsp; Darkness into the Corner,\n\n  \n\nBelieving in each others' Light,\n\n<span style=\"font-family: inherit;\">&nbsp;</span> <span style=\"font-family: inherit;\">&nbsp;</span> <span style=\"font-family: inherit;\">&nbsp;</span> <span style=\"font-family: inherit;\">&nbsp;</span> <span style=\"font-family: inherit;\">each others' Dream</span><span style=\"font-family: inherit;\">\"</span>",
+          "\\- Hubert Selby, Jr. (July 23, 1928 – April 26, 2004), Requiem for a Dream"
+        ]
       }
     }
   ]
