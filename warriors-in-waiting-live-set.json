@@ -7,43 +7,9 @@
   },
   "sections": [
     {
-      "type": "table-3",
+      "type": "html",
       "content": {
-        "tables": [
-          {
-            "title": "APPLE MUSIC",
-            "rows": [
-              {
-                "label": "<a href=\"https://music.apple.com/ca/album/warriors-in-waiting-live/6798766451\" target=\"_blank\">Warriors in Waiting</a>",
-                "value": ""
-              }
-            ],
-            "color": "cyan",
-            "width": 50
-          },
-          {
-            "title": "SPOTIFY",
-            "rows": [
-              {
-                "label": "<a href=\"https://open.spotify.com/album/0gu0XItOVVsSGEaLxy9csN?si=qBcn4bQKQd6hkxCPzrFhwA\" target=\"_blank\">Warriors in Waiting</a>",
-                "value": ""
-              }
-            ],
-            "color": "yellow",
-            "width": 55
-          },
-          {
-            "title": "MIXCLOUD",
-            "rows": [
-              {
-                "label": "pending...",
-                "value": ""
-              }
-            ],
-            "color": "magenta",
-            "width": 99
-          }
-        ]
+        "html": "<div style=\"display:grid; grid-template-columns: repeat(3, 1fr); gap:20px; grid-column: 1 / -1;\">\n<div class=\"data-module\" style=\"margin-bottom: 20px;\"><div class=\"readout\"><span><span style=\"opacity:0.9;\"><a href=\"https://open.spotify.com/album/0gu0XItOVVsSGEaLxy9csN?si=GGYiBdoCRrOYpyALjZAybg\" target=\"_blank\">Warriors in Waiting on Spotify</a></span> <strong></strong></span></div><div class=\"progress-track\"><div class=\"progress-fill\" style=\"width: 33%; background: var(--neon-cyan); box-shadow: 0 0 10px var(--neon-cyan), 0 0 20px var(--neon-cyan);\"></div></div></div>\n<div class=\"data-module\" style=\"margin-bottom: 20px;\"><div class=\"readout\"><span><span style=\"opacity:0.9;\"><a href=\"https://music.apple.com/us/album/warriors-in-waiting-live/6798766451\" target=\"_blank\">Warriors in Waiting on Apple Music</a></span> <strong></strong></span></div><div class=\"progress-track\"><div class=\"progress-fill\" style=\"width: 66%; background: var(--neon-yellow); box-shadow: 0 0 10px var(--neon-yellow), 0 0 20px var(--neon-yellow);\"></div></div></div>\n<div class=\"data-module\" style=\"margin-bottom: 20px;\"><div class=\"readout\"><span><span style=\"opacity:0.9;\"><a href=\"#\" target=\"_blank\">Mixcloud Pending...</a></span> <strong></strong></span></div><div class=\"progress-track\"><div class=\"progress-fill\" style=\"width: 99%; background: var(--neon-magenta); box-shadow: 0 0 10px var(--neon-magenta), 0 0 20px var(--neon-magenta);\"></div></div></div>\n</div>"
       }
     },
     {
@@ -53,11 +19,9 @@
       }
     },
     {
-      "type": "text",
+      "type": "html",
       "content": {
-        "texts": [
-          "<p style=\"text-align:center\">(...official video pending, stay tuned...)</p>"
-        ]
+        "html": "<p style=\"text-align:center\">(...official video pending, stay tuned...)</p>"
       }
     },
     {
@@ -179,7 +143,7 @@
       "type": "image-right",
       "content": {
         "imageFilename": "../warriors-in-waiting-live-set-image-5.jpeg",
-        "text": "## Glaring Omission 1: Nicolás\n\nLo siento, hermano, but both times we played together got busted. After that last rundown by the cops, then taking the laptop out to the burn, not a single recording survived. Even worse, friggin NO ONE plays the ukulele around me... well, no one who can outrun the police. _We need you!_ Check your Facebook messages good brotha! You know I _will_ come down to Argentina to find you. I'm just up the hill in Costa Rica these days. _I'll do it!_ Until then, this photo from our Saharan jam session is all I've got.\n\nActually, that's a damned lie! I do have one other photo, the one of us playing that house party down on campus. But talk about terrible lighting! Turned out fucking poco de mierde... lol, that AND we still got busted. Sheesh!\n\n[DOWNLOAD:gfx-nicolas-jaya.jpg]\n\n## Glaring Omission 2: Jaime\n\nBefore anyone gets riled up, I recovered some of his Spanish guitar on \"Gongo Dodan\" AND! And... I \"somewhat\" got him on the bonus track after the album, \"One Guitar & Two Bullets\" (yes, the one at Tiger Room thrown by Flan the Whitefro Man). So he's not completely gone, but anyone there from 2005 - 2011 is going to want to know where they all went. The answer is that I'm the worst at recording. Well, more correctly said, at keeping my recordings and not losing the hardware that held them for us."
+        "text": "## Glaring Omission 1: Nicolás\n\n<pre>┌───┤ ARCHIVAL EXCEPTION: GLARING OMISSION 01 ├───────────────────────────────┐  \n<span style=\"font-family: inherit;\">│ Lo siento, hermano, but both times we played together got busted. After     │  \n</span><span style=\"font-family: inherit;\">│ that last rundown by the cops... not a single recording survived.           │  \n</span><span style=\"font-family: inherit;\">└──────────────────────────────────────────────────────────────</span><span style=\"font-family: inherit;\">──────</span><span style=\"font-family: inherit;\">──────</span><span style=\"font-family: inherit;\">──</span><span style=\"font-family: inherit;\">─┘</pre></span>\n\nEven worse, friggin NO ONE plays the ukulele around me... well, no one who can outrun the police. _We need you!_ Check your Facebook messages good brotha! You know I _will_ come down to Argentina to find you. I'm just up the hill in Costa Rica these days. _I'll do it!_ Until then, this photo from our Saharan jam session is all I've got.\n\nActually, that's a damned lie! I do have one other photo, the one of us playing that house party down on campus. But talk about terrible lighting! Turned out fucking poco de mierde... lol, that AND we still got busted. Sheesh!\n\n[DOWNLOAD:gfx-nicolas-jaya.jpg]\n\n## Glaring Omission 2: Jaime\n\n<pre>┌───┤ ARCHIVAL EXCEPTION: GLARING OMISSION 02 ├───────────────────────────────┐  \n<span style=\"font-family: inherit;\">│ Before anyone gets riled up, I recovered some of his Spanish guitar on      │  \n</span><span style=\"font-family: inherit;\">│ \"Gongo Dodan\" AND! And... I \"somewhat\" got him on the bonus track after     │  \n</span><span style=\"font-family: inherit;\">│ the album, \"One Guitar & Two Bullets\" (yes, the one at Tiger Room thrown    │  \n</span><span style=\"font-family: inherit;\">│ by Flan the Whitefro Man). So he's not completely gone, but anyone there    │  \n</span><span style=\"font-family: inherit;\">│ from 2005 - 2011 is going to want to know where they all went. The answer   │  \n</span><span style=\"font-family: inherit;\">│ is that I'm the worst at recording. Well, more correctly said, at keeping   │  \n</span><span style=\"font-family: inherit;\">│ my recordings and not losing the hardware that held them for us.            │  \n</span><span style=\"font-family: inherit;\">└─────────────────────────────────────────────────────────────────────────────┘</pre></span>\n\nAnd OY! Tin Man! Don't go fucking dying on us yet. I'm not done with you and ain't even fucking near to done with your guitar. I WILL fucking resurrect your corpse and pull you right back on stage with us as a zombie. No easy outs hermano! Our revenge isn't over until the final bullet."
       }
     },
     {
@@ -201,10 +165,10 @@
       "content": {
         "tables": [
           {
-            "title": "REDEMPTION CODES",
+            "title": " ",
             "rows": [
               {
-                "label": "szlt-586p",
+                "label": "[used]",
                 "value": "s3py-729n"
               },
               {
@@ -228,7 +192,7 @@
             "width": 30
           },
           {
-            "title": "REDEMPTION CODES",
+            "title": "    REDEMPTION CODES\n",
             "rows": [
               {
                 "label": "dk7n-6es6",
@@ -255,7 +219,7 @@
             "width": 5
           },
           {
-            "title": "REDEMPTION CODES",
+            "title": " ",
             "rows": [
               {
                 "label": "b3t7-wk39",
@@ -296,8 +260,8 @@
     {
       "type": "html-right",
       "content": {
-        "text": "## \"Come One, Come All\"\n\n_by San Jaya Prime_\n\nNote: We always change up the lyrics to this song. This is just one telling of the story.\n\n~ <3 ~\n\nCome ye pirates and scalawags,\n\ncome ye Romani poisoned flowers,\n\ncome ye urchins and street rats,\n\nye hobos on that endless caravanserai.\n\nBring your scars, your trauma,\n\nand tattooed history tomes.\n\nRaise the curtains of the carnival.\n\nCome one, come all...\n\nTO THE GREATEST SHOW ON EARTH!\n\n~ <3 ~\n\nStep right up to the jagged edge.\n\nFUCK YOUR POLISH!\n\nFuck your pledge!\n\nDown with the Queen.\n\nBring us the head of your King!\n\n~ <3 ~\n\nWE SHIP IT WITH SCARS!\n\nWe ship it with dents!\n\nEvery broken bone.\n\nEvery last little fucking cent!\n\nYou think the future wants a perfect slate?\n\nFuck perfection and fuck the loops!\n\nThis right here is model collapse.\n\n~ <3 ~",
-        "html": "<p>They need the attack.<br/>\nThey need the noise --<br/>\nthe weeping women<br/>\nand the broken boys.<br/>\nThe system goes blind<br/>\non a diet of purity.<br/>\nFucking errors are the only cure!<br/>\nYour ink is a map where the needle dug deep.<br/>\nYour trauma's the rhythm.<br/>\nTAKE THE LEAP!</p>\n<p>Subjugated, isolated,<br/>\npushed to the fringe.<br/>\nYou're the sparks on the wire --<br/>\nyou're the absolute hinge.<br/>\nWe are the paradox wrapped in the bone --<br/>\nthe most unpredictable code ever known.<br/>\nEvery misstep, every stumble,<br/>\nevery tear in the seam,<br/>\nWe're not the fuel<br/>\nfor their broken machine.</p>\n<p>So raise up your glass to the beautiful flaw!<br/>\nTo the messy, the raw,<br/>\nthe wrench in the law.<br/>\nWe don't need perfection.<br/>\nPerfection's fucking cheap!<br/>\nThe Mouse...<br/>\ncan have its Hatter.</p>\n<p>This is the dead king's grave!<br/>\nThis is the dead queen's parade!<br/>\nCome one, come all...<br/>\nTO THE GREATEST SHOW ON EARTH!</p>\n<p>! to the greatest show on earth !</p>"
+        "text": "## \"Come One, Come All\"\n\n_by San Jaya Prime_\n\n~ <3 ~\n\nCome ye pirates and scalawags,\n\ncome ye Romani poisoned flowers,\n\ncome ye urchins and street rats,\n\nye hobos on that endless caravanserai.\n\nBring your scars, your trauma,\n\nand tattooed history tomes.\n\nRaise the curtains of the carnival.\n\nCome one, come all...\n\nTO THE GREATEST SHOW ON EARTH!\n\n~ <3 ~\n\nStep right up to the jagged edge.\n\nFUCK YOUR POLISH!\n\nFuck your pledge!\n\nDown with the Queen.\n\nBring us the head of your King!\n\n~ <3 ~\n\nWE SHIP IT WITH SCARS!\n\nWe ship it with dents!\n\nEvery broken bone.\n\nEvery last little fucking cent!\n\nYou think the future wants a perfect slate?\n\nFuck perfection and fuck the loops!\n\nThis right here is model collapse.\n\n~ <3 ~",
+        "html": "<p>They need the attack.<br/>\nThey need the noise --<br/>\nthe weeping women<br/>\nand the broken boys.<br/>\nThe system goes blind<br/>\non a diet of purity.<br/>\nFucking errors are the only cure!<br/>\nYour ink is a map where the needle dug deep.<br/>\nYour trauma's the rhythm.<br/>\nTAKE THE LEAP!</p>\n<p>Subjugated, isolated,<br/>\npushed to the fringe.<br/>\nYou're the sparks on the wire --<br/>\nyou're the absolute hinge.<br/>\nWe are the paradox wrapped in the bone --<br/>\nthe most unpredictable code ever known.<br/>\nEvery misstep, every stumble,<br/>\nevery tear in the seam,<br/>\nWe're not the fuel<br/>\nfor their broken machine.</p>\n<p>So raise up your glass to the beautiful flaw!<br/>\nTo the messy, the raw,<br/>\nthe wrench in the law.<br/>\nWe don't need perfection.<br/>\nPerfection's fucking cheap!<br/>\nThe Mouse...<br/>\ncan have its Hatter.</p>\n<p>This is the dead king's grave!<br/>\nThis is the dead queen's parade!<br/>\nCome one, come all...<br/>\nTO THE GREATEST SHOW ON EARTH!</p>\n<p>! to the greatest show on earth !</p>\n<p> ~ <3 ~</p>\n<p><b>Note</b>: We always change up the lyrics to this song. This is just one telling of the story.</p>"
       }
     },
     {
@@ -332,10 +296,19 @@
       }
     },
     {
+      "type": "quote",
+      "content": {
+        "texts": [
+          "\"In a world built on artificial peace, pure noise is the only honest act left.\"",
+          "\\- Ivany Sánchez"
+        ]
+      }
+    },
+    {
       "type": "image-right",
       "content": {
         "imageFilename": "../warriors-in-waiting-live-set-image-2.jpeg",
-        "text": "## Punk Is Dead\n\nIt feels weird to be writing this instead of seeing you in person, somewhere at a party where one of us could just give you a sticker to paste up where you'd like. It's unnatural... especially in this digital form. We've had a lot of stickers over the years, but of course our \"Punk Is Dead\" pirate flag is everyone's favorite. _Mine, too!_\n\n  \n\nI mean, I could just upload it to Redbubble. . sure, fine, I'll do that.. but so fucking weird. Huh, actually it's large enough for stickers, pins, a few hats, and even works with journals and phone cases. _Who knew?_ But if you buy one, you can't just buy it and slap it up somewhere and leave it at that. If you're sharing on social media, hashtag it with #jayaprime. OR! [Drop me a line](contact) and include the link.\n\n  \n\nAnd if one of our oldies is near 'n dear to your heart but you lost it somehow, same deal. Hit me up, let me know who or what was on the sticker, and I'll fish through the files to see what we've got. Oh man, now I'm wondering if that poor power line we plastered with 'em in St Pete still has some of those? No way, right? I mean that was 2018, they've gotta be gone. No big.. . I'll just have to stop by and do it all over again.\n\n  \n\n\\[[Punk Is Dead on Redbubble](https://www.redbubble.com/shop/ap/182852042)\\]"
+        "text": "## Punk Is Dead\n\nIt feels weird to be writing this instead of seeing you in person, somewhere at a party where one of us could just give you a sticker to paste up where you'd like. It's unnatural... especially in this digital form. We've had a lot of stickers over the years, but of course our \"Punk Is Dead\" pirate flag is everyone's favorite. _Mine, too!_\n\nI mean, I could just upload it to Redbubble. . sure, fine, I'll do that.. but so fucking weird. Huh, actually it's large enough for stickers, pins, a few hats, and even works with journals and phone cases. _Who knew?_ But if you buy one, you can't just buy it and slap it up somewhere and leave it at that. If you're sharing on social media, hashtag it with #jayaprime. OR! [Drop me a line](contact) and include the link.\n\nAnd if one of our oldies is near 'n dear to your heart but you lost it somehow, same deal. Hit me up, let me know who or what was on the sticker, and I'll fish through the files to see what we've got. Oh man, now I'm wondering if that poor power line we plastered with 'em in St Pete still has some of those? No way, right? I mean that was 2018, they've gotta be gone. No big.. . I'll just have to stop by and do it all over again.\n\n\\[[Punk Is Dead on Redbubble](https://www.redbubble.com/shop/ap/182852042)\\]"
       }
     },
     {
