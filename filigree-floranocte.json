@@ -38,7 +38,7 @@
             "width": 70
           }
         ],
-        "text": "## Filigree Floranocte\n\n_aka, \"Bohemia\"; dedicated to The Daughter of the Wind_\n\nIt was Fractist themselves who developed the method for combining JuliaN and Separation in Chaotica to create fractal flowers. Up until that time, I'd been using Apophysis and Ultra Fractal for my designs. Mad gratitude and credit to Fractist ([DeviantArt](https://www.deviantart.com/fractist/art/chaotica-SJflower-tutorial-by-fractist-654271587)) as the shift to Chaotica became a full explosion of creativity!\n\nOn June 30th of 2k18, in celebration of 18 years since I hitchhiked out on the road to enter into a life of non-stop travel, I started rendering the next evolution of \"Filigree Floranocte\". It also happens to be the same day as my brother Skybreak's birthday. Fitting then that this came in thanks to the beast machine known as Ostrog and in thanks to The Skybreak Tribe. It was the first fractal flower that I dared to render at more than 9000 square pixels. Seeing it rendering one morning, Ren commented on how beautiful the colors were, and with only a day more of rendering it was time to release her.\n\n\\[[Print + More on Redbubble](https://www.redbubble.com/shop/ap/32507698)\\]"
+        "text": "## Filigree Floranocte\n\n_aka, \"Bohemia\"; dedicated to The Daughter of the Wind_\n\nIt was Fractist themselves who developed the method for combining JuliaN and Separation in Chaotica to create fractal flowers. Up until that time, I'd been using Apophysis and Ultra Fractal for my designs. Mad gratitude and credit to Fractist ([DeviantArt](https://www.deviantart.com/fractist/art/chaotica-SJflower-tutorial-by-fractist-654271587)) as the shift to Chaotica became a full explosion of creativity!\n\nIn 2018, on June 30 -- and in celebration of 18 years since I hitchhiked out on the road to enter into a life of non-stop travel -- I started rendering the next evolution of \"Filigree Floranocte\". It also happens to be the same day as my brother Skybreak's birthday. Fitting then that this came in thanks to the beast machine known as Ostrog and in thanks to The Skybreak Tribe. It was the first fractal flower that I dared to render at more than 9000 square pixels. Seeing it rendering one morning, Ren commented on how beautiful the colors were, and with only a day more of rendering it was time to release her.\n\n\\[[Print + More on Redbubble](https://www.redbubble.com/shop/ap/32507698)\\]"
       }
     },
     {
@@ -52,7 +52,7 @@
       "type": "text",
       "content": {
         "texts": [
-          "## What's in a Seed?\n\nEvery basis of the Julia Separation method starts out with a single iterator with two transforms: JuliaN and Separation. One thing that sets my flowers apart are the pre-transforms I add to the iterator: augur (to ruffle petals), pre\\_blur (to glassify). I've added another transform, Escher, to give the outer form a tessellation effect. The filigree stamen are created using the coth\\_spiral function. As I am one of less than ten fractalists on the planet who understands this function. The spirals in the stamen are created using a single iterator with two transforms: coth\\_spiral (weight: 1.05; alpha: 3.9) and blur (weight: 0.015). Then the double-JuliaN method I've used even outside of fractal flowers, as well as creating the gems, so I'll skip that part."
+          "## What's in a Seed?\n\nEvery basis of the Julia Separation method starts out with a single iterator with two transforms: JuliaN and Separation. One thing that sets my flowers apart are the pre-transforms I add to the iterator: augur (to ruffle petals), pre\\_blur (to glassify). I've added another transform, Escher, to give the outer form a tessellation effect. The filigree stamen are created using the coth\\_spiral function. As I am one of fewer than ten fractalists on the planet who understands this function. The spirals in the stamen are created using a single iterator with two transforms: coth\\_spiral (weight: 1.05; alpha: 3.9) and blur (weight: 0.015). Then the double-JuliaN method I've used even outside of fractal flowers, as well as creating the gems, so I'll skip that part."
         ]
       }
     },
@@ -74,7 +74,24 @@
       "type": "text",
       "content": {
         "texts": [
-          "_\"Filigree Floranocte\"_ grew more and more into a flower based on tribal fusion, sometimes known as \"Neo Bohemian\" or \"Neo Gypsy\". Some call it cultural appropriation, but as the style is a chimera and not a copy. I'm all for it! 96% of all creations are chimeric in nature, whereas only a mere 4% are generated from original thoughts. Those who've been to a Beats Antique concert will recognize the fusion bohemian style of Zoe Jakes in some of these twists and turns, as well as the ever-present inspiration from Venetian masks that you'll find in many of my works.\n\nEvery now and then, I'll catch someone walking by with a phone case carrying the design. To this day, my friend Noir Angel has it for a desk mat, which plays perfectly every Friday night for our MtG Commander games. The flower has long ago left the nest and spread around the world. I'm happy it's reached others much in the same way that she originally came to me.\n\n\\[[Print + More on Redbubble](https://www.redbubble.com/shop/ap/32507698)\\]\n\n* * *\n\n### Extended Exploration\n\n<span style=\"font-family: inherit;\">For those who like \"Filigree Floranocte\", you might like her fellow fractal flower \"</span>[Bloom of Fire](bloom-of-fire)<span style=\"font-family: inherit;\">\", as well as the similar colors in my surreal \"</span>[Ship for All Destinations](destination-everywhere)<span style=\"font-family: inherit;\">\" fractalscape.</span>"
+          "_\"Filigree Floranocte\"_ grew more and more into a flower based on tribal fusion, sometimes known as \"Neo Bohemian\" or \"Neo Gypsy\". Some call it cultural appropriation, but as the style is a chimera and not a copy, _I'm all for it!_ 96% of all creations are chimeric in nature, whereas only a mere 4% are generated from original thoughts. Those who've been to a Beats Antique concert will recognize the fusion bohemian style of Zoe Jakes in some of these twists and turns, as well as the ever-present inspiration from Venetian masks that you'll find in many of my works.\n\nEvery now and then, I'll catch someone walking by with a phone case carrying the design. To this day, my friend Noir Angel has it for a desk mat, which plays perfectly every Friday night for our MtG Commander games. The flower has long ago left the nest and spread around the world. I'm happy it's reached others much in the same way that she originally came to me.\n\n\\[[Prints + More on Redbubble](https://www.redbubble.com/shop/ap/32507698)\\]"
+        ]
+      }
+    },
+    {
+      "type": "quote",
+      "content": {
+        "texts": [
+          "\"It is probably true quite generally that in the history of human thinking the most fruitful developments frequently take place at those points where two different lines of thought meet.\"",
+          "\\- Werner Heisenberg"
+        ]
+      }
+    },
+    {
+      "type": "text",
+      "content": {
+        "texts": [
+          "### Extended Exploration\n\n<span style=\"font-family: inherit;\">For those who like \"Filigree Floranocte\", you might like her fellow fractal flower \"</span>[Bloom of Fire](bloom-of-fire)<span style=\"font-family: inherit;\">\", as well as the similar colors in my surreal \"</span>[Ship for All Destinations](destination-everywhere)<span style=\"font-family: inherit;\">\" fractalscape.</span>"
         ]
       }
     }
