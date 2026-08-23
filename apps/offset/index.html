@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TextureBlend 3D | Cyberpunk Edition</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { 
+                        sans: ['Rajdhani', 'sans-serif'],
+                        display: ['Orbitron', 'sans-serif']
+                    },
+                    colors: {
+                        cyber: {
+                            bg: '#09090b',
+                            panel: '#111116',
+                            border: '#22222c',
+                            cyan: '#00f0ff',
+                            cyanDim: 'rgba(0, 240, 255, 0.15)',
+                            pink: '#ff003c',
+                            yellow: '#fcee0a'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #09090b; color: #e2e8f0; overscroll-behavior: none; }
+        
+        /* Cyber-Grid Canvas Background */
+        .cyber-grid {
+            background-color: #09090b;
+            background-image: 
+                linear-gradient(to right, rgba(0, 240, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(0, 240, 255, 0.05) 1px, transparent 1px);
+            background-size: 30px 30px;
+            background-position: center center;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #09090b; }
+        ::-webkit-scrollbar-thumb { background: #00f0ff; border-radius: 0px; }
+
+        /* Cyber Range Slider */
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 18px;
+            width: 8px;
+            background: #00f0ff;
+            cursor: pointer;
+            margin-top: -7px;
+            box-shadow: 0 0 10px #00f0ff;
+            border-radius: 1px;
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: #22222c;
+            border: 1px solid rgba(0, 240, 255, 0.2);
+        }
+        input[type=range]:focus { outline: none; }
+
+        /* Render Button Cyber Style */
+        .btn-cyber {
+            background: linear-gradient(45deg, transparent 5%, #ff003c 5%);
+            color: #fff;
+            box-shadow: 6px 0px 0px #00f0ff;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+        }
+        .btn-cyber:hover:not(:disabled) {
+            box-shadow: 6px 0px 0px #fcee0a;
+            background: linear-gradient(45deg, transparent 5%, #fcee0a 5%);
+            color: #000;
+        }
+        .btn-cyber:active:not(:disabled) {
+            box-shadow: 2px 0px 0px #00f0ff;
+            transform: translateX(4px);
+        }
+        .btn-cyber:disabled {
+            background: #22222c;
+            box-shadow: 6px 0px 0px #333;
+            color: #555;
+            cursor: not-allowed;
+        }
+
+        .panel-border {
+            border: 1px solid #22222c;
+            border-left: 2px solid #00f0ff;
+        }
+        
+        .glitch-text {
+            text-shadow: 2px 0 #ff003c, -2px 0 #00f0ff;
+        }
+
+        .glass-overlay {
+            background: rgba(9, 9, 11, 0.85);
+            backdrop-filter: blur(8px);
+        }
+        
+        #render-spinner { animation: spin 1s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="h-screen w-screen overflow-hidden flex flex-col md:flex-row font-sans">
+
+    <!-- MAIN WORKSPACE -->
+    <main class="flex-1 relative flex flex-col h-full border-r border-cyber-border">
+        <!-- Top Toolbar -->
+        <header class="h-14 bg-cyber-panel border-b border-cyber-border flex items-center px-4 justify-between shrink-0 z-20">
+            <div class="flex items-center gap-4">
+                <div class="w-8 h-8 rounded-sm bg-cyber-cyan/20 border border-cyber-cyan flex items-center justify-center text-cyber-cyan shadow-[0_0_10px_rgba(0,240,255,0.3)]">
+                    <i class="fa-solid fa-layer-group"></i>
+                </div>
+                <h1 class="text-xl font-display font-bold tracking-widest text-white glitch-text">
+                    TEXTUREBLEND <span class="text-cyber-cyan font-normal">// 3D</span>
+                </h1>
+                
+                <!-- FG Tools -->
+                <div id="fg-tools" class="hidden items-center gap-3 ml-6 pl-6 border-l border-cyber-border">
+                    <button id="tool-move" class="w-8 h-8 rounded-sm bg-cyber-cyan/20 border border-cyber-cyan text-cyber-cyan flex items-center justify-center transition-all shadow-[0_0_8px_rgba(0,240,255,0.4)]" title="Move/Resize">
+                        <i class="fa-solid fa-arrows-up-down-left-right"></i>
+                    </button>
+                    <button id="tool-erase" class="w-8 h-8 rounded-sm bg-transparent border border-cyber-border text-gray-500 hover:text-cyber-pink hover:border-cyber-pink flex items-center justify-center transition-all" title="Smart Erase (Magic Wand)">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    </button>
+                    <div class="flex items-center gap-3 ml-2 bg-cyber-bg px-3 py-1 rounded-sm border border-cyber-border">
+                        <label class="text-xs text-cyber-cyan font-display tracking-widest" title="Erase Tolerance">TOL</label>
+                        <input type="range" id="erase-tolerance" min="0" max="100" value="20" class="w-20">
+                    </div>
+                    <button id="btn-undo" disabled class="w-8 h-8 rounded-sm bg-transparent text-gray-600 flex items-center justify-center ml-2 border border-cyber-border transition-colors disabled:opacity-50 hover:text-white hover:border-gray-400" title="Undo (Ctrl+Z / Cmd+Z)">
+                        <i class="fa-solid fa-rotate-left"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="flex gap-2">
+                <button id="btn-edit-mode" class="hidden px-4 py-1.5 rounded-sm bg-cyber-bg hover:bg-cyber-border border border-cyber-cyan text-sm transition-colors text-cyber-cyan font-display tracking-widest shadow-[0_0_10px_rgba(0,240,255,0.2)]">
+                    <i class="fa-solid fa-pen-ruler mr-2"></i>EDIT LAYERS
+                </button>
+            </div>
+        </header>
+
+        <!-- Canvas Container -->
+        <div id="canvas-container" class="flex-1 w-full relative cyber-grid overflow-hidden cursor-move touch-none">
+            <canvas id="main-canvas" class="absolute top-0 left-0 w-full h-full"></canvas>
+            
+            <!-- Instructions Overlay -->
+            <div id="empty-state" class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none opacity-60">
+                <i class="fa-solid fa-satellite-dish text-6xl mb-4 text-cyber-cyan/50"></i>
+                <p class="text-xl font-display text-gray-400 tracking-widest">INITIALIZE UPLOAD SEQUENCE</p>
+                <p class="text-sm text-gray-500 mt-2 font-mono">Load Base and Overlay assets in the control panel</p>
+            </div>
+
+            <!-- Processing Overlay -->
+            <div id="processing-overlay" class="absolute inset-0 glass-overlay flex flex-col items-center justify-center z-50 hidden">
+                <i id="render-spinner" class="fa-solid fa-crosshairs text-6xl text-cyber-cyan mb-6"></i>
+                <h2 class="text-2xl font-display text-white tracking-widest glitch-text">RENDERING MATRIX...</h2>
+                <p class="text-sm text-cyber-cyan font-mono mt-2">Calculating displacement vectors and light scattering</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- SIDEBAR CONTROLS -->
+    <aside class="w-full md:w-80 h-[50vh] md:h-full bg-cyber-panel flex flex-col shrink-0 z-10 shadow-2xl overflow-y-auto">
+        <div class="p-5 flex flex-col gap-6">
+            
+            <section class="panel-border bg-cyber-bg p-4 rounded-sm shadow-md">
+                <h3 class="text-[10px] font-display font-bold text-cyber-pink uppercase tracking-[0.2em] mb-4"><i class="fa-solid fa-images mr-2"></i>Asset Matrix</h3>
+                
+                <div class="space-y-3">
+                    <!-- Background Upload -->
+                    <div class="relative group cursor-pointer border border-dashed border-cyber-border bg-cyber-panel hover:border-cyber-cyan transition-colors">
+                        <input type="file" id="bg-upload" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+                        <div class="p-3 flex items-center justify-between pointer-events-none">
+                            <div class="flex items-center gap-3 overflow-hidden">
+                                <div id="bg-thumb" class="w-8 h-8 bg-black border border-cyber-border flex items-center justify-center overflow-hidden shrink-0">
+                                    <i class="fa-solid fa-mountain-sun text-gray-600 text-xs"></i>
+                                </div>
+                                <span class="text-sm font-medium text-gray-300 truncate" id="bg-label">BASE_TERRAIN.IMG</span>
+                            </div>
+                            <i class="fa-solid fa-upload text-cyber-cyan opacity-50 group-hover:opacity-100 transition-opacity"></i>
+                        </div>
+                    </div>
+
+                    <!-- Foreground Upload -->
+                    <div class="relative group cursor-pointer border border-dashed border-cyber-border bg-cyber-panel hover:border-cyber-pink transition-colors">
+                        <input type="file" id="fg-upload" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+                        <div class="p-3 flex items-center justify-between pointer-events-none">
+                            <div class="flex items-center gap-3 overflow-hidden">
+                                <div id="fg-thumb" class="w-8 h-8 bg-black border border-cyber-border flex items-center justify-center overflow-hidden shrink-0">
+                                    <i class="fa-solid fa-paint-roller text-gray-600 text-xs"></i>
+                                </div>
+                                <span class="text-sm font-medium text-gray-300 truncate" id="fg-label">OVERLAY_DECAL.IMG</span>
+                            </div>
+                            <i class="fa-solid fa-upload text-cyber-pink opacity-50 group-hover:opacity-100 transition-opacity"></i>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="panel-border bg-cyber-bg p-4 rounded-sm shadow-md">
+                <h3 class="text-[10px] font-display font-bold text-cyber-cyan uppercase tracking-[0.2em] mb-4"><i class="fa-solid fa-cube mr-2"></i>Surface Params</h3>
+                
+                <div class="space-y-5">
+                    <div>
+                        <div class="flex justify-between text-xs mb-2 font-mono text-gray-400 uppercase">
+                            <label>Displacement</label>
+                            <span id="val-disp" class="text-cyber-cyan">12</span>
+                        </div>
+                        <input type="range" id="disp-strength" min="0" max="50" value="12">
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between text-xs mb-2 font-mono text-gray-400 uppercase">
+                            <label>Depth (Z-Axis)</label>
+                            <span id="val-depth" class="text-cyber-cyan">1.25</span>
+                        </div>
+                        <input type="range" id="bump-depth" min="0.1" max="5.0" step="0.05" value="1.25">
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between text-xs mb-2 font-mono text-gray-400 uppercase">
+                            <label>Overlay Alpha</label>
+                            <span id="val-opacity" class="text-cyber-cyan">95%</span>
+                        </div>
+                        <input type="range" id="fg-opacity" min="0" max="100" value="95">
+                    </div>
+                    
+                    <div>
+                        <label class="text-xs font-mono text-gray-400 uppercase block mb-2">Blend Protocol</label>
+                        <select id="blend-mode" class="w-full bg-cyber-panel border border-cyber-border rounded-sm p-2 text-sm text-cyber-cyan font-mono focus:outline-none focus:border-cyber-pink transition-colors">
+                            <option value="normal" selected>NORMAL (OPAQUE)</option>
+                            <option value="multiply">MULTIPLY (INK/DYE)</option>
+                            <option value="overlay">OVERLAY (INTEGRATED)</option>
+                            <option value="additive">ADDITIVE (LIGHTING)</option>
+                        </select>
+                    </div>
+                </div>
+            </section>
+
+            <section class="panel-border bg-cyber-bg p-4 rounded-sm shadow-md">
+                <h3 class="text-[10px] font-display font-bold text-cyber-yellow uppercase tracking-[0.2em] mb-4"><i class="fa-solid fa-lightbulb mr-2"></i>Illumination</h3>
+                
+                <div class="space-y-5">
+                    <div>
+                        <div class="flex justify-between text-xs mb-2 font-mono text-gray-400 uppercase">
+                            <label>Vector Angle</label>
+                            <span id="val-angle" class="text-cyber-yellow">45°</span>
+                        </div>
+                        <input type="range" id="light-angle" min="0" max="360" value="45">
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between text-xs mb-2 font-mono text-gray-400 uppercase">
+                            <label>Intensity</label>
+                            <span id="val-intensity" class="text-cyber-yellow">1.1</span>
+                        </div>
+                        <input type="range" id="light-intensity" min="0" max="3.0" step="0.1" value="1.1">
+                    </div>
+                    
+                    <div>
+                        <div class="flex justify-between text-xs mb-2 font-mono text-gray-400 uppercase">
+                            <label>Base Exposure</label>
+                            <span id="val-overall" class="text-cyber-yellow">1.0</span>
+                        </div>
+                        <input type="range" id="overall-light" min="0" max="3.0" step="0.1" value="1.0">
+                    </div>
+                </div>
+            </section>
+
+            <!-- Actions -->
+            <div class="mt-auto pt-4 space-y-4 pb-6 md:pb-0">
+                <button id="btn-render" disabled class="btn-cyber font-display w-full py-4 text-sm disabled:opacity-50 font-bold">
+                    <i class="fa-solid fa-bolt mr-2"></i>Initialize Render
+                </button>
+                <button id="btn-download" disabled class="w-full py-3 border border-cyber-border bg-transparent text-gray-500 font-display tracking-widest text-sm hover:border-cyber-cyan hover:text-cyber-cyan transition-all duration-300 cursor-not-allowed">
+                    <i class="fa-solid fa-download mr-2"></i>EXPORT DATA
+                </button>
+            </div>
+            
+        </div>
+    </aside>
+
+    <script>
+        const state = {
+            bg: { img: null, x: 0, y: 0, scale: 1, originalW: 0, originalH: 0 },
+            fg: { canvas: null, x: 0, y: 0, w: 0, h: 0, scale: 1 },
+            mode: 'edit', 
+            activeTool: 'move', 
+            eraseTolerance: 20,
+            history: [],
+            historyIndex: -1,
+            isDragging: false,
+            dragTarget: null, 
+            dragStart: { x: 0, y: 0 },
+            initialPos: { x: 0, y: 0, w: 0, h: 0 },
+            renderedDataURL: null,
+            
+            // Updated State Defaults
+            settings: {
+                dispStrength: 12,
+                bumpDepth: 1.25,
+                fgOpacity: 0.95,
+                blendMode: 'normal',
+                lightAngle: 45,
+                lightIntensity: 1.1,
+                overallLight: 1.0 
+            }
+        };
+
+        const canvas = document.getElementById('main-canvas');
+        const ctx = canvas.getContext('2d', { willReadFrequently: true });
+        const container = document.getElementById('canvas-container');
+        
+        const ui = {
+            bgUpload: document.getElementById('bg-upload'),
+            fgUpload: document.getElementById('fg-upload'),
+            bgLabel: document.getElementById('bg-label'),
+            fgLabel: document.getElementById('fg-label'),
+            bgThumb: document.getElementById('bg-thumb'),
+            fgThumb: document.getElementById('fg-thumb'),
+            emptyState: document.getElementById('empty-state'),
+            renderSpinner: document.getElementById('processing-overlay'),
+            btnRender: document.getElementById('btn-render'),
+            btnDownload: document.getElementById('btn-download'),
+            btnEdit: document.getElementById('btn-edit-mode'),
+            
+            fgTools: document.getElementById('fg-tools'),
+            toolMove: document.getElementById('tool-move'),
+            toolErase: document.getElementById('tool-erase'),
+            inTolerance: document.getElementById('erase-tolerance'),
+            btnUndo: document.getElementById('btn-undo'),
+            
+            inDisp: document.getElementById('disp-strength'),
+            inDepth: document.getElementById('bump-depth'),
+            inOpacity: document.getElementById('fg-opacity'),
+            inBlend: document.getElementById('blend-mode'),
+            inAngle: document.getElementById('light-angle'),
+            inIntensity: document.getElementById('light-intensity'),
+            inOverall: document.getElementById('overall-light'),
+            
+            valDisp: document.getElementById('val-disp'),
+            valDepth: document.getElementById('val-depth'),
+            valOpacity: document.getElementById('val-opacity'),
+            valAngle: document.getElementById('val-angle'),
+            valIntensity: document.getElementById('val-intensity'),
+            valOverall: document.getElementById('val-overall'),
+        };
+
+        function resizeCanvas() {
+            canvas.width = container.clientWidth;
+            canvas.height = container.clientHeight;
+            draw();
+        }
+        window.addEventListener('resize', resizeCanvas);
+
+        
+        function syncUI() {
+            state.settings.dispStrength = parseInt(ui.inDisp.value);
+            ui.valDisp.innerText = state.settings.dispStrength;
+            
+            state.settings.bumpDepth = parseFloat(ui.inDepth.value);
+            // Changed from toFixed(1) to toFixed(2) to support the .05 steps
+            ui.valDepth.innerText = state.settings.bumpDepth.toFixed(2); 
+            
+            state.settings.fgOpacity = parseInt(ui.inOpacity.value) / 100;
+            ui.valOpacity.innerText = ui.inOpacity.value + '%';
+            
+            state.settings.blendMode = ui.inBlend.value;
+            
+            state.settings.lightAngle = parseInt(ui.inAngle.value);
+            ui.valAngle.innerText = state.settings.lightAngle + '°';
+            
+            state.settings.lightIntensity = parseFloat(ui.inIntensity.value);
+            ui.valIntensity.innerText = state.settings.lightIntensity.toFixed(1);
+            
+            state.settings.overallLight = parseFloat(ui.inOverall.value);
+            ui.valOverall.innerText = state.settings.overallLight.toFixed(1);
+            
+            if(state.mode === 'edit') draw();
+        }
+
+        [ui.inDisp, ui.inDepth, ui.inOpacity, ui.inBlend, ui.inAngle, ui.inIntensity, ui.inOverall].forEach(el => {
+            el.addEventListener('input', syncUI);
+        });
+
+        function updateActionButtons() {
+            const readyToRender = state.bg.img && state.fg.canvas;
+            if (readyToRender && state.mode === 'edit') {
+                ui.btnRender.disabled = false;
+            } else {
+                ui.btnRender.disabled = true;
+            }
+
+            if (state.mode === 'rendered' && state.renderedDataURL) {
+                ui.btnDownload.disabled = false;
+                ui.btnDownload.classList.replace('text-gray-500', 'text-cyber-cyan');
+                ui.btnDownload.classList.replace('border-cyber-border', 'border-cyber-cyan');
+                ui.btnDownload.classList.add('hover:bg-cyber-cyan/10');
+                ui.btnEdit.classList.remove('hidden');
+                ui.btnRender.classList.add('hidden');
+            } else {
+                ui.btnDownload.disabled = true;
+                ui.btnDownload.classList.replace('text-cyber-cyan', 'text-gray-500');
+                ui.btnDownload.classList.replace('border-cyber-cyan', 'border-cyber-border');
+                ui.btnDownload.classList.remove('hover:bg-cyber-cyan/10');
+                ui.btnEdit.classList.add('hidden');
+                ui.btnRender.classList.remove('hidden');
+            }
+            updateUndoButton();
+        }
+
+        ui.btnEdit.addEventListener('click', () => {
+            state.mode = 'edit';
+            updateActionButtons();
+            draw();
+        });
+
+        
+        function exportRenderedData() {
+            if (!state.renderedDataURL || !state.bg.img) return;
+            
+            const img = new Image();
+            img.onload = () => {
+                // Calculate actual background boundaries on canvas
+                const bgW = state.bg.originalW * state.bg.scale;
+                const bgH = state.bg.originalH * state.bg.scale;
+                
+                // Create a temporary canvas sized to exactly the BG image bounds
+                const exportCanvas = document.createElement('canvas');
+                exportCanvas.width = bgW;
+                exportCanvas.height = bgH;
+                const exportCtx = exportCanvas.getContext('2d');
+                
+                // Draw the rendered full-screen canvas offset by the BG's position
+                exportCtx.drawImage(img, -state.bg.x, -state.bg.y);
+                
+                // Generate filename: YYYYmmdd-HHMM-OffsetMapped.png (24-hour clock)
+                const now = new Date();
+                const yyyy = now.getFullYear();
+                const mm = String(now.getMonth() + 1).padStart(2, '0');
+                const dd = String(now.getDate()).padStart(2, '0');
+                const HH = String(now.getHours()).padStart(2, '0');
+                const MM = String(now.getMinutes()).padStart(2, '0');
+                const filename = `${yyyy}${mm}${dd}-${HH}${MM}-OffsetMapped.png`;
+
+                const a = document.createElement('a');
+                a.href = exportCanvas.toDataURL('image/png');
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            };
+            img.src = state.renderedDataURL;
+        }
+
+        ui.btnDownload.addEventListener('click', exportRenderedData);
+
+        // Save functionality (Ctrl+S / Cmd+S)
+        window.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
+                e.preventDefault();
+                if (state.mode === 'rendered' && state.renderedDataURL) {
+                    exportRenderedData();
+                }
+            }
+        });
+
+
+        function cloneCanvas(oldCanvas) {
+            if (!oldCanvas) return null;
+            const newCanvas = document.createElement('canvas');
+            newCanvas.width = oldCanvas.width;
+            newCanvas.height = oldCanvas.height;
+            newCanvas.getContext('2d').drawImage(oldCanvas, 0, 0);
+            return newCanvas;
+        }
+
+        function updateUndoButton() {
+            if (state.historyIndex > 0 || state.mode === 'rendered') {
+                ui.btnUndo.disabled = false;
+                ui.btnUndo.classList.replace('text-gray-600', 'text-white');
+                ui.btnUndo.classList.add('hover:bg-cyber-border', 'border-cyber-pink');
+                ui.btnUndo.classList.replace('border-cyber-border', 'border-cyber-pink');
+            } else {
+                ui.btnUndo.disabled = true;
+                ui.btnUndo.classList.replace('text-white', 'text-gray-600');
+                ui.btnUndo.classList.remove('hover:bg-cyber-border', 'border-cyber-pink');
+                ui.btnUndo.classList.add('border-cyber-border');
+            }
+        }
+
+        function saveState() {
+            if (!state.fg.canvas) return;
+            
+            if (state.historyIndex < state.history.length - 1) {
+                state.history = state.history.slice(0, state.historyIndex + 1);
+            }
+            
+            state.history.push({
+                x: state.fg.x,
+                y: state.fg.y,
+                w: state.fg.w,
+                h: state.fg.h,
+                canvas: cloneCanvas(state.fg.canvas)
+            });
+            
+            if (state.history.length > 20) {
+                state.history.shift();
+            } else {
+                state.historyIndex++;
+            }
+            updateUndoButton();
+        }
+
+        function undo() {
+            if (state.mode === 'rendered') {
+                state.mode = 'edit';
+                updateActionButtons();
+                draw();
+                return;
+            }
+            
+            if (state.historyIndex > 0) {
+                state.historyIndex--;
+                restoreState(state.history[state.historyIndex]);
+            }
+        }
+
+        function redo() {
+            if (state.mode === 'rendered') return;
+            if (state.historyIndex < state.history.length - 1) {
+                state.historyIndex++;
+                restoreState(state.history[state.historyIndex]);
+            }
+        }
+
+        function restoreState(histState) {
+            state.fg.x = histState.x;
+            state.fg.y = histState.y;
+            state.fg.w = histState.w;
+            state.fg.h = histState.h;
+            state.fg.canvas = cloneCanvas(histState.canvas);
+            updateUndoButton();
+            draw();
+        }
+
+        ui.btnUndo.addEventListener('click', undo);
+
+        window.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
+                e.preventDefault();
+                if (e.shiftKey) {
+                    redo();
+                } else {
+                    undo();
+                }
+            }
+        });
+
+        
+        function setTool(tool) {
+            state.activeTool = tool;
+            if (tool === 'move') {
+                ui.toolMove.className = "w-8 h-8 rounded-sm bg-cyber-cyan/20 border border-cyber-cyan text-cyber-cyan flex items-center justify-center transition-all shadow-[0_0_8px_rgba(0,240,255,0.4)]";
+                ui.toolErase.className = "w-8 h-8 rounded-sm bg-transparent border border-cyber-border text-gray-500 hover:text-cyber-pink hover:border-cyber-pink flex items-center justify-center transition-all";
+            } else {
+                ui.toolErase.className = "w-8 h-8 rounded-sm bg-cyber-pink/20 border border-cyber-pink text-cyber-pink flex items-center justify-center transition-all shadow-[0_0_8px_rgba(255,0,60,0.4)]";
+                ui.toolMove.className = "w-8 h-8 rounded-sm bg-transparent border border-cyber-border text-gray-500 hover:text-cyber-cyan hover:border-cyber-cyan flex items-center justify-center transition-all";
+            }
+            draw();
+        }
+
+        ui.toolMove.addEventListener('click', () => setTool('move'));
+        ui.toolErase.addEventListener('click', () => setTool('erase'));
+        ui.inTolerance.addEventListener('input', (e) => state.eraseTolerance = parseInt(e.target.value));
+
+        function handleImageUpload(e, layer) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const img = new Image();
+                img.onload = () => {
+                    if (layer === 'bg') {
+                        state.bg.img = img;
+                        state.bg.originalW = img.width;
+                        state.bg.originalH = img.height;
+                        
+                        const scale = Math.min(canvas.width / img.width, canvas.height / img.height) * 0.8;
+                        state.bg.scale = scale;
+                        state.bg.x = (canvas.width - img.width * scale) / 2;
+                        state.bg.y = (canvas.height - img.height * scale) / 2;
+                        
+                        ui.bgLabel.innerText = file.name;
+                        ui.bgThumb.innerHTML = `<img src="${img.src}" class="w-full h-full object-cover">`;
+                        ui.emptyState.classList.add('hidden');
+                    } else if (layer === 'fg') {
+                        const tempCanvas = document.createElement('canvas');
+                        tempCanvas.width = img.width;
+                        tempCanvas.height = img.height;
+                        tempCanvas.getContext('2d').drawImage(img, 0, 0);
+                        state.fg.canvas = tempCanvas;
+                        
+                        const defaultSize = Math.min(canvas.width, canvas.height) * 0.4;
+                        const aspect = img.width / img.height;
+                        
+                        if (aspect > 1) {
+                            state.fg.w = defaultSize;
+                            state.fg.h = defaultSize / aspect;
+                        } else {
+                            state.fg.h = defaultSize;
+                            state.fg.w = defaultSize * aspect;
+                        }
+                        
+                        state.fg.x = (canvas.width - state.fg.w) / 2;
+                        state.fg.y = (canvas.height - state.fg.h) / 2;
+                        
+                        ui.fgLabel.innerText = file.name;
+                        ui.fgThumb.innerHTML = `<img src="${img.src}" class="w-full h-full object-contain">`;
+                        ui.emptyState.classList.add('hidden');
+                        
+                        ui.fgTools.classList.remove('hidden');
+                        ui.fgTools.classList.add('flex');
+                        
+                        state.history = [];
+                        state.historyIndex = -1;
+                        saveState(); 
+                    }
+                    
+                    state.mode = 'edit';
+                    updateActionButtons();
+                    draw();
+                };
+                img.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        ui.bgUpload.addEventListener('change', (e) => handleImageUpload(e, 'bg'));
+        ui.fgUpload.addEventListener('change', (e) => handleImageUpload(e, 'fg'));
+
+        
+        const HANDLE_SIZE = 12;
+
+        function getHandles() {
+            const { x, y, w, h } = state.fg;
+            return [
+                { id: 'tl', x: x, y: y, cursor: 'nwse-resize' },
+                { id: 'tc', x: x + w/2, y: y, cursor: 'ns-resize' },
+                { id: 'tr', x: x + w, y: y, cursor: 'nesw-resize' },
+                { id: 'cl', x: x, y: y + h/2, cursor: 'ew-resize' },
+                { id: 'cr', x: x + w, y: y + h/2, cursor: 'ew-resize' },
+                { id: 'bl', x: x, y: y + h, cursor: 'nesw-resize' },
+                { id: 'bc', x: x + w/2, y: y + h, cursor: 'ns-resize' },
+                { id: 'br', x: x + w, y: y + h, cursor: 'nwse-resize' }
+            ];
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            if (state.mode === 'rendered' && state.renderedDataURL) {
+                const img = new Image();
+                img.onload = () => ctx.drawImage(img, 0, 0);
+                img.src = state.renderedDataURL;
+                return;
+            }
+
+            if (state.bg.img) {
+                ctx.drawImage(
+                    state.bg.img, 
+                    state.bg.x, state.bg.y, 
+                    state.bg.originalW * state.bg.scale, 
+                    state.bg.originalH * state.bg.scale
+                );
+            }
+
+            if (state.fg.canvas) {
+                ctx.globalAlpha = state.settings.fgOpacity;
+                ctx.drawImage(state.fg.canvas, state.fg.x, state.fg.y, state.fg.w, state.fg.h);
+                ctx.globalAlpha = 1.0;
+
+                if (state.activeTool === 'move') {
+                    ctx.strokeStyle = '#00f0ff';
+                    ctx.lineWidth = 1.5;
+                    ctx.setLineDash([8, 4]);
+                    ctx.strokeRect(state.fg.x, state.fg.y, state.fg.w, state.fg.h);
+                    ctx.setLineDash([]);
+
+                    const handles = getHandles();
+                    ctx.fillStyle = '#09090b';
+                    ctx.strokeStyle = '#00f0ff';
+                    ctx.lineWidth = 2;
+                    
+                    for (let h of handles) {
+                        ctx.beginPath();
+                        ctx.rect(h.x - HANDLE_SIZE/2, h.y - HANDLE_SIZE/2, HANDLE_SIZE, HANDLE_SIZE);
+                        ctx.fill();
+                        ctx.stroke();
+                    }
+                } else if (state.activeTool === 'erase') {
+                    ctx.strokeStyle = 'rgba(255, 0, 60, 0.6)';
+                    ctx.lineWidth = 2;
+                    ctx.setLineDash([4, 4]);
+                    ctx.strokeRect(state.fg.x, state.fg.y, state.fg.w, state.fg.h);
+                    ctx.setLineDash([]);
+                }
+            }
+        }
+
+        function getMousePos(e) {
+            const rect = canvas.getBoundingClientRect();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            return {
+                x: clientX - rect.left,
+                y: clientY - rect.top
+            };
+        }
+
+        function hitTest(pos) {
+            if (!state.fg.canvas) return state.bg.img ? 'bg' : null;
+
+            if (state.activeTool === 'move') {
+                const handles = getHandles();
+                for (let h of handles) {
+                    if (pos.x >= h.x - HANDLE_SIZE && pos.x <= h.x + HANDLE_SIZE &&
+                        pos.y >= h.y - HANDLE_SIZE && pos.y <= h.y + HANDLE_SIZE) {
+                        return h.id;
+                    }
+                }
+            }
+
+            if (pos.x >= state.fg.x && pos.x <= state.fg.x + state.fg.w &&
+                pos.y >= state.fg.y && pos.y <= state.fg.y + state.fg.h) {
+                return 'fg';
+            }
+
+            if (state.bg.img) {
+                const bgW = state.bg.originalW * state.bg.scale;
+                const bgH = state.bg.originalH * state.bg.scale;
+                if (pos.x >= state.bg.x && pos.x <= state.bg.x + bgW &&
+                    pos.y >= state.bg.y && pos.y <= state.bg.y + bgH) {
+                    return 'bg';
+                }
+            }
+
+            return null;
+        }
+
+
+        function onPointerDown(e) {
+            if (state.mode !== 'edit') return;
+            const pos = getMousePos(e);
+            const hit = hitTest(pos);
+            
+            if (state.activeTool === 'erase' && hit === 'fg') {
+                performSmartErase(pos.x, pos.y);
+                if (e.touches) e.preventDefault();
+                return;
+            }
+            
+            if (state.activeTool !== 'move' && hit !== 'bg') return;
+            
+            if (hit) {
+                state.isDragging = true;
+                state.dragTarget = hit;
+                state.dragStart = pos;
+                
+                if (hit === 'bg') {
+                    state.initialPos = { x: state.bg.x, y: state.bg.y };
+                } else {
+                    state.initialPos = { x: state.fg.x, y: state.fg.y, w: state.fg.w, h: state.fg.h };
+                }
+                
+                if (e.touches) e.preventDefault();
+            }
+        }
+
+        function performSmartErase(screenX, screenY) {
+            const relX = screenX - state.fg.x;
+            const relY = screenY - state.fg.y;
+            
+            const scaleX = state.fg.canvas.width / state.fg.w;
+            const scaleY = state.fg.canvas.height / state.fg.h;
+            
+            const startX = Math.floor(relX * scaleX);
+            const startY = Math.floor(relY * scaleY);
+            
+            const ctx = state.fg.canvas.getContext('2d', { willReadFrequently: true });
+            const w = state.fg.canvas.width;
+            const h = state.fg.canvas.height;
+            const imgData = ctx.getImageData(0, 0, w, h);
+            const data = imgData.data;
+            
+            const startIdx = (startY * w + startX) * 4;
+            const targetR = data[startIdx];
+            const targetG = data[startIdx + 1];
+            const targetB = data[startIdx + 2];
+            const targetA = data[startIdx + 3];
+            
+            if (targetA === 0) return; 
+            
+            const tol = (state.eraseTolerance / 100) * 255;
+            
+            function colorMatch(idx) {
+                if (data[idx+3] === 0) return false;
+                const r = data[idx];
+                const g = data[idx+1];
+                const b = data[idx+2];
+                const diff = Math.max(Math.abs(r - targetR), Math.abs(g - targetG), Math.abs(b - targetB));
+                return diff <= tol;
+            }
+            
+            const stack = [startX, startY];
+            const visited = new Uint8Array(w * h);
+            visited[startY * w + startX] = 1;
+            
+            while(stack.length > 0) {
+                const y = stack.pop();
+                const x = stack.pop();
+                
+                const idx = (y * w + x) * 4;
+                data[idx + 3] = 0; 
+                
+                if (x + 1 < w) checkAndPush(x + 1, y);
+                if (x - 1 >= 0) checkAndPush(x - 1, y);
+                if (y + 1 < h) checkAndPush(x, y + 1);
+                if (y - 1 >= 0) checkAndPush(x, y - 1);
+                
+                function checkAndPush(nx, ny) {
+                    const nIndex = ny * w + nx;
+                    if (!visited[nIndex]) {
+                        visited[nIndex] = 1;
+                        if (colorMatch(nIndex * 4)) {
+                            stack.push(nx, ny);
+                        }
+                    }
+                }
+            }
+            
+            ctx.putImageData(imgData, 0, 0);
+            draw();
+            saveState(); 
+        }
+
+
+        function onPointerMove(e) {
+            if (state.mode !== 'edit') return;
+            const pos = getMousePos(e);
+            
+            const hit = hitTest(pos);
+            if (!state.isDragging) {
+                if (state.activeTool === 'erase') {
+                    canvas.style.cursor = hit === 'fg' ? 'crosshair' : 'default';
+                    return;
+                }
+                
+                if (hit && hit !== 'bg' && hit !== 'fg') {
+                    const handle = getHandles().find(h => h.id === hit);
+                    canvas.style.cursor = handle ? handle.cursor : 'default';
+                } else if (hit === 'fg' || hit === 'bg') {
+                    canvas.style.cursor = 'move';
+                } else {
+                    canvas.style.cursor = 'default';
+                }
+                return;
+            }
+
+            if (e.touches) e.preventDefault(); 
+            const dx = pos.x - state.dragStart.x;
+            const dy = pos.y - state.dragStart.y;
+            const minSize = 20;
+
+            if (state.dragTarget === 'bg') {
+                state.bg.x = state.initialPos.x + dx;
+                state.bg.y = state.initialPos.y + dy;
+            } else if (state.dragTarget === 'fg') {
+                state.fg.x = state.initialPos.x + dx;
+                state.fg.y = state.initialPos.y + dy;
+            } else {
+                let newX = state.initialPos.x;
+                let newY = state.initialPos.y;
+                let newW = state.initialPos.w;
+                let newH = state.initialPos.h;
+
+                if (state.dragTarget.includes('l')) { newX = state.initialPos.x + dx; newW = state.initialPos.w - dx; }
+                if (state.dragTarget.includes('r')) { newW = state.initialPos.w + dx; }
+                if (state.dragTarget.includes('t')) { newY = state.initialPos.y + dy; newH = state.initialPos.h - dy; }
+                if (state.dragTarget.includes('b')) { newH = state.initialPos.h + dy; }
+
+                if (newW > minSize) { state.fg.x = newX; state.fg.w = newW; }
+                if (newH > minSize) { state.fg.y = newY; state.fg.h = newH; }
+            }
+            draw();
+        }
+
+        function onPointerUp() {
+            if (state.isDragging && state.dragTarget !== 'bg') {
+                saveState(); 
+            }
+            state.isDragging = false;
+            state.dragTarget = null;
+        }
+
+        canvas.addEventListener('mousedown', onPointerDown);
+        window.addEventListener('mousemove', onPointerMove);
+        window.addEventListener('mouseup', onPointerUp);
+        
+        canvas.addEventListener('touchstart', onPointerDown, { passive: false });
+        window.addEventListener('touchmove', onPointerMove, { passive: false });
+        window.addEventListener('touchend', onPointerUp);
+
+        canvas.addEventListener('wheel', (e) => {
+            if (state.mode !== 'edit' || !state.bg.img) return;
+            const pos = getMousePos(e);
+            if (hitTest(pos) === 'bg' || hitTest(pos) === null) {
+                e.preventDefault();
+                const zoomFactor = 1.05;
+                const oldScale = state.bg.scale;
+                if (e.deltaY < 0) {
+                    state.bg.scale *= zoomFactor;
+                } else {
+                    state.bg.scale /= zoomFactor;
+                }
+                
+                const relX = pos.x - state.bg.x;
+                const relY = pos.y - state.bg.y;
+                state.bg.x -= relX * (state.bg.scale / oldScale - 1);
+                state.bg.y -= relY * (state.bg.scale / oldScale - 1);
+                draw();
+            }
+        }, { passive: false });
+
+
+        
+        ui.btnRender.addEventListener('click', () => {
+            if (!state.bg.img || !state.fg.canvas) return;
+            ui.renderSpinner.classList.remove('hidden');
+            setTimeout(() => { processCompositeMaterial(); }, 50);
+        });
+
+        function processCompositeMaterial() {
+            const w = canvas.width;
+            const h = canvas.height;
+
+            const bgCanvas = document.createElement('canvas');
+            bgCanvas.width = w; bgCanvas.height = h;
+            const bgCtx = bgCanvas.getContext('2d', { willReadFrequently: true });
+            
+            bgCtx.fillStyle = '#000000';
+            bgCtx.fillRect(0, 0, w, h);
+            bgCtx.drawImage(
+                state.bg.img, 
+                state.bg.x, state.bg.y, 
+                state.bg.originalW * state.bg.scale, 
+                state.bg.originalH * state.bg.scale
+            );
+            const bgData = bgCtx.getImageData(0, 0, w, h).data;
+
+            const fgCanvas = document.createElement('canvas');
+            fgCanvas.width = w; fgCanvas.height = h;
+            const fgCtx = fgCanvas.getContext('2d', { willReadFrequently: true });
+            fgCtx.drawImage(state.fg.canvas, state.fg.x, state.fg.y, state.fg.w, state.fg.h);
+            const fgData = fgCtx.getImageData(0, 0, w, h).data;
+
+            const outImageData = ctx.createImageData(w, h);
+            const outData = outImageData.data;
+
+            const s = state.settings;
+            const rad = s.lightAngle * Math.PI / 180;
+            const Lx = Math.cos(rad);
+            const Ly = Math.sin(rad);
+            const Lz = s.bumpDepth; 
+            
+            const lenL = Math.sqrt(Lx*Lx + Ly*Ly + Lz*Lz);
+            const nLx = Lx / lenL;
+            const nLy = Ly / lenL;
+            const nLz = Lz / lenL;
+
+            const dispStrength = s.dispStrength;
+            const fgOpacity = s.fgOpacity;
+
+            const getLum = (x, y) => {
+                const idx = (y * w + x) * 4;
+                return 0.299 * bgData[idx] + 0.587 * bgData[idx+1] + 0.114 * bgData[idx+2];
+            };
+
+            for (let y = 1; y < h - 1; y++) {
+                for (let x = 1; x < w - 1; x++) {
+                    const idx = (y * w + x) * 4;
+                    
+                    const bR = bgData[idx];
+                    const bG = bgData[idx+1];
+                    const bB = bgData[idx+2];
+
+                    const maxD = dispStrength + 2;
+                    if (x < state.fg.x - maxD || x > state.fg.x + state.fg.w + maxD ||
+                        y < state.fg.y - maxD || y > state.fg.y + state.fg.h + maxD) {
+                        outData[idx] = bR; outData[idx+1] = bG; outData[idx+2] = bB; outData[idx+3] = 255;
+                        continue;
+                    }
+
+                    const lLeft = getLum(x-1, y);
+                    const lRight = getLum(x+1, y);
+                    const lUp = getLum(x, y-1);
+                    const lDown = getLum(x, y+1);
+
+                    let Nx = (lLeft - lRight) / 255.0; 
+                    let Ny = (lUp - lDown) / 255.0;
+                    let Nz = 1.0 / s.bumpDepth; 
+
+                    const lenN = Math.sqrt(Nx*Nx + Ny*Ny + Nz*Nz);
+                    Nx /= lenN; Ny /= lenN; Nz /= lenN;
+
+                    let intensity = Math.max(0.1, (Nx * nLx + Ny * nLy + Nz * nLz));
+                    intensity = Math.pow(intensity, 1.2) * s.lightIntensity;
+
+                    const dX = Math.round(Nx * dispStrength);
+                    const dY = Math.round(Ny * dispStrength);
+                    
+                    let sx = x + dX;
+                    let sy = y + dY;
+                    sx = Math.max(0, Math.min(w - 1, sx));
+                    sy = Math.max(0, Math.min(h - 1, sy));
+
+                    const sIdx = (sy * w + sx) * 4;
+                    
+                    const fR = fgData[sIdx];
+                    const fG = fgData[sIdx+1];
+                    const fB = fgData[sIdx+2];
+                    const fA = fgData[sIdx+3] / 255.0;
+
+                    if (fA === 0) {
+                        outData[idx] = bR; outData[idx+1] = bG; outData[idx+2] = bB; outData[idx+3] = 255;
+                        continue;
+                    }
+
+                    const alpha = fA * fgOpacity;
+
+                    let litR = fR * intensity;
+                    let litG = fG * intensity;
+                    let litB = fB * intensity;
+
+                    let finalR, finalG, finalB;
+                    
+                    if (s.blendMode === 'multiply') {
+                        litR = (litR * bR) / 255;
+                        litG = (litG * bG) / 255;
+                        litB = (litB * bB) / 255;
+                        finalR = litR * alpha + bR * (1 - alpha);
+                        finalG = litG * alpha + bG * (1 - alpha);
+                        finalB = litB * alpha + bB * (1 - alpha);
+                    } 
+                    else if (s.blendMode === 'overlay') {
+                        const overlay = (base, blend) => 
+                            (base < 128) ? (2 * base * blend / 255) : (255 - 2 * (255 - base) * (255 - blend) / 255);
+                        
+                        litR = overlay(bR, Math.min(255, litR));
+                        litG = overlay(bG, Math.min(255, litG));
+                        litB = overlay(bB, Math.min(255, litB));
+                        
+                        finalR = litR * alpha + bR * (1 - alpha);
+                        finalG = litG * alpha + bG * (1 - alpha);
+                        finalB = litB * alpha + bB * (1 - alpha);
+                    } 
+                    else if (s.blendMode === 'additive') {
+                        // Math implementation for additive light blend
+                        litR = bR + litR;
+                        litG = bG + litG;
+                        litB = bB + litB;
+                        
+                        finalR = Math.min(255, litR) * alpha + bR * (1 - alpha);
+                        finalG = Math.min(255, litG) * alpha + bG * (1 - alpha);
+                        finalB = Math.min(255, litB) * alpha + bB * (1 - alpha);
+                    }
+                    else { // 'normal'
+                        finalR = Math.min(255, litR) * alpha + bR * (1 - alpha);
+                        finalG = Math.min(255, litG) * alpha + bG * (1 - alpha);
+                        finalB = Math.min(255, litB) * alpha + bB * (1 - alpha);
+                    }
+
+                    const baseLight = s.overallLight !== undefined ? s.overallLight : 1.0;
+                    
+                    outData[idx] = Math.min(255, finalR * baseLight);
+                    outData[idx+1] = Math.min(255, finalG * baseLight);
+                    outData[idx+2] = Math.min(255, finalB * baseLight);
+                    outData[idx+3] = 255;
+                }
+            }
+
+            // Fill edges where loop skips
+            for(let x=0; x<w; x++){
+                outData[(x)*4] = bgData[(x)*4]; outData[(x)*4+1] = bgData[(x)*4+1]; outData[(x)*4+2] = bgData[(x)*4+2]; outData[(x)*4+3]=255;
+                const bIdx = ((h-1)*w + x)*4;
+                outData[bIdx] = bgData[bIdx]; outData[bIdx+1] = bgData[bIdx+1]; outData[bIdx+2] = bgData[bIdx+2]; outData[bIdx+3]=255;
+            }
+            for(let y=0; y<h; y++){
+                const lIdx = (y*w)*4;
+                outData[lIdx] = bgData[lIdx]; outData[lIdx+1] = bgData[lIdx+1]; outData[lIdx+2] = bgData[lIdx+2]; outData[lIdx+3]=255;
+                const rIdx = (y*w + w-1)*4;
+                outData[rIdx] = bgData[rIdx]; outData[rIdx+1] = bgData[rIdx+1]; outData[rIdx+2] = bgData[rIdx+2]; outData[rIdx+3]=255;
+            }
+
+            const finalCanvas = document.createElement('canvas');
+            finalCanvas.width = w; finalCanvas.height = h;
+            const finalCtx = finalCanvas.getContext('2d');
+            finalCtx.putImageData(outImageData, 0, 0);
+            
+            state.renderedDataURL = finalCanvas.toDataURL('image/png');
+            state.mode = 'rendered';
+            
+            ui.renderSpinner.classList.add('hidden');
+            updateActionButtons();
+            draw();
+        }
+
+        window.addEventListener('load', () => {
+            resizeCanvas();
+            syncUI(); // Triggers sync to apply defaults
+            updateActionButtons();
+        });
+
+    </script>
+</body>
+</html>
