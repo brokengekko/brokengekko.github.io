@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyberpunk Wet Paint Studio</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=VT323&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        :root {
+            --neon-cyan: #0ff;
+            --neon-pink: #f0f;
+            --neon-yellow: #ff0;
+            --dark-bg: #050510;
+            --panel-bg: rgba(10, 10, 25, 0.85);
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: var(--neon-cyan);
+            font-family: 'Rajdhani', sans-serif;
+            background-image: 
+                linear-gradient(rgba(0, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 20px 20px;
+            overflow-x: hidden;
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        /* Glitch Text Effect */
+        .glitch-text {
+            position: relative;
+            color: white;
+            text-shadow: 0 0 5px var(--neon-cyan), 0 0 10px var(--neon-cyan);
+        }
+        .glitch-text::before, .glitch-text::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--dark-bg);
+        }
+        .glitch-text::before {
+            left: 2px;
+            text-shadow: -2px 0 var(--neon-pink);
+            clip: rect(24px, 550px, 90px, 0);
+            animation: glitch-anim 3s infinite linear alternate-reverse;
+        }
+        .glitch-text::after {
+            left: -2px;
+            text-shadow: -2px 0 var(--neon-yellow);
+            clip: rect(85px, 550px, 140px, 0);
+            animation: glitch-anim 2.5s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch-anim {
+            0% { clip: rect(20px, 9999px, 85px, 0); }
+            20% { clip: rect(81px, 9999px, 131px, 0); }
+            40% { clip: rect(104px, 9999px, 20px, 0); }
+            60% { clip: rect(41px, 9999px, 50px, 0); }
+            80% { clip: rect(20px, 9999px, 115px, 0); }
+            100% { clip: rect(89px, 9999px, 12px, 0); }
+        }
+
+        /* Cyber Button */
+        .cyber-btn {
+            position: relative;
+            padding: 12px 24px;
+            background: transparent;
+            color: var(--neon-cyan);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: bold;
+            border: 1px solid var(--neon-cyan);
+            cursor: pointer;
+            overflow: hidden;
+            transition: all 0.2s;
+            clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .cyber-btn:hover:not(:disabled) {
+            background: var(--neon-cyan);
+            color: black;
+            box-shadow: 0 0 15px var(--neon-cyan);
+        }
+        .cyber-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .cyber-btn.pink {
+            border-color: var(--neon-pink);
+            color: var(--neon-pink);
+        }
+        .cyber-btn.pink:hover {
+            background: var(--neon-pink);
+            color: black;
+            box-shadow: 0 0 15px var(--neon-pink);
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            width: 100%;
+            height: 10px;
+            background: #111;
+            border: 1px solid #333;
+            position: relative;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--neon-pink), var(--neon-cyan));
+            width: 0%;
+            transition: width 0.3s ease;
+            box-shadow: 0 0 10px var(--neon-cyan);
+        }
+
+        /* Scanner Line */
+        .scanner {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--neon-cyan);
+            box-shadow: 0 0 10px var(--neon-cyan), 0 0 20px var(--neon-cyan);
+            animation: scan 2s infinite linear;
+            pointer-events: none;
+            opacity: 0.5;
+        }
+        @keyframes scan {
+            0% { top: 0; }
+            100% { top: 100%; }
+        }
+
+        /* Dropzone */
+        .dropzone {
+            border: 2px dashed #333;
+            background: var(--panel-bg);
+            transition: all 0.3s;
+            clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%);
+        }
+        .dropzone.drag-active {
+            border-color: var(--neon-cyan);
+            background: rgba(0, 255, 255, 0.1);
+            box-shadow: inset 0 0 20px rgba(0, 255, 255, 0.2);
+        }
+
+        /* Frame Decorations */
+        .cyber-frame {
+            position: relative;
+            border: 1px solid #222;
+            background: var(--panel-bg);
+        }
+        .cyber-frame::before {
+            content: '';
+            position: absolute;
+            top: -1px; left: -1px;
+            width: 20px; height: 20px;
+            border-top: 2px solid var(--neon-cyan);
+            border-left: 2px solid var(--neon-cyan);
+        }
+        .cyber-frame::after {
+            content: '';
+            position: absolute;
+            bottom: -1px; right: -1px;
+            width: 20px; height: 20px;
+            border-bottom: 2px solid var(--neon-pink);
+            border-right: 2px solid var(--neon-pink);
+        }
+
+        /* Tool Buttons */
+        .tool-btn {
+            background: #111;
+            border: 1px solid #333;
+            color: #888;
+            padding: 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .tool-btn.active {
+            background: rgba(0, 255, 255, 0.1);
+            border-color: var(--neon-cyan);
+            color: var(--neon-cyan);
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+        }
+        .tool-btn:hover:not(.active) {
+            border-color: #555;
+            color: #ddd;
+        }
+        
+        /* Cyber Slider */
+        .cyber-slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 4px;
+            background: #333;
+            outline: none;
+            opacity: 0.8;
+            transition: opacity .2s;
+            box-shadow: 0 0 5px var(--neon-cyan);
+            border-radius: 2px;
+        }
+        .cyber-slider:hover {
+            opacity: 1;
+        }
+        .cyber-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 24px;
+            background: var(--neon-cyan);
+            cursor: pointer;
+            clip-path: polygon(0 0, 100% 0, 100% 70%, 50% 100%, 0 70%);
+            box-shadow: 0 0 10px var(--neon-cyan);
+        }
+        .cyber-slider::-moz-range-thumb {
+            width: 16px;
+            height: 24px;
+            background: var(--neon-cyan);
+            cursor: pointer;
+            clip-path: polygon(0 0, 100% 0, 100% 70%, 50% 100%, 0 70%);
+            border: none;
+        }
+        
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body class="p-4 md:p-8 flex flex-col items-center justify-center relative z-10 text-white">
+
+    <!-- Ambient Background Details -->
+    <div class="fixed top-0 left-0 w-full h-full pointer-events-none -z-10 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-cyan-900/10 via-black to-black opacity-60"></div>
+
+    <!-- Header -->
+    <div class="mb-10 text-center w-full max-w-4xl pt-8">
+        <h1 class="text-5xl md:text-7xl font-bold mb-2 uppercase tracking-tighter glitch-text" data-text="NEURAL_PAINT_V1.0">
+            NEURAL_PAINT_V1.0
+        </h1>
+        <p class="font-['VT323'] text-xl md:text-2xl text-gray-400 tracking-widest uppercase">
+            Foreground Chromatic Extractor & Wet Paint Synthesizer
+        </p>
+    </div>
+
+    <!-- Main Interface -->
+    <div class="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+        
+        <!-- Control Panel (Left) -->
+        <div class="cyber-frame p-6 flex flex-col gap-6">
+            <div class="flex justify-between items-center border-b border-gray-800 pb-2">
+                <span class="text-sm text-gray-500 font-bold tracking-widest">INPUT_MOD</span>
+                <span class="text-xs text-[#0ff] font-['VT323'] animate-pulse">SYSTEM_ONLINE</span>
+            </div>
+
+            <!-- Upload View -->
+            <div id="upload-view" class="dropzone w-full h-64 flex flex-col items-center justify-center p-6 cursor-pointer">
+                <svg class="w-12 h-12 mb-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                <p class="text-center font-['VT323'] text-xl mb-2">DRAG & DROP SUBJECT IMAGE HERE</p>
+                <p class="text-xs text-gray-500 tracking-widest uppercase">OR CLICK TO UPLOAD DIRECTLY</p>
+            </div>
+            
+            <input type="file" id="file-input" accept="image/*" class="hidden" />
+
+            <!-- Interact View -->
+            <div id="interact-view" class="w-full relative group flex-col items-center hidden">
+                
+                <div class="absolute top-2 left-2 z-20 flex gap-2 bg-black/80 p-2 rounded border border-gray-700 backdrop-blur-sm shadow-[0_0_15px_rgba(0,0,0,0.8)]">
+                    <button class="tool-btn active" data-tool="all" title="Select All (Auto Subject)">
+                        <span class="font-bold text-lg leading-none" style="font-family: 'Rajdhani'">A</span>
+                    </button>
+                    <button class="tool-btn" data-tool="rect" title="Rectangle Select">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect></svg>
+                    </button>
+                    <button class="tool-btn" data-tool="oval" title="Oval Select">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle></svg>
+                    </button>
+                    <button class="tool-btn" data-tool="lasso" title="Lasso Select">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14h-2v-2h2v2zm0-4h-2V7h2v5z"></path></svg>
+                    </button>
+                    <button id="clear-btn" class="tool-btn text-red-400 hover:text-red-300 ml-2 border-l border-gray-700 pl-3 hidden" title="Clear Selection">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
+                </div>
+
+                <div class="w-full relative overflow-hidden bg-black/50 border border-gray-700 flex justify-center">
+                    <canvas id="interact-canvas" class="max-w-full h-auto max-h-64 object-contain cursor-default touch-none"></canvas>
+                </div>
+            </div>
+
+            <div id="controls-container" class="flex flex-col gap-6 mt-4 hidden">
+                <div class="flex flex-col gap-2 bg-[#111] p-4 border border-gray-800 rounded relative">
+                    
+                    <!-- Simple Controls -->
+                    <div id="simple-controls">
+                        <div class="flex justify-between items-center text-sm font-['VT323'] tracking-widest text-[#0ff]">
+                            <span>EFFECT_INTENSITY</span>
+                            <span id="simple-intensity-val">LVL 4</span>
+                        </div>
+                        <input type="range" id="simple-intensity-slider" min="1" max="10" value="4" class="cyber-slider mt-2" />
+                        <div class="flex justify-between text-xs text-gray-500 font-['VT323'] mt-1">
+                            <span>MINIMAL</span>
+                            <span>MAXIMUM</span>
+                        </div>
+                    </div>
+
+                    <!-- Advanced Controls -->
+                    <div id="advanced-controls" class="hidden flex-col gap-4">
+                        <div class="flex flex-col gap-1">
+                            <div class="flex justify-between items-center text-xs font-['VT323'] tracking-widest text-[#0ff]">
+                                <span>SMUDGE_INTENSITY</span>
+                                <span id="adv-smudge-val">LVL 4</span>
+                            </div>
+                            <input type="range" id="adv-smudge-slider" min="1" max="10" value="4" class="cyber-slider" />
+                        </div>
+                        <div class="flex flex-col gap-1">
+                            <div class="flex justify-between items-center text-xs font-['VT323'] tracking-widest text-[#0ff]">
+                                <span>DRIP_INTENSITY</span>
+                                <span id="adv-drip-val">LVL 4</span>
+                            </div>
+                            <input type="range" id="adv-drip-slider" min="1" max="10" value="4" class="cyber-slider" />
+                        </div>
+                        <div class="flex flex-col gap-1">
+                            <div class="flex justify-between items-center text-xs font-['VT323'] tracking-widest text-[#0ff]">
+                                <span>SPLATTER_INTENSITY</span>
+                                <span id="adv-splatter-val">LVL 4</span>
+                            </div>
+                            <input type="range" id="adv-splatter-slider" min="1" max="10" value="4" class="cyber-slider" />
+                        </div>
+                        <div class="flex flex-col gap-1">
+                            <div class="flex justify-between items-center text-xs font-['VT323'] tracking-widest text-[#0ff]">
+                                <span>EDGE_INTENSITY</span>
+                                <span id="adv-edge-val">LVL 4</span>
+                            </div>
+                            <input type="range" id="adv-edge-slider" min="1" max="10" value="4" class="cyber-slider" />
+                        </div>
+                    </div>
+                    
+                    <button id="toggle-advanced-btn" class="mt-3 text-xs text-gray-500 hover:text-[#f0f] font-['VT323'] tracking-widest text-left transition-colors flex items-center gap-1 w-max">
+                        [+] ADVANCED_CONTROL
+                    </button>
+                </div>
+
+                <button id="process-btn" class="cyber-btn py-4 text-lg">
+                    INITIATE_SYNTHESIS
+                </button>
+            </div>
+
+            <!-- Progress HUD -->
+            <div id="progress-hud" class="mt-4 border border-[#0ff]/30 bg-black/40 p-4 relative overflow-hidden hidden">
+                <div id="scanner-line" class="scanner"></div>
+                <div class="flex justify-between font-['VT323'] text-sm mb-2 text-gray-300">
+                    <span id="progress-status-text">STATUS: INITIALIZING</span>
+                    <span id="progress-percent" class="text-[#0ff]">0%</span>
+                </div>
+                <div class="progress-container">
+                    <div id="progress-bar-fill" class="progress-bar"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Output Panel (Right) -->
+        <div class="cyber-frame p-6 flex flex-col gap-4 h-full min-h-[500px]">
+             <div class="flex justify-between items-center border-b border-gray-800 pb-2 mb-2">
+                <span class="text-sm text-gray-500 font-bold tracking-widest">OUTPUT_MATRIX</span>
+                <span id="task-complete-badge" class="text-xs text-[#f0f] font-['VT323'] hidden">TASK_COMPLETE</span>
+            </div>
+            
+            <div class="flex-1 w-full bg-[#020205] border border-gray-800 relative flex items-center justify-center overflow-hidden">
+                <div id="awaiting-input" class="text-gray-600 font-['VT323'] text-2xl animate-pulse">AWAITING_INPUT</div>
+                
+                <canvas id="output-canvas" class="max-w-full max-h-full object-contain transition-opacity duration-1000 opacity-0 hidden" style="filter: drop-shadow(0 0 15px rgba(0,255,255,0.2));"></canvas>
+            </div>
+
+            <button id="download-btn" class="cyber-btn pink mt-4 flex justify-center items-center gap-2 hidden">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                DOWNLOAD_ASSET
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // State Variables
+        let imageObj = null;
+        let isProcessing = false;
+        let isAdvancedMode = false;
+        let activeTool = 'all';
+        let selection = { type: 'all' };
+        
+        let drawState = {
+            isDrawing: false,
+            startX: 0, startY: 0,
+            points: [],
+            currentX: 0, currentY: 0
+        };
+
+        let intensities = {
+            simple: 4,
+            smudge: 4,
+            drip: 4,
+            splatter: 4,
+            edge: 4
+        };
+
+        // DOM Elements
+        const DOM = {
+            uploadView: document.getElementById('upload-view'),
+            fileInput: document.getElementById('file-input'),
+            interactView: document.getElementById('interact-view'),
+            interactCanvas: document.getElementById('interact-canvas'),
+            controlsContainer: document.getElementById('controls-container'),
+            
+            toolBtns: document.querySelectorAll('.tool-btn:not(#clear-btn)'),
+            clearBtn: document.getElementById('clear-btn'),
+            
+            simpleControls: document.getElementById('simple-controls'),
+            advancedControls: document.getElementById('advanced-controls'),
+            toggleAdvBtn: document.getElementById('toggle-advanced-btn'),
+            
+            simpleSlider: document.getElementById('simple-intensity-slider'),
+            simpleVal: document.getElementById('simple-intensity-val'),
+            
+            advSmudge: document.getElementById('adv-smudge-slider'),
+            advDrip: document.getElementById('adv-drip-slider'),
+            advSplatter: document.getElementById('adv-splatter-slider'),
+            advEdge: document.getElementById('adv-edge-slider'),
+            
+            processBtn: document.getElementById('process-btn'),
+            progressHud: document.getElementById('progress-hud'),
+            progressStatus: document.getElementById('progress-status-text'),
+            progressPercent: document.getElementById('progress-percent'),
+            progressBar: document.getElementById('progress-bar-fill'),
+            scannerLine: document.getElementById('scanner-line'),
+            
+            awaitingInput: document.getElementById('awaiting-input'),
+            outputCanvas: document.getElementById('output-canvas'),
+            taskCompleteBadge: document.getElementById('task-complete-badge'),
+            downloadBtn: document.getElementById('download-btn'),
+        };
+
+        class ColorExtractor {
+            static extract(imageData, k = 5, quality = 10) {
+                const pixels = imageData.data;
+                const colorSamples = [];
+                
+                for (let i = 0; i < pixels.length; i += 4 * quality) {
+                    if (pixels[i + 3] < 128) continue;
+                    colorSamples.push({ r: pixels[i], g: pixels[i + 1], b: pixels[i + 2] });
+                }
+
+                if (colorSamples.length === 0) return Array(k).fill({ r: 255, g: 0, b: 255 });
+
+                let centroids = [];
+                for (let i = 0; i < k; i++) {
+                    centroids.push(colorSamples[Math.floor(Math.random() * colorSamples.length)]);
+                }
+
+                const maxIterations = 10;
+                for (let iter = 0; iter < maxIterations; iter++) {
+                    const clusters = Array.from({ length: k }, () => []);
+                    for (const p of colorSamples) {
+                        let minDist = Infinity;
+                        let clusterIdx = 0;
+                        for (let i = 0; i < k; i++) {
+                            const c = centroids[i];
+                            const dist = Math.pow(p.r - c.r, 2) + Math.pow(p.g - c.g, 2) + Math.pow(p.b - c.b, 2);
+                            if (dist < minDist) {
+                                minDist = dist;
+                                clusterIdx = i;
+                            }
+                        }
+                        clusters[clusterIdx].push(p);
+                    }
+
+                    let changed = false;
+                    for (let i = 0; i < k; i++) {
+                        if (clusters[i].length === 0) continue;
+                        let sumR = 0, sumG = 0, sumB = 0;
+                        for (const p of clusters[i]) {
+                            sumR += p.r; sumG += p.g; sumB += p.b;
+                        }
+                        const newC = {
+                            r: Math.round(sumR / clusters[i].length),
+                            g: Math.round(sumG / clusters[i].length),
+                            b: Math.round(sumB / clusters[i].length)
+                        };
+                        if (newC.r !== centroids[i].r || newC.g !== centroids[i].g || newC.b !== centroids[i].b) {
+                            changed = true;
+                            centroids[i] = newC;
+                        }
+                    }
+                    if (!changed) break;
+                }
+                return centroids;
+            }
+        }
+
+        class ImageSegmenter {
+            static getMask(imageData, width, height, userMask = null) {
+                const data = imageData.data;
+                const mask = new Uint8ClampedArray(width * height);
+                
+                if (userMask) {
+                    for (let i = 0; i < mask.length; i++) {
+                        mask[i] = userMask[i * 4] > 128 ? 1 : 0;
+                    }
+                    return mask;
+                }
+
+                const gray = new Float32Array(width * height);
+                let minGray = 255, maxGray = 0;
+
+                for (let y = 0; y < height; y++) {
+                    for (let x = 0; x < width; x++) {
+                        const i = (y * width + x) * 4;
+                        const g = 0.299 * data[i] + 0.587 * data[i+1] + 0.114 * data[i+2];
+                        gray[y * width + x] = g;
+                        
+                        if (!userMask || userMask[i] > 128) {
+                            if (g < minGray) minGray = g;
+                            if (g > maxGray) maxGray = g;
+                        }
+                    }
+                }
+
+                const cx = width / 2;
+                const cy = height / 2;
+                const maxDist = Math.sqrt(cx*cx + cy*cy);
+
+                for (let y = 1; y < height - 1; y++) {
+                    for (let x = 1; x < width - 1; x++) {
+                        const idx = y * width + x;
+                        
+                        if (userMask && userMask[idx * 4] < 128) {
+                            mask[idx] = 0;
+                            continue;
+                        }
+
+                        const gx = gray[idx + 1] - gray[idx - 1];
+                        const gy = gray[idx + width] - gray[idx - width];
+                        const edgeStrength = Math.sqrt(gx*gx + gy*gy);
+
+                        const distToCenter = Math.sqrt(Math.pow(x - cx, 2) + Math.pow(y - cy, 2));
+                        const centerWeight = 1.0 - (distToCenter / maxDist);
+                        const normalizedGray = (gray[idx] - minGray) / (maxGray - minGray || 1);
+                        
+                        let score = (centerWeight * 0.5) + (edgeStrength > 20 ? 0.3 : 0) + (Math.abs(normalizedGray - 0.5) * 0.2);
+                        mask[idx] = score > 0.45 ? 1 : 0; 
+                    }
+                }
+
+                const tempMask = new Uint8ClampedArray(width * height);
+                for (let y = 1; y < height - 1; y++) {
+                    for (let x = 1; x < width - 1; x++) {
+                        let idx = y * width + x;
+                        if (mask[idx] === 1 || mask[idx-1]===1 || mask[idx+1]===1 || mask[idx-width]===1 || mask[idx+width]===1) {
+                            tempMask[idx] = 1;
+                        }
+                    }
+                }
+                return tempMask;
+            }
+        }
+
+        class WetPaintEngine {
+            constructor(canvas, image, setProgress, userMaskData = null, intensitiesConf) {
+                this.canvas = canvas;
+                this.ctx = canvas.getContext('2d', { willReadFrequently: true });
+                this.image = image;
+                this.setProgress = setProgress;
+                this.userMaskData = userMaskData;
+                this.intensities = intensitiesConf;
+                
+                this.canvas.width = image.width;
+                this.canvas.height = image.height;
+                this.width = image.width;
+                this.height = image.height;
+            }
+
+            async process() {
+                this.setProgress(10, 'Initializing canvas...');
+                await this.yield();
+
+                this.ctx.drawImage(this.image, 0, 0, this.width, this.height);
+                const originalImageData = this.ctx.getImageData(0, 0, this.width, this.height);
+                
+                this.setProgress(30, 'Analyzing scene depth (Segmenting)...');
+                await this.yield();
+                
+                const mask = ImageSegmenter.getMask(originalImageData, this.width, this.height, this.userMaskData);
+
+                this.setProgress(50, 'Extracting chromatic data...');
+                await this.yield();
+
+                const fgImageData = new ImageData(new Uint8ClampedArray(originalImageData.data), this.width, this.height);
+                for(let i=0; i < mask.length; i++) {
+                    if(mask[i] === 0) fgImageData.data[i*4+3] = 0; 
+                }
+                const palette = ColorExtractor.extract(fgImageData, 4, 15);
+
+                this.setProgress(70, 'Applying synthetic wet paint physics...');
+                await this.yield();
+
+                this.applyEffects(originalImageData, mask, palette);
+
+                this.setProgress(90, 'Rendering final layers...');
+                await this.yield();
+                
+                this.setProgress(100, 'Processing Complete');
+            }
+
+            yield() {
+                return new Promise(resolve => setTimeout(resolve, 50));
+            }
+
+            applyEffects(imgData, mask, palette) {
+                const gray = new Float32Array(this.width * this.height);
+                for (let i = 0; i < imgData.data.length; i += 4) {
+                    gray[i/4] = 0.299 * imgData.data[i] + 0.587 * imgData.data[i+1] + 0.114 * imgData.data[i+2];
+                }
+
+                this.ctx.lineCap = 'round';
+                this.ctx.lineJoin = 'round';
+
+                const fSmudge = this.intensities.smudge / 10;
+                const fEdge = this.intensities.edge / 10;
+                const fDrip = this.intensities.drip / 10;
+                const fSplatter = this.intensities.splatter / 10;
+
+                // 1. Smudge Effect
+                for (let y = 0; y < this.height; y += 3) {
+                    for (let x = 0; x < this.width; x += 3) {
+                        const idx = y * this.width + x;
+                        if (mask[idx] === 1) {
+                            const i = idx * 4;
+                            const r = imgData.data[i];
+                            const g = imgData.data[i+1];
+                            const b = imgData.data[i+2];
+
+                            if (Math.random() < (fSmudge * 0.4)) {
+                                this.ctx.beginPath();
+                                this.ctx.moveTo(x, y);
+                                const length = Math.random() * (20 * fSmudge) + 2;
+                                const dx = x + (Math.random() - 0.5) * (10 * fSmudge);
+                                const dy = y + length;
+                                
+                                this.ctx.lineTo(dx, dy);
+                                this.ctx.strokeStyle = `rgba(${r},${g},${b}, ${Math.random() * 0.4 + 0.4})`;
+                                this.ctx.lineWidth = Math.random() * 8 + 3;
+                                this.ctx.stroke();
+                            }
+                        }
+                    }
+                }
+
+                const edgeThreshold = 45 - (fEdge * 25); 
+
+                // 2. High-contrast detail strokes & drips
+                for (let y = 5; y < this.height - 5; y += 2) {
+                    for (let x = 5; x < this.width - 5; x += 2) {
+                        const idx = y * this.width + x;
+                        
+                        if (mask[idx] !== 1) continue;
+
+                        const i = idx * 4;
+                        const r = imgData.data[i];
+                        const g = imgData.data[i+1];
+                        const b = imgData.data[i+2];
+                        
+                        const gx = gray[idx + 1] - gray[idx - 1];
+                        const gy = gray[idx + this.width] - gray[idx - this.width];
+                        const edgeStrength = Math.sqrt(gx*gx + gy*gy);
+
+                        const avgF = (fEdge + fDrip + fSplatter) / 3;
+                        const usePalette = Math.random() > (1.0 - (avgF * 0.5));
+                        let pColor;
+                        if (usePalette && palette && palette.length > 0) {
+                            pColor = palette[Math.floor(Math.random() * palette.length)];
+                        } else {
+                            pColor = {r, g, b};
+                        }
+                        const colorStr = `rgba(${pColor.r}, ${pColor.g}, ${pColor.b}, ${Math.random()*0.5 + 0.5})`;
+
+                        if (edgeStrength > edgeThreshold) {
+                            
+                            // Edges
+                            if (Math.random() < (fEdge * 0.08)) {
+                                this.ctx.beginPath();
+                                this.ctx.moveTo(x, y);
+                                let currX = x, currY = y;
+                                this.ctx.strokeStyle = colorStr;
+                                this.ctx.lineWidth = Math.random() * 4 + 2;
+                                for(let t=0; t<5; t++){
+                                     currX += (Math.random() - 0.5) * 6;
+                                     currY += (Math.random() - 0.5) * 6;
+                                     this.ctx.lineTo(currX, currY);
+                                }
+                                this.ctx.stroke();
+                            }
+
+                            // Drips
+                            if (Math.random() < (fDrip * 0.025)) {
+                                this.ctx.beginPath();
+                                let dX = x;
+                                let dY = y;
+                                this.ctx.moveTo(dX, dY);
+                                let w = Math.random() * 4 + 2;
+                                
+                                let length = Math.random() * (120 * fDrip) + (20 * fDrip);
+                                for(let d=0; d<length; d+=4) {
+                                    dY += 4;
+                                    dX += (Math.random() - 0.5) * 1.5; 
+                                    w *= 0.95; 
+                                    if (w < 0.5) break;
+                                    
+                                    this.ctx.lineTo(dX, dY);
+                                    this.ctx.strokeStyle = colorStr;
+                                    this.ctx.lineWidth = w;
+                                    this.ctx.stroke();
+                                    this.ctx.beginPath();
+                                    this.ctx.moveTo(dX, dY);
+                                }
+                                if (w >= 0.5) {
+                                    this.ctx.fillStyle = colorStr;
+                                    this.ctx.arc(dX, dY, w*1.5, 0, Math.PI*2);
+                                    this.ctx.fill();
+                                }
+                            }
+
+                            // Splatters
+                            if (Math.random() < (fSplatter * 0.05)) {
+                                const splatCount = Math.max(1, Math.ceil(fSplatter * 4));
+                                for(let s=0; s<splatCount; s++) {
+                                    const sx = x + (Math.random() - 0.5) * 35;
+                                    const sy = y + (Math.random() - 0.5) * 35;
+                                    const radius = Math.random() * 3.5 + 0.5;
+                                    
+                                    this.ctx.beginPath();
+                                    this.ctx.arc(sx, sy, radius, 0, Math.PI*2);
+                                    this.ctx.fillStyle = colorStr;
+                                    this.ctx.fill();
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // Restore lighting
+                this.ctx.globalCompositeOperation = 'overlay';
+                this.ctx.globalAlpha = 0.45;
+                this.ctx.drawImage(this.image, 0, 0, this.width, this.height);
+                
+                this.ctx.globalCompositeOperation = 'source-over';
+                this.ctx.globalAlpha = 1.0;
+            }
+        }
+
+        
+        function updateProgressUI(prog, text) {
+            DOM.progressBar.style.width = `${prog}%`;
+            DOM.progressPercent.innerText = `${Math.round(prog)}%`;
+            DOM.progressStatus.innerText = `STATUS: ${text}`;
+        }
+
+        function getCoordinates(e, canvas) {
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            const clientX = e.touches && e.touches.length > 0 ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches && e.touches.length > 0 ? e.touches[0].clientY : e.clientY;
+            return {
+                x: (clientX - rect.left) * scaleX,
+                y: (clientY - rect.top) * scaleY
+            };
+        }
+
+        function redrawInteractCanvas() {
+            const canvas = DOM.interactCanvas;
+            if (!canvas || !imageObj) return;
+            const ctx = canvas.getContext('2d');
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(imageObj, 0, 0, canvas.width, canvas.height);
+
+            ctx.strokeStyle = 'rgba(0, 255, 255, 0.9)';
+            ctx.lineWidth = Math.max(2, canvas.width / 400);
+            ctx.setLineDash([10, 10]);
+            ctx.fillStyle = 'rgba(0, 255, 255, 0.15)';
+            ctx.lineJoin = 'round';
+            ctx.lineCap = 'round';
+
+            const drawShape = (shapeData, isPreview = false) => {
+                ctx.beginPath();
+                if (shapeData.type === 'all') {
+                    ctx.rect(2, 2, canvas.width - 4, canvas.height - 4);
+                } else if (shapeData.type === 'rect') {
+                    ctx.rect(shapeData.x, shapeData.y, shapeData.w, shapeData.h);
+                } else if (shapeData.type === 'oval') {
+                    ctx.ellipse(shapeData.cx, shapeData.cy, shapeData.rx, shapeData.ry, 0, 0, 2 * Math.PI);
+                } else if (shapeData.type === 'lasso') {
+                    const pts = shapeData.points;
+                    if (pts.length > 0) {
+                        ctx.moveTo(pts[0].x, pts[0].y);
+                        for (let i = 1; i < pts.length; i++) {
+                            ctx.lineTo(pts[i].x, pts[i].y);
+                        }
+                        if (!isPreview) ctx.closePath();
+                    }
+                }
+                if (!isPreview || shapeData.type !== 'lasso') ctx.fill();
+                ctx.stroke();
+                ctx.setLineDash([]);
+            };
+
+            if (selection) {
+                drawShape(selection);
+            }
+
+            if (drawState.isDrawing) {
+                ctx.strokeStyle = 'rgba(255, 0, 255, 0.9)';
+                ctx.fillStyle = 'rgba(255, 0, 255, 0.15)';
+                
+                let tempShape = null;
+                if (activeTool === 'rect') {
+                    tempShape = {
+                        type: 'rect',
+                        x: Math.min(drawState.startX, drawState.currentX),
+                        y: Math.min(drawState.startY, drawState.currentY),
+                        w: Math.abs(drawState.currentX - drawState.startX),
+                        h: Math.abs(drawState.currentY - drawState.startY)
+                    };
+                } else if (activeTool === 'oval') {
+                    tempShape = {
+                        type: 'oval',
+                        cx: drawState.startX + (drawState.currentX - drawState.startX) / 2,
+                        cy: drawState.startY + (drawState.currentY - drawState.startY) / 2,
+                        rx: Math.abs(drawState.currentX - drawState.startX) / 2,
+                        ry: Math.abs(drawState.currentY - drawState.startY) / 2
+                    };
+                } else if (activeTool === 'lasso') {
+                    tempShape = { type: 'lasso', points: drawState.points };
+                }
+
+                if (tempShape) drawShape(tempShape, true);
+            }
+        }
+
+
+        // Tool Selection
+        DOM.toolBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                DOM.toolBtns.forEach(b => b.classList.remove('active'));
+                const target = e.currentTarget;
+                target.classList.add('active');
+                
+                activeTool = target.dataset.tool;
+                DOM.interactCanvas.style.cursor = activeTool === 'all' ? 'default' : 'crosshair';
+
+                if (activeTool === 'all') {
+                    selection = { type: 'all' };
+                    DOM.clearBtn.classList.add('hidden');
+                } else if (selection?.type === 'all') {
+                    selection = null;
+                }
+                redrawInteractCanvas();
+            });
+        });
+
+        DOM.clearBtn.addEventListener('click', () => {
+            selection = null;
+            DOM.clearBtn.classList.add('hidden');
+            redrawInteractCanvas();
+        });
+
+        // Pointer Events for Drawing
+        function handlePointerDown(e) {
+            if (!imageObj || isProcessing || activeTool === 'all') return;
+            e.preventDefault();
+            
+            const coords = getCoordinates(e, DOM.interactCanvas);
+            drawState = {
+                isDrawing: true,
+                startX: coords.x, startY: coords.y,
+                currentX: coords.x, currentY: coords.y,
+                points: [{ x: coords.x, y: coords.y }]
+            };
+            selection = null; 
+            DOM.clearBtn.classList.add('hidden');
+            redrawInteractCanvas();
+        }
+
+        function handlePointerMove(e) {
+            if (!drawState.isDrawing) return;
+            e.preventDefault();
+            
+            const coords = getCoordinates(e, DOM.interactCanvas);
+            drawState.currentX = coords.x;
+            drawState.currentY = coords.y;
+            
+            if (activeTool === 'lasso') {
+                drawState.points.push({ x: coords.x, y: coords.y });
+            }
+            redrawInteractCanvas();
+        }
+
+        function handlePointerUp(e) {
+            if (!drawState.isDrawing) return;
+            e.preventDefault();
+            
+            drawState.isDrawing = false;
+            
+            let newSelection = null;
+            if (activeTool === 'rect') {
+                newSelection = {
+                    type: 'rect',
+                    x: Math.min(drawState.startX, drawState.currentX),
+                    y: Math.min(drawState.startY, drawState.currentY),
+                    w: Math.abs(drawState.currentX - drawState.startX),
+                    h: Math.abs(drawState.currentY - drawState.startY)
+                };
+                if (newSelection.w < 5 || newSelection.h < 5) newSelection = null;
+            } else if (activeTool === 'oval') {
+                newSelection = {
+                    type: 'oval',
+                    cx: drawState.startX + (drawState.currentX - drawState.startX) / 2,
+                    cy: drawState.startY + (drawState.currentY - drawState.startY) / 2,
+                    rx: Math.abs(drawState.currentX - drawState.startX) / 2,
+                    ry: Math.abs(drawState.currentY - drawState.startY) / 2
+                };
+                if (newSelection.rx < 5 || newSelection.ry < 5) newSelection = null;
+            } else if (activeTool === 'lasso') {
+                newSelection = { type: 'lasso', points: [...drawState.points] };
+                if (newSelection.points.length < 5) newSelection = null;
+            }
+
+            selection = newSelection;
+            if (selection && selection.type !== 'all') {
+                DOM.clearBtn.classList.remove('hidden');
+            }
+            redrawInteractCanvas();
+        }
+
+        DOM.interactCanvas.addEventListener('mousedown', handlePointerDown);
+        DOM.interactCanvas.addEventListener('mousemove', handlePointerMove);
+        window.addEventListener('mouseup', handlePointerUp);
+        
+        DOM.interactCanvas.addEventListener('touchstart', handlePointerDown, {passive: false});
+        DOM.interactCanvas.addEventListener('touchmove', handlePointerMove, {passive: false});
+        window.addEventListener('touchend', handlePointerUp);
+
+        // Upload Handlers
+        function processFile(file) {
+            if (!file || !file.type.startsWith('image/')) return;
+            
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    imageObj = img;
+                    
+                    DOM.uploadView.classList.add('hidden');
+                    DOM.interactView.classList.remove('hidden');
+                    DOM.interactView.classList.add('flex');
+                    DOM.controlsContainer.classList.remove('hidden');
+                    DOM.controlsContainer.classList.add('flex');
+                    
+                    DOM.awaitingInput.classList.add('hidden');
+                    DOM.outputCanvas.classList.remove('hidden');
+                    DOM.outputCanvas.style.display = 'block';
+                    DOM.outputCanvas.style.opacity = '0';
+                    DOM.downloadBtn.classList.add('hidden');
+                    DOM.taskCompleteBadge.classList.add('hidden');
+                    DOM.progressHud.classList.add('hidden');
+
+                    if (activeTool === 'all') {
+                        selection = { type: 'all' };
+                        DOM.clearBtn.classList.add('hidden');
+                    } else {
+                        selection = null;
+                        DOM.clearBtn.classList.add('hidden');
+                    }
+                    
+                    DOM.interactCanvas.width = img.width;
+                    DOM.interactCanvas.height = img.height;
+                    
+                    redrawInteractCanvas();
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        DOM.uploadView.addEventListener('click', () => DOM.fileInput.click());
+        DOM.fileInput.addEventListener('change', (e) => processFile(e.target.files[0]));
+        
+        DOM.uploadView.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            DOM.uploadView.classList.add('drag-active');
+        });
+        DOM.uploadView.addEventListener('dragleave', () => DOM.uploadView.classList.remove('drag-active'));
+        DOM.uploadView.addEventListener('drop', (e) => {
+            e.preventDefault();
+            DOM.uploadView.classList.remove('drag-active');
+            processFile(e.dataTransfer.files[0]);
+        });
+
+        // Sliders & Advanced Toggle
+        DOM.simpleSlider.addEventListener('input', (e) => {
+            intensities.simple = parseInt(e.target.value);
+            DOM.simpleVal.innerText = `LVL ${intensities.simple}`;
+        });
+
+        ['smudge', 'drip', 'splatter', 'edge'].forEach(key => {
+            const slider = document.getElementById(`adv-${key}-slider`);
+            const valLabel = document.getElementById(`adv-${key}-val`);
+            slider.addEventListener('input', (e) => {
+                intensities[key] = parseInt(e.target.value);
+                valLabel.innerText = `LVL ${intensities[key]}`;
+            });
+        });
+
+        DOM.toggleAdvBtn.addEventListener('click', () => {
+            isAdvancedMode = !isAdvancedMode;
+            if (isAdvancedMode) {
+                DOM.simpleControls.classList.add('hidden');
+                DOM.advancedControls.classList.remove('hidden');
+                DOM.advancedControls.classList.add('flex');
+                DOM.toggleAdvBtn.innerText = '[-] SIMPLE_CONTROL';
+            } else {
+                DOM.advancedControls.classList.add('hidden');
+                DOM.advancedControls.classList.remove('flex');
+                DOM.simpleControls.classList.remove('hidden');
+                DOM.toggleAdvBtn.innerText = '[+] ADVANCED_CONTROL';
+            }
+        });
+
+        function createUserMaskData(width, height) {
+            if (!selection || selection.type === 'all') return null;
+            
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            
+            ctx.fillStyle = 'black'; 
+            ctx.fillRect(0, 0, width, height);
+            
+            ctx.fillStyle = 'white';
+            ctx.beginPath();
+            if (selection.type === 'rect') {
+                ctx.rect(selection.x, selection.y, selection.w, selection.h);
+            } else if (selection.type === 'oval') {
+                ctx.ellipse(selection.cx, selection.cy, selection.rx, selection.ry, 0, 0, 2 * Math.PI);
+            } else if (selection.type === 'lasso') {
+                if (selection.points.length > 0) {
+                    ctx.moveTo(selection.points[0].x, selection.points[0].y);
+                    for (let i = 1; i < selection.points.length; i++) {
+                        ctx.lineTo(selection.points[i].x, selection.points[i].y);
+                    }
+                    ctx.closePath();
+                }
+            }
+            ctx.fill();
+            return ctx.getImageData(0, 0, width, height).data;
+        }
+
+        DOM.processBtn.addEventListener('click', async () => {
+            if (!imageObj || isProcessing) return;
+            
+            isProcessing = true;
+            DOM.processBtn.disabled = true;
+            DOM.processBtn.innerText = 'PROCESSING...';
+            DOM.progressHud.classList.remove('hidden');
+            DOM.scannerLine.style.display = 'block';
+            DOM.outputCanvas.style.opacity = '0';
+            DOM.taskCompleteBadge.classList.add('hidden');
+            DOM.downloadBtn.classList.add('hidden');
+            
+            try {
+                const userMaskData = createUserMaskData(imageObj.width, imageObj.height);
+                
+                const currentIntensities = isAdvancedMode ? intensities : {
+                    smudge: intensities.simple,
+                    drip: intensities.simple,
+                    splatter: intensities.simple,
+                    edge: intensities.simple
+                };
+
+                const engine = new WetPaintEngine(
+                    DOM.outputCanvas, 
+                    imageObj, 
+                    updateProgressUI,
+                    userMaskData,
+                    currentIntensities
+                );
+                
+                await engine.process();
+                
+                DOM.outputCanvas.style.opacity = '1';
+                DOM.taskCompleteBadge.classList.remove('hidden');
+                DOM.downloadBtn.classList.remove('hidden');
+                DOM.downloadBtn.classList.add('flex');
+            } catch (err) {
+                console.error(err);
+                updateProgressUI(0, 'SYS_ERR: Processing Failed');
+            } finally {
+                isProcessing = false;
+                DOM.processBtn.disabled = false;
+                DOM.processBtn.innerText = 'INITIATE_SYNTHESIS';
+                DOM.scannerLine.style.display = 'none';
+            }
+        });
+
+        DOM.downloadBtn.addEventListener('click', () => {
+            triggerDownload();
+        });
+
+        // Helper function for downloading with custom filename convention
+        function triggerDownload() {
+            // Check if the task complete badge is visible (meaning processing is done)
+            if (DOM.taskCompleteBadge.classList.contains('hidden')) return;
+            
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            
+            const filename = `${year}${month}${day}-${hours}${minutes}-painted.png`;
+
+            const link = document.createElement('a');
+            link.download = filename;
+            link.href = DOM.outputCanvas.toDataURL();
+            link.click();
+        }
+
+        // Global Keyboard Shortcut Listener for Cmd+S / Ctrl+S
+        window.addEventListener('keydown', (e) => {
+            if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 's') {
+                // Check if output canvas has been processed successfully
+                if (!DOM.taskCompleteBadge.classList.contains('hidden')) {
+                    e.preventDefault();
+                    triggerDownload();
+                }
+            }
+        });
+
+    </script>
+</body>
+</html>
