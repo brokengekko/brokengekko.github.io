@@ -1,0 +1,81 @@
+{
+  "Art": [
+    {
+      "name": "2X",
+      "path": "dub/index.html",
+      "dir": "dub/"
+    },
+    {
+      "name": "Chroma Sync",
+      "path": "colors/index.html",
+      "dir": "colors/"
+    },
+    {
+      "name": "Dummy",
+      "path": "dummy/index.html",
+      "dir": "dummy/"
+    },
+    {
+      "name": "FX Studio",
+      "path": "grunge/index.html",
+      "dir": "grunge/"
+    },
+    {
+      "name": "Grid Maker",
+      "path": "grid/index.html",
+      "dir": "grid/"
+    },
+    {
+      "name": "Halfsies",
+      "path": "2small/index.html",
+      "dir": "2small/"
+    },
+    {
+      "name": "Splatter Paint",
+      "path": "paint/index.html",
+      "dir": "paint/"
+    },
+    {
+      "name": "Texture Offset",
+      "path": "offset/index.html",
+      "dir": "offset/"
+    },
+    {
+      "name": "Transparency Maker",
+      "path": "2png/index.html",
+      "dir": "2png/"
+    }
+  ],
+  "Otro": [
+    {
+      "name": "1986 Screensaver",
+      "path": "vga/index.html",
+      "dir": "vga/"
+    },
+    {
+      "name": "Apophysis Online",
+      "path": "apop/index.html",
+      "dir": "apop/"
+    },
+    {
+      "name": "Nuke Pac Man",
+      "path": "pac/index.html",
+      "dir": "pac/"
+    },
+    {
+      "name": "Shuffler",
+      "path": "rando/index.html",
+      "dir": "rando/"
+    },
+    {
+      "name": "Top Suggestions",
+      "path": "tops/index.html",
+      "dir": "tops/"
+    },
+    {
+      "name": "Uber Catan",
+      "path": "catan/index.html",
+      "dir": "catan/"
+    }
+  ]
+}
