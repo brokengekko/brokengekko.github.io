@@ -148,6 +148,12 @@
                         <i class="fa-solid fa-rotate-left"></i>
                     </button>
                 </div>
+                <!-- Zoom Controls -->
+                <div class="flex items-center gap-2 ml-4 border-l border-cyber-border pl-4">
+                    <i class="fa-solid fa-magnifying-glass text-cyber-cyan text-xs"></i>
+                    <input type="range" id="workspace-zoom" min="10" max="400" value="100" class="w-24">
+                    <span id="val-zoom" class="text-xs text-cyber-cyan font-mono w-10">100%</span>
+                </div>
             </div>
             <div class="flex gap-2">
                 <button id="btn-edit-mode" class="hidden px-4 py-1.5 rounded-sm bg-cyber-bg hover:bg-cyber-border border border-cyber-cyan text-sm transition-colors text-cyber-cyan font-display tracking-widest shadow-[0_0_10px_rgba(0,240,255,0.2)]">
@@ -156,9 +162,14 @@
             </div>
         </header>
 
-        <!-- Canvas Container -->
-        <div id="canvas-container" class="flex-1 w-full relative cyber-grid overflow-hidden cursor-move touch-none">
-            <canvas id="main-canvas" class="absolute top-0 left-0 w-full h-full"></canvas>
+        <!-- Viewport Container -->
+        <div class="flex-1 relative w-full h-full overflow-hidden bg-cyber-bg">
+            <!-- Scrollable Canvas Area -->
+            <div id="canvas-container" class="absolute inset-0 overflow-auto cyber-grid">
+                <div class="min-w-full min-h-full flex items-start justify-start p-8">
+                    <canvas id="main-canvas" class="shadow-2xl cursor-move touch-none origin-top-left"></canvas>
+                </div>
+            </div>
             
             <!-- Instructions Overlay -->
             <div id="empty-state" class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none opacity-60">
@@ -299,8 +310,8 @@
 
     <script>
         const state = {
-            bg: { img: null, x: 0, y: 0, scale: 1, originalW: 0, originalH: 0 },
-            fg: { canvas: null, x: 0, y: 0, w: 0, h: 0, scale: 1 },
+            bg: { img: null, x: 0, y: 0, originalW: 0, originalH: 0 },
+            fg: { canvas: null, x: 0, y: 0, w: 0, h: 0 },
             mode: 'edit', 
             activeTool: 'move', 
             eraseTolerance: 20,
@@ -309,8 +320,10 @@
             isDragging: false,
             dragTarget: null, 
             dragStart: { x: 0, y: 0 },
+            dragStartRaw: { x: 0, y: 0 }, 
             initialPos: { x: 0, y: 0, w: 0, h: 0 },
             renderedDataURL: null,
+            workspaceZoom: 1.0,
             
             // Updated State Defaults
             settings: {
@@ -361,15 +374,50 @@
             valAngle: document.getElementById('val-angle'),
             valIntensity: document.getElementById('val-intensity'),
             valOverall: document.getElementById('val-overall'),
+            
+            inZoom: document.getElementById('workspace-zoom'),
+            valZoom: document.getElementById('val-zoom'),
         };
 
-        function resizeCanvas() {
-            canvas.width = container.clientWidth;
-            canvas.height = container.clientHeight;
+        function resizeCanvas(force = false) {
+            if (!container) return;
+            
+            let minW = container.clientWidth / state.workspaceZoom;
+            let minH = container.clientHeight / state.workspaceZoom;
+            
+            let targetW = minW;
+            let targetH = minH;
+            
+            if (state.bg.img) {
+                targetW = Math.max(targetW, state.bg.x + state.bg.originalW + 100);
+                targetH = Math.max(targetH, state.bg.y + state.bg.originalH + 100);
+            }
+            if (state.fg.canvas) {
+                targetW = Math.max(targetW, state.fg.x + state.fg.w + 100);
+                targetH = Math.max(targetH, state.fg.y + state.fg.h + 100);
+            }
+            
+            // Only update actual canvas pixel buffer size if it needs to grow (prevents flickering)
+            if (force || targetW > canvas.width || targetH > canvas.height) {
+                canvas.width = force ? targetW : Math.max(canvas.width, targetW);
+                canvas.height = force ? targetH : Math.max(canvas.height, targetH);
+            }
+            
+            // Scale visually
+            canvas.style.width = `${canvas.width * state.workspaceZoom}px`;
+            canvas.style.height = `${canvas.height * state.workspaceZoom}px`;
+            
             draw();
         }
-        window.addEventListener('resize', resizeCanvas);
+        window.addEventListener('resize', () => resizeCanvas(false));
 
+        ui.inZoom.addEventListener('input', (e) => {
+            state.workspaceZoom = parseInt(e.target.value) / 100;
+            ui.valZoom.innerText = e.target.value + '%';
+            resizeCanvas();
+        });
+
+        // --- STREAMING_CHUNK:UI Synchronization ---
         
         function syncUI() {
             state.settings.dispStrength = parseInt(ui.inDisp.value);
@@ -432,44 +480,28 @@
             draw();
         });
 
-        
         function exportRenderedData() {
             if (!state.renderedDataURL || !state.bg.img) return;
             
-            const img = new Image();
-            img.onload = () => {
-                // Calculate actual background boundaries on canvas
-                const bgW = state.bg.originalW * state.bg.scale;
-                const bgH = state.bg.originalH * state.bg.scale;
-                
-                // Create a temporary canvas sized to exactly the BG image bounds
-                const exportCanvas = document.createElement('canvas');
-                exportCanvas.width = bgW;
-                exportCanvas.height = bgH;
-                const exportCtx = exportCanvas.getContext('2d');
-                
-                // Draw the rendered full-screen canvas offset by the BG's position
-                exportCtx.drawImage(img, -state.bg.x, -state.bg.y);
-                
-                // Generate filename: YYYYmmdd-HHMM-OffsetMapped.png (24-hour clock)
-                const now = new Date();
-                const yyyy = now.getFullYear();
-                const mm = String(now.getMonth() + 1).padStart(2, '0');
-                const dd = String(now.getDate()).padStart(2, '0');
-                const HH = String(now.getHours()).padStart(2, '0');
-                const MM = String(now.getMinutes()).padStart(2, '0');
-                const filename = `${yyyy}${mm}${dd}-${HH}${MM}-OffsetMapped.png`;
+            const a = document.createElement('a');
+            a.href = state.renderedDataURL;
+            
+            // Generate filename: YYYYmmdd-HHMM-OffsetMapped.png
+            const now = new Date();
+            const yyyy = now.getFullYear();
+            const mm = String(now.getMonth() + 1).padStart(2, '0');
+            const dd = String(now.getDate()).padStart(2, '0');
+            const HH = String(now.getHours()).padStart(2, '0');
+            const MM = String(now.getMinutes()).padStart(2, '0');
+            const filename = `${yyyy}${mm}${dd}-${HH}${MM}-OffsetMapped.png`;
 
-                const a = document.createElement('a');
-                a.href = exportCanvas.toDataURL('image/png');
-                a.download = filename;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-            };
-            img.src = state.renderedDataURL;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
         }
 
+        // Bind to the download button
         ui.btnDownload.addEventListener('click', exportRenderedData);
 
         // Save functionality (Ctrl+S / Cmd+S)
@@ -481,7 +513,6 @@
                 }
             }
         });
-
 
         function cloneCanvas(oldCanvas) {
             if (!oldCanvas) return null;
@@ -604,14 +635,24 @@
                         state.bg.originalW = img.width;
                         state.bg.originalH = img.height;
                         
-                        const scale = Math.min(canvas.width / img.width, canvas.height / img.height) * 0.8;
-                        state.bg.scale = scale;
-                        state.bg.x = (canvas.width - img.width * scale) / 2;
-                        state.bg.y = (canvas.height - img.height * scale) / 2;
+                        state.bg.x = 50;
+                        state.bg.y = 50;
+                        
+                        // Set zoom to fit image within view on load
+                        const fitW = (container.clientWidth - 100) / img.width;
+                        const fitH = (container.clientHeight - 100) / img.height;
+                        let initialZoom = Math.min(1.0, fitW, fitH);
+                        initialZoom = Math.max(0.1, initialZoom); 
+                        
+                        state.workspaceZoom = initialZoom;
+                        ui.inZoom.value = Math.round(initialZoom * 100);
+                        ui.valZoom.innerText = ui.inZoom.value + '%';
                         
                         ui.bgLabel.innerText = file.name;
                         ui.bgThumb.innerHTML = `<img src="${img.src}" class="w-full h-full object-cover">`;
                         ui.emptyState.classList.add('hidden');
+                        
+                        resizeCanvas(true);
                     } else if (layer === 'fg') {
                         const tempCanvas = document.createElement('canvas');
                         tempCanvas.width = img.width;
@@ -619,19 +660,25 @@
                         tempCanvas.getContext('2d').drawImage(img, 0, 0);
                         state.fg.canvas = tempCanvas;
                         
-                        const defaultSize = Math.min(canvas.width, canvas.height) * 0.4;
-                        const aspect = img.width / img.height;
-                        
-                        if (aspect > 1) {
-                            state.fg.w = defaultSize;
-                            state.fg.h = defaultSize / aspect;
+                        if (state.bg.img) {
+                            state.fg.w = tempCanvas.width;
+                            state.fg.h = tempCanvas.height;
+                            const aspect = state.fg.w / state.fg.h;
+                            
+                            // Prevent massive overlays - scale down to ~40% of BG initially
+                            if (state.fg.w > state.bg.originalW * 0.4) {
+                                state.fg.w = state.bg.originalW * 0.4;
+                                state.fg.h = state.fg.w / aspect;
+                            }
+                            
+                            state.fg.x = state.bg.x + (state.bg.originalW - state.fg.w) / 2;
+                            state.fg.y = state.bg.y + (state.bg.originalH - state.fg.h) / 2;
                         } else {
-                            state.fg.h = defaultSize;
-                            state.fg.w = defaultSize * aspect;
+                            state.fg.w = img.width;
+                            state.fg.h = img.height;
+                            state.fg.x = 50;
+                            state.fg.y = 50;
                         }
-                        
-                        state.fg.x = (canvas.width - state.fg.w) / 2;
-                        state.fg.y = (canvas.height - state.fg.h) / 2;
                         
                         ui.fgLabel.innerText = file.name;
                         ui.fgThumb.innerHTML = `<img src="${img.src}" class="w-full h-full object-contain">`;
@@ -643,6 +690,8 @@
                         state.history = [];
                         state.historyIndex = -1;
                         saveState(); 
+                        
+                        resizeCanvas(false);
                     }
                     
                     state.mode = 'edit';
@@ -679,7 +728,7 @@
 
             if (state.mode === 'rendered' && state.renderedDataURL) {
                 const img = new Image();
-                img.onload = () => ctx.drawImage(img, 0, 0);
+                img.onload = () => ctx.drawImage(img, state.bg.x, state.bg.y);
                 img.src = state.renderedDataURL;
                 return;
             }
@@ -688,8 +737,8 @@
                 ctx.drawImage(
                     state.bg.img, 
                     state.bg.x, state.bg.y, 
-                    state.bg.originalW * state.bg.scale, 
-                    state.bg.originalH * state.bg.scale
+                    state.bg.originalW, 
+                    state.bg.originalH
                 );
             }
 
@@ -726,13 +775,19 @@
             }
         }
 
+        function getMousePosRaw(e) {
+            return {
+                x: e.touches ? e.touches[0].clientX : e.clientX,
+                y: e.touches ? e.touches[0].clientY : e.clientY
+            };
+        }
+
         function getMousePos(e) {
             const rect = canvas.getBoundingClientRect();
-            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            const raw = getMousePosRaw(e);
             return {
-                x: clientX - rect.left,
-                y: clientY - rect.top
+                x: (raw.x - rect.left) / state.workspaceZoom,
+                y: (raw.y - rect.top) / state.workspaceZoom
             };
         }
 
@@ -784,6 +839,7 @@
                 state.isDragging = true;
                 state.dragTarget = hit;
                 state.dragStart = pos;
+                state.dragStartRaw = getMousePosRaw(e);
                 
                 if (hit === 'bg') {
                     state.initialPos = { x: state.bg.x, y: state.bg.y };
@@ -795,6 +851,7 @@
             }
         }
 
+        // --- STREAMING_CHUNK:Smart Erase (Magic Wand) ---
         function performSmartErase(screenX, screenY) {
             const relX = screenX - state.fg.x;
             const relY = screenY - state.fg.y;
@@ -805,10 +862,10 @@
             const startX = Math.floor(relX * scaleX);
             const startY = Math.floor(relY * scaleY);
             
-            const ctx = state.fg.canvas.getContext('2d', { willReadFrequently: true });
+            const fgCtx = state.fg.canvas.getContext('2d', { willReadFrequently: true });
             const w = state.fg.canvas.width;
             const h = state.fg.canvas.height;
-            const imgData = ctx.getImageData(0, 0, w, h);
+            const imgData = fgCtx.getImageData(0, 0, w, h);
             const data = imgData.data;
             
             const startIdx = (startY * w + startX) * 4;
@@ -857,7 +914,7 @@
                 }
             }
             
-            ctx.putImageData(imgData, 0, 0);
+            fgCtx.putImageData(imgData, 0, 0);
             draw();
             saveState(); 
         }
@@ -893,6 +950,14 @@
             if (state.dragTarget === 'bg') {
                 state.bg.x = state.initialPos.x + dx;
                 state.bg.y = state.initialPos.y + dy;
+                
+                // Keep the viewport seamlessly tracking the mouse
+                const rawPos = getMousePosRaw(e);
+                container.scrollLeft -= (rawPos.x - state.dragStartRaw.x);
+                container.scrollTop -= (rawPos.y - state.dragStartRaw.y);
+                state.dragStartRaw = rawPos;
+                
+                resizeCanvas(false);
             } else if (state.dragTarget === 'fg') {
                 state.fg.x = state.initialPos.x + dx;
                 state.fg.y = state.initialPos.y + dy;
@@ -931,58 +996,71 @@
 
         canvas.addEventListener('wheel', (e) => {
             if (state.mode !== 'edit' || !state.bg.img) return;
-            const pos = getMousePos(e);
-            if (hitTest(pos) === 'bg' || hitTest(pos) === null) {
-                e.preventDefault();
-                const zoomFactor = 1.05;
-                const oldScale = state.bg.scale;
-                if (e.deltaY < 0) {
-                    state.bg.scale *= zoomFactor;
-                } else {
-                    state.bg.scale /= zoomFactor;
-                }
-                
-                const relX = pos.x - state.bg.x;
-                const relY = pos.y - state.bg.y;
-                state.bg.x -= relX * (state.bg.scale / oldScale - 1);
-                state.bg.y -= relY * (state.bg.scale / oldScale - 1);
-                draw();
+            e.preventDefault();
+            
+            const zoomFactor = 1.05;
+            let newZoom = state.workspaceZoom;
+            
+            if (e.deltaY < 0) {
+                newZoom *= zoomFactor;
+            } else {
+                newZoom /= zoomFactor;
             }
+            
+            newZoom = Math.max(0.1, Math.min(newZoom, 4.0));
+            
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left;
+            const mouseY = e.clientY - rect.top;
+            
+            const scaleRatio = newZoom / state.workspaceZoom;
+            
+            state.workspaceZoom = newZoom;
+            ui.inZoom.value = Math.round(newZoom * 100);
+            ui.valZoom.innerText = ui.inZoom.value + '%';
+            
+            resizeCanvas(false);
+            
+            // Adjust scrollbars to zoom in/out right where the mouse is pointing
+            container.scrollLeft += (mouseX * scaleRatio) - mouseX;
+            container.scrollTop += (mouseY * scaleRatio) - mouseY;
         }, { passive: false });
 
 
+        // --- STREAMING_CHUNK:Matrix Core Rendering Engine ---
         
         ui.btnRender.addEventListener('click', () => {
             if (!state.bg.img || !state.fg.canvas) return;
             ui.renderSpinner.classList.remove('hidden');
+            // Small timeout allows the UI to paint the loading spinner before the heavy math freezes the thread
             setTimeout(() => { processCompositeMaterial(); }, 50);
         });
 
         function processCompositeMaterial() {
-            const w = canvas.width;
-            const h = canvas.height;
+            const outW = state.bg.originalW;
+            const outH = state.bg.originalH;
 
             const bgCanvas = document.createElement('canvas');
-            bgCanvas.width = w; bgCanvas.height = h;
+            bgCanvas.width = outW; bgCanvas.height = outH;
             const bgCtx = bgCanvas.getContext('2d', { willReadFrequently: true });
             
             bgCtx.fillStyle = '#000000';
-            bgCtx.fillRect(0, 0, w, h);
-            bgCtx.drawImage(
-                state.bg.img, 
-                state.bg.x, state.bg.y, 
-                state.bg.originalW * state.bg.scale, 
-                state.bg.originalH * state.bg.scale
-            );
-            const bgData = bgCtx.getImageData(0, 0, w, h).data;
+            bgCtx.fillRect(0, 0, outW, outH);
+            bgCtx.drawImage(state.bg.img, 0, 0, outW, outH);
+            const bgData = bgCtx.getImageData(0, 0, outW, outH).data;
 
             const fgCanvas = document.createElement('canvas');
-            fgCanvas.width = w; fgCanvas.height = h;
+            fgCanvas.width = outW; fgCanvas.height = outH;
             const fgCtx = fgCanvas.getContext('2d', { willReadFrequently: true });
-            fgCtx.drawImage(state.fg.canvas, state.fg.x, state.fg.y, state.fg.w, state.fg.h);
-            const fgData = fgCtx.getImageData(0, 0, w, h).data;
+            
+            // Map coordinates directly to original BG pixels perfectly
+            const fgX = state.fg.x - state.bg.x;
+            const fgY = state.fg.y - state.bg.y;
+            
+            fgCtx.drawImage(state.fg.canvas, fgX, fgY, state.fg.w, state.fg.h);
+            const fgData = fgCtx.getImageData(0, 0, outW, outH).data;
 
-            const outImageData = ctx.createImageData(w, h);
+            const outImageData = bgCtx.createImageData(outW, outH);
             const outData = outImageData.data;
 
             const s = state.settings;
@@ -996,25 +1074,26 @@
             const nLy = Ly / lenL;
             const nLz = Lz / lenL;
 
+            // Scale displacement strength (1:1 mapping directly uses the value)
             const dispStrength = s.dispStrength;
             const fgOpacity = s.fgOpacity;
 
             const getLum = (x, y) => {
-                const idx = (y * w + x) * 4;
+                const idx = (y * outW + x) * 4;
                 return 0.299 * bgData[idx] + 0.587 * bgData[idx+1] + 0.114 * bgData[idx+2];
             };
 
-            for (let y = 1; y < h - 1; y++) {
-                for (let x = 1; x < w - 1; x++) {
-                    const idx = (y * w + x) * 4;
+            for (let y = 1; y < outH - 1; y++) {
+                for (let x = 1; x < outW - 1; x++) {
+                    const idx = (y * outW + x) * 4;
                     
                     const bR = bgData[idx];
                     const bG = bgData[idx+1];
                     const bB = bgData[idx+2];
 
                     const maxD = dispStrength + 2;
-                    if (x < state.fg.x - maxD || x > state.fg.x + state.fg.w + maxD ||
-                        y < state.fg.y - maxD || y > state.fg.y + state.fg.h + maxD) {
+                    if (x < fgX - maxD || x > fgX + state.fg.w + maxD ||
+                        y < fgY - maxD || y > fgY + state.fg.h + maxD) {
                         outData[idx] = bR; outData[idx+1] = bG; outData[idx+2] = bB; outData[idx+3] = 255;
                         continue;
                     }
@@ -1039,10 +1118,10 @@
                     
                     let sx = x + dX;
                     let sy = y + dY;
-                    sx = Math.max(0, Math.min(w - 1, sx));
-                    sy = Math.max(0, Math.min(h - 1, sy));
+                    sx = Math.max(0, Math.min(outW - 1, sx));
+                    sy = Math.max(0, Math.min(outH - 1, sy));
 
-                    const sIdx = (sy * w + sx) * 4;
+                    const sIdx = (sy * outW + sx) * 4;
                     
                     const fR = fgData[sIdx];
                     const fG = fgData[sIdx+1];
@@ -1083,7 +1162,6 @@
                         finalB = litB * alpha + bB * (1 - alpha);
                     } 
                     else if (s.blendMode === 'additive') {
-                        // Math implementation for additive light blend
                         litR = bR + litR;
                         litG = bG + litG;
                         litB = bB + litB;
@@ -1108,20 +1186,20 @@
             }
 
             // Fill edges where loop skips
-            for(let x=0; x<w; x++){
+            for(let x=0; x<outW; x++){
                 outData[(x)*4] = bgData[(x)*4]; outData[(x)*4+1] = bgData[(x)*4+1]; outData[(x)*4+2] = bgData[(x)*4+2]; outData[(x)*4+3]=255;
-                const bIdx = ((h-1)*w + x)*4;
+                const bIdx = ((outH-1)*outW + x)*4;
                 outData[bIdx] = bgData[bIdx]; outData[bIdx+1] = bgData[bIdx+1]; outData[bIdx+2] = bgData[bIdx+2]; outData[bIdx+3]=255;
             }
-            for(let y=0; y<h; y++){
-                const lIdx = (y*w)*4;
+            for(let y=0; y<outH; y++){
+                const lIdx = (y*outW)*4;
                 outData[lIdx] = bgData[lIdx]; outData[lIdx+1] = bgData[lIdx+1]; outData[lIdx+2] = bgData[lIdx+2]; outData[lIdx+3]=255;
-                const rIdx = (y*w + w-1)*4;
+                const rIdx = (y*outW + outW-1)*4;
                 outData[rIdx] = bgData[rIdx]; outData[rIdx+1] = bgData[rIdx+1]; outData[rIdx+2] = bgData[rIdx+2]; outData[rIdx+3]=255;
             }
 
             const finalCanvas = document.createElement('canvas');
-            finalCanvas.width = w; finalCanvas.height = h;
+            finalCanvas.width = outW; finalCanvas.height = outH;
             const finalCtx = finalCanvas.getContext('2d');
             finalCtx.putImageData(outImageData, 0, 0);
             
@@ -1134,8 +1212,8 @@
         }
 
         window.addEventListener('load', () => {
-            resizeCanvas();
-            syncUI(); // Triggers sync to apply defaults
+            resizeCanvas(true);
+            syncUI(); 
             updateActionButtons();
         });
 
