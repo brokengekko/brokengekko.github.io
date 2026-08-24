@@ -30,6 +30,13 @@
       }
     },
     {
+      "type": "image",
+      "content": {
+        "imageFilename": "../1000-swords-image-1.jpeg",
+        "caption": "\\[Zoom\\] _\"The Father of Assassins\"_ by **San Jaya Prime** -- while more will be revealed in Project Pigeonblade (see \"[A Drill About Childhood in Persia](#?/a-drill-about-childhood-in-persia)\"), I'll include here what I originally wrote when I shared this piece with the world: _\"It is far too easy to demonize Hassan-i Sabbah. After all, his single knife is what kicked off the thousand-year war that still engulfs the entirety of the planet. Never forget, however, that at the height of his power... he spared the life of the poet and mathematician Omar Khayyam, and all because he saw Omar handing out pieces of bread to the homeless. Nothing is ever two-dimensional. Nothing\"_"
+      }
+    },
+    {
       "type": "image-left",
       "content": {
         "imageFilename": "../1000-swords-image-3.jpeg",
@@ -46,8 +53,15 @@
     {
       "type": "image",
       "content": {
-        "imageFilename": "../1000-swords-image-1.jpeg",
-        "caption": "\\[Zoom\\] _\"The Father of Assassins\"_ by **San Jaya Prime** -- while more will be revealed in Project Pigeonblade (see \"[A Drill About Childhood in Persia](#?/a-drill-about-childhood-in-persia)\"), I'll include here what I originally wrote when I shared this piece with the world: _\"It is far too easy to demonize Hassan-i Sabbah. After all, his single knife is what kicked off the thousand-year war that still engulfs the entirety of the planet. Never forget, however, that at the height of his power... he spared the life of the poet and mathematician Omar Khayyam, and all because he saw Omar handing out pieces of bread to the homeless. Nothing is ever two-dimensional. Nothing\"_"
+        "imageFilename": "../1000-swords-image-5.jpeg",
+        "caption": "_\"1000 Swords\"_ (mural concept test)"
+      }
+    },
+    {
+      "type": "image-right",
+      "content": {
+        "imageFilename": "../1000-swords-image-6.jpeg",
+        "text": "## Mural Prep for 1000 Swords\n\nSometimes the dice just come up boxcars at the exact right moment.\n\nI had the massive good fortune of crossing paths with Steven Hunter ([Main Site](https://huntercreates.com/index.html)) while he was out there painting his now-iconic \"Stevie Ray Ellum\" piece in Deep Ellum, Texas. I already knew I wanted one of those brick walls to hold \"The Lady of a Thousand Swords\", and talking to him only cemented the obsession. We stood around geeking out over different paints, epoxies, and the viral mechanics of how an image really spreads on the streets.\n\n  \n\nLater on, I linked up with Mel Fiorentino ([Instagram](https://www.instagram.com/melfiorentinostudios/)) down in Ocala, Florida, and she threw even more fuel on the fire. Even though she hadn't tackled a massive outdoor, public mural like Steven's, her insights were next-level. She talked about pulling colors directly from the surrounding environment -- literally treating the wall as if you were chiseling the piece straight out of the stone itself.\n\n  \n\nThen the pandemic hit, and the entire vision got shelved... but lately? It's been bubbling right back to the surface. The Lady is calling me to finally bring her into the physical world. I've even been kicking around the idea of doing a test run down here in Costa Rica, right near the university where the brick walls are already absolutely dripping with fucking amazing street art.\n\n  \n\nBut the ultimate dream remains exactly the same. I'm bringing her to the walls of Deep Ellum.\n\n  \n\nSo while my brother Skybreak and I were talking about vibe coding, I put together a few apps to test the mural out. The [Chroma Sync](https://www.jayaprime.com/apps/colors/index.html) lets you pull the color of the wall and map it to the piece of art. Next, the [Texture Offset](https://www.jayaprime.com/apps/offset/index.html) presses the colorized piece into the wall itself. Finally, to mess up the paint itself and get a touch of realize, we use the [Splatter Paint](https://www.jayaprime.com/apps/paint/index.html) brushes in advanced mode. I wasn't going to make the tools without sharing them with others to try out."
       }
     },
     {
