@@ -14,17 +14,17 @@
       }
     },
     {
-      "type": "image",
-      "content": {
-        "imageFilename": "../great-blue-mandelbrot-image-1.jpeg",
-        "caption": "_\"The Great Blue Mandelbrot\"_ by **San Jaya Prime** ([Redbubble](https://www.redbubble.com/shop/ap/40756165))"
-      }
-    },
-    {
       "type": "image-right",
       "content": {
         "imageFilename": "../great-blue-mandelbrot-image-2.jpeg",
         "text": "## Julia Island\n\nThere's one other source of inspiration that needs to be mentioned, which is \"Julia Island\" ([Wikimedia](https://commons.wikimedia.org/wiki/File:Julia_island2.jpg)) by Alexis Monnerot Dumaine that you see here on the right. It's truly one of the crowning jewels of fractal art to ever be created. This semi-spherical blue marble on which we reside rarely follows Euclidean geometry.. . we do not live in a world of perfect lines, squares, and triangles... no matter how the angular cities of humans may try to say otherwise. The world is instead bound on the laws of fractal geometry. It's rough, jagged, and doesn't easily fit inside the \"box\" that the human psyche wants so desperately to shove it inside of. It's messy. It's... . broken.. fractured.\n\n## The Coastline Paradox\n\nThat brings us to the advent of fractal geometry... _coastlines_. It was Lewis Fry Richardson who brought it up, wondering why Portugal claimed their border with Spain was nearly 300-kilometers _less_ than what Spain claimed it was. Both countries had measured the border and come up with drastically different numbers. If you use a meter stick to measure, you would come up with a smaller length than if you used a smaller measurement device, with the length growing longer and longer the smaller the device you used.\n\nThen along came Mandelbrot with his paper \"How Long Is the Coast of Britain?\" on fractal geometry, where he absurdly stated that you only needed to measure a few iterative parts of the coast, and not the entire thing. Then just simply repeat the calculation. Because most coastlines, borders, or other bounding segments in nature are self-similar; _they follow a pattern_. Fractal geometry was the answer to this paradox."
+      }
+    },
+    {
+      "type": "image",
+      "content": {
+        "imageFilename": "../great-blue-mandelbrot-image-1.jpeg",
+        "caption": "_\"The Great Blue Mandelbrot\"_ by **San Jaya Prime** ([Redbubble](https://www.redbubble.com/shop/ap/40756165))"
       }
     },
     {
@@ -54,6 +54,15 @@
       "type": "video",
       "content": {
         "url": "https://www.youtube.com/watch?v=DhKQbxGuZdU"
+      }
+    },
+    {
+      "type": "quote",
+      "content": {
+        "texts": [
+          "\"A man is known by his heroes.\"",
+          "\\- Benoit Mandelbrot, a play on an ancient proverb"
+        ]
       }
     },
     {
