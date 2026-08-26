@@ -7,24 +7,17 @@
   },
   "sections": [
     {
+      "type": "image-right",
+      "content": {
+        "imageFilename": "../spectral-iteration-image-1.jpeg",
+        "text": "## Spectral Iteration\n\n_A Prismatic Journey thru the Beautiful Art of Fractals and Abstracts_\n\n**San Jaya Prime**\n\n_<font face=\"Times New Roman\">Beautiful and vivid fractal designs, hypnotic Mandelbrot spirals, and mysterious, blood-pumping abstracts. Every single page is another step forward into the spectrum. The journey is yours to take.</font>_\n\nThis 7\" x 7\" art book is the brainchild of yours truly -- internationally acclaimed and award-winning fractalist San Jaya Prime. These are the same designs you've seen bleeding across book covers, album art, video games, and as massive murals at resort hotels and at festivals, all built on vivid colors wrapping tightly around the hard lines of sacred geometry.\n\nThis is the exact coordinate where cold math and raw nature violently collide on the shores of the infinite.\n\n\\[[Amazon Hard Cover](https://www.amazon.com/Spectral-Iteration-San-Jaya-Prime/dp/1367260817/)\\] \\[[Amazon Soft Cover](https://www.amazon.com/gp/product/1367260833/)\\]"
+      }
+    },
+    {
       "type": "image",
       "content": {
         "imageFilename": "../spectral-iteration-image-0.jpeg",
         "caption": "Front and back cover design for _\"Spectral Iteration\"_ by **San Jaya Prime**"
-      }
-    },
-    {
-      "type": "image-right",
-      "content": {
-        "imageFilename": "../spectral-iteration-image-1.jpeg",
-        "text": "## Spectral Iteration\n\n_A Prismatic Journey thru the Beautiful Art of Fractals and Abstracts_\n\n**San Jaya Prime**\n\n_Beautiful and vivid fractal designs, hypnotic Mandelbrot spirals, and mysterious, blood-pumping abstracts. Every single page is another step forward into the spectrum. The journey is yours to take._\n\nThis 7\" x 7\" art book is the brainchild of yours truly -- internationally acclaimed and award-winning fractalist San Jaya Prime. These are the same designs you've seen bleeding across book covers, album art, video games, and as massive murals at resort hotels, all built on vivid colors wrapping tightly around the hard lines of sacred geometry.\n\nThis is the exact coordinate where cold math and raw nature violently collide on the shores of the infinite.\n\n\\[[Amazon Hard Cover](https://www.amazon.com/Spectral-Iteration-San-Jaya-Prime/dp/1367260817/)\\] \\[[Amazon Soft Cover](https://www.amazon.com/gp/product/1367260833/)\\]"
-      }
-    },
-    {
-      "type": "image",
-      "content": {
-        "imageFilename": "../spectral-iteration-image-2.jpeg",
-        "caption": "Violet centerfold featuring full-page _\"Lavender Mandelbrot\"_ by **San Jaya Prime**"
       }
     },
     {
@@ -34,6 +27,13 @@
           "\"Mere color, unspoiled by meaning, and unallied with definite form, can speak to the soul in a thousand different ways.\"",
           "\\- Oscar Wilde"
         ]
+      }
+    },
+    {
+      "type": "image",
+      "content": {
+        "imageFilename": "../spectral-iteration-image-2.jpeg",
+        "caption": "Violet centerfold featuring full-page _\"Lavender Mandelbrot\"_ by **San Jaya Prime**"
       }
     },
     {
@@ -64,7 +64,7 @@
                 "value": "San Jaya Prime"
               }
             ],
-            "color": "cyan",
+            "color": "magenta",
             "width": 35
           }
         ],
@@ -82,7 +82,7 @@
       "type": "quote",
       "content": {
         "texts": [
-          "\"Stunning and thought provoking! This book will unleash your imagination and take you on a journey both outward and inward. A GREAT gift book and a wonderful addition to any book collection. If you love art, beauty, architecture, the etherial, the visually stimulating, the mesmerizing, the eternal: Buy this book!\"",
+          "\"Stunning and thought provoking! This book will unleash your imagination and take you on a journey both outward and inward. A great gift book and a wonderful addition to any book collection. If you love art, beauty, architecture, the etherial, the visually stimulating, the mesmerizing, the eternal: Buy this book!\"",
           "\\- **Yvonne Licciardi**, review on Amazon"
         ]
       }
@@ -91,7 +91,7 @@
       "type": "text",
       "content": {
         "texts": [
-          "## Spectral Iteration: Deluxe Edition\n\nThere are two very special deluxe editions in the wild. They're about the size of a vinyl record case, with even more content added into them. One was owned by my friend Doctor Dillon, who took it with him to the Halloween festivities at the Chapel of Sacred Mirrors ([COSM](https://www.cosm.org/)). It's funny how small Burning Man makes the world. Alex + Allyson Grey had their own camp a few streets up from my first camp at Burning Man, Camp Mystic, then their camp folded into Mystic with \"The Intentheon\" of 2010 and 2011, where I was DJing atop the scaffolding. Then my second camp at the burn, Indie Rogue Burners, is where I met Doctor Dillon himself... who just five years later would be taking my book to where it now rests at COSM with the Greys. The only other copy of the deluxe edition came down to Costa Rica with me in 2025, where it now resides. While expensive to produce, this larger, high-detailed size and added content makes it an incredible experience to hold in your hands.\n\n### With Love + Gratitude\n\nI have to shout out so much gratitude to all those who bought copies and left reviews. I've read every single one of them and these words mean more than you know: Yvonne Licciardi, Tristan Skybreak, Peter J Dillon, Lili, Alex Allman, Nathan Otto, Mark Mandel, Ariel, David Mizne, and LAQHA! Then a huge shout out to all the fans, as well, who helped make the original _\"Spectral Recursion\"_ series such a big hit!\n\n### Extended Exploration\n\nMany of the fractals featured in the book also appear here on this site, such as \"[Heart of the Rose](heart-of-the-rose)\", \"[Nocturne of Scorpio](nocturne-of-scorpio)\", and of course \"[Mother of Pearl](mother-of-pearl)\" (just to name a few). As with all infinite recursion, _don't get lost in the iterations!_"
+          "## Spectral Iteration: Deluxe Edition\n\nThere are two very special deluxe editions in the wild. They're about the size of a vinyl record case, with even more content added to them. One was owned by my friend Doctor Dillon, who took it with him to the Halloween festivities at the Chapel of Sacred Mirrors ([COSM](https://www.cosm.org/)). It's funny how small Burning Man makes the world. Alex + Allyson Grey had their own camp a few streets up from my first camp at Burning Man, Camp Mystic, then their camp folded into Mystic with \"The Intentheon\" of 2010 and 2011, where I was DJing atop the scaffolding. Then my second camp at the burn, Indie Rogue Burners, is where I met Doctor Dillon himself... who just five years later would be taking my book to where it now rests at COSM with the Greys.\n\nThe only other copy of the deluxe edition came down to Costa Rica with me in 2025, where it now resides. In fact, it's on my Manager, Laura's bookshelf here in our office. While expensive to produce, this larger, high-detailed size and added content makes it an incredible experience to hold in your hands. The fact that it sizes nearly perfectly up against a retro vinyl cover is no mistake. Expect to see a follow-up along these very same lines.\n\n### With Love + Gratitude\n\nI have to shout out so much gratitude to all those who bought copies and left reviews. I've read every single one of them and these words mean more than you know: Yvonne Licciardi, Tristan Skybreak, Peter Dillon, LiLi Glitch, Alex Allman, Nathan Otto, Mark Mandel, Ariel, David Mizne, and LAQHA! Then a huge shout out to all the fans, as well, who helped make the original _\"Spectral Recursion\"_ series such a big hit!\n\n### Extended Exploration\n\nMany of the fractals featured in the book also appear here on this site, such as \"[Heart of the Rose](heart-of-the-rose)\", \"[Nocturne of Scorpio](nocturne-of-scorpio)\", and of course \"[Mother of Pearl](mother-of-pearl)\" (just to name a few). As with all infinite recursion, _don't get lost in the iterations!_"
         ]
       }
     }
