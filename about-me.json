@@ -34,7 +34,7 @@
       "type": "quote",
       "content": {
         "texts": [
-          "\"There is no such thing as sanity.\n\nThere is no such thing as a grown-up.\n\nThere is no objective truth.\n\nThere is no right and wrong.\n\nThere is only The Game,\n\nand the greatest stakes ever played for.\"",
+          "\"There is no such thing as sanity. <span style=\"font-family: inherit;\">There is no such thing as a grown-up.</span>\n\nThere is no objective truth. <span style=\"font-family: inherit;\">There is no right and wrong.</span>\n\nThere is only The Game,\n\nand the greatest stakes ever played for.\"",
           "\\- iTiki"
         ]
       }
