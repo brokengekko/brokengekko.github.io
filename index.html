@@ -115,7 +115,7 @@
         #orbit-ring {
             transform-style: preserve-3d;
             transform: rotateZ(-20deg) rotateX(70deg);
-            animation: spinRing 30s linear infinite;
+            animation: spinRing 45s linear infinite;
         }
 
         @keyframes spinRing {
@@ -1361,7 +1361,7 @@
                     img.alt = itemData.label;
                     img.className = 'w-full h-full object-cover mix-blend-screen';
                     
-                    const duration = 4 + Math.random() * 8;
+                    const duration = 6 + Math.random() * 12;
                     const direction = Math.random() > 0.5 ? 'normal' : 'reverse';
                     const tumbleType = Math.floor(Math.random() * 3) + 1; 
                     
