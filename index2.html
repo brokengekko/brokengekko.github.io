@@ -757,19 +757,9 @@
             animation: pulseGlow 1.5s ease-in-out infinite;
         }
 
-        /* Device rotation animation */
-        @keyframes rotateDevice {
-            0% { transform: rotate(0deg); }
-            35% { transform: rotate(-90deg); }
-            65% { transform: rotate(-90deg); }
-            100% { transform: rotate(0deg); }
-        }
         
-        @media (orientation: portrait) {
-            #portrait-warning {
-                display: flex !important;
-            }
-        }
+        
+        
 
         /* Ensure interactive elements in the lightbox show the pointer cursor */
         #lightbox-content a, #lightbox-content .show-more-btn {
@@ -779,77 +769,7 @@
 </head>
 <body>
 
-    <!-- Portrait Mode Warning Overlay -->
-    <div id="portrait-warning" class="fixed inset-0 z-[99999] bg-[#050505] hidden flex-col items-center justify-center p-8 text-center" style="background-image: radial-gradient(circle at center, rgba(0,243,255,0.08) 0%, transparent 70%); backdrop-filter: blur(10px);">
-        <div style="width: 54px; height: 90px; border: 3px solid var(--neon-cyan); border-radius: 8px; position: relative; margin-bottom: 2.5rem; box-shadow: 0 0 15px rgba(0,243,255,0.3), inset 0 0 10px rgba(0,243,255,0.2); animation: rotateDevice 2.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;">
-            <!-- Speaker line -->
-            <div style="position: absolute; top: 6px; left: 50%; transform: translateX(-50%); width: 14px; height: 3px; border-radius: 2px; background-color: var(--neon-cyan);"></div>
-            <!-- Home button -->
-            <div style="position: absolute; bottom: 6px; left: 50%; transform: translateX(-50%); width: 8px; height: 8px; border-radius: 50%; border: 2px solid var(--neon-cyan);"></div>
-        </div>
-        <h2 class="text-2xl font-bold mb-4 tracking-widest uppercase" style="color: var(--neon-cyan); text-shadow: 0 0 12px rgba(0,243,255,0.6);">Orientation Lock</h2>
-        <p class="text-gray-400 text-sm md:text-base max-w-sm leading-relaxed tracking-wide">
-            The neural interface requires a wider viewport. Please rotate your device to landscape mode to initialize the terminal.
-        </p>
-    </div>
-
-    <!-- 
-      Main Application Container:
-      - h-screen/w-screen: takes up full viewport
-      - bg-black: deep space background color
-      - flex-col: flexbox layout for header/main/footer
-      - overflow-hidden: prevents scrolling (locks the UI in place)
-    -->
-    <div class="min-h-screen w-full bg-black text-white font-sans flex flex-col relative overflow-x-hidden selection:bg-cyan-500/30">
-      
-        <!-- 
-          Background Decorative Elements: 
-          These images create the textured grid backdrop. Fixed positioned at the back (z-0), 
-          pointer-events-none ensures they don't block mouse interactions.
-        -->
-        <div class="fixed inset-0 pointer-events-none z-0">
-            <img src="gfx-bg-disc-grid.jpg" alt="Fractal Grid" class="absolute top-[-0%] left-[-0%] w-[700px] max-w-[100vw] rotate-180 opacity-95" onerror="this.style.display='none'"/>
-            <img src="gfx-bg-disc-grid.jpg" alt="Fractal Grid" class="absolute bottom-[-0%] right-[-0%] w-[700px] max-w-[100vw] opacity-95" onerror="this.style.display='none'"/>
-            <!-- Fractal Stars Background (Above grid, below site) -->
-            <img id="bg-stars-fractal" src="bg-site-transparent.png" alt="Fractal Stars" class="absolute inset-0 w-full h-full object-cover" style="will-change: filter;" onerror="this.style.display='none'"/>
-            <!-- Signature Fractal (Centered, object-contain) -->
-            
-        </div>
-
-        <div class="fixed inset-0 pointer-events-none z-0" style="background-image: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06)); background-size: 100% 4px, 3px 100%;"></div>
-        <div class="fixed inset-0 pointer-events-none z-[5] opacity-5" style="background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, #ffffff 2px, #ffffff 4px);"></div>
-        
-        <div class="fixed top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-cyan-600/10 blur-[120px] rounded-full pointer-events-none z-0"></div>
-        
-        <!-- Top-Right Social & Store Links (Frosted Glass Neon Cyan Icons with Platform Glows) -->
-        
-
-        
-
-        
-<header class="w-full p-4 flex justify-between items-center z-50 fixed top-0 left-0 bg-black/80 backdrop-blur-md border-b border-cyan-500/30">
-    <div class="text-cyan-500 font-mono text-xl font-bold uppercase tracking-widest">SJP</div>
-    <button id="mobile-menu-btn" class="text-cyan-500 hover:text-white focus:outline-none">
-        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-        </svg>
-    </button>
-</header>
-<!-- Mobile Menu Overlay -->
-<div id="mobile-menu" class="fixed inset-0 bg-black/95 z-[60] flex-col overflow-y-auto pt-20 pb-10 hidden transition-opacity opacity-0 duration-300">
-    <button id="mobile-close-btn" class="absolute top-6 right-6 text-cyan-500 hover:text-white focus:outline-none">
-        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-        </svg>
-    </button>
-    <div class="w-full flex flex-col items-center">
-        
-            <nav id="tier1-nav" class="flex flex-col items-center w-full gap-2 mb-4" class="flex flex-wrap justify-center w-full px-4 mb-2"></nav>
-            <div id="tier2-nav" class="flex flex-col items-center w-full gap-2 mb-4 transition-all duration-300 overflow-hidden" class="flex flex-wrap justify-center w-full max-w-3xl px-4 transition-all duration-300 ease-in-out transform origin-top opacity-0 scale-y-0 h-0 overflow-hidden"></div>
-            <div id="tier3-nav" class="flex flex-col items-center w-full gap-2 transition-all duration-300 overflow-hidden" class="flex flex-wrap justify-center w-full max-w-2xl px-4 transition-all duration-300 ease-in-out transform origin-top opacity-0 scale-y-0 h-0 overflow-hidden"></div>
-        
-    </div>
-</div>
+    
 
 
         <!-- ==========================================================================
