@@ -4,6 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Portfolio of San Jaya Prime</title>
+    
+    <!-- DEVICE DETECTION ROUTING: Redirects desktop users to index.html seamlessly -->
+    <script>
+        (function() {
+            var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 1024;
+            if (!isMobile) {
+                var path = window.location.pathname;
+                var hash = window.location.hash;
+                if (path.endsWith('index2.html')) {
+                    window.location.replace(path.replace('index2.html', 'index.html') + hash);
+                } else {
+                    var newPath = path.endsWith('/') ? path + 'index.html' : path + '/index.html';
+                    window.location.replace(newPath + hash);
+                }
+            }
+        })();
+    </script>
+
     <link rel="icon" href="favicon.ico" sizes="32x32">
     <link rel="icon" href="icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -322,8 +340,7 @@
             filter: drop-shadow(0 0 6px rgba(0, 255, 255, 0.5)) contrast(1.2);
         }
 
-        /* 
-           Hover effects for the individual logo layers:
+        /* Hover effects for the individual logo layers:
            - Layer 3 (Comets) increases brightness by 20%
            - Layer 2 (Frosted Glass) increases brightness by 40%
            - Layer 1 (SJP foreground) becomes extremely bright, making the cyan glow nearly white 
@@ -769,8 +786,26 @@
 </head>
 <body>
 
-    
+    <!-- ==========================================================================
+         MOBILE MENU OVERLAY & BUTTON
+         ========================================================================== -->
+    <div class="fixed top-4 right-4 z-[60]">
+        <button id="mobile-menu-btn" class="pointer-events-auto text-cyan-400 p-2.5 rounded-lg bg-gray-900/60 border border-cyan-500/40 backdrop-blur-md transition-all hover:bg-cyan-900/50 shadow-[0_0_10px_rgba(0,255,255,0.2)]" aria-label="Open Menu">
+            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+        </button>
+    </div>
 
+    <div id="mobile-menu" class="fixed inset-0 z-[70] bg-[#02050a]/95 backdrop-blur-xl hidden opacity-0 transition-opacity duration-300 flex-col pt-20 px-4 overflow-y-auto">
+        <button id="mobile-close-btn" class="absolute top-6 right-6 text-cyan-400 p-2 hover:text-white transition-colors" aria-label="Close Menu">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+        <div class="w-full flex flex-col items-center mt-8 pb-12">
+            <!-- Navigation Tier Containers -->
+            <nav id="tier1-nav" class="flex flex-col gap-2 w-full max-w-[280px]"></nav>
+            <div id="tier2-nav" class="flex flex-col gap-2 w-full max-w-[280px] transition-all duration-300 ease-in-out opacity-0 scale-y-0 h-0 overflow-hidden"></div>
+            <div id="tier3-nav" class="flex flex-col gap-2 w-full max-w-[280px] transition-all duration-300 ease-in-out opacity-0 scale-y-0 h-0 overflow-hidden"></div>
+        </div>
+    </div>
 
         <!-- ==========================================================================
          ARTICLE LIGHTBOX / OVERLAY
@@ -1133,6 +1168,8 @@
                 t1Container.appendChild(createMenuItem(item.label, state.tier1 === item.id, 1, () => {
                     if (item.url) {
                         window.location.href = item.url;
+                        const mm = document.getElementById('mobile-menu');
+                        if (mm) { mm.classList.add('opacity-0'); setTimeout(() => mm.classList.add('hidden'), 300); }
                         return;
                     }
                     if (state.tier1 === item.id) {
@@ -1155,6 +1192,8 @@
                     t2Container.appendChild(createMenuItem(item.label, state.tier2 === item.id, 2, () => {
                         if (item.url) {
                             window.location.href = item.url;
+                            const mm = document.getElementById('mobile-menu');
+                            if (mm) { mm.classList.add('opacity-0'); setTimeout(() => mm.classList.add('hidden'), 300); }
                             return;
                         }
                         if (state.tier2 === item.id) {
@@ -1181,6 +1220,8 @@
                     t3Container.appendChild(createMenuItem(item.label, state.tier3 === item.id, 3, () => {
                         if (item.url) {
                             window.location.href = item.url;
+                            const mm = document.getElementById('mobile-menu');
+                            if (mm) { mm.classList.add('opacity-0'); setTimeout(() => mm.classList.add('hidden'), 300); }
                             return;
                         }
                         state.tier3 = state.tier3 === item.id ? null : item.id;
