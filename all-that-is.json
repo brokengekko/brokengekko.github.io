@@ -24,6 +24,15 @@
       }
     },
     {
+      "type": "quote",
+      "content": {
+        "texts": [
+          "\"What is it that hides in the shadow of the Sun?\"",
+          "\\- LamatKan"
+        ]
+      }
+    },
+    {
       "type": "table-3",
       "content": {
         "tables": [
@@ -91,8 +100,8 @@
       "type": "quote",
       "content": {
         "texts": [
-          "\"What is it that hides in the shadow of the Sun?\"",
-          "\\- LamatKan"
+          "\"You can talk to yourself, even argue with yourself, but don't lose a fight with yourself.\"",
+          "\\- Andromeda \"Gaea Phoenix\" Ross"
         ]
       }
     },
