@@ -795,6 +795,22 @@
 </head>
 <body>
 
+    
+    <!-- ==========================================================================
+         BACKGROUND LAYERS
+         Handles the base grid and fractal stars background 
+         ========================================================================== -->
+    <div class="fixed inset-0 pointer-events-none z-0">
+        <img src="gfx-bg-disc-grid.jpg" alt="Fractal Grid" class="absolute top-[-0%] left-[-0%] w-[700px] max-w-[100vw] rotate-180 opacity-95" onerror="this.style.display='none'"/>
+        <img src="gfx-bg-disc-grid.jpg" alt="Fractal Grid" class="absolute bottom-[-0%] right-[-0%] w-[700px] max-w-[100vw] opacity-95" onerror="this.style.display='none'"/>
+        <!-- Fractal Stars Background (Above grid, below site) -->
+        <img id="bg-stars-fractal" src="bg-site-transparent.png" alt="Fractal Stars" class="absolute inset-0 w-full h-full object-cover" style="will-change: filter;" onerror="this.style.display='none'"/>
+    </div>
+
+    <div class="fixed inset-0 pointer-events-none z-0" style="background-image: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06)); background-size: 100% 4px, 3px 100%;"></div>
+    <div class="fixed inset-0 pointer-events-none z-[5] opacity-5" style="background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, #ffffff 2px, #ffffff 4px);"></div>
+    <div class="fixed top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-cyan-600/10 blur-[120px] rounded-full pointer-events-none z-0"></div>
+
     <!-- ==========================================================================
          MOBILE MENU OVERLAY & BUTTON
          ========================================================================== -->
@@ -832,7 +848,7 @@
         -->
         <div id="planet-scene" class="relative w-64 h-64 flex items-center justify-center z-10" style="transform-style: preserve-3d;">
                 
-                <div id="planet-interactive-wrapper" class="absolute inset-0 flex items-center justify-center pointer-events-auto cursor-pointer rounded-full z-20" style="transform-style: preserve-3d; transition: filter 0.3s;">
+                <div id="planet-interactive-wrapper" class="absolute inset-0 flex items-center justify-center pointer-events-auto cursor-pointer rounded-full z-20" style="transform-style: preserve-3d;">
                     <div class="absolute w-64 h-64 rounded-full orb" style="transform: translateZ(-2px);"></div>
                     <img id="central-planet" src="gfx-sigil-planet.png" alt="SJP Sigil Planet" class="absolute w-[250px] h-[250px] rounded-full object-cover" style="transform: translateZ(0px);">
                 </div>
