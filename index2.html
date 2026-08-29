@@ -5,7 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Portfolio of San Jaya Prime</title>
     
-    <!-- DEVICE DETECTION ROUTING: Redirects desktop users to index.html seamlessly -->
+    <!-- 
+    ==========================================================================
+    DEVICE DETECTION ROUTING
+    Automatically detects if the user is on a desktop device (screen width > 1024px 
+    and no mobile user-agent strings). If a desktop user lands on index2.html, 
+    they are seamlessly redirected back to the main index.html to ensure they 
+    get the full desktop experience.
+    ========================================================================== 
+    -->
     <script>
         (function() {
             var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 1024;
@@ -630,8 +638,9 @@
         .lightbox-title {
             color: #fff; text-transform: uppercase; letter-spacing: 6px;
             font-size: 1.8rem; margin: 0;
-            text-shadow: 0 0 8px #fff, 0 0 20px var(--neon-cyan);
+            text-shadow: 0 0 4px #fff, 0 0 10px var(--neon-cyan);
             display: flex; align-items: center; justify-content: flex-end;
+            text-align: right;
         }
         
         .lightbox-title::after {
@@ -664,7 +673,7 @@
             margin: .1em 0 15px 0; 
             text-transform: uppercase; 
             letter-spacing: 2px; 
-            text-shadow: 0 0 8px rgba(255, 204, 0, 0.8), 0 0 15px rgba(255, 204, 0, 0.4); 
+            text-shadow: 0 0 4px rgba(255, 204, 0, 0.8), 0 0 7px rgba(255, 204, 0, 0.4); 
         }
         
         .progress-track { width: 100%; height: 6px; background: rgba(0, 243, 255, 0.1); border: 1px solid rgba(0, 243, 255, 0.4); margin-top: 15px; position: relative; }
@@ -696,7 +705,7 @@
             margin: .1em 0 15px 0;
             text-transform: uppercase;
             letter-spacing: 2px;
-            text-shadow: 0 0 8px rgba(255, 204, 0, 0.8), 0 0 15px rgba(255, 204, 0, 0.4);
+            text-shadow: 0 0 4px rgba(255, 204, 0, 0.8), 0 0 7px rgba(255, 204, 0, 0.4);
         }
         
         .dummy-text h3 {
@@ -1168,6 +1177,7 @@
                 t1Container.appendChild(createMenuItem(item.label, state.tier1 === item.id, 1, () => {
                     if (item.url) {
                         window.location.href = item.url;
+                        // Hide mobile menu overlay when an external URL or article link is clicked
                         const mm = document.getElementById('mobile-menu');
                         if (mm) { mm.classList.add('opacity-0'); setTimeout(() => mm.classList.add('hidden'), 300); }
                         return;
@@ -1192,7 +1202,8 @@
                     t2Container.appendChild(createMenuItem(item.label, state.tier2 === item.id, 2, () => {
                         if (item.url) {
                             window.location.href = item.url;
-                            const mm = document.getElementById('mobile-menu');
+                            // Hide mobile menu overlay when an external URL or article link is clicked
+                        const mm = document.getElementById('mobile-menu');
                             if (mm) { mm.classList.add('opacity-0'); setTimeout(() => mm.classList.add('hidden'), 300); }
                             return;
                         }
@@ -1220,7 +1231,8 @@
                     t3Container.appendChild(createMenuItem(item.label, state.tier3 === item.id, 3, () => {
                         if (item.url) {
                             window.location.href = item.url;
-                            const mm = document.getElementById('mobile-menu');
+                            // Hide mobile menu overlay when an external URL or article link is clicked
+                        const mm = document.getElementById('mobile-menu');
                             if (mm) { mm.classList.add('opacity-0'); setTimeout(() => mm.classList.add('hidden'), 300); }
                             return;
                         }
@@ -1313,31 +1325,25 @@ function updateHue() {
     }
 }
 
-function startPlanetHold(e) {
-    if (e.type === 'touchstart') e.preventDefault(); // Prevents touch from scrolling screen while holding
-    isPlanetPressed = true;
-    planetInteractive.classList.add('animate-pulse-glow');
-    if (!hueAnimationId) {
-        updateHue();
-    }
-}
-
-function stopPlanetHold(e) {
-    isPlanetPressed = false;
-    planetInteractive.classList.remove('animate-pulse-glow');
-    if (hueAnimationId) {
-        cancelAnimationFrame(hueAnimationId);
-        hueAnimationId = null;
+function togglePlanetAnimation(e) {
+    if (e.type === 'touchstart' && e.cancelable) e.preventDefault(); // Optional: prevents default touch action
+    isPlanetPressed = !isPlanetPressed;
+    if (isPlanetPressed) {
+        planetInteractive.classList.add('animate-pulse-glow');
+        if (!hueAnimationId) {
+            updateHue();
+        }
+    } else {
+        planetInteractive.classList.remove('animate-pulse-glow');
+        if (hueAnimationId) {
+            cancelAnimationFrame(hueAnimationId);
+            hueAnimationId = null;
+        }
     }
 }
 
 if (planetInteractive) {
-    planetInteractive.addEventListener('mousedown', startPlanetHold);
-    planetInteractive.addEventListener('touchstart', startPlanetHold, {passive: false});
-
-    window.addEventListener('mouseup', stopPlanetHold);
-    window.addEventListener('touchend', stopPlanetHold, {passive: true});
-    window.addEventListener('touchcancel', stopPlanetHold, {passive: true});
+    planetInteractive.addEventListener('click', togglePlanetAnimation);
 }
 
             // Set initial canonical link
@@ -1780,14 +1786,14 @@ if (planetInteractive) {
                             htmlContent += `<div class="dummy-text">${sec.content.html}</div>`;
                         } else if (sec.type === 'html-left') {
                             htmlContent += `<div class="dummy-text" style="display:block;">
-                                <div style="float:left; width:45%; margin-right:20px; margin-bottom:10px;">${sec.content.html || ''}</div>
                                 <div>${parseMarkdown(sec.content.text || '')}</div>
+                                <div style="width:100%; margin-top:20px;">${sec.content.html || ''}</div>
                                 <div style="clear:both;"></div>
                             </div>`;
                         } else if (sec.type === 'html-right') {
                             htmlContent += `<div class="dummy-text" style="display:block;">
-                                <div style="float:right; width:45%; margin-left:20px; margin-bottom:10px;">${sec.content.html || ''}</div>
                                 <div>${parseMarkdown(sec.content.text || '')}</div>
+                                <div style="width:100%; margin-top:20px;">${sec.content.html || ''}</div>
                                 <div style="clear:both;"></div>
                             </div>`;
                         } else if (sec.type === 'video') {
@@ -1846,17 +1852,17 @@ if (planetInteractive) {
                             }
 
                             if (sec.type === 'table-3') {
-                                htmlContent += `<div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:20px; grid-column: 1 / -1;">${tableHTML}</div>`;
+                                htmlContent += `<div style="display:grid; grid-template-columns: 1fr; gap:20px; grid-column: 1 / -1;">${tableHTML}</div>`;
                             } else if (sec.type === 'table-left') {
                                 htmlContent += `<div class="dummy-text" style="display:block;">
-                                    <div style="float:left; width:45%; margin-right:20px; margin-bottom:10px;">${tableHTML}</div>
                                     <div>${parseMarkdown(sec.content.text || '')}</div>
+                                    <div style="width:100%; margin-top:20px;">${tableHTML}</div>
                                     <div style="clear:both;"></div>
                                 </div>`;
                             } else if (sec.type === 'table-right') {
                                 htmlContent += `<div class="dummy-text" style="display:block;">
-                                    <div style="float:right; width:45%; margin-left:20px; margin-bottom:10px;">${tableHTML}</div>
                                     <div>${parseMarkdown(sec.content.text || '')}</div>
+                                    <div style="width:100%; margin-top:20px;">${tableHTML}</div>
                                     <div style="clear:both;"></div>
                                 </div>`;
                             }
