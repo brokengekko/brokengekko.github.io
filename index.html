@@ -4,6 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Portfolio of San Jaya Prime</title>
+    
+    <!-- DEVICE DETECTION ROUTING: Redirects mobile users to index2.html seamlessly -->
+    <script>
+        (function() {
+            var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 1024;
+            if (isMobile) {
+                var path = window.location.pathname;
+                var hash = window.location.hash;
+                if (path.endsWith('index.html')) {
+                    window.location.replace(path.replace('index.html', 'index2.html') + hash);
+                } else {
+                    var newPath = path.endsWith('/') ? path + 'index2.html' : path + '/index2.html';
+                    window.location.replace(newPath + hash);
+                }
+            }
+        })();
+    </script>
+
     <link rel="icon" href="favicon.ico" sizes="32x32">
     <link rel="icon" href="icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
