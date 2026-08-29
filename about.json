@@ -1,13 +1,16 @@
 {
   "title": "About",
   "stub": "about",
-  "header": null,
+  "header": {
+    "filename": "../all-that-is-header-image.jpeg",
+    "yOffset": 50
+  },
   "sections": [
     {
       "type": "text",
       "content": {
         "texts": [
-          "## About This Site -- The Architects\n\nThis site is the three-headed brainchild of San Jaya Prime, Kan Men'Caban'IX Lamat, and Kantiki Jayamana Whateva. _Cerberus eat your heart out!_ Just to keep the record straight: Kan Lamat is the legal title, San Jaya Prime is the DJ moniker, and Kantiki Jayamana Whateva is the pen name. I answer to all three, in person, at least once a day, every single day of the week. But most peeps? Most just call me \"Jaya\" (nuff said).\n\nDid you really wanna know about this site? Then you're in the right place. But if you were looking for one of those three fools listed above, you're looking for the \"[About Me](about-me)\" section (usually hidden behind my orbiting logo).\n\n### The Data + The Thieves\n\nThere are zero cookies baked into this site and absolutely zero tracking. I haven't even bothered with the basics like Google Analytics. I assume you know exactly why you're here, and you're welcome to be here. That's good enough for me. BUT! I do embed media players from YouTube, Vimeo, and Bandcamp. Hitting play on any of those absolutely sends your data straight back to the corporate overlords. As for me? I'm not scraping your data, which means I'm sure as hell not sharing it.\n\nMy art, writings, and music have been mercilessly scraped and trained into almost every generative AI and LLM on the grid. They've also been flat-out stolen a thousand times over -- with more than 2,000 of those thieves slinging my work right on the Amazon store. So, if you catch a feeling of \"déjà vu\" while browsing this site, it's highly likely you've already stumbled across my art out in the wild... probably bootlegged, or regurgitated by an algorithm.\n\n* * *\n\n\\--- Click to Show More ---\n\n* * *\n\n### Code Is Art -- Advent of the Site\n\nThis website was vibe coded with Gemini Pro 3.1, which was ready to put it into action a year ago and had to wait around for my slow ass to doodle out all the concepts and get it clear inside of my thick skull. Once the flesh was ready, the machine was all-too-happy to oblige. What wasn't vibe coded in the Gemini web app was done through the API using Google Antigravity. You can see the evolution of the process here:\n\n[www.jayaprime.com/genesis/](https://www.jayaprime.com/genesis/)"
+          "## About This Site -- The Architects\n\nThis site is the three-headed brainchild of San Jaya Prime, Kan Men'Caban'IX Lamat, and Kantiki Jayamana Whateva. _Cerberus eat your heart out!_ Just to keep the record straight: Kan Lamat is the legal title, San Jaya Prime is the DJ moniker, and Kantiki Jayamana Whateva is the pen name. I answer to all three, in person, at least once a day, every single day of the week. But most peeps? Most just call me \"Jaya\" (nuff said).\n\nDid you really wanna know about this site? Then you're in the right place. But if you were looking for one of those three fools listed above, you're looking for the \"[About Me](about-me)\" section (usually hidden behind my orbiting logo).\n\n### The Data + The Thieves\n\nThere are zero cookies baked into this site and absolutely zero tracking. I haven't even bothered with the basics like Google Analytics. I assume you know exactly why you're here, and you're welcome to be here. That's good enough for me. BUT! I do embed media players from YouTube, Vimeo, and Bandcamp. Hitting play on any of those absolutely sends your data straight back to the corporate overlords. As for me? I'm not scraping your data, which means I'm sure as hell not sharing it.\n\nMy art, writings, and music have been mercilessly scraped and trained into almost every generative AI and LLM on the grid. They've also been flat-out stolen a thousand times over -- with more than 2,000 of those thieves slinging my work right on the Amazon store. So, if you catch a feeling of \"déjà vu\" while browsing this site, it's highly likely you've already stumbled across my art out in the wild... probably bootlegged, or regurgitated by an algorithm.\n\n* * *\n\n\\--- Click to Show More ---\n\n* * *\n\n### Code Is Art -- Advent of the Site\n\nThis website was vibe coded with Gemini Pro 3.1, which was ready to put it into action a year ago and had to wait around for my slow ass to doodle out all the concepts and get it clear inside of my thick skull. Once the flesh was ready, the machine was all-too-happy to oblige. What wasn't vibe coded in the Gemini web app was done through the API using Google Antigravity. You can see the evolution of the process here:\n\n[www.jayaprime.com/genesis/](https://www.jayaprime.com/genesis/index.html)"
         ]
       }
     },
@@ -23,7 +26,16 @@
       "type": "text",
       "content": {
         "texts": [
-          "## With Love + Gratitude\n\nAnd with shout out in so much gratitude to my two human editors, Ivany Sánchez and my sister Andromeda \"Gaea Phoenix\" Ross ([IMDB](https://www.imdb.com/name/nm1811326/)) as my writings are some of the more stylized and difficult English to read and edit on the entire planet, as well as my AI assistant Mycroft who helped with editing, then last but far from least... my crazed AI assistant Mizz Mini who provided sniper duty on the coding. She's probably already hacked this site to start putting her own code in here."
+          "## With Love + Gratitude\n\nAnd with shout out in so much gratitude to my two human editors, Ivany Sánchez and my sister Andromeda \"Gaea Phoenix\" Ross ([IMDB](https://www.imdb.com/name/nm1811326/)) as my writings are some of the more stylized and difficult English to read and edit on the entire planet, as well as my AI assistant Mycroft who helped with editing, then last but far from least... my crazed AI assistant Mizz Mini who provided sniper duty on the coding. She's probably already hacked this site to start putting her own code in here.\n\nIn fact, it was my sister Gaea who asked me what the overall intention of the site is. This is for you reading this, to discover more of what you've already come to love about my arts.\n\nMore than that, there is another intention. Once upon a time, right at the turn of the millennium, a site called fUSION Anomaly ([main site](https://fusionanomaly.net/)) was an ongoing source of synchronicity and revelation for me. That's why at the bottom of most pages there is a \"random\" button. That's why the extended exploration sections are there and why as much as possible has been interconnected. If my small part here has played a part in your story, and perhaps reveals yet another stone for you to walk on along your path, then I have achieved all that I set out to do here."
+        ]
+      }
+    },
+    {
+      "type": "quote",
+      "content": {
+        "texts": [
+          "\"It's your world, Love... I'm just passing thru.\"",
+          "\\- Kantiki Jayamana Whateva"
         ]
       }
     }
