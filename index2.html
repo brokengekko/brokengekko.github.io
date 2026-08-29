@@ -793,7 +793,7 @@
         }
     </style>
 </head>
-<body class="bg-black text-white font-sans overflow-x-hidden min-h-screen flex flex-col selection:bg-cyan-900 selection:text-cyan-100 antialiased scroll-smooth">
+<body class="bg-black text-white font-sans overflow-x-hidden min-h-[100dvh] flex flex-col selection:bg-cyan-900 selection:text-cyan-100 antialiased scroll-smooth">
 
     
     <!-- ==========================================================================
@@ -820,7 +820,7 @@
         </button>
     </div>
 
-    <div id="mobile-menu" class="fixed inset-0 z-[70] bg-[#02050a]/95 backdrop-blur-xl hidden opacity-0 transition-opacity duration-300 flex-col pt-20 px-4 overflow-y-auto">
+    <div id="mobile-menu" class="fixed inset-0 z-[70] bg-[#02050a]/98 hidden opacity-0 transition-opacity duration-300 flex-col pt-20 px-4 overflow-y-auto">
         <button id="mobile-close-btn" class="absolute top-6 right-6 text-cyan-400 p-2 hover:text-white transition-colors" aria-label="Close Menu">
             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
         </button>
@@ -840,6 +840,13 @@
          MAIN CONTENT / 3D PLANET SCENE
          ========================================================================== -->
         <main class="flex-grow relative z-10 flex flex-col items-center justify-center pointer-events-none gap-10">
+            <!-- Logo Moon: Positioned safely relative to the main container edges -->
+            <div id="moon-mover" class="absolute top-4 left-4 sm:top-12 sm:left-12 w-[70px] h-[70px] md:w-[90px] md:h-[90px] z-30 pointer-events-auto">
+                <a href="#?/about-me" id="moon-logo-container" class="relative w-full h-full block cursor-pointer">
+                    <img src="gfx-logo-combined.png" class="w-full h-full object-contain drop-shadow-[0_0_8px_rgba(0,255,255,0.5)]" alt="SJP Logo">
+                </a>
+            </div>
+
             
             <!-- 
           The Central Planet Scene (3D environment):
@@ -857,40 +864,30 @@
 
                 <div id="orbit-ring" class="absolute inset-0 w-full h-full" style="transform-style: preserve-3d;"></div>
 
-                <div id="moon-orbit-system" class="absolute top-0 left-0 pointer-events-none w-full h-full">
-                    <div id="moon-mover" class="absolute top-[-90px] left-[-90px] w-[80px] h-[80px]" style="transform-style: preserve-3d;">
-                        <a href="#?/about-me" id="moon-logo-container" class="relative w-full h-full block cursor-pointer pointer-events-auto" style="transform-style: preserve-3d;">
-                            <div class="tilt-wrapper w-full h-full absolute inset-0" style="transform-style: preserve-3d;">
-                                <img src="gfx-logo-combined.png" class="w-full h-full object-contain" alt="SJP Logo">
-                            </div>
-                        </a>
-                    </div>
-                </div>
+
 
             </div>
         </main>
 
-        <footer class="w-full z-50 flex flex-col justify-center items-center pb-0 pt-0 mt-4">
+        <div class="w-full mt-auto flex flex-col justify-center items-center pb-8 pt-4 z-50">
             <nav id="footer-nav" class="flex flex-wrap justify-center items-center w-full px-0 mx-auto"></nav>
-        </footer>
-<div class="flex justify-center items-center gap-6 mt-4 w-full z-50">
-    
-            <a href="https://open.spotify.com/artist/7rXwcVsymtT0ShqzvwybiQ?si=tAOHc8K0StuNba7mip21ng" target="_blank" rel="noopener noreferrer" class="social-icon-link social-spotify" aria-label="Spotify">
-                <img src="gfx-links-spotify-sm.png" alt="Spotify" class="w-6 h-6 md:w-[26px] md:h-[26px] object-contain">
-            </a>
-            <a href="https://www.redbubble.com/people/jayaprime/shop" target="_blank" rel="noopener noreferrer" class="social-icon-link social-redbubble" aria-label="Redbubble Shop">
-                <img src="gfx-links-redbubble-sm.png" alt="Redbubble Shop" class="w-6 h-6 md:w-[26px] md:h-[26px] object-contain">
-            </a>
-            <a href="https://www.instagram.com/fractals_by_jaya/" target="_blank" rel="noopener noreferrer" class="social-icon-link social-instagram" aria-label="Instagram">
-                <img src="gfx-links-instagram-sm.png" alt="Instagram" class="w-6 h-6 md:w-[26px] md:h-[26px] object-contain">
-            </a>
-        
-</div>
-<div class="mt-6 z-50 text-center mb-6">
-    <a href="#all-that-is" id="equation-trigger" data-stub="all-that-is" class=" z-50 text-[11px] text-gray-600 font-mono tracking-widest cursor-pointer transition-all duration-700 hover:text-gray-300 hover:drop-shadow-[0_0_12px_rgba(255,255,255,0.8)] block no-underline">
-            ( 1 = √∞ / Ø )
-        </a>
-</div>
+            <div class="flex justify-center items-center gap-6 mt-3 w-full">
+                <a href="https://open.spotify.com/artist/7rXwcVsymtT0ShqzvwybiQ?si=tAOHc8K0StuNba7mip21ng" target="_blank" rel="noopener noreferrer" class="social-icon-link social-spotify" aria-label="Spotify">
+                    <img src="gfx-links-spotify-sm.png" alt="Spotify" class="w-6 h-6 md:w-[26px] md:h-[26px] object-contain">
+                </a>
+                <a href="https://www.redbubble.com/people/jayaprime/shop" target="_blank" rel="noopener noreferrer" class="social-icon-link social-redbubble" aria-label="Redbubble Shop">
+                    <img src="gfx-links-redbubble-sm.png" alt="Redbubble Shop" class="w-6 h-6 md:w-[26px] md:h-[26px] object-contain">
+                </a>
+                <a href="https://www.instagram.com/fractals_by_jaya/" target="_blank" rel="noopener noreferrer" class="social-icon-link social-instagram" aria-label="Instagram">
+                    <img src="gfx-links-instagram-sm.png" alt="Instagram" class="w-6 h-6 md:w-[26px] md:h-[26px] object-contain">
+                </a>
+            </div>
+            <div class="mt-4 text-center">
+                <a href="#all-that-is" id="equation-trigger" data-stub="all-that-is" class="text-[11px] text-gray-600 font-mono tracking-widest cursor-pointer transition-all duration-700 hover:text-gray-300 hover:drop-shadow-[0_0_12px_rgba(255,255,255,0.8)] block no-underline">
+                    ( 1 = √∞ / Ø )
+                </a>
+            </div>
+        </div>
 
 
     </div>
@@ -1111,7 +1108,7 @@
             function createMenuItem(label, isActive, level, onClick) {
             const btn = document.createElement('button');
             
-            let className = 'relative overflow-hidden transition-all duration-300 ease-out backdrop-blur-md border border-white/10 font-mono uppercase tracking-widest group ';
+            let className = 'relative overflow-hidden transition-all duration-300 ease-out border border-white/10 font-mono uppercase tracking-widest group ';
             
             if (isActive) {
                 className += 'bg-cyan-400/30 text-white border-cyan-200/80 shadow-[0_0_10px_rgba(0,255,255,.9),0_0_30px_rgba(0,255,255,.6),0_0_60px_rgba(0,255,255,.35)] ';
