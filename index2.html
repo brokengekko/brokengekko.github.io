@@ -793,7 +793,7 @@
         }
     </style>
 </head>
-<body>
+<body class="bg-black text-white font-sans overflow-x-hidden min-h-screen flex flex-col selection:bg-cyan-900 selection:text-cyan-100 antialiased scroll-smooth">
 
     
     <!-- ==========================================================================
@@ -839,7 +839,7 @@
     <!-- ==========================================================================
          MAIN CONTENT / 3D PLANET SCENE
          ========================================================================== -->
-        <main class="flex-grow relative z-10 flex flex-col items-center justify-center pointer-events-none mt-32 mb-16 gap-10">
+        <main class="flex-grow relative z-10 flex flex-col items-center justify-center pointer-events-none gap-10">
             
             <!-- 
           The Central Planet Scene (3D environment):
@@ -870,10 +870,10 @@
             </div>
         </main>
 
-        <footer class="w-full z-50 flex flex-col justify-center items-center pb-0 pt-0 mt-8">
+        <footer class="w-full z-50 flex flex-col justify-center items-center pb-0 pt-0 mt-4">
             <nav id="footer-nav" class="flex flex-wrap justify-center items-center w-full px-0 mx-auto"></nav>
         </footer>
-<div class="flex justify-center items-center gap-6 mt-8 w-full z-50">
+<div class="flex justify-center items-center gap-6 mt-4 w-full z-50">
     
             <a href="https://open.spotify.com/artist/7rXwcVsymtT0ShqzvwybiQ?si=tAOHc8K0StuNba7mip21ng" target="_blank" rel="noopener noreferrer" class="social-icon-link social-spotify" aria-label="Spotify">
                 <img src="gfx-links-spotify-sm.png" alt="Spotify" class="w-6 h-6 md:w-[26px] md:h-[26px] object-contain">
@@ -886,7 +886,7 @@
             </a>
         
 </div>
-<div class="mt-12 z-50 text-center mb-8">
+<div class="mt-6 z-50 text-center mb-6">
     <a href="#all-that-is" id="equation-trigger" data-stub="all-that-is" class=" z-50 text-[11px] text-gray-600 font-mono tracking-widest cursor-pointer transition-all duration-700 hover:text-gray-300 hover:drop-shadow-[0_0_12px_rgba(255,255,255,0.8)] block no-underline">
             ( 1 = √∞ / Ø )
         </a>
@@ -1342,15 +1342,23 @@ function updateHue() {
 }
 
 function togglePlanetAnimation(e) {
-    if (e.type === 'touchstart' && e.cancelable) e.preventDefault(); // Optional: prevents default touch action
+    if (e.type === 'touchstart' && e.cancelable) e.preventDefault();
     isPlanetPressed = !isPlanetPressed;
+    
+    const centralPlanetImg = document.getElementById('central-planet');
+    const planetOrbDiv = document.querySelector('.orb');
+
     if (isPlanetPressed) {
-        planetInteractive.classList.add('animate-pulse-glow');
+        if (centralPlanetImg) centralPlanetImg.classList.add('animate-pulse-glow');
+        if (planetOrbDiv) planetOrbDiv.classList.add('animate-pulse-glow');
+        
         if (!hueAnimationId) {
             updateHue();
         }
     } else {
-        planetInteractive.classList.remove('animate-pulse-glow');
+        if (centralPlanetImg) centralPlanetImg.classList.remove('animate-pulse-glow');
+        if (planetOrbDiv) planetOrbDiv.classList.remove('animate-pulse-glow');
+        
         if (hueAnimationId) {
             cancelAnimationFrame(hueAnimationId);
             hueAnimationId = null;
