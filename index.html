@@ -682,7 +682,7 @@
             grid-column: 1 / -1; 
             color: #e6ffff; 
             font-family: 'Special Elite', Courier, monospace;
-            line-height: 1.6; font-size: 0.95rem;
+            line-height: 1.6; font-size: 1.1rem;
             padding: 20px; border: 1px dashed rgba(0, 243, 255, 0.3);
             background: rgba(0,0,0,0.2); box-sizing: border-box;
         }
@@ -691,6 +691,25 @@
             margin-bottom: 1.2em;
             line-height: 1.8;
         }
+
+        /* Inline font size overrides (protects block quotes) */
+        .dummy-text [style*="Times New Roman"],
+        .dummy-text [style*="'Times New Roman'"] {
+            font-size: 1.2rem !important;
+        }
+
+        .dummy-text [style*="Fleur De Leah"],
+        .dummy-text [style*="'Fleur De Leah'"] {
+            font-size: 1.45rem !important;
+        }
+
+        /* Protect block quotes from inline sizing overrides */
+        .dummy-text .quote-content [style*="Fleur De Leah"],
+        .dummy-text .quote-content [style*="'Fleur De Leah'"],
+        .dummy-text .quote-content [style*="Times New Roman"] {
+            font-size: inherit !important;
+        }
+
 
         .dummy-text h2 {
             font-size: 1.5rem;
