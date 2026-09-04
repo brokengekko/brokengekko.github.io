@@ -693,20 +693,23 @@
         }
 
         /* Inline font size overrides (protects block quotes) */
-        .dummy-text [style*="Times New Roman"],
-        .dummy-text [style*="'Times New Roman'"] {
+        .dummy-text [style*="times" i],
+        .dummy-text .times {
             font-size: 1.2rem !important;
         }
 
-        .dummy-text [style*="Fleur De Leah"],
-        .dummy-text [style*="'Fleur De Leah'"] {
+        .dummy-text [style*="fleur" i],
+        .dummy-text .fleur,
+        .dummy-text .cursive {
             font-size: 1.45rem !important;
         }
 
         /* Protect block quotes from inline sizing overrides */
-        .dummy-text .quote-content [style*="Fleur De Leah"],
-        .dummy-text .quote-content [style*="'Fleur De Leah'"],
-        .dummy-text .quote-content [style*="Times New Roman"] {
+        .dummy-text .quote-content [style*="fleur" i],
+        .dummy-text .quote-content .fleur,
+        .dummy-text .quote-content .cursive,
+        .dummy-text .quote-content [style*="times" i],
+        .dummy-text .quote-content .times {
             font-size: inherit !important;
         }
 
@@ -804,6 +807,24 @@
         /* Ensure interactive elements in the lightbox show the pointer cursor */
         #lightbox-content a, #lightbox-content .show-more-btn {
             cursor: pointer !important;
+        }
+        
+        /* Split screen responsiveness */
+        .split-container { display: block; }
+        .split-media { float: left; width: 45%; margin-bottom: 10px; }
+        .split-left .split-media { margin-right: 20px; }
+        .split-right .split-media { float: right; margin-left: 20px; }
+        .split-container::after { content: ""; display: table; clear: both; }
+        
+        .grid-3-col { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; grid-column: 1 / -1; }
+
+        @media (max-width: 1079px) {
+            .split-container { display: flex; flex-direction: column; }
+            .split-left { flex-direction: column; }
+            .split-right { flex-direction: column-reverse; }
+            .split-media { width: 100% !important; float: none !important; margin-left: 0 !important; margin-right: 0 !important; margin-bottom: 20px !important; }
+            
+            .grid-3-col { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -1885,16 +1906,14 @@
                         } else if (sec.type === 'html') {
                             htmlContent += `<div class="dummy-text">${sec.content.html}</div>`;
                         } else if (sec.type === 'html-left') {
-                            htmlContent += `<div class="dummy-text" style="display:block;">
-                                <div style="float:left; width:45%; margin-right:20px; margin-bottom:10px;">${sec.content.html || ''}</div>
+                            htmlContent += `<div class="dummy-text split-container split-left">
+                                <div class="split-media">${sec.content.html || ''}</div>
                                 <div>${parseMarkdown(sec.content.text || '')}</div>
-                                <div style="clear:both;"></div>
                             </div>`;
                         } else if (sec.type === 'html-right') {
-                            htmlContent += `<div class="dummy-text" style="display:block;">
-                                <div style="float:right; width:45%; margin-left:20px; margin-bottom:10px;">${sec.content.html || ''}</div>
+                            htmlContent += `<div class="dummy-text split-container split-right">
+                                <div class="split-media">${sec.content.html || ''}</div>
                                 <div>${parseMarkdown(sec.content.text || '')}</div>
-                                <div style="clear:both;"></div>
                             </div>`;
                         } else if (sec.type === 'video') {
                             let embedUrl = sec.content.url || '';
@@ -1952,18 +1971,16 @@
                             }
 
                             if (sec.type === 'table-3') {
-                                htmlContent += `<div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:20px; grid-column: 1 / -1;">${tableHTML}</div>`;
+                                htmlContent += `<div class="grid-3-col">${tableHTML}</div>`;
                             } else if (sec.type === 'table-left') {
-                                htmlContent += `<div class="dummy-text" style="display:block;">
-                                    <div style="float:left; width:45%; margin-right:20px; margin-bottom:10px;">${tableHTML}</div>
+                                htmlContent += `<div class="dummy-text split-container split-left">
+                                    <div class="split-media">${tableHTML}</div>
                                     <div>${parseMarkdown(sec.content.text || '')}</div>
-                                    <div style="clear:both;"></div>
                                 </div>`;
                             } else if (sec.type === 'table-right') {
-                                htmlContent += `<div class="dummy-text" style="display:block;">
-                                    <div style="float:right; width:45%; margin-left:20px; margin-bottom:10px;">${tableHTML}</div>
+                                htmlContent += `<div class="dummy-text split-container split-right">
+                                    <div class="split-media">${tableHTML}</div>
                                     <div>${parseMarkdown(sec.content.text || '')}</div>
-                                    <div style="clear:both;"></div>
                                 </div>`;
                             }
                         }
