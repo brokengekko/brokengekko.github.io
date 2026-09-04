@@ -820,15 +820,18 @@
         </button>
     </div>
 
-    <div id="mobile-menu" class="fixed inset-0 z-[70] bg-[#02050a]/98 hidden opacity-0 transition-opacity duration-300 flex-col pt-20 px-4 overflow-y-auto">
-        <button id="mobile-close-btn" class="absolute top-6 right-6 text-cyan-400 p-2 hover:text-white transition-colors" aria-label="Close Menu">
-            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-        </button>
-        <div class="w-full flex flex-col items-center mt-8 pb-12">
-            <!-- Navigation Tier Containers -->
-            <nav id="tier1-nav" class="flex flex-col gap-2 w-full max-w-[280px]"></nav>
-            <div id="tier2-nav" class="flex flex-col gap-2 w-full max-w-[280px] transition-all duration-300 ease-in-out opacity-0 scale-y-0 h-0 overflow-hidden"></div>
-            <div id="tier3-nav" class="flex flex-col gap-2 w-full max-w-[280px] transition-all duration-300 ease-in-out opacity-0 scale-y-0 h-0 overflow-hidden"></div>
+    <div id="mobile-menu" class="fixed inset-0 z-[70] hidden opacity-0 transition-opacity duration-300 flex-col overflow-y-auto items-end pt-4 pr-4">
+        <div id="mobile-menu-backdrop" class="fixed inset-0 bg-black/60" onclick="document.getElementById('mobile-close-btn').click()"></div>
+        <div class="relative bg-[#111111] rounded-xl border border-gray-800 shadow-[0_10px_40px_rgba(0,0,0,0.8)] flex flex-col items-center pt-14 pb-6 px-4 w-[300px] z-[71]">
+            <button id="mobile-close-btn" class="absolute top-3 right-3 text-cyan-400 p-2 hover:text-white transition-colors" aria-label="Close Menu">
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            <div class="w-full flex flex-col items-center">
+                <!-- Navigation Tier Containers -->
+                <nav id="tier1-nav" class="flex flex-col gap-2 w-full max-w-[280px]"></nav>
+                <div id="tier2-nav" class="flex flex-col gap-2 w-full max-w-[280px] transition-all duration-300 ease-in-out opacity-0 scale-y-0 h-0 overflow-hidden"></div>
+                <div id="tier3-nav" class="flex flex-col gap-2 w-full max-w-[280px] transition-all duration-300 ease-in-out opacity-0 scale-y-0 h-0 overflow-hidden"></div>
+            </div>
         </div>
     </div>
 
