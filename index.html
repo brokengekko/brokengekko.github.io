@@ -694,13 +694,15 @@
 
         /* Inline font size overrides (protects block quotes) */
         .dummy-text [style*="times" i],
-        .dummy-text .times {
+        .dummy-text .times,
+        .dummy-text font[face*="times" i] {
             font-size: 1.2rem !important;
         }
 
         .dummy-text [style*="fleur" i],
         .dummy-text .fleur,
-        .dummy-text .cursive {
+        .dummy-text .cursive,
+        .dummy-text font[face*="fleur" i] {
             font-size: 1.45rem !important;
         }
 
@@ -708,8 +710,10 @@
         .dummy-text .quote-content [style*="fleur" i],
         .dummy-text .quote-content .fleur,
         .dummy-text .quote-content .cursive,
+        .dummy-text .quote-content font[face*="fleur" i],
         .dummy-text .quote-content [style*="times" i],
-        .dummy-text .quote-content .times {
+        .dummy-text .quote-content .times,
+        .dummy-text .quote-content font[face*="times" i] {
             font-size: inherit !important;
         }
 
