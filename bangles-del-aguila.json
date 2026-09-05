@@ -21,6 +21,13 @@
       }
     },
     {
+      "type": "image",
+      "content": {
+        "imageFilename": "../bangles-del-aguila-image-7.jpeg",
+        "caption": "Samples of stolen _\"Bangles del Águila\"_ being sold on Amazon right NOW!"
+      }
+    },
+    {
       "type": "image-right",
       "content": {
         "imageFilename": "../bangles-del-aguila-image-3.jpeg",
