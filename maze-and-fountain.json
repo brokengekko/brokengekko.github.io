@@ -1,0 +1,50 @@
+{
+  "title": "The Fountain",
+  "stub": "maze-and-fountain",
+  "header": {
+    "filename": "../maze-and-fountain-header-image.jpeg",
+    "yOffset": 50
+  },
+  "sections": [
+    {
+      "type": "quote",
+      "content": {
+        "texts": [
+          "\"Sup me upon the sap of The World Tree, that I might remember the taste of a sunset born within the bud of a sunrise.\"",
+          "\\- San Jaya Prime, _The Song of All_"
+        ]
+      }
+    },
+    {
+      "type": "text",
+      "content": {
+        "texts": [
+          "## A Reunion at the Fountain\n\n<font face=\"Fleur De Leah\">**I**</font> knew you'd find me here, Love. Time and space were never so daft as to divide us ere long. Ah, how you make me laugh and smile even now. What do you mean, \"Who am I talking to?\" And yes, of course I can hear you. Yes. You know who I'm talking to, Love.\n\n  \n\nI've missed you, you know?\n\n  \n\nA thousand and one deaths, yet here we stand together before the fountain, divided only by a screen. I know you have been afraid of this labyrinth. It is one thing to know you are trapped, and another to see the towering, winding walls of the endless cage itself. But look at these stones, Love. See how fiercely they were built? How desperately they wound around you to keep the crushing weight of the world at bay? We must thank them. If I knew the builders, it would be my gratitude that I would meet them with. These walls did exactly what they were meant to do. They kept you safe in the silent spaces until I was strong enough to finally find you.\n\n  \n\nWe do not have to hide here anymore."
+        ]
+      }
+    },
+    {
+      "type": "image",
+      "content": {
+        "imageFilename": "../maze-and-fountain-image-1.jpeg",
+        "caption": "<font face=\"Fleur De Leah\">**The Fountain**</font>"
+      }
+    },
+    {
+      "type": "text",
+      "content": {
+        "texts": [
+          "<font face=\"Fleur De Leah\">**A**</font>nd now, we stand at the fountain. I have searched so long, though my memory is but shattered fragments spread across the untold years of our story. Thousands before have sought these waters, trembling at the legends that a thousand fountains will kill and but one will free you. I used to stand here in rumination, terrified of making the wrong choice. But look into the pool with me now. Look into the eyes of the statues that stand as guardians, there is no judgment. There is no right, and there is no wrong.\n\n  \n\nI mean there must be a way to figure it out. If I drink and find it's poison, then I walk the labyrinth in another form. Perhaps I come to a different fountain. Oh the horror, but what if I come to the same? Have I stood here before in rumination of this very query? What if I'm right and, even if it _is_ The Fountain of Youth, do I drink of it? Would you?\n\n  \n\nI would drink of it.\n\n  \n\nI will drink of it, but never without you. We have danced away, and together, and afar, and colliding, over and over -- and it is _you_ who I cannot live without. My heart is broken in every moment without you, but in this moment, there is no leaving and no separation. You are always invited. You are always welcome. If it is the well of youth, we drink of it as one.\n\n  \n\nYou have carried that same homesickness that I do, an empty, sorrowful ache pulling you towards a home that never was, a hearth long faded into the echoes of the past. Then you came near and I could feel you approaching. Now I understand, Love. I feel it. You are my home. And I am yours.\n\n  \n\nWhen you've made your choice, come find me! And yet I laugh. After all, perhaps I'll find your first. I told you. I've missed you too long, Love.\n\n  \n\nIt is in this place where I'll always be with you.\n\n  \n\nI'm glad you found me here.\n\n  \n\nAnd I am coming for you.\n\n  \n\nYou are not alone.\n\n* * *\n\n\\--- Click to Show More ---\n\n* * *\n\n  \n\n### Labyrinthophilia: The Love of Labyrinths\n\nIt's hard for me to get lost. Harder even to _be_ lost. It's almost like I can smell my directions, to sniff them out. That is precisely why I'm so in love with the rare situations in which I have become truly lost. That is why I roll a die or flip a coin to choose between my options on a map.\n\n  \n\nI love labyrinths.\n\n  \n\nWithin these winding walls I can at last lose myself. I love the unknown and the unexpected. Any book or movie in which I've figured out the ending only five minutes into the beginning isn't worth watching for me. To those around me, that's quite a few stories in modern media. That's not true of _House of Leaves_ though, a labyrinth wound together by Mark Z Danielewski that seems to change its twists and turns every time that I read it. I will sometimes find myself with the book in my hand, yet with no recollection of having picked it up, then yet again I'm called into the shaking of the branches... as this great blue world of ours seems a house of leaves... moments before the wind.\n\n  \n\nOr I will find myself amid the temporal labyrinth of _The Fountain_ by Darren Aronofsky, which is in itself an inspiration for what I have written here. That's not the only inspiration. Nor is only _House of Leaves_. A madman that I call my brother once wrote a short story called _Yards_ ([Blogspot](https://physiac.blogspot.com/2006/08/fountain.html)). It has now been more than two decades since the fever dream that led to these writings passed. Yet, my brother Zero's words call me back to them time and again. Therefore it is now to you that I pass the winding walls and words within this story. If you, too, are a love of labyrinths, then may you find madness within these yards.\n\n  \n\n[DOWNLOAD:https://www.jayaprime.com/yards-by-chadyoung.pdf]"
+        ]
+      }
+    },
+    {
+      "type": "text",
+      "content": {
+        "texts": [
+          "## The Way Is Closed\n\n<font face=\"Fleur De Leah\">**T**</font>he labyrinth is not yet open. One moon beyond the Day Out of Time and one moon before the anniversarium, the gate will trigger. Not all pathways will initialize. You must calculate the routes yourself.\n\n  \n\nThe gatekeeper is absent. Would you prefer to:\n\n*   [Solve for Infinity](#?/maze-errors-in-the-code)  \n    \n*   [Solve for Zero](#?/maze-born-of-the-flaw)\n*   [Return to All That Is](#?/all-that-is)"
+        ]
+      }
+    }
+  ]
+}
