@@ -191,7 +191,7 @@
   <!-- MAIN WORKSPACE -->
   <main class="flex-1 max-w-[1600px] w-full mx-auto px-3 sm:px-6 py-4 flex flex-col gap-4">
 
-    <!-- AUDACITY TRANSPORT + DSP EFFECT RACK BAR -->
+    <!-- ODDIO CITY TRANSPORT + DSP EFFECT RACK BAR -->
     <section class="bg-cyber-panel cyber-border rounded-xl p-3 flex flex-wrap items-center justify-between gap-3">
       
       <!-- Left: Transport Controls (Back, Play/Pause, Stop, Revert) -->
@@ -327,10 +327,10 @@
         </div>
       </div>
 
-      <!-- Audacity Track Lane Container -->
+      <!-- ODDIO CITY Track Lane Container -->
       <div class="flex stretch gap-0 rounded-lg overflow-hidden border border-cyan-500/30 bg-[#05070c] relative h-[290px] sm:h-[330px]">
         
-        <!-- Left Audacity Track Header Panel -->
+        <!-- Left ODDIO CITY Track Header Panel -->
         <div class="w-28 sm:w-36 bg-[#0b0f19] border-r border-cyan-500/20 p-2.5 flex flex-col justify-between shrink-0 z-10">
           <div>
             <div class="flex items-center justify-between mb-1">
@@ -1608,7 +1608,7 @@
             }
           }
 
-          // Outer peak glow (Audacity dark cyan/magenta)
+          // Outer peak glow (ODDIO CITY dark cyan/magenta)
           ctx.strokeStyle = isMastered ? 'rgba(0, 255, 157, 0.72)' : 'rgba(0, 240, 255, 0.75)';
           ctx.beginPath();
           ctx.moveTo(px, centerL - pL.max * halfAmp * envGain);
@@ -1652,7 +1652,7 @@
         ctx.closePath();
         ctx.fill();
 
-        // Audacity Envelope Gain Line (0 -> FadeIn Dot -> FadeOut Dot -> End)
+        // ODDIO CITY Envelope Gain Line (0 -> FadeIn Dot -> FadeOut Dot -> End)
         ctx.strokeStyle = '#fcee0a';
         ctx.lineWidth = 2;
         ctx.beginPath();
@@ -2357,7 +2357,7 @@
       statusBadge.textContent = 'PROCESSING 8-STEP MASTER...';
       statusBadge.className = 'font-mono text-[11px] px-2.5 py-0.5 rounded bg-pink-950 text-cyber-magenta border border-pink-500 animate-pulse';
 
-      logConsole('=== STARTING 8-STEP AUDACITY-2077 MASTERING SEQUENCE ===', 'text-cyber-magenta font-bold');
+      logConsole('=== STARTING 8-STEP ODDIO CITY 2999 MASTERING SEQUENCE ===', 'text-cyber-magenta font-bold');
 
       // Work from a fresh clone of originalBuffer so re-running Master with new settings is clean & deterministic
       let workingBuffer = cloneAudioBuffer(originalBuffer);
