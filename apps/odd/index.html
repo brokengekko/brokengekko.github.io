@@ -1,0 +1,2824 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ODDIO CITY 2999 // NEURAL MASTERING</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Orbitron:wght@500;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+            cyber: ['Orbitron', 'sans-serif'],
+          },
+          colors: {
+            cyber: {
+              bg: '#07080d',
+              panel: '#0e111a',
+              surface: '#141926',
+              border: '#1f293d',
+              cyan: '#00f0ff',
+              magenta: '#ff0055',
+              yellow: '#fcee0a',
+              green: '#00ff9d',
+              purple: '#b829ff'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --neon-cyan: #00f0ff;
+      --neon-magenta: #ff0055;
+      --neon-yellow: #fcee0a;
+      --neon-green: #00ff9d;
+    }
+    body {
+      background-color: #06070b;
+      background-image: 
+        radial-gradient(circle at 15% 15%, rgba(0, 240, 255, 0.06) 0%, transparent 35%),
+        radial-gradient(circle at 85% 85%, rgba(255, 0, 85, 0.06) 0%, transparent 35%),
+        linear-gradient(rgba(0, 240, 255, 0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 240, 255, 0.025) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 24px 24px, 24px 24px;
+      color: #e2e8f0;
+      user-select: text;
+      overflow-x: hidden;
+    }
+    ::selection {
+      background-color: #00f0ff;
+      color: #000000;
+    }
+    ::-moz-selection {
+      background-color: #00f0ff;
+      color: #000000;
+    }
+    .cyber-border {
+      border: 1px solid rgba(0, 240, 255, 0.25);
+      box-shadow: 0 0 15px rgba(0, 240, 255, 0.06), inset 0 0 15px rgba(0, 240, 255, 0.03);
+    }
+    .drop-zone-active {
+      border-color: #00f0ff !important;
+      background-color: rgba(0, 240, 255, 0.14) !important;
+      box-shadow: 0 0 35px rgba(0, 240, 255, 0.45), inset 0 0 25px rgba(0, 240, 255, 0.2) !important;
+    }
+    .cyber-btn {
+      position: relative;
+      transition: all 0.15s ease;
+      overflow: hidden;
+    }
+    .cyber-btn:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 0 14px rgba(0, 240, 255, 0.35);
+    }
+    .cyber-btn:active:not(:disabled) {
+      transform: translateY(0px);
+    }
+    .cyber-btn-magenta:hover:not(:disabled) {
+      box-shadow: 0 0 18px rgba(255, 0, 85, 0.5);
+    }
+    .cyber-btn-yellow:hover:not(:disabled) {
+      box-shadow: 0 0 18px rgba(252, 238, 10, 0.45);
+    }
+    .cyber-input {
+      background: #080b12;
+      border: 1px solid #1e293b;
+      color: #00f0ff;
+      font-family: 'JetBrains Mono', monospace;
+      transition: all 0.15s ease;
+    }
+    .cyber-input:focus {
+      outline: none;
+      border-color: #00f0ff;
+      box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
+    }
+    .kbd-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      padding: 1px 5px;
+      border-radius: 4px;
+      background: rgba(0, 240, 255, 0.12);
+      border: 1px solid rgba(0, 240, 255, 0.35);
+      color: #00f0ff;
+    }
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #090c14;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1e293b;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #00f0ff;
+    }
+    @keyframes pulseGlow {
+      0%, 100% { filter: drop-shadow(0 0 4px rgba(0, 240, 255, 0.7)); }
+      50% { filter: drop-shadow(0 0 12px rgba(255, 0, 85, 0.9)); }
+    }
+    .master-pulse {
+      animation: pulseGlow 2.2s infinite;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between text-xs sm:text-sm">
+
+  <!-- Hidden File Input for CTRL+O / Upload -->
+  <input type="file" id="audioFileInput" accept=".wav,.mp3,audio/wav,audio/mpeg,audio/*" class="hidden" />
+
+  <!-- TOP HEADER & MENU BAR -->
+  <header class="bg-cyber-panel/95 backdrop-blur-md border-b border-cyan-500/30 px-3 sm:px-6 py-2.5 sticky top-0 z-30">
+    <div class="max-w-[1600px] mx-auto flex flex-wrap items-center justify-between gap-3">
+      <!-- Brand Title -->
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-cyan-500/20 to-pink-600/20 border border-cyan-400/50 flex items-center justify-center shadow-[0_0_12px_rgba(0,240,255,0.25)]">
+          <i class="fa-solid fa-wave-square text-cyber-cyan text-lg"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="font-cyber font-black tracking-wider text-sm sm:text-base text-white">
+              ODDIO CITY<span class="text-cyber-cyan">//</span>2999
+            </h1>
+            <span class="px-1.5 py-0.5 text-[10px] font-mono font-bold bg-pink-500/20 text-cyber-magenta border border-pink-500/40 rounded">
+              CD BABY READY v9.9
+            </span>
+          </div>
+          <p id="fileStatusText" class="font-mono text-[11px] text-slate-400 truncate max-w-[240px] sm:max-w-[400px]">
+            NO FILE LOADED — DROP AUDIO, PRESS CTRL+O, OR LOAD SYNTH DEMO
+          </p>
+        </div>
+      </div>
+
+      <!-- File & Demo Actions -->
+      <div class="flex flex-wrap items-center gap-2">
+        <button id="btnLoadDemo" title="Generate a cyberpunk synth test track with leading/trailing silence to test mastering"
+          class="cyber-btn px-2.5 py-1.5 rounded-md bg-slate-800/90 hover:bg-slate-700 border border-purple-500/40 text-purple-300 font-mono text-xs flex items-center gap-1.5">
+          <i class="fa-solid fa-bolt text-purple-400"></i>
+          <span>Synth Demo Track</span>
+        </button>
+
+        <button id="btnUpload" title="Open WAV or MP3 audio file (Ctrl+O / Cmd+O)"
+          class="cyber-btn px-3 py-1.5 rounded-md bg-cyan-950/70 hover:bg-cyan-900/80 border border-cyan-400/60 text-cyber-cyan font-mono font-semibold text-xs flex items-center gap-2">
+          <i class="fa-solid fa-folder-open"></i>
+          <span>Upload</span>
+          <span class="kbd-badge">Ctrl+O</span>
+        </button>
+
+        <button id="btnDownload" disabled title="Export and download mastered WAV file (Ctrl+S / Cmd+S)"
+          class="cyber-btn px-3 py-1.5 rounded-md bg-emerald-950/70 hover:bg-emerald-900/80 disabled:opacity-40 disabled:cursor-not-allowed border border-emerald-400/60 text-cyber-green font-mono font-semibold text-xs flex items-center gap-2">
+          <i class="fa-solid fa-download"></i>
+          <span>Download WAV</span>
+          <span class="kbd-badge !text-emerald-300 !border-emerald-400/40 !bg-emerald-500/10">Ctrl+S</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN WORKSPACE -->
+  <main class="flex-1 max-w-[1600px] w-full mx-auto px-3 sm:px-6 py-4 flex flex-col gap-4">
+
+    <!-- AUDACITY TRANSPORT + DSP EFFECT RACK BAR -->
+    <section class="bg-cyber-panel cyber-border rounded-xl p-3 flex flex-wrap items-center justify-between gap-3">
+      
+      <!-- Left: Transport Controls (Back, Play/Pause, Stop, Revert) -->
+      <div class="flex flex-wrap items-center gap-2">
+        <div class="text-[10px] font-cyber uppercase tracking-widest text-slate-400 mr-1 hidden xl:block">
+          Transport
+        </div>
+
+        <!-- Back to Start Button (Left Arrow) -->
+        <button id="btnBack" disabled title="Return to start of song (Left Arrow)"
+          class="cyber-btn px-3 py-2 rounded-lg bg-cyber-surface hover:bg-slate-800 disabled:opacity-40 border border-cyan-500/40 text-cyan-300 flex items-center gap-2 font-mono text-xs">
+          <i class="fa-solid fa-backward-step"></i>
+          <span>Back</span>
+          <span class="kbd-badge">←</span>
+        </button>
+
+        <!-- Play / Pause Toggle Button (Space) -->
+        <button id="btnPlayPause" disabled title="Play or Pause current song (Spacebar)"
+          class="cyber-btn min-w-[130px] px-4 py-2 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 disabled:opacity-40 border border-cyber-cyan text-cyber-cyan font-mono font-bold text-xs flex items-center justify-center gap-2">
+          <i id="playPauseIcon" class="fa-solid fa-play"></i>
+          <span id="playPauseLabel">Play</span>
+          <span class="kbd-badge">Space</span>
+        </button>
+
+        <!-- Reset to Original Unmastered Audio -->
+        <button id="btnRevert" disabled title="Restore unmastered original audio buffer"
+          class="cyber-btn px-2.5 py-2 rounded-lg bg-cyber-surface hover:bg-slate-800 disabled:opacity-40 border border-slate-700 text-slate-300 font-mono text-xs flex items-center gap-1.5">
+          <i class="fa-solid fa-rotate-left text-amber-400"></i>
+          <span class="hidden sm:inline">Revert Original</span>
+        </button>
+
+        <!-- Digital Timecode Readout -->
+        <div class="bg-black/80 border border-cyan-500/30 rounded-lg px-3 py-1.5 flex items-center gap-3 font-mono">
+          <div>
+            <span class="text-[9px] uppercase text-slate-500 block leading-none">Playhead</span>
+            <span id="timecodeCurrent" class="text-sm sm:text-base font-bold text-cyber-cyan tracking-wider">00:00.000</span>
+          </div>
+          <span class="text-slate-600">/</span>
+          <div>
+            <span class="text-[9px] uppercase text-slate-500 block leading-none">Total Length</span>
+            <span id="timecodeDuration" class="text-sm sm:text-base font-semibold text-slate-300 tracking-wider">00:00.000</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Center: DSP Configuration Modal Triggers (Normalize, Compressor, Limiter) -->
+      <div class="flex flex-wrap items-center gap-2">
+        <span class="text-[10px] font-cyber uppercase tracking-widest text-slate-400 mr-1 hidden lg:block">
+          DSP Configs
+        </span>
+
+        <!-- Normalize Config Button (N) -->
+        <button id="btnNormalizeConfig" title="Configure Normalize settings (Shortcut: N)"
+          class="cyber-btn px-3 py-2 rounded-lg bg-cyber-surface hover:bg-cyan-950/60 border border-cyan-400/50 text-cyan-200 font-mono text-xs flex items-center gap-2">
+          <i class="fa-solid fa-arrows-up-down text-cyber-cyan"></i>
+          <span>Normalize</span>
+          <span class="kbd-badge">N</span>
+        </button>
+
+        <!-- Compressor Config Button (C) -->
+        <button id="btnCompressorConfig" title="Configure Compressor settings (Shortcut: C)"
+          class="cyber-btn px-3 py-2 rounded-lg bg-cyber-surface hover:bg-purple-950/60 border border-purple-400/50 text-purple-200 font-mono text-xs flex items-center gap-2">
+          <i class="fa-solid fa-compress text-purple-400"></i>
+          <span>Compressor</span>
+          <span class="kbd-badge !text-purple-300 !border-purple-400/50 !bg-purple-500/15">C</span>
+        </button>
+
+        <!-- Limiter Config Button (L) -->
+        <button id="btnLimiterConfig" title="Configure Limiter settings (Shortcut: L)"
+          class="cyber-btn px-3 py-2 rounded-lg bg-cyber-surface hover:bg-amber-950/60 border border-amber-400/50 text-amber-200 font-mono text-xs flex items-center gap-2">
+          <i class="fa-solid fa-shield-halved text-cyber-yellow"></i>
+          <span>Limiter</span>
+          <span class="kbd-badge !text-amber-300 !border-amber-400/50 !bg-amber-500/15">L</span>
+        </button>
+      </div>
+
+      <!-- Right: ONE-CLICK 8-STEP MASTER BUTTON (M) -->
+      <div class="flex items-center">
+        <button id="btnMaster" disabled title="Execute 8-Step Mastering Pipeline (Shortcut: M)"
+          class="cyber-btn cyber-btn-magenta px-5 py-2.5 rounded-lg bg-gradient-to-r from-pink-600 via-rose-600 to-fuchsia-600 hover:from-pink-500 hover:to-fuchsia-500 disabled:opacity-40 disabled:cursor-not-allowed border border-pink-300/60 text-white font-cyber font-bold tracking-wider text-xs sm:text-sm flex items-center gap-2.5 shadow-[0_0_20px_rgba(255,0,85,0.4)]">
+          <i class="fa-solid fa-wand-magic-sparkles"></i>
+          <span>MASTER TRACK</span>
+          <span class="px-1.5 py-0.5 rounded bg-black/40 border border-white/30 font-mono text-[11px]">M</span>
+        </button>
+      </div>
+
+    </section>
+
+    <!-- WAVEFORM TRACK VIEW & ENVELOPE FADE HANDLES -->
+    <section class="bg-cyber-panel cyber-border rounded-xl p-3 flex flex-col gap-2 relative">
+      
+      <!-- Top Track Telemetry & Fade Handle Readouts -->
+      <div class="flex flex-wrap items-center justify-between gap-2 pb-1 border-b border-slate-800">
+        <div class="flex flex-wrap items-center gap-3">
+          <div class="flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-cyber-cyan animate-ping"></span>
+            <span class="font-cyber text-xs uppercase tracking-wider text-cyan-300">Stereo Waveform View</span>
+          </div>
+
+          <!-- Interactive Fade-In Pill -->
+          <div class="flex items-center gap-1.5 bg-cyan-950/40 border border-cyan-500/40 rounded-md px-2.5 py-1 font-mono text-[11px]">
+            <span class="w-2.5 h-2.5 rounded-full bg-cyber-cyan inline-block shadow-[0_0_6px_#00f0ff]"></span>
+            <span class="text-slate-400">Fade-In Dot (Top-Left):</span>
+            <span id="fadeInReadout" class="text-cyber-cyan font-bold">0.50s</span>
+          </div>
+
+          <!-- Interactive Fade-Out Pill -->
+          <div class="flex items-center gap-1.5 bg-pink-950/40 border border-pink-500/40 rounded-md px-2.5 py-1 font-mono text-[11px]">
+            <span class="w-2.5 h-2.5 rounded-full bg-cyber-magenta inline-block shadow-[0_0_6px_#ff0055]"></span>
+            <span class="text-slate-400">Fade-Out Dot (Top-Right):</span>
+            <span id="fadeOutReadout" class="text-cyber-magenta font-bold">2.00s</span>
+          </div>
+        </div>
+
+        <!-- Audio Signal Telemetry -->
+        <div class="flex flex-wrap items-center gap-3 font-mono text-[11px]">
+          <div class="bg-black/60 px-2 py-0.5 rounded border border-slate-800">
+            <span class="text-slate-500">PEAK:</span>
+            <span id="metricPeakDb" class="text-cyber-green font-bold">-- dB</span>
+          </div>
+          <div class="bg-black/60 px-2 py-0.5 rounded border border-slate-800">
+            <span class="text-slate-500">RMS:</span>
+            <span id="metricRmsDb" class="text-cyan-300 font-bold">-- dB</span>
+          </div>
+          <div class="bg-black/60 px-2 py-0.5 rounded border border-slate-800">
+            <span class="text-slate-500">DC OFFSET:</span>
+            <span id="metricDcOffset" class="text-purple-300 font-bold">0.0000</span>
+          </div>
+          <div class="bg-black/60 px-2 py-0.5 rounded border border-slate-800">
+            <span class="text-slate-500">SAMPLE RATE:</span>
+            <span id="metricSampleRate" class="text-amber-300 font-bold">-- Hz</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Audacity Track Lane Container -->
+      <div class="flex stretch gap-0 rounded-lg overflow-hidden border border-cyan-500/30 bg-[#05070c] relative h-[290px] sm:h-[330px]">
+        
+        <!-- Left Audacity Track Header Panel -->
+        <div class="w-28 sm:w-36 bg-[#0b0f19] border-r border-cyan-500/20 p-2.5 flex flex-col justify-between shrink-0 z-10">
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <span class="font-cyber text-[10px] text-cyber-cyan font-bold tracking-wider">MASTER BUS</span>
+              <span id="badgeMasteredState" class="px-1.5 py-0.5 text-[9px] font-mono bg-slate-800 text-slate-400 rounded">RAW</span>
+            </div>
+            <div class="text-[10px] font-mono text-slate-400 space-y-0.5">
+              <div id="trackChannelInfo">Stereo 32-bit float</div>
+              <div class="text-[9px] text-slate-500">Click wave to seek</div>
+            </div>
+          </div>
+
+          <!-- dB Vertical Scale Labels -->
+          <div class="my-auto border-y border-slate-800/80 py-2 font-mono text-[10px] text-slate-400 space-y-1">
+            <div class="flex justify-between"><span>+1.0</span><span class="text-cyan-500">0 dB</span></div>
+            <div class="flex justify-between"><span>+0.5</span><span class="text-slate-500">-6 dB</span></div>
+            <div class="flex justify-between text-cyber-cyan font-bold"><span>0.0</span><span>-∞</span></div>
+            <div class="flex justify-between"><span>-0.5</span><span class="text-slate-500">-6 dB</span></div>
+            <div class="flex justify-between"><span>-1.0</span><span class="text-cyan-500">0 dB</span></div>
+          </div>
+
+          <!-- Quick Manual Fade Fine-Tune Inputs -->
+          <div class="space-y-1 text-[10px] font-mono">
+            <div class="flex items-center justify-between">
+              <span class="text-cyan-400">In (s):</span>
+              <input id="inputFadeInSec" type="number" min="0" max="30" step="0.05" value="0.5"
+                class="cyber-input w-14 px-1 py-0.5 rounded text-right text-[10px]" />
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-pink-400">Out (s):</span>
+              <input id="inputFadeOutSec" type="number" min="0" max="30" step="0.05" value="2.0"
+                class="cyber-input !text-pink-400 w-14 px-1 py-0.5 rounded text-right text-[10px]" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Interactive Waveform Canvas Wrapper -->
+        <div id="waveformContainer" class="flex-1 relative cursor-crosshair overflow-hidden">
+          <canvas id="waveformCanvas" class="w-full h-full block"></canvas>
+
+          <!-- Empty State Overlay (Drag & Drop or Click to upload or load synth demo) -->
+          <div id="emptyWaveOverlay" class="absolute inset-0 flex flex-col items-center justify-center bg-black/65 backdrop-blur-[2px] z-20 p-4 text-center transition-all">
+            <div id="dropZoneBox" class="max-w-lg w-full p-6 rounded-xl bg-cyber-panel/95 border-2 border-dashed border-cyan-500/50 hover:border-cyber-cyan shadow-[0_0_30px_rgba(0,240,255,0.15)] transition-all cursor-pointer">
+              <div class="flex items-center justify-center gap-3 mb-3">
+                <i class="fa-solid fa-cloud-arrow-up text-4xl text-cyber-cyan animate-bounce"></i>
+                <i class="fa-solid fa-compact-disc text-3xl text-cyber-magenta animate-spin" style="animation-duration: 8s;"></i>
+              </div>
+              <h2 class="font-cyber text-sm sm:text-base font-bold text-white mb-1 tracking-wider">
+                LOAD AUDIO INTO ODDIO CITY 2999
+              </h2>
+              <p class="font-mono text-xs text-cyber-cyan font-semibold mb-1">
+                DRAG &amp; DROP YOUR WAV OR MP3 FILE HERE
+              </p>
+              <p class="font-mono text-[11px] text-slate-400 mb-4">
+                Or press <span class="text-cyber-cyan font-bold">CTRL+O</span> (<span class="text-cyber-cyan font-bold">CMD+O</span>) to browse. All prior tags/metadata are automatically stripped on ingest for clean CD Baby distribution.
+              </p>
+              <div class="flex flex-wrap items-center justify-center gap-3">
+                <button id="btnOverlayUpload" type="button" class="cyber-btn px-4 py-2 rounded-lg bg-cyber-cyan text-black font-cyber font-bold text-xs flex items-center gap-2">
+                  <i class="fa-solid fa-file-audio"></i>
+                  <span>SELECT WAV / MP3</span>
+                </button>
+                <button id="btnOverlayDemo" type="button" class="cyber-btn px-4 py-2 rounded-lg bg-purple-950/90 border border-purple-400 text-purple-200 font-cyber font-bold text-xs flex items-center gap-2">
+                  <i class="fa-solid fa-bolt"></i>
+                  <span>LOAD SYNTH TEST TRACK</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Drag Tooltip Banner -->
+          <div id="dragFadeTooltip" class="hidden absolute top-10 left-1/2 -translate-x-1/2 z-30 pointer-events-none px-3 py-1 rounded-full bg-black/90 border border-cyan-400 font-mono text-xs text-cyber-cyan shadow-lg">
+            Fade: 0.50s
+          </div>
+        </div>
+      </div>
+
+      <!-- Helper Bar explaining Fade Dots & Playhead -->
+      <div class="flex flex-wrap items-center justify-between gap-2 text-[11px] font-mono text-slate-400 pt-1">
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-hand-pointer text-cyber-cyan"></i>
+          <span>Drag the <strong class="text-cyber-cyan">Top-Left Cyan Dot</strong> left/right to adjust Fade-In (default 0.5s) &bull; Drag the <strong class="text-cyber-magenta">Top-Right Magenta Dot</strong> left/right to adjust Fade-Out (default 2.0s).</span>
+        </div>
+        <div>
+          <span>Click anywhere on the waveform to reposition the <strong class="text-cyber-yellow">Playhead Tracking Line</strong>.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8-STEP MASTERING PIPELINE CHAIN & TELEMETRY -->
+    <section class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+      
+      <!-- 8-Step Sequential Mastering Chain Cards -->
+      <div class="lg:col-span-8 bg-cyber-panel cyber-border rounded-xl p-3.5 flex flex-col justify-between">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+          <div class="flex items-center gap-2">
+            <i class="fa-solid fa-microchip text-cyber-magenta"></i>
+            <h2 class="font-cyber text-xs sm:text-sm font-bold tracking-wider uppercase text-white">
+              8-Step Automated Mastering Chain
+            </h2>
+          </div>
+          <span id="pipelineStatusBadge" class="font-mono text-[11px] px-2.5 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">
+            STANDBY // PRESS [M] TO EXECUTE
+          </span>
+        </div>
+
+        <!-- Grid of the 8 Steps -->
+        <div id="stepsGrid" class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+          <!-- Step 1 -->
+          <div data-step="1" class="step-card p-2.5 rounded-lg bg-cyber-surface/90 border border-slate-800 flex flex-col justify-between transition-all">
+            <div class="flex items-center justify-between mb-1">
+              <span class="font-cyber text-[10px] text-cyan-400 font-bold">STEP 01</span>
+              <i class="step-icon fa-solid fa-scissors text-slate-500 text-xs"></i>
+            </div>
+            <div class="font-semibold text-white text-xs">Trim Silence</div>
+            <div id="step1Summary" class="font-mono text-[10px] text-slate-400 mt-1">
+              Eliminate start &amp; end silence
+            </div>
+          </div>
+
+          <!-- Step 2 -->
+          <div data-step="2" class="step-card p-2.5 rounded-lg bg-cyber-surface/90 border border-slate-800 flex flex-col justify-between transition-all">
+            <div class="flex items-center justify-between mb-1">
+              <span class="font-cyber text-[10px] text-cyan-400 font-bold">STEP 02</span>
+              <i class="step-icon fa-solid fa-chart-line text-cyber-cyan text-xs"></i>
+            </div>
+            <div class="font-semibold text-white text-xs">Fade-In Envelope</div>
+            <div id="step2Summary" class="font-mono text-[10px] text-cyan-300 mt-1">
+              Duration: 0.50s (Top-Left Dot)
+            </div>
+          </div>
+
+          <!-- Step 3 -->
+          <div data-step="3" class="step-card p-2.5 rounded-lg bg-cyber-surface/90 border border-slate-800 flex flex-col justify-between transition-all">
+            <div class="flex items-center justify-between mb-1">
+              <span class="font-cyber text-[10px] text-pink-400 font-bold">STEP 03</span>
+              <i class="step-icon fa-solid fa-chart-line fa-flip-horizontal text-cyber-magenta text-xs"></i>
+            </div>
+            <div class="font-semibold text-white text-xs">Fade-Out Envelope</div>
+            <div id="step3Summary" class="font-mono text-[10px] text-pink-300 mt-1">
+              Duration: 2.00s (Top-Right Dot)
+            </div>
+          </div>
+
+          <!-- Step 4 -->
+          <div data-step="4" class="step-card cursor-pointer hover:border-cyan-500/50 p-2.5 rounded-lg bg-cyber-surface/90 border border-slate-800 flex flex-col justify-between transition-all" onclick="openModal('normalize')">
+            <div class="flex items-center justify-between mb-1">
+              <span class="font-cyber text-[10px] text-cyan-400 font-bold">STEP 04</span>
+              <span class="kbd-badge">N</span>
+            </div>
+            <div class="font-semibold text-white text-xs">Normalize #1</div>
+            <div id="step4Summary" class="font-mono text-[10px] text-slate-300 mt-1">
+              DC: ON | Peak: -0.25 dB
+            </div>
+          </div>
+
+          <!-- Step 5 -->
+          <div data-step="5" class="step-card cursor-pointer hover:border-purple-500/50 p-2.5 rounded-lg bg-cyber-surface/90 border border-slate-800 flex flex-col justify-between transition-all" onclick="openModal('compressor')">
+            <div class="flex items-center justify-between mb-1">
+              <span class="font-cyber text-[10px] text-purple-400 font-bold">STEP 05</span>
+              <span class="kbd-badge !text-purple-300 !border-purple-400/40">C</span>
+            </div>
+            <div class="font-semibold text-white text-xs">Compressor</div>
+            <div id="step5Summary" class="font-mono text-[10px] text-slate-300 mt-1">
+              -16.8dB | 1.2:1 | +2.5dB
+            </div>
+          </div>
+
+          <!-- Step 6 -->
+          <div data-step="6" class="step-card cursor-pointer hover:border-cyan-500/50 p-2.5 rounded-lg bg-cyber-surface/90 border border-slate-800 flex flex-col justify-between transition-all" onclick="openModal('normalize')">
+            <div class="flex items-center justify-between mb-1">
+              <span class="font-cyber text-[10px] text-cyan-400 font-bold">STEP 06</span>
+              <span class="kbd-badge">N</span>
+            </div>
+            <div class="font-semibold text-white text-xs">Normalize #2</div>
+            <div id="step6Summary" class="font-mono text-[10px] text-slate-300 mt-1">
+              DC: ON | Peak: -0.25 dB
+            </div>
+          </div>
+
+          <!-- Step 7 -->
+          <div data-step="7" class="step-card cursor-pointer hover:border-amber-500/50 p-2.5 rounded-lg bg-cyber-surface/90 border border-slate-800 flex flex-col justify-between transition-all" onclick="openModal('limiter')">
+            <div class="flex items-center justify-between mb-1">
+              <span class="font-cyber text-[10px] text-amber-400 font-bold">STEP 07</span>
+              <span class="kbd-badge !text-amber-300 !border-amber-400/40">L</span>
+            </div>
+            <div class="font-semibold text-white text-xs">Brickwall Limiter</div>
+            <div id="step7Summary" class="font-mono text-[10px] text-slate-300 mt-1">
+              Thresh: -2dB | Target: -1dB
+            </div>
+          </div>
+
+          <!-- Step 8 -->
+          <div data-step="8" class="step-card cursor-pointer hover:border-cyan-500/50 p-2.5 rounded-lg bg-cyber-surface/90 border border-slate-800 flex flex-col justify-between transition-all" onclick="openModal('normalize')">
+            <div class="flex items-center justify-between mb-1">
+              <span class="font-cyber text-[10px] text-emerald-400 font-bold">STEP 08</span>
+              <span class="kbd-badge">N</span>
+            </div>
+            <div class="font-semibold text-white text-xs">Final Normalize #3</div>
+            <div id="step8Summary" class="font-mono text-[10px] text-slate-300 mt-1">
+              DC: ON | Peak: -0.25 dB
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: DSP Console Log & Keyboard Shortcut Reference -->
+      <div class="lg:col-span-4 bg-cyber-panel cyber-border rounded-xl p-3.5 flex flex-col justify-between gap-2">
+        <div class="flex items-center justify-between">
+          <span class="font-cyber text-xs font-bold uppercase tracking-wider text-cyber-cyan flex items-center gap-1.5">
+            <i class="fa-solid fa-terminal"></i> DSP Mastering Log
+          </span>
+          <span class="text-[10px] font-mono text-slate-500">REALTIME ENGINE</span>
+        </div>
+
+        <div id="dspConsoleLog" class="bg-black/80 border border-slate-800 rounded-lg p-2.5 h-36 overflow-y-auto font-mono text-[11px] space-y-1 text-slate-300">
+          <div class="text-cyan-400">&gt; ODDIO CITY 2999 DSP Core Initialized.</div>
+          <div class="text-slate-400">&gt; Shortcuts Ready: [Ctrl+O] Upload, [Ctrl+S] Download WAV, [Space] Play/Pause, [←] Back, [N] Normalize, [C] Compressor, [L] Limiter, [M] Master.</div>
+        </div>
+
+        <!-- Hotkey Strip -->
+        <div class="grid grid-cols-4 gap-1.5 pt-1 text-[10px] font-mono text-center">
+          <div class="bg-cyber-surface px-1.5 py-1 rounded border border-slate-800">
+            <span class="text-cyber-cyan font-bold">Space</span> Play/Pause
+          </div>
+          <div class="bg-cyber-surface px-1.5 py-1 rounded border border-slate-800">
+            <span class="text-cyber-cyan font-bold">←</span> To Start
+          </div>
+          <div class="bg-cyber-surface px-1.5 py-1 rounded border border-slate-800">
+            <span class="text-cyber-cyan font-bold">N / C / L</span> FX
+          </div>
+          <div class="bg-cyber-surface px-1.5 py-1 rounded border border-slate-800">
+            <span class="text-cyber-magenta font-bold">M</span> Master
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- METADATA / FILE SETTINGS (CD BABY DISTRIBUTION READY) -->
+    <section class="bg-cyber-panel cyber-border rounded-xl p-4 flex flex-col gap-3.5">
+      <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-2.5">
+        <div class="flex items-center gap-2.5">
+          <i class="fa-solid fa-tags text-cyber-cyan"></i>
+          <h2 class="font-cyber text-xs sm:text-sm font-bold tracking-wider uppercase text-white">
+            Metadata &amp; File Settings // CD Baby Distribution Standard
+          </h2>
+        </div>
+        <div class="flex flex-wrap items-center gap-2">
+          <span id="metaStripBadge" class="font-mono text-[10px] px-2.5 py-0.5 rounded bg-emerald-950/80 text-cyber-green border border-emerald-500/40 flex items-center gap-1.5">
+            <i class="fa-solid fa-shield-virus"></i>
+            <span>LEGACY TAGS STRIPPED CLEAN</span>
+          </span>
+          <span class="font-mono text-[10px] px-2 py-0.5 rounded bg-cyan-950/60 text-cyan-300 border border-cyan-500/30">
+            SYNTAX PARSER: Track # - Artist - Album - Title
+          </span>
+        </div>
+      </div>
+
+      <!-- Row 1: Audio Format Specifications (CD Baby Defaults: WAV, Stereo, 44.1 kHz, 16-bit) -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 font-mono text-xs">
+        <!-- File Format (Locked WAV) -->
+        <div class="bg-cyber-surface/90 p-2.5 rounded-lg border border-slate-800 flex flex-col gap-1">
+          <div class="flex items-center justify-between">
+            <label for="metaFormat" class="text-[10px] uppercase text-slate-400">File Format</label>
+            <span class="text-[9px] text-amber-400 flex items-center gap-1"><i class="fa-solid fa-lock"></i> LOCKED</span>
+          </div>
+          <input id="metaFormat" type="text" value="WAV" disabled readonly
+            class="cyber-input px-2.5 py-1.5 rounded text-xs font-bold opacity-75 cursor-not-allowed bg-black/60 text-cyber-cyan" />
+        </div>
+
+        <!-- Channels -->
+        <div class="bg-cyber-surface/90 p-2.5 rounded-lg border border-slate-800 flex flex-col gap-1">
+          <label for="metaChannels" class="text-[10px] uppercase text-slate-400">Channels</label>
+          <select id="metaChannels" class="cyber-input px-2.5 py-1.5 rounded text-xs font-semibold cursor-pointer">
+            <option value="2" selected>Stereo (2-channel)</option>
+            <option value="1">Mono (1-channel)</option>
+          </select>
+        </div>
+
+        <!-- Sample Rate -->
+        <div class="bg-cyber-surface/90 p-2.5 rounded-lg border border-slate-800 flex flex-col gap-1">
+          <label for="metaSampleRate" class="text-[10px] uppercase text-slate-400">Sample Rate</label>
+          <select id="metaSampleRate" class="cyber-input px-2.5 py-1.5 rounded text-xs font-semibold cursor-pointer">
+            <option value="44100" selected>44.1 kHz (CD Baby Standard)</option>
+            <option value="48000">48.0 kHz</option>
+            <option value="88200">88.2 kHz</option>
+            <option value="96000">96.0 kHz</option>
+          </select>
+        </div>
+
+        <!-- Bit Depth -->
+        <div class="bg-cyber-surface/90 p-2.5 rounded-lg border border-slate-800 flex flex-col gap-1">
+          <label for="metaBitDepth" class="text-[10px] uppercase text-slate-400">Bit Depth</label>
+          <select id="metaBitDepth" class="cyber-input px-2.5 py-1.5 rounded text-xs font-semibold cursor-pointer">
+            <option value="16" selected>16-bit (CD Baby Standard)</option>
+            <option value="24">24-bit</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Row 2: Track & Artist Tagging Fields (Auto-guessed from Filename) -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 font-mono text-xs">
+        <!-- Track Number -->
+        <div class="bg-cyber-surface/90 p-2.5 rounded-lg border border-slate-800 flex flex-col gap-1">
+          <label for="metaTrackNumber" class="text-[10px] uppercase text-slate-400">Track Number</label>
+          <input id="metaTrackNumber" type="text" value="01" placeholder="e.g. 01"
+            class="cyber-input px-2.5 py-1.5 rounded text-xs font-semibold" />
+        </div>
+
+        <!-- Artist Name -->
+        <div class="bg-cyber-surface/90 p-2.5 rounded-lg border border-slate-800 flex flex-col gap-1">
+          <label for="metaArtist" class="text-[10px] uppercase text-slate-400">Artist Name</label>
+          <input id="metaArtist" type="text" value="" placeholder="Artist Name"
+            class="cyber-input px-2.5 py-1.5 rounded text-xs font-semibold" />
+        </div>
+
+        <!-- Album Title -->
+        <div class="bg-cyber-surface/90 p-2.5 rounded-lg border border-slate-800 flex flex-col gap-1">
+          <label for="metaAlbum" class="text-[10px] uppercase text-slate-400">Album Title</label>
+          <input id="metaAlbum" type="text" value="" placeholder="Album Title"
+            class="cyber-input px-2.5 py-1.5 rounded text-xs font-semibold" />
+        </div>
+
+        <!-- Track Title -->
+        <div class="bg-cyber-surface/90 p-2.5 rounded-lg border border-slate-800 flex flex-col gap-1">
+          <label for="metaTitle" class="text-[10px] uppercase text-slate-400">Track Title</label>
+          <input id="metaTitle" type="text" value="" placeholder="Track Title"
+            class="cyber-input px-2.5 py-1.5 rounded text-xs font-semibold" />
+        </div>
+
+        <!-- Year -->
+        <div class="bg-cyber-surface/90 p-2.5 rounded-lg border border-slate-800 flex flex-col gap-1">
+          <label for="metaYear" class="text-[10px] uppercase text-slate-400">Year</label>
+          <input id="metaYear" type="text" value="2026" placeholder="YYYY"
+            class="cyber-input px-2.5 py-1.5 rounded text-xs font-semibold" />
+        </div>
+      </div>
+
+      <!-- Row 3: Export File Name + Live CD Baby Validation Warning -->
+      <div class="bg-cyber-surface/90 p-3 rounded-lg border border-slate-800 font-mono text-xs flex flex-col gap-1.5">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <label for="metaFileName" class="text-[11px] uppercase text-cyan-300 font-semibold flex items-center gap-1.5">
+            <i class="fa-solid fa-file-signature"></i>
+            <span>Export File Name</span>
+          </label>
+          <span class="text-[10px] text-slate-400">Allowed: Letters (A-Z), Numbers (0-9), Hyphens (-), Underscores (_)</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <input id="metaFileName" type="text" value="01_Oddio_City_2999_Master"
+            placeholder="01_Artist_Track_Title"
+            class="cyber-input flex-1 px-3 py-1.5 rounded text-xs sm:text-sm font-bold" />
+          <span class="px-2.5 py-1.5 rounded bg-black/70 border border-slate-700 text-slate-400 font-bold">.wav</span>
+          <button id="btnGenerateFileName" type="button" title="Generate CD Baby compliant filename from tags"
+            class="cyber-btn px-3 py-1.5 rounded bg-cyan-950/60 hover:bg-cyan-900 border border-cyan-500/40 text-cyan-300 font-mono text-xs flex items-center gap-1.5 shrink-0">
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+            <span class="hidden sm:inline">Generate</span>
+          </button>
+        </div>
+        <!-- Non-blocking CD Baby File Name Warning -->
+        <div id="fileNameWarning" class="hidden mt-1 px-3 py-2 rounded-md bg-amber-950/70 border border-cyber-yellow text-cyber-yellow text-[11px] flex items-start gap-2">
+          <i class="fa-solid fa-triangle-exclamation mt-0.5 shrink-0"></i>
+          <div>
+            <strong>CD Baby File Name Notice:</strong> CD Baby requires file names to use only letters, numbers, hyphens (<code class="text-white">-</code>), and underscores (<code class="text-white">_</code>), avoiding spaces or special characters. You can still download this file as-is if desired.
+          </div>
+        </div>
+      </div>
+
+      <!-- Row 4: CD Baby Genre, Sub-Genre & Comments -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 font-mono text-xs">
+        <!-- Primary Genre -->
+        <div class="bg-cyber-surface/90 p-2.5 rounded-lg border border-slate-800 flex flex-col gap-1">
+          <label for="metaGenre" class="text-[10px] uppercase text-slate-400">Primary Genre (CD Baby)</label>
+          <select id="metaGenre" class="cyber-input px-2.5 py-1.5 rounded text-xs font-semibold cursor-pointer"></select>
+        </div>
+
+        <!-- Sub-Genre -->
+        <div class="bg-cyber-surface/90 p-2.5 rounded-lg border border-slate-800 flex flex-col gap-1">
+          <label for="metaSubGenre" class="text-[10px] uppercase text-slate-400">Sub-Genre (CD Baby)</label>
+          <select id="metaSubGenre" class="cyber-input px-2.5 py-1.5 rounded text-xs font-semibold cursor-pointer"></select>
+        </div>
+
+        <!-- Comments -->
+        <div class="bg-cyber-surface/90 p-2.5 rounded-lg border border-slate-800 flex flex-col gap-1">
+          <label for="metaComments" class="text-[10px] uppercase text-slate-400">Comments</label>
+          <input id="metaComments" type="text" value="Stand and fight!" placeholder="Mastering notes or ISRC comments"
+            class="cyber-input px-2.5 py-1.5 rounded text-xs font-semibold" />
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===================================================================== -->
+  <!-- MODAL 1: NORMALIZE CONFIGURATION (Shortcut: N)                        -->
+  <!-- ===================================================================== -->
+  <div id="modalNormalize" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+    <div class="w-full max-w-md bg-cyber-panel border-2 border-cyber-cyan rounded-xl shadow-[0_0_35px_rgba(0,240,255,0.3)] overflow-hidden">
+      <div class="bg-cyan-950/60 border-b border-cyan-500/40 px-5 py-3.5 flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <i class="fa-solid fa-arrows-up-down text-cyber-cyan"></i>
+          <h3 class="font-cyber font-bold text-sm tracking-wider text-white">NORMALIZE CONFIGURATION</h3>
+        </div>
+        <span class="kbd-badge">Shortcut: N</span>
+      </div>
+
+      <div class="p-5 space-y-4 font-mono text-xs">
+        <p class="text-slate-400 text-[11px]">
+          Applied at <span class="text-cyber-cyan">Step 4</span>, <span class="text-cyber-cyan">Step 6</span>, and <span class="text-cyber-cyan">Step 8</span> of the mastering sequence.
+        </p>
+
+        <!-- Checkbox 1: Remove DC offset -->
+        <label class="flex items-center gap-3 p-2.5 rounded-lg bg-cyber-surface border border-slate-800 cursor-pointer hover:border-cyan-500/40">
+          <input id="normRemoveDc" type="checkbox" checked class="w-4 h-4 accent-cyan-400 rounded cursor-pointer" />
+          <span class="text-slate-200">Remove DC offset (center on 0.0 vertically)</span>
+        </label>
+
+        <!-- Checkbox 2 + dB Text Input: Normalize peak amplitude -->
+        <div class="p-3 rounded-lg bg-cyber-surface border border-slate-800 space-y-2.5">
+          <label class="flex items-center gap-3 cursor-pointer">
+            <input id="normPeakEnabled" type="checkbox" checked class="w-4 h-4 accent-cyan-400 rounded cursor-pointer" />
+            <span class="text-slate-200">Normalize peak amplitude to:</span>
+          </label>
+          <div class="flex items-center gap-2 pl-7">
+            <input id="normPeakDbInput" type="text" value="-0.25"
+              class="cyber-input w-28 px-3 py-1.5 rounded-md text-sm font-bold text-right" />
+            <span class="text-cyber-cyan font-bold">dB</span>
+            <span class="text-[10px] text-slate-500 ml-auto">(Default: -0.25 dB)</span>
+          </div>
+        </div>
+
+        <!-- Checkbox 3: Normalize stereo channels independently -->
+        <label class="flex items-center gap-3 p-2.5 rounded-lg bg-cyber-surface border border-slate-800 cursor-pointer hover:border-cyan-500/40">
+          <input id="normIndependentChannels" type="checkbox" class="w-4 h-4 accent-cyan-400 rounded cursor-pointer" />
+          <span class="text-slate-200">Normalize stereo channels independently</span>
+        </label>
+      </div>
+
+      <div class="bg-black/60 border-t border-slate-800 px-5 py-3 flex items-center justify-end gap-3 font-mono text-xs">
+        <button type="button" onclick="closeActiveModal()"
+          class="cyber-btn px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-300 flex items-center gap-2">
+          <span>Cancel</span>
+          <span class="kbd-badge !text-slate-300 !border-slate-500 !bg-slate-700">Esc</span>
+        </button>
+        <button type="button" onclick="saveNormalizeModal()"
+          class="cyber-btn px-4 py-2 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyber-cyan text-cyber-cyan font-bold flex items-center gap-2">
+          <span>Save</span>
+          <span class="kbd-badge">Enter ↵</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- MODAL 2: COMPRESSOR CONFIGURATION (Shortcut: C)                       -->
+  <!-- ===================================================================== -->
+  <div id="modalCompressor" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+    <div class="w-full max-w-lg bg-cyber-panel border-2 border-purple-400 rounded-xl shadow-[0_0_35px_rgba(184,41,255,0.3)] overflow-hidden">
+      <div class="bg-purple-950/60 border-b border-purple-500/40 px-5 py-3.5 flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <i class="fa-solid fa-compress text-purple-400"></i>
+          <h3 class="font-cyber font-bold text-sm tracking-wider text-white">COMPRESSOR CONFIGURATION</h3>
+        </div>
+        <span class="kbd-badge !text-purple-300 !border-purple-400/50">Shortcut: C</span>
+      </div>
+
+      <div class="p-5 space-y-3 font-mono text-xs">
+        <p class="text-slate-400 text-[11px]">
+          Applied at <span class="text-purple-400 font-bold">Step 5</span> of the mastering chain.
+        </p>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <!-- Threshold (dB) -->
+          <div class="bg-cyber-surface p-2.5 rounded-lg border border-slate-800 flex items-center justify-between">
+            <label for="compThreshold" class="text-slate-300">Threshold (dB)</label>
+            <input id="compThreshold" type="text" value="-16.8" class="cyber-input !text-purple-300 w-24 px-2.5 py-1 rounded text-right font-bold" />
+          </div>
+
+          <!-- Make-up gain (dB) -->
+          <div class="bg-cyber-surface p-2.5 rounded-lg border border-slate-800 flex items-center justify-between">
+            <label for="compMakeupGain" class="text-slate-300">Make-up gain (dB)</label>
+            <input id="compMakeupGain" type="text" value="2.5" class="cyber-input !text-purple-300 w-24 px-2.5 py-1 rounded text-right font-bold" />
+          </div>
+
+          <!-- Knee width (dB) -->
+          <div class="bg-cyber-surface p-2.5 rounded-lg border border-slate-800 flex items-center justify-between">
+            <label for="compKneeWidth" class="text-slate-300">Knee width (dB)</label>
+            <input id="compKneeWidth" type="text" value="4.9" class="cyber-input !text-purple-300 w-24 px-2.5 py-1 rounded text-right font-bold" />
+          </div>
+
+          <!-- Ratio -->
+          <div class="bg-cyber-surface p-2.5 rounded-lg border border-slate-800 flex items-center justify-between">
+            <label for="compRatio" class="text-slate-300">Ratio</label>
+            <input id="compRatio" type="text" value="1.2" class="cyber-input !text-purple-300 w-24 px-2.5 py-1 rounded text-right font-bold" />
+          </div>
+
+          <!-- Lookahead (ms) -->
+          <div class="bg-cyber-surface p-2.5 rounded-lg border border-slate-800 flex items-center justify-between">
+            <label for="compLookahead" class="text-slate-300">Lookahead (ms)</label>
+            <input id="compLookahead" type="text" value="100.4" class="cyber-input !text-purple-300 w-24 px-2.5 py-1 rounded text-right font-bold" />
+          </div>
+
+          <!-- Attack (ms) -->
+          <div class="bg-cyber-surface p-2.5 rounded-lg border border-slate-800 flex items-center justify-between">
+            <label for="compAttack" class="text-slate-300">Attack (ms)</label>
+            <input id="compAttack" type="text" value="49.6" class="cyber-input !text-purple-300 w-24 px-2.5 py-1 rounded text-right font-bold" />
+          </div>
+
+          <!-- Release (ms) -->
+          <div class="bg-cyber-surface p-2.5 rounded-lg border border-slate-800 flex items-center justify-between sm:col-span-2">
+            <label for="compRelease" class="text-slate-300">Release (ms)</label>
+            <input id="compRelease" type="text" value="17.9" class="cyber-input !text-purple-300 w-28 px-2.5 py-1 rounded text-right font-bold" />
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-black/60 border-t border-slate-800 px-5 py-3 flex items-center justify-end gap-3 font-mono text-xs">
+        <button type="button" onclick="closeActiveModal()"
+          class="cyber-btn px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-300 flex items-center gap-2">
+          <span>Cancel</span>
+          <span class="kbd-badge !text-slate-300 !border-slate-500 !bg-slate-700">Esc</span>
+        </button>
+        <button type="button" onclick="saveCompressorModal()"
+          class="cyber-btn px-4 py-2 rounded-lg bg-purple-500/20 hover:bg-purple-500/30 border border-purple-400 text-purple-300 font-bold flex items-center gap-2">
+          <span>Save</span>
+          <span class="kbd-badge !text-purple-300 !border-purple-400">Enter ↵</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- MODAL 3: LIMITER CONFIGURATION (Shortcut: L)                          -->
+  <!-- ===================================================================== -->
+  <div id="modalLimiter" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+    <div class="w-full max-w-md bg-cyber-panel border-2 border-cyber-yellow rounded-xl shadow-[0_0_35px_rgba(252,238,10,0.25)] overflow-hidden">
+      <div class="bg-amber-950/60 border-b border-amber-500/40 px-5 py-3.5 flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <i class="fa-solid fa-shield-halved text-cyber-yellow"></i>
+          <h3 class="font-cyber font-bold text-sm tracking-wider text-white">LIMITER CONFIGURATION</h3>
+        </div>
+        <span class="kbd-badge !text-amber-300 !border-amber-400/50">Shortcut: L</span>
+      </div>
+
+      <div class="p-5 space-y-3 font-mono text-xs">
+        <p class="text-slate-400 text-[11px]">
+          Applied at <span class="text-cyber-yellow font-bold">Step 7</span> of the mastering chain.
+        </p>
+
+        <div class="space-y-2.5">
+          <!-- Threshold (dB) -->
+          <div class="bg-cyber-surface p-2.5 rounded-lg border border-slate-800 flex items-center justify-between">
+            <label for="limThreshold" class="text-slate-300">Threshold (dB)</label>
+            <input id="limThreshold" type="text" value="-2" class="cyber-input !text-cyber-yellow w-28 px-2.5 py-1 rounded text-right font-bold" />
+          </div>
+
+          <!-- Make-up target (dB) -->
+          <div class="bg-cyber-surface p-2.5 rounded-lg border border-slate-800 flex items-center justify-between">
+            <label for="limMakeupTarget" class="text-slate-300">Make-up target (dB)</label>
+            <input id="limMakeupTarget" type="text" value="-1" class="cyber-input !text-cyber-yellow w-28 px-2.5 py-1 rounded text-right font-bold" />
+          </div>
+
+          <!-- Knee-width (dB) -->
+          <div class="bg-cyber-surface p-2.5 rounded-lg border border-slate-800 flex items-center justify-between">
+            <label for="limKneeWidth" class="text-slate-300">Knee-width (dB)</label>
+            <input id="limKneeWidth" type="text" value="2" class="cyber-input !text-cyber-yellow w-28 px-2.5 py-1 rounded text-right font-bold" />
+          </div>
+
+          <!-- Lookahead (ms) -->
+          <div class="bg-cyber-surface p-2.5 rounded-lg border border-slate-800 flex items-center justify-between">
+            <label for="limLookahead" class="text-slate-300">Lookahead (ms)</label>
+            <input id="limLookahead" type="text" value="1" class="cyber-input !text-cyber-yellow w-28 px-2.5 py-1 rounded text-right font-bold" />
+          </div>
+
+          <!-- Release (ms) -->
+          <div class="bg-cyber-surface p-2.5 rounded-lg border border-slate-800 flex items-center justify-between">
+            <label for="limRelease" class="text-slate-300">Release (ms)</label>
+            <input id="limRelease" type="text" value="20" class="cyber-input !text-cyber-yellow w-28 px-2.5 py-1 rounded text-right font-bold" />
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-black/60 border-t border-slate-800 px-5 py-3 flex items-center justify-end gap-3 font-mono text-xs">
+        <button type="button" onclick="closeActiveModal()"
+          class="cyber-btn px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-300 flex items-center gap-2">
+          <span>Cancel</span>
+          <span class="kbd-badge !text-slate-300 !border-slate-500 !bg-slate-700">Esc</span>
+        </button>
+        <button type="button" onclick="saveLimiterModal()"
+          class="cyber-btn px-4 py-2 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 border border-cyber-yellow text-cyber-yellow font-bold flex items-center gap-2">
+          <span>Save</span>
+          <span class="kbd-badge !text-amber-300 !border-amber-400">Enter ↵</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Banner -->
+  <div id="toastBanner" class="fixed bottom-5 right-5 z-50 hidden px-4 py-2.5 rounded-xl bg-cyber-panel border border-cyber-cyan text-cyber-cyan font-mono text-xs shadow-[0_0_20px_rgba(0,240,255,0.3)] flex items-center gap-2.5">
+    <i class="fa-solid fa-circle-check"></i>
+    <span id="toastMessage">Configuration updated</span>
+  </div>
+
+  <script>
+    /*************************************************************************
+     * ODDIO CITY 2999 // AUDIO MASTERING & CD BABY METADATA ENGINE
+     *************************************************************************/
+    let audioCtx = null;
+    let originalBuffer = null; // Unmodified uploaded/generated AudioBuffer (raw PCM only, all prior tags stripped)
+    let currentBuffer = null;  // Active AudioBuffer (raw or mastered)
+    let sourceNode = null;
+    let isPlaying = false;
+    let startTime = 0;         // audioCtx.currentTime when playback began
+    let pauseOffset = 0;       // Current playhead position in seconds
+    let animFrameId = null;
+    let currentFileName = '01_Oddio_City_2999_Master';
+    let isMastered = false;
+
+    const CD_BABY_GENRES = {
+      "Electronic": [
+        "Ambient", "Bass", "Chiptune", "Cyberpunk / Synthwave", "Downtempo", "Drum & Bass",
+        "Dubstep", "Electro", "Electronica", "Experimental", "Garage", "Glitch", "Hardcore",
+        "House", "IDM", "Industrial", "Jungle", "Techno", "Trance", "Trip Hop", "Vaporwave"
+      ],
+      "Rock": [
+        "Alternative", "Art Rock", "Classic Rock", "Garage Rock", "Glam Rock", "Grunge",
+        "Hard Rock", "Heavy Metal", "Indie Rock", "Instrumental Rock", "New Wave",
+        "Post-Punk", "Post-Rock", "Progressive Rock", "Psychedelic", "Punk", "Shoegaze", "Surf"
+      ],
+      "Pop": [
+        "Adult Contemporary", "Bedroom Pop", "Bubblegum", "Chamber Pop", "Dance Pop",
+        "Dream Pop", "Electropop", "Hyperpop", "Indie Pop", "J-Pop", "K-Pop", "Power Pop",
+        "Synth Pop", "Teen Pop"
+      ],
+      "Hip-Hop/Rap": [
+        "Alternative Rap", "Boom Bap", "Cloud Rap", "Conscious Hip-Hop", "Dirty South",
+        "East Coast", "Freestyle", "Gangsta Rap", "Grime", "Instrumental Hip-Hop",
+        "Lo-Fi Hip-Hop", "Old School", "Trap", "Turntablism", "Underground", "West Coast"
+      ],
+      "R&B/Soul": [
+        "Contemporary R&B", "Disco", "Doo Wop", "Funk", "Gospel", "Motown",
+        "Neo-Soul", "Northern Soul", "Psychedelic Soul", "Quiet Storm", "Soul"
+      ],
+      "Jazz": [
+        "Acid Jazz", "Avant-Garde", "Bebop", "Big Band", "Cool Jazz", "Dixieland",
+        "Free Jazz", "Fusion", "Gypsy Jazz", "Hard Bop", "Latin Jazz", "Modal",
+        "Nu Jazz", "Smooth Jazz", "Swing", "Vocal Jazz"
+      ],
+      "Classical": [
+        "Avant-Garde", "Baroque", "Chamber Music", "Choral", " Classical Crossover",
+        "Contemporary Classical", "Early Music", "Impressionist", "Minimalism",
+        "Modern Composition", "Opera", "Orchestral", "Renaissance", "Romantic", "Solo Instrumental"
+      ],
+      "Country": [
+        "Alt-Country", "Americana", "Bluegrass", "Contemporary Country", "Country Gospel",
+        "Country Pop", "Country Rock", "Honky Tonk", "Outlaw Country", "Traditional Country", "Western Swing"
+      ],
+      "Folk": [
+        "American Folk", "Celtic Folk", "Contemporary Folk", "Folk Pop", "Folk Rock",
+        "Freak Folk", "Indie Folk", "Neofolk", "Singer-Songwriter", "Traditional Folk"
+      ],
+      "Latin": [
+        "Bachata", "Banda", "Bossa Nova", "Cumbia", "Flamenco", "Latin Jazz", "Latin Pop",
+        "Latin Rap", "Latin Rock", "Mariachi", "Merengue", "Reggaeton", "Salsa", "Tango", "Urbano"
+      ],
+      "Metal": [
+        "Black Metal", "Death Metal", "Djent", "Doom Metal", "Folk Metal", "Gothic Metal",
+        "Grindcore", "Hair Metal", "Industrial Metal", "Metalcore", "Nu Metal",
+        "Power Metal", "Progressive Metal", "Sludge", "Speed Metal", "Symphonic Metal", "Thrash"
+      ],
+      "Reggae": [
+        "Dancehall", "Dub", "Lovers Rock", "Ragga", "Reggae Pop", "Rocksteady", "Roots Reggae", "Ska"
+      ],
+      "Blues": [
+        "Acoustic Blues", "Chicago Blues", "Classic Blues", "Contemporary Blues",
+        "Country Blues", "Delta Blues", "Electric Blues", "Jump Blues", "Soul Blues"
+      ],
+      "World": [
+        "African", "Afrobeat", "Afro-Pop", "Asian", "Balkan", "Brazilian", "Caribbean",
+        "Celtic", "Flamenco", "Indian", "Middle Eastern", "Multiplier / Global Fusion", "Polka"
+      ],
+      "Soundtrack": [
+        "Anime", "Film Score", "Musical Theatre", "Original Score", "TV Soundtrack", "Video Game Music"
+      ],
+      "New Age": [
+        "Ambient", "Environmental", "Healing", "Meditation", "Nature", "Relaxation", "Solitudes", "Space"
+      ],
+      "Christian/Gospel": [
+        "CCM", "Christian Hip-Hop", "Christian Metal", "Christian Pop", "Christian Rock",
+        "Contemporary Gospel", "Praise & Worship", "Southern Gospel", "Traditional Gospel"
+      ],
+      "Children's Music": [
+        "Educational", "Lullabies", "Sing-Along", "Stories"
+      ],
+      "Comedy/Spoken Word": [
+        "Audiobook", "Comedy", "Musical Comedy", "Parody", "Poetry", "Standup Comedy", "Storytelling"
+      ],
+      "Avant-Garde/Experimental": [
+        "Drone", "Electroacoustic", "Industrial", "Lo-Fi", "Musique Concrète", "Noise", "Sound Art"
+      ]
+    };
+
+    const metaGenreSelect = document.getElementById('metaGenre');
+    const metaSubGenreSelect = document.getElementById('metaSubGenre');
+    const metaFileNameInput = document.getElementById('metaFileName');
+    const fileNameWarning = document.getElementById('fileNameWarning');
+    const btnGenerateFileName = document.getElementById('btnGenerateFileName');
+
+    function initCdBabyGenres() {
+      metaGenreSelect.innerHTML = '';
+      Object.keys(CD_BABY_GENRES).forEach((genre) => {
+        const opt = document.createElement('option');
+        opt.value = genre;
+        opt.textContent = genre;
+        metaGenreSelect.appendChild(opt);
+      });
+      metaGenreSelect.value = 'Electronic';
+      populateSubGenres('Electronic', 'Cyberpunk / Synthwave');
+
+      metaGenreSelect.addEventListener('change', () => {
+        populateSubGenres(metaGenreSelect.value);
+      });
+    }
+
+    function populateSubGenres(primaryGenre, preferredSub = null) {
+      const subs = CD_BABY_GENRES[primaryGenre] || ['General'];
+      metaSubGenreSelect.innerHTML = '';
+      subs.forEach((sub) => {
+        const opt = document.createElement('option');
+        opt.value = sub;
+        opt.textContent = sub;
+        metaSubGenreSelect.appendChild(opt);
+      });
+      if (preferredSub && subs.includes(preferredSub)) {
+        metaSubGenreSelect.value = preferredSub;
+      } else {
+        metaSubGenreSelect.selectedIndex = 0;
+      }
+    }
+
+    // Validate CD Baby Filename Requirement: Letters, numbers, hyphens (-), and underscores (_) only
+    function validateCdBabyFileName() {
+      const val = metaFileNameInput.value;
+      const isValid = /^[A-Za-z0-9_-]+$/.test(val);
+      if (!val || !isValid) {
+        fileNameWarning.classList.remove('hidden');
+      } else {
+        fileNameWarning.classList.add('hidden');
+      }
+      return isValid;
+    }
+
+    metaFileNameInput.addEventListener('input', validateCdBabyFileName);
+
+    btnGenerateFileName.addEventListener('click', () => {
+      const track = document.getElementById('metaTrackNumber').value.trim();
+      const artist = document.getElementById('metaArtist').value.trim();
+      const album = document.getElementById('metaAlbum').value.trim();
+      const title = document.getElementById('metaTitle').value.trim();
+
+      // Filter out empty fields and join with underscores to match standard CD Baby formats
+      const parts = [track, artist, album, title].filter(Boolean);
+      let generated = parts.length > 0 ? parts.join('_') : 'Oddio_City_2999_Track';
+      generated = sanitizeForCdBabyFileName(generated);
+
+      // Append -master to the end
+      if (!generated.toLowerCase().endsWith('-master') && !generated.toLowerCase().endsWith('_master')) {
+        generated += '-master';
+      }
+
+      metaFileNameInput.value = generated;
+      currentFileName = generated;
+      validateCdBabyFileName();
+      showToast('Generated File Name');
+    });
+
+    function sanitizeForCdBabyFileName(rawStr) {
+      if (!rawStr) return 'Oddio_City_2999_Track';
+      const cleaned = rawStr
+        .trim()
+        .replace(/\s+/g, '_')
+        .replace(/[^A-Za-z0-9_-]/g, '');
+      return cleaned || 'Oddio_City_2999_Track';
+    }
+
+    // Parse uploaded filename using syntax: Track Number - Artist Name - Album Title - Track Title
+    // If there are no dashes, treat as Track Title.
+    function parseMetadataFromFilename(rawFilename) {
+      const baseName = rawFilename.replace(/\.[^/.]+$/, '').trim();
+      let trackNum = '';
+      let artist = '';
+      let album = '';
+      let title = '';
+
+      if (!baseName.includes('-')) {
+        // No dashes -> likely just the track title
+        title = baseName.replace(/_/g, ' ').trim();
+      } else {
+        // Prefer splitting by ' - ' first if present, otherwise by '-'
+        const parts = baseName.includes(' - ')
+          ? baseName.split(/\s+-\s+/).map(s => s.trim()).filter(Boolean)
+          : baseName.split('-').map(s => s.trim()).filter(Boolean);
+
+        if (parts.length >= 4) {
+          trackNum = parts[0];
+          artist = parts[1];
+          album = parts[2];
+          title = parts.slice(3).join(' - ');
+        } else if (parts.length === 3) {
+          if (/^\d+$/.test(parts[0])) {
+            trackNum = parts[0];
+            artist = parts[1];
+            title = parts[2];
+          } else {
+            artist = parts[0];
+            album = parts[1];
+            title = parts[2];
+          }
+        } else if (parts.length === 2) {
+          if (/^\d+$/.test(parts[0])) {
+            trackNum = parts[0];
+            title = parts[1];
+          } else {
+            artist = parts[0];
+            title = parts[1];
+          }
+        } else {
+          title = baseName;
+        }
+      }
+
+      document.getElementById('metaTrackNumber').value = trackNum;
+      document.getElementById('metaArtist').value = artist;
+      document.getElementById('metaAlbum').value = album;
+      document.getElementById('metaTitle').value = title;
+
+      // Default CD Baby compliant export filename
+      let safeDefaultName = sanitizeForCdBabyFileName(baseName);
+      
+      // Append -master to the end upon ingest
+      if (!safeDefaultName.toLowerCase().endsWith('-master') && !safeDefaultName.toLowerCase().endsWith('_master')) {
+        safeDefaultName += '-master';
+      }
+      
+      metaFileNameInput.value = safeDefaultName;
+      currentFileName = safeDefaultName;
+      validateCdBabyFileName();
+
+      logConsole(
+        `Parsed tags from filename -> Track #: "${trackNum || '--'}", Artist: "${artist || '--'}", Album: "${album || '--'}", Title: "${title || '--'}"`,
+        'text-cyan-300'
+      );
+    }
+
+    // Active Modal Tracker ('normalize' | 'compressor' | 'limiter' | null)
+    let activeModal = null;
+
+    // Waveform peaks cache for rapid rendering
+    let cachedPeaksL = [];
+    let cachedPeaksR = [];
+
+    // Dragging state for Fade-In (top-left) and Fade-Out (top-right) dots
+    let draggingHandle = null; // 'fadeIn' | 'fadeOut' | 'playhead' | null
+    let hoverHandle = null;    // 'fadeIn' | 'fadeOut' | null
+
+    // MASTERING CONFIGURATIONS (with exact user-specified defaults)
+    const masterConfig = {
+      fadeInSec: 0.5,   // Step 2 default: half-second fade-in
+      fadeOutSec: 2.0,  // Step 3 default: 2-second fade-out
+      normalize: {      // Steps 4, 6, 8 defaults
+        removeDcOffset: true,
+        normalizePeak: true,
+        targetDb: -0.25,
+        independentChannels: false
+      },
+      compressor: {     // Step 5 defaults
+        thresholdDb: -16.8,
+        makeupGainDb: 2.5,
+        kneeWidthDb: 4.9,
+        ratio: 1.2,
+        lookaheadMs: 100.4,
+        attackMs: 49.6,
+        releaseMs: 17.9
+      },
+      limiter: {        // Step 7 defaults
+        thresholdDb: -2.0,
+        makeupTargetDb: -1.0,
+        kneeWidthDb: 2.0,
+        lookaheadMs: 1.0,
+        releaseMs: 20.0
+      }
+    };
+
+    const fileInput = document.getElementById('audioFileInput');
+    const btnUpload = document.getElementById('btnUpload');
+    const btnOverlayUpload = document.getElementById('btnOverlayUpload');
+    const btnLoadDemo = document.getElementById('btnLoadDemo');
+    const btnOverlayDemo = document.getElementById('btnOverlayDemo');
+    const btnDownload = document.getElementById('btnDownload');
+    const btnBack = document.getElementById('btnBack');
+    const btnPlayPause = document.getElementById('btnPlayPause');
+    const btnRevert = document.getElementById('btnRevert');
+    const btnMaster = document.getElementById('btnMaster');
+    const playPauseIcon = document.getElementById('playPauseIcon');
+    const playPauseLabel = document.getElementById('playPauseLabel');
+    const timecodeCurrent = document.getElementById('timecodeCurrent');
+    const timecodeDuration = document.getElementById('timecodeDuration');
+    const waveformCanvas = document.getElementById('waveformCanvas');
+    const waveformContainer = document.getElementById('waveformContainer');
+    const emptyWaveOverlay = document.getElementById('emptyWaveOverlay');
+    const dragFadeTooltip = document.getElementById('dragFadeTooltip');
+    const inputFadeInSec = document.getElementById('inputFadeInSec');
+    const inputFadeOutSec = document.getElementById('inputFadeOutSec');
+    const fadeInReadout = document.getElementById('fadeInReadout');
+    const fadeOutReadout = document.getElementById('fadeOutReadout');
+
+    function getAudioContext() {
+      if (!audioCtx) {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        audioCtx = new AudioContextClass();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      return audioCtx;
+    }
+
+    function logConsole(msg, colorClass = 'text-slate-300') {
+      const box = document.getElementById('dspConsoleLog');
+      const line = document.createElement('div');
+      const now = new Date();
+      const stamp = now.toTimeString().split(' ')[0];
+      line.className = colorClass;
+      line.textContent = `[${stamp}] ${msg}`;
+      box.appendChild(line);
+      box.scrollTop = box.scrollHeight;
+    }
+
+    let toastTimer = null;
+    function showToast(msg) {
+      const banner = document.getElementById('toastBanner');
+      document.getElementById('toastMessage').textContent = msg;
+      banner.classList.remove('hidden');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => banner.classList.add('hidden'), 2600);
+    }
+
+    function formatTimecode(sec) {
+      if (!isFinite(sec) || sec < 0) sec = 0;
+      const mins = Math.floor(sec / 60);
+      const rem = sec % 60;
+      const secs = Math.floor(rem);
+      const ms = Math.floor((rem - secs) * 1000);
+      return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}.${String(ms).padStart(3, '0')}`;
+    }
+
+    function dbToLinear(db) {
+      return Math.pow(10, db / 20);
+    }
+
+    function linearToDb(linear) {
+      if (linear <= 0.0000001) return -120;
+      return 20 * Math.log10(linear);
+    }
+
+    async function handleFileSelected(file) {
+      if (!file) return;
+      try {
+        stopPlayback();
+        const ctx = getAudioContext();
+        document.getElementById('fileStatusText').textContent = `DECODING & STRIPPING TAGS: ${file.name.toUpperCase()}...`;
+        logConsole(`Loading "${file.name}" (${(file.size / 1024 / 1024).toFixed(2)} MB)...`, 'text-cyber-cyan');
+
+        const arrayBuffer = await file.arrayBuffer();
+        // Decoding into raw PCM float samples strips all legacy ID3v1/ID3v2/RIFF/BWF/iXML tags
+        const decoded = await ctx.decodeAudioData(arrayBuffer);
+        logConsole('Stripped all legacy ID3/RIFF metadata & container chunks from source audio.', 'text-cyber-green');
+
+        parseMetadataFromFilename(file.name);
+        loadNewAudioBuffer(decoded, file.name);
+        showToast(`Loaded ${file.name} (Legacy Metadata Stripped)`);
+      } catch (err) {
+        logConsole(`ERROR decoding audio file: ${err.message}`, 'text-cyber-magenta');
+        showToast('Error decoding file. Please select a valid WAV or MP3.');
+      }
+    }
+
+    // Generate a realistic Cyberpunk Synthwave Demo Track with intentional leading/trailing silence and DC offset
+    function generateSynthDemoTrack() {
+      stopPlayback();
+      const ctx = getAudioContext();
+      const sampleRate = ctx.sampleRate || 44100;
+      const duration = 12.0; // 12 seconds total (includes 0.6s leading silence & 0.7s trailing silence)
+      const totalSamples = Math.floor(sampleRate * duration);
+      const buffer = ctx.createBuffer(2, totalSamples, sampleRate);
+
+      const left = buffer.getChannelData(0);
+      const right = buffer.getChannelData(1);
+
+      const startSilence = 0.65; // 0.65s of silence at start (Step 1 will eliminate this!)
+      const endSilence = 0.75;   // 0.75s of silence at end (Step 1 will eliminate this!)
+      const activeStart = Math.floor(startSilence * sampleRate);
+      const activeEnd = Math.floor((duration - endSilence) * sampleRate);
+
+      const bassNotes = [55.0, 55.0, 65.41, 49.0, 55.0, 73.42, 65.41, 61.74]; // A1, C2, G1, D2...
+      const arpNotes = [220, 261.63, 329.63, 440, 329.63, 261.63, 293.66, 392.0];
+
+      for (let i = activeStart; i < activeEnd; i++) {
+        const t = (i - activeStart) / sampleRate;
+        const beatPos = t * 2.2; // 132 BPM pulse
+        const barIdx = Math.floor(beatPos / 2) % bassNotes.length;
+        const arpIdx = Math.floor(beatPos * 2) % arpNotes.length;
+
+        const bassFreq = bassNotes[barIdx];
+        const arpFreq = arpNotes[arpIdx];
+
+        // Analog sawtooth-like bass + sub
+        const saw = 2 * ((t * bassFreq) - Math.floor(0.5 + t * bassFreq));
+        const sub = Math.sin(2 * Math.PI * (bassFreq * 0.5) * t);
+
+        // Kick drum transient every beat
+        const beatFrac = beatPos % 1;
+        const kickEnv = Math.exp(-beatFrac * 9);
+        const kickFreq = 45 + 110 * Math.exp(-beatFrac * 28);
+        const kick = Math.sin(2 * Math.PI * kickFreq * beatFrac) * kickEnv * 0.55;
+
+        // Cyberpunk stereo arpeggio + snare burst on off-beats
+        const arpEnv = Math.exp(-((beatPos * 2) % 1) * 4.5);
+        const arpL = Math.sin(2 * Math.PI * arpFreq * t + 0.2 * Math.sin(2 * Math.PI * 6 * t)) * arpEnv * 0.28;
+        const arpR = Math.sin(2 * Math.PI * (arpFreq * 1.003) * t - 0.2 * Math.sin(2 * Math.PI * 6 * t)) * arpEnv * 0.28;
+
+        // Add subtle DC offset (+0.025) so Step 4 DC Offset removal has real measurable work
+        const dcBias = 0.025;
+
+        left[i] = Math.max(-0.98, Math.min(0.98, (saw * 0.24 + sub * 0.22 + kick + arpL) * 0.72 + dcBias));
+        right[i] = Math.max(-0.98, Math.min(0.98, (saw * 0.22 + sub * 0.24 + kick + arpR) * 0.72 + dcBias));
+      }
+
+      const demoFilename = '01 - Oddio Synth - Oddio City 2999 - Cybernetic Dawn.wav';
+      parseMetadataFromFilename(demoFilename);
+      loadNewAudioBuffer(buffer, demoFilename);
+      logConsole('Generated 12.0s Cyberpunk Synth Track (includes 0.65s start silence & 0.75s end silence).', 'text-purple-400');
+      showToast('Synth Demo Track Loaded! Press M to Master or Space to Play.');
+    }
+
+    function cloneAudioBuffer(srcBuffer) {
+      const ctx = getAudioContext();
+      const copy = ctx.createBuffer(
+        srcBuffer.numberOfChannels,
+        srcBuffer.length,
+        srcBuffer.sampleRate
+      );
+      for (let ch = 0; ch < srcBuffer.numberOfChannels; ch++) {
+        copy.getChannelData(ch).set(srcBuffer.getChannelData(ch));
+      }
+      return copy;
+    }
+
+    function loadNewAudioBuffer(buffer, displayName) {
+      originalBuffer = cloneAudioBuffer(buffer);
+      currentBuffer = cloneAudioBuffer(buffer);
+      pauseOffset = 0;
+      isMastered = false;
+
+      // Clamp fade handles if song is very short
+      const maxFade = Math.max(0.1, currentBuffer.duration * 0.45);
+      if (masterConfig.fadeInSec > maxFade) masterConfig.fadeInSec = Number(maxFade.toFixed(2));
+      if (masterConfig.fadeOutSec > maxFade) masterConfig.fadeOutSec = Number(maxFade.toFixed(2));
+      syncFadeReadouts();
+
+      emptyWaveOverlay.classList.add('hidden');
+      btnDownload.disabled = false;
+      btnBack.disabled = false;
+      btnPlayPause.disabled = false;
+      btnRevert.disabled = false;
+      btnMaster.disabled = false;
+
+      document.getElementById('fileStatusText').textContent =
+        `${displayName.toUpperCase()} // ${buffer.numberOfChannels}CH @ ${buffer.sampleRate}Hz`;
+      document.getElementById('trackChannelInfo').textContent =
+        `${buffer.numberOfChannels === 1 ? 'Mono' : 'Stereo'} ${buffer.sampleRate}Hz`;
+
+      const badge = document.getElementById('badgeMasteredState');
+      badge.textContent = 'RAW INPUT';
+      badge.className = 'px-1.5 py-0.5 text-[9px] font-mono bg-slate-800 text-slate-300 rounded';
+
+      resetStepCardsUI();
+      computeWaveformPeaks();
+      updateSignalMetrics();
+      updateTransportTimecodes();
+      drawWaveform();
+    }
+
+    function updateSignalMetrics() {
+      if (!currentBuffer) return;
+      let maxPeak = 0;
+      let sumSquares = 0;
+      let sumSamples = 0;
+      const totalCount = currentBuffer.length * currentBuffer.numberOfChannels;
+
+      for (let ch = 0; ch < currentBuffer.numberOfChannels; ch++) {
+        const data = currentBuffer.getChannelData(ch);
+        for (let i = 0; i < data.length; i++) {
+          const s = data[i];
+          const abs = Math.abs(s);
+          if (abs > maxPeak) maxPeak = abs;
+          sumSquares += s * s;
+          sumSamples += s;
+        }
+      }
+
+      const peakDb = linearToDb(maxPeak);
+      const rmsDb = linearToDb(Math.sqrt(sumSquares / Math.max(1, totalCount)));
+      const dcOffset = sumSamples / Math.max(1, totalCount);
+
+      document.getElementById('metricPeakDb').textContent = `${peakDb.toFixed(2)} dB`;
+      document.getElementById('metricRmsDb').textContent = `${rmsDb.toFixed(2)} dB`;
+      document.getElementById('metricDcOffset').textContent = `${dcOffset >= 0 ? '+' : ''}${dcOffset.toFixed(4)}`;
+      document.getElementById('metricSampleRate').textContent = `${currentBuffer.sampleRate} Hz`;
+    }
+
+    function computeWaveformPeaks() {
+      if (!currentBuffer) return;
+      const buckets = 1200;
+      cachedPeaksL = new Array(buckets);
+      cachedPeaksR = new Array(buckets);
+
+      const ch0 = currentBuffer.getChannelData(0);
+      const ch1 = currentBuffer.numberOfChannels > 1 ? currentBuffer.getChannelData(1) : ch0;
+      const samplesPerBucket = Math.max(1, Math.floor(currentBuffer.length / buckets));
+
+      for (let b = 0; b < buckets; b++) {
+        const start = b * samplesPerBucket;
+        const end = Math.min(currentBuffer.length, start + samplesPerBucket);
+        let minL = 1.0, maxL = -1.0;
+        let minR = 1.0, maxR = -1.0;
+
+        for (let i = start; i < end; i++) {
+          const vL = ch0[i];
+          const vR = ch1[i];
+          if (vL < minL) minL = vL;
+          if (vL > maxL) maxL = vL;
+          if (vR < minR) minR = vR;
+          if (vR > maxR) maxR = vR;
+        }
+        if (minL > maxL) { minL = 0; maxL = 0; }
+        if (minR > maxR) { minR = 0; maxR = 0; }
+        cachedPeaksL[b] = { min: minL, max: maxL };
+        cachedPeaksR[b] = { min: minR, max: maxR };
+      }
+    }
+
+    function getFadeHandlePositions(width, height) {
+      const rulerHeight = 24;
+      const topY = rulerHeight + 14;
+      if (!currentBuffer || currentBuffer.duration <= 0) {
+        return {
+          fadeInX: 40,
+          fadeInY: topY,
+          fadeOutX: width - 80,
+          fadeOutY: topY,
+          rulerHeight
+        };
+      }
+      const dur = currentBuffer.duration;
+      const fadeInX = Math.max(8, Math.min(width - 20, (masterConfig.fadeInSec / dur) * width));
+      const fadeOutX = Math.max(20, Math.min(width - 8, ((dur - masterConfig.fadeOutSec) / dur) * width));
+      return {
+        fadeInX,
+        fadeInY: topY,
+        fadeOutX,
+        fadeOutY: topY,
+        rulerHeight
+      };
+    }
+
+    function drawWaveform() {
+      const dpr = window.devicePixelRatio || 1;
+      const rect = waveformContainer.getBoundingClientRect();
+      const width = Math.max(300, rect.width);
+      const height = Math.max(200, rect.height);
+
+      if (waveformCanvas.width !== Math.floor(width * dpr) || waveformCanvas.height !== Math.floor(height * dpr)) {
+        waveformCanvas.width = Math.floor(width * dpr);
+        waveformCanvas.height = Math.floor(height * dpr);
+      }
+
+      const ctx = waveformCanvas.getContext('2d');
+      ctx.save();
+      ctx.scale(dpr, dpr);
+
+      // 1. Background Grid
+      ctx.fillStyle = '#05070d';
+      ctx.fillRect(0, 0, width, height);
+
+      const rulerHeight = 24;
+      const waveHeight = height - rulerHeight;
+      const chHeight = waveHeight / 2;
+      const centerL = rulerHeight + chHeight * 0.5;
+      const centerR = rulerHeight + chHeight * 1.5;
+
+      // Subtle Oscilloscope Grid Lines
+      ctx.strokeStyle = 'rgba(0, 240, 255, 0.06)';
+      ctx.lineWidth = 1;
+      for (let x = 0; x < width; x += 40) {
+        ctx.beginPath();
+        ctx.moveTo(x, rulerHeight);
+        ctx.lineTo(x, height);
+        ctx.stroke();
+      }
+      for (let y = rulerHeight; y < height; y += 30) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(width, y);
+        ctx.stroke();
+      }
+
+      // Channel divider & 0.0 center lines
+      ctx.strokeStyle = 'rgba(0, 240, 255, 0.22)';
+      ctx.beginPath();
+      ctx.moveTo(0, rulerHeight + chHeight);
+      ctx.lineTo(width, rulerHeight + chHeight);
+      ctx.stroke();
+
+      ctx.strokeStyle = 'rgba(0, 240, 255, 0.14)';
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      ctx.moveTo(0, centerL);
+      ctx.lineTo(width, centerL);
+      ctx.moveTo(0, centerR);
+      ctx.lineTo(width, centerR);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // 2. Top Timeline Ruler
+      ctx.fillStyle = '#0a0e18';
+      ctx.fillRect(0, 0, width, rulerHeight);
+      ctx.strokeStyle = 'rgba(0, 240, 255, 0.3)';
+      ctx.beginPath();
+      ctx.moveTo(0, rulerHeight);
+      ctx.lineTo(width, rulerHeight);
+      ctx.stroke();
+
+      if (currentBuffer && cachedPeaksL.length > 0) {
+        const dur = currentBuffer.duration;
+        const stepSec = dur <= 10 ? 1 : dur <= 30 ? 2 : dur <= 90 ? 5 : 15;
+        ctx.fillStyle = '#94a3b8';
+        ctx.font = '10px "JetBrains Mono", monospace';
+        for (let s = 0; s <= dur; s += stepSec) {
+          const x = (s / dur) * width;
+          ctx.strokeStyle = 'rgba(0, 240, 255, 0.35)';
+          ctx.beginPath();
+          ctx.moveTo(x, rulerHeight - 6);
+          ctx.lineTo(x, rulerHeight);
+          ctx.stroke();
+          ctx.fillText(`${s}s`, x + 3, 14);
+        }
+
+        // 3. Draw Stereo Waveform (with live visual preview of Fade-In and Fade-Out envelope)
+        const buckets = cachedPeaksL.length;
+        const halfAmp = chHeight * 0.45;
+
+        for (let px = 0; px < width; px++) {
+          const bIdx = Math.min(buckets - 1, Math.floor((px / width) * buckets));
+          const pL = cachedPeaksL[bIdx];
+          const pR = cachedPeaksR[bIdx];
+
+          // Calculate envelope gain at this pixel so dragging the dots visibly shapes the soundwave
+          const timeAtPx = (px / width) * dur;
+          let envGain = 1.0;
+          if (!isMastered) {
+            if (masterConfig.fadeInSec > 0 && timeAtPx < masterConfig.fadeInSec) {
+              envGain *= (timeAtPx / masterConfig.fadeInSec);
+            }
+            if (masterConfig.fadeOutSec > 0 && timeAtPx > (dur - masterConfig.fadeOutSec)) {
+              envGain *= Math.max(0, (dur - timeAtPx) / masterConfig.fadeOutSec);
+            }
+          }
+
+          // Outer peak glow (Audacity dark cyan/magenta)
+          ctx.strokeStyle = isMastered ? 'rgba(0, 255, 157, 0.72)' : 'rgba(0, 240, 255, 0.75)';
+          ctx.beginPath();
+          ctx.moveTo(px, centerL - pL.max * halfAmp * envGain);
+          ctx.lineTo(px, centerL - pL.min * halfAmp * envGain);
+          ctx.stroke();
+
+          ctx.strokeStyle = isMastered ? 'rgba(0, 240, 255, 0.72)' : 'rgba(184, 41, 255, 0.75)';
+          ctx.beginPath();
+          ctx.moveTo(px, centerR - pR.max * halfAmp * envGain);
+          ctx.lineTo(px, centerR - pR.min * halfAmp * envGain);
+          ctx.stroke();
+
+          // Inner RMS core
+          ctx.strokeStyle = isMastered ? 'rgba(255, 255, 255, 0.45)' : 'rgba(255, 255, 255, 0.35)';
+          ctx.beginPath();
+          ctx.moveTo(px, centerL - pL.max * halfAmp * 0.5 * envGain);
+          ctx.lineTo(px, centerL - pL.min * halfAmp * 0.5 * envGain);
+          ctx.moveTo(px, centerR - pR.max * halfAmp * 0.5 * envGain);
+          ctx.lineTo(px, centerR - pR.min * halfAmp * 0.5 * envGain);
+          ctx.stroke();
+        }
+
+        // 4. Draw Fade-In (Top-Left) and Fade-Out (Top-Right) Envelope Overlay & Control Dots
+        const { fadeInX, fadeInY, fadeOutX, fadeOutY } = getFadeHandlePositions(width, height);
+
+        // Shaded Fade-In Zone
+        ctx.fillStyle = 'rgba(0, 240, 255, 0.08)';
+        ctx.beginPath();
+        ctx.moveTo(0, height);
+        ctx.lineTo(0, rulerHeight);
+        ctx.lineTo(fadeInX, rulerHeight);
+        ctx.closePath();
+        ctx.fill();
+
+        // Shaded Fade-Out Zone
+        ctx.fillStyle = 'rgba(255, 0, 85, 0.09)';
+        ctx.beginPath();
+        ctx.moveTo(width, height);
+        ctx.lineTo(width, rulerHeight);
+        ctx.lineTo(fadeOutX, rulerHeight);
+        ctx.closePath();
+        ctx.fill();
+
+        // Audacity Envelope Gain Line (0 -> FadeIn Dot -> FadeOut Dot -> End)
+        ctx.strokeStyle = '#fcee0a';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(0, height - 4);
+        ctx.lineTo(fadeInX, fadeInY);
+        ctx.lineTo(fadeOutX, fadeOutY);
+        ctx.lineTo(width, height - 4);
+        ctx.stroke();
+
+        // TOP-LEFT FADE-IN CONTROL DOT
+        const fadeInRadius = (draggingHandle === 'fadeIn' || hoverHandle === 'fadeIn') ? 9 : 7;
+        ctx.save();
+        ctx.fillStyle = '#00f0ff';
+        ctx.shadowColor = '#00f0ff';
+        ctx.shadowBlur = 12;
+        ctx.beginPath();
+        ctx.arc(fadeInX, fadeInY, fadeInRadius, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = '#05070d';
+        ctx.stroke();
+        ctx.restore();
+
+        // Label next to Top-Left Fade-In Dot
+        ctx.fillStyle = '#00f0ff';
+        ctx.font = 'bold 10px "JetBrains Mono", monospace';
+        ctx.fillText(`IN: ${masterConfig.fadeInSec.toFixed(2)}s`, Math.min(width - 80, fadeInX + 11), fadeInY + 4);
+
+        // TOP-RIGHT FADE-OUT CONTROL DOT
+        const fadeOutRadius = (draggingHandle === 'fadeOut' || hoverHandle === 'fadeOut') ? 9 : 7;
+        ctx.save();
+        ctx.fillStyle = '#ff0055';
+        ctx.shadowColor = '#ff0055';
+        ctx.shadowBlur = 12;
+        ctx.beginPath();
+        ctx.arc(fadeOutX, fadeOutY, fadeOutRadius, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = '#05070d';
+        ctx.stroke();
+        ctx.restore();
+
+        // Label next to Top-Right Fade-Out Dot
+        ctx.fillStyle = '#ff0055';
+        ctx.font = 'bold 10px "JetBrains Mono", monospace';
+        const outLabel = `OUT: ${masterConfig.fadeOutSec.toFixed(2)}s`;
+        const outTextWidth = ctx.measureText(outLabel).width;
+        ctx.fillText(outLabel, Math.max(10, fadeOutX - outTextWidth - 11), fadeOutY + 4);
+
+        // 5. PLAYHEAD TRACKING LINE
+        const currentPos = getCurrentPlayheadTime();
+        const playheadX = Math.max(0, Math.min(width, (currentPos / dur) * width));
+
+        ctx.save();
+        ctx.strokeStyle = '#fcee0a';
+        ctx.lineWidth = 2;
+        ctx.shadowColor = '#fcee0a';
+        ctx.shadowBlur = 8;
+        ctx.beginPath();
+        ctx.moveTo(playheadX, 0);
+        ctx.lineTo(playheadX, height);
+        ctx.stroke();
+
+        // Playhead top triangle cap
+        ctx.fillStyle = '#fcee0a';
+        ctx.beginPath();
+        ctx.moveTo(playheadX - 6, 0);
+        ctx.lineTo(playheadX + 6, 0);
+        ctx.lineTo(playheadX, 10);
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+      }
+
+      ctx.restore();
+    }
+
+    function syncFadeReadouts() {
+      fadeInReadout.textContent = `${masterConfig.fadeInSec.toFixed(2)}s`;
+      fadeOutReadout.textContent = `${masterConfig.fadeOutSec.toFixed(2)}s`;
+      inputFadeInSec.value = masterConfig.fadeInSec.toFixed(2);
+      inputFadeOutSec.value = masterConfig.fadeOutSec.toFixed(2);
+      document.getElementById('step2Summary').textContent = `Duration: ${masterConfig.fadeInSec.toFixed(2)}s (Top-Left Dot)`;
+      document.getElementById('step3Summary').textContent = `Duration: ${masterConfig.fadeOutSec.toFixed(2)}s (Top-Right Dot)`;
+    }
+
+    function getCanvasRelativeCoords(evt) {
+      const rect = waveformCanvas.getBoundingClientRect();
+      const clientX = evt.touches ? evt.touches[0].clientX : evt.clientX;
+      const clientY = evt.touches ? evt.touches[0].clientY : evt.clientY;
+      return {
+        x: Math.max(0, Math.min(rect.width, clientX - rect.left)),
+        y: Math.max(0, Math.min(rect.height, clientY - rect.top)),
+        width: rect.width,
+        height: rect.height
+      };
+    }
+
+    function onWaveformPointerDown(evt) {
+      if (!currentBuffer) return;
+      const { x, y, width, height } = getCanvasRelativeCoords(evt);
+      const { fadeInX, fadeInY, fadeOutX, fadeOutY } = getFadeHandlePositions(width, height);
+
+      const distFadeIn = Math.hypot(x - fadeInX, y - fadeInY);
+      const distFadeOut = Math.hypot(x - fadeOutX, y - fadeOutY);
+
+      if (distFadeIn <= 16) {
+        draggingHandle = 'fadeIn';
+        dragFadeTooltip.classList.remove('hidden');
+        dragFadeTooltip.textContent = `Fade-In: ${masterConfig.fadeInSec.toFixed(2)}s`;
+        evt.preventDefault();
+        return;
+      }
+      if (distFadeOut <= 16) {
+        draggingHandle = 'fadeOut';
+        dragFadeTooltip.classList.remove('hidden');
+        dragFadeTooltip.textContent = `Fade-Out: ${masterConfig.fadeOutSec.toFixed(2)}s`;
+        evt.preventDefault();
+        return;
+      }
+
+      // Otherwise clicking on the soundwave moves the tracking line playhead
+      draggingHandle = 'playhead';
+      seekToRatio(x / width);
+    }
+
+    function onWaveformPointerMove(evt) {
+      if (!currentBuffer) return;
+      const { x, y, width, height } = getCanvasRelativeCoords(evt);
+      const dur = currentBuffer.duration;
+
+      if (!draggingHandle) {
+        const { fadeInX, fadeInY, fadeOutX, fadeOutY } = getFadeHandlePositions(width, height);
+        const distIn = Math.hypot(x - fadeInX, y - fadeInY);
+        const distOut = Math.hypot(x - fadeOutX, y - fadeOutY);
+        const prevHover = hoverHandle;
+
+        if (distIn <= 16) {
+          hoverHandle = 'fadeIn';
+          waveformContainer.style.cursor = 'ew-resize';
+        } else if (distOut <= 16) {
+          hoverHandle = 'fadeOut';
+          waveformContainer.style.cursor = 'ew-resize';
+        } else {
+          hoverHandle = null;
+          waveformContainer.style.cursor = 'crosshair';
+        }
+        if (prevHover !== hoverHandle) drawWaveform();
+        return;
+      }
+
+      if (draggingHandle === 'fadeIn') {
+        // Dragging left reduces fade-in, dragging right increases fade-in
+        const maxFadeIn = Math.max(0, dur - masterConfig.fadeOutSec - 0.05);
+        const newFadeIn = Math.max(0, Math.min(maxFadeIn, (x / width) * dur));
+        masterConfig.fadeInSec = Number(newFadeIn.toFixed(2));
+        syncFadeReadouts();
+        dragFadeTooltip.textContent = `Fade-In: ${masterConfig.fadeInSec.toFixed(2)}s`;
+        drawWaveform();
+      } else if (draggingHandle === 'fadeOut') {
+        // Opposite of Fade-In: dragging left increases fade-out, dragging right reduces fade-out
+        const maxFadeOut = Math.max(0, dur - masterConfig.fadeInSec - 0.05);
+        const newFadeOut = Math.max(0, Math.min(maxFadeOut, ((width - x) / width) * dur));
+        masterConfig.fadeOutSec = Number(newFadeOut.toFixed(2));
+        syncFadeReadouts();
+        dragFadeTooltip.textContent = `Fade-Out: ${masterConfig.fadeOutSec.toFixed(2)}s`;
+        drawWaveform();
+      } else if (draggingHandle === 'playhead') {
+        seekToRatio(x / width);
+      }
+    }
+
+    function onWaveformPointerUp() {
+      if (draggingHandle === 'fadeIn' || draggingHandle === 'fadeOut') {
+        logConsole(
+          `Updated envelope handles -> Fade-In: ${masterConfig.fadeInSec.toFixed(2)}s | Fade-Out: ${masterConfig.fadeOutSec.toFixed(2)}s`,
+          'text-cyber-cyan'
+        );
+      }
+      draggingHandle = null;
+      dragFadeTooltip.classList.add('hidden');
+      drawWaveform();
+    }
+
+    waveformCanvas.addEventListener('mousedown', onWaveformPointerDown);
+    window.addEventListener('mousemove', onWaveformPointerMove);
+    window.addEventListener('mouseup', onWaveformPointerUp);
+
+    waveformCanvas.addEventListener('touchstart', onWaveformPointerDown, { passive: false });
+    window.addEventListener('touchmove', (e) => {
+      if (draggingHandle) onWaveformPointerMove(e);
+    }, { passive: false });
+    window.addEventListener('touchend', onWaveformPointerUp);
+
+    // Sync side number inputs with fade dots
+    inputFadeInSec.addEventListener('change', () => {
+      const val = Math.max(0, parseFloat(inputFadeInSec.value) || 0);
+      masterConfig.fadeInSec = val;
+      syncFadeReadouts();
+      drawWaveform();
+    });
+    inputFadeOutSec.addEventListener('change', () => {
+      const val = Math.max(0, parseFloat(inputFadeOutSec.value) || 0);
+      masterConfig.fadeOutSec = val;
+      syncFadeReadouts();
+      drawWaveform();
+    });
+
+    function getCurrentPlayheadTime() {
+      if (!currentBuffer) return 0;
+      if (isPlaying && audioCtx) {
+        const elapsed = audioCtx.currentTime - startTime;
+        return Math.min(currentBuffer.duration, elapsed);
+      }
+      return pauseOffset;
+    }
+
+    function updateTransportTimecodes() {
+      const cur = getCurrentPlayheadTime();
+      const total = currentBuffer ? currentBuffer.duration : 0;
+      timecodeCurrent.textContent = formatTimecode(cur);
+      timecodeDuration.textContent = formatTimecode(total);
+    }
+
+    function updatePlayPauseButtonUI() {
+      if (isPlaying) {
+        playPauseIcon.className = 'fa-solid fa-pause';
+        playPauseLabel.textContent = 'Pause';
+        btnPlayPause.classList.add('bg-pink-500/25', 'border-cyber-magenta', 'text-cyber-magenta');
+        btnPlayPause.classList.remove('bg-cyan-500/20', 'border-cyber-cyan', 'text-cyber-cyan');
+      } else {
+        playPauseIcon.className = 'fa-solid fa-play';
+        playPauseLabel.textContent = 'Play';
+        btnPlayPause.classList.remove('bg-pink-500/25', 'border-cyber-magenta', 'text-cyber-magenta');
+        btnPlayPause.classList.add('bg-cyan-500/20', 'border-cyber-cyan', 'text-cyber-cyan');
+      }
+    }
+
+    function startPlayback() {
+      if (!currentBuffer) return;
+      const ctx = getAudioContext();
+
+      if (pauseOffset >= currentBuffer.duration - 0.01) {
+        pauseOffset = 0;
+      }
+
+      if (sourceNode) {
+        try { sourceNode.onended = null; sourceNode.stop(); } catch (e) {}
+      }
+
+      sourceNode = ctx.createBufferSource();
+      sourceNode.buffer = currentBuffer;
+      sourceNode.connect(ctx.destination);
+
+      startTime = ctx.currentTime - pauseOffset;
+      isPlaying = true;
+      updatePlayPauseButtonUI();
+
+      sourceNode.onended = () => {
+        if (isPlaying) {
+          isPlaying = false;
+          pauseOffset = 0;
+          updatePlayPauseButtonUI();
+          cancelAnimationFrame(animFrameId);
+          updateTransportTimecodes();
+          drawWaveform();
+        }
+      };
+
+      sourceNode.start(0, pauseOffset);
+      const tick = () => {
+        if (!isPlaying) return;
+        updateTransportTimecodes();
+        drawWaveform();
+        animFrameId = requestAnimationFrame(tick);
+      };
+      animFrameId = requestAnimationFrame(tick);
+    }
+
+    function pausePlayback() {
+      if (!isPlaying) return;
+      if (audioCtx) {
+        pauseOffset = Math.min(currentBuffer.duration, audioCtx.currentTime - startTime);
+      }
+      isPlaying = false;
+      if (sourceNode) {
+        try { sourceNode.onended = null; sourceNode.stop(); } catch (e) {}
+        sourceNode = null;
+      }
+      cancelAnimationFrame(animFrameId);
+      updatePlayPauseButtonUI();
+      updateTransportTimecodes();
+      drawWaveform();
+    }
+
+    function stopPlayback() {
+      if (isPlaying) {
+        pausePlayback();
+      }
+      pauseOffset = 0;
+      updatePlayPauseButtonUI();
+      updateTransportTimecodes();
+      drawWaveform();
+    }
+
+    function togglePlayPause() {
+      if (!currentBuffer) return;
+      if (isPlaying) {
+        pausePlayback();
+      } else {
+        startPlayback();
+      }
+    }
+
+    function seekToStart() {
+      if (!currentBuffer) return;
+      const wasPlaying = isPlaying;
+      if (wasPlaying) pausePlayback();
+      pauseOffset = 0;
+      updateTransportTimecodes();
+      drawWaveform();
+      if (wasPlaying) startPlayback();
+    }
+
+    function seekToRatio(ratio) {
+      if (!currentBuffer) return;
+      const clamped = Math.max(0, Math.min(1, ratio));
+      const targetSec = clamped * currentBuffer.duration;
+      const wasPlaying = isPlaying;
+      if (wasPlaying) pausePlayback();
+      pauseOffset = targetSec;
+      updateTransportTimecodes();
+      drawWaveform();
+      if (wasPlaying) startPlayback();
+    }
+
+    function openModal(type) {
+      activeModal = type;
+      if (type === 'normalize') {
+        document.getElementById('normRemoveDc').checked = masterConfig.normalize.removeDcOffset;
+        document.getElementById('normPeakEnabled').checked = masterConfig.normalize.normalizePeak;
+        document.getElementById('normPeakDbInput').value = masterConfig.normalize.targetDb;
+        document.getElementById('normIndependentChannels').checked = masterConfig.normalize.independentChannels;
+        const m = document.getElementById('modalNormalize');
+        m.classList.remove('hidden');
+        m.classList.add('flex');
+        setTimeout(() => document.getElementById('normPeakDbInput').focus(), 30);
+      } else if (type === 'compressor') {
+        document.getElementById('compThreshold').value = masterConfig.compressor.thresholdDb;
+        document.getElementById('compMakeupGain').value = masterConfig.compressor.makeupGainDb;
+        document.getElementById('compKneeWidth').value = masterConfig.compressor.kneeWidthDb;
+        document.getElementById('compRatio').value = masterConfig.compressor.ratio;
+        document.getElementById('compLookahead').value = masterConfig.compressor.lookaheadMs;
+        document.getElementById('compAttack').value = masterConfig.compressor.attackMs;
+        document.getElementById('compRelease').value = masterConfig.compressor.releaseMs;
+        const m = document.getElementById('modalCompressor');
+        m.classList.remove('hidden');
+        m.classList.add('flex');
+        setTimeout(() => document.getElementById('compThreshold').focus(), 30);
+      } else if (type === 'limiter') {
+        document.getElementById('limThreshold').value = masterConfig.limiter.thresholdDb;
+        document.getElementById('limMakeupTarget').value = masterConfig.limiter.makeupTargetDb;
+        document.getElementById('limKneeWidth').value = masterConfig.limiter.kneeWidthDb;
+        document.getElementById('limLookahead').value = masterConfig.limiter.lookaheadMs;
+        document.getElementById('limRelease').value = masterConfig.limiter.releaseMs;
+        const m = document.getElementById('modalLimiter');
+        m.classList.remove('hidden');
+        m.classList.add('flex');
+        setTimeout(() => document.getElementById('limThreshold').focus(), 30);
+      }
+    }
+
+    function closeActiveModal() {
+      ['modalNormalize', 'modalCompressor', 'modalLimiter'].forEach(id => {
+        const el = document.getElementById(id);
+        el.classList.add('hidden');
+        el.classList.remove('flex');
+      });
+      activeModal = null;
+    }
+
+    function saveNormalizeModal() {
+      masterConfig.normalize.removeDcOffset = document.getElementById('normRemoveDc').checked;
+      masterConfig.normalize.normalizePeak = document.getElementById('normPeakEnabled').checked;
+      const parsedDb = parseFloat(document.getElementById('normPeakDbInput').value);
+      if (!isNaN(parsedDb)) {
+        masterConfig.normalize.targetDb = parsedDb;
+      }
+      masterConfig.normalize.independentChannels = document.getElementById('normIndependentChannels').checked;
+
+      const summary = `DC: ${masterConfig.normalize.removeDcOffset ? 'ON' : 'OFF'} | Peak: ${masterConfig.normalize.targetDb} dB`;
+      document.getElementById('step4Summary').textContent = summary;
+      document.getElementById('step6Summary').textContent = summary;
+      document.getElementById('step8Summary').textContent = summary;
+
+      closeActiveModal();
+      logConsole(`Saved Normalize config -> DC Offset: ${masterConfig.normalize.removeDcOffset}, Peak: ${masterConfig.normalize.targetDb} dB, Indep Stereo: ${masterConfig.normalize.independentChannels}`, 'text-cyber-cyan');
+      showToast('Normalize Settings Saved');
+    }
+
+    function saveCompressorModal() {
+      const c = masterConfig.compressor;
+      c.thresholdDb = parseFloat(document.getElementById('compThreshold').value) || -16.8;
+      c.makeupGainDb = parseFloat(document.getElementById('compMakeupGain').value) || 2.5;
+      c.kneeWidthDb = Math.max(0, parseFloat(document.getElementById('compKneeWidth').value) || 4.9);
+      c.ratio = Math.max(1.0, parseFloat(document.getElementById('compRatio').value) || 1.2);
+      c.lookaheadMs = Math.max(0, parseFloat(document.getElementById('compLookahead').value) || 100.4);
+      c.attackMs = Math.max(0.1, parseFloat(document.getElementById('compAttack').value) || 49.6);
+      c.releaseMs = Math.max(1, parseFloat(document.getElementById('compRelease').value) || 17.9);
+
+      document.getElementById('step5Summary').textContent =
+        `${c.thresholdDb}dB | ${c.ratio}:1 | +${c.makeupGainDb}dB`;
+
+      closeActiveModal();
+      logConsole(`Saved Compressor config -> Thresh: ${c.thresholdDb}dB, Ratio: ${c.ratio}:1, Gain: ${c.makeupGainDb}dB, Knee: ${c.kneeWidthDb}dB`, 'text-purple-400');
+      showToast('Compressor Settings Saved');
+    }
+
+    function saveLimiterModal() {
+      const l = masterConfig.limiter;
+      l.thresholdDb = parseFloat(document.getElementById('limThreshold').value);
+      if (isNaN(l.thresholdDb)) l.thresholdDb = -2.0;
+      l.makeupTargetDb = parseFloat(document.getElementById('limMakeupTarget').value);
+      if (isNaN(l.makeupTargetDb)) l.makeupTargetDb = -1.0;
+      l.kneeWidthDb = Math.max(0, parseFloat(document.getElementById('limKneeWidth').value) || 2.0);
+      l.lookaheadMs = Math.max(0, parseFloat(document.getElementById('limLookahead').value) || 1.0);
+      l.releaseMs = Math.max(1, parseFloat(document.getElementById('limRelease').value) || 20.0);
+
+      document.getElementById('step7Summary').textContent =
+        `Thresh: ${l.thresholdDb}dB | Target: ${l.makeupTargetDb}dB`;
+
+      closeActiveModal();
+      logConsole(`Saved Limiter config -> Thresh: ${l.thresholdDb}dB, Target: ${l.makeupTargetDb}dB, Knee: ${l.kneeWidthDb}dB`, 'text-cyber-yellow');
+      showToast('Limiter Settings Saved');
+    }
+
+    function saveCurrentActiveModal() {
+      if (activeModal === 'normalize') saveNormalizeModal();
+      else if (activeModal === 'compressor') saveCompressorModal();
+      else if (activeModal === 'limiter') saveLimiterModal();
+    }
+
+    // STEP 1: Eliminate silence from start and end of song
+    function dspStep1TrimSilence(buffer) {
+      const numCh = buffer.numberOfChannels;
+      const len = buffer.length;
+      const threshold = 0.0012; // ~ -58 dB silence gate
+
+      let startSample = 0;
+      let endSample = len - 1;
+
+      outerStart:
+      for (let i = 0; i < len; i++) {
+        for (let ch = 0; ch < numCh; ch++) {
+          if (Math.abs(buffer.getChannelData(ch)[i]) > threshold) {
+            startSample = i;
+            break outerStart;
+          }
+        }
+      }
+
+      outerEnd:
+      for (let i = len - 1; i >= startSample; i--) {
+        for (let ch = 0; ch < numCh; ch++) {
+          if (Math.abs(buffer.getChannelData(ch)[i]) > threshold) {
+            endSample = i;
+            break outerEnd;
+          }
+        }
+      }
+
+      const trimmedLength = Math.max(1, endSample - startSample + 1);
+      const ctx = getAudioContext();
+      const out = ctx.createBuffer(numCh, trimmedLength, buffer.sampleRate);
+
+      for (let ch = 0; ch < numCh; ch++) {
+        const src = buffer.getChannelData(ch);
+        const dst = out.getChannelData(ch);
+        dst.set(src.subarray(startSample, endSample + 1));
+      }
+
+      const removedSec = ((len - trimmedLength) / buffer.sampleRate).toFixed(3);
+      return { buffer: out, removedSec };
+    }
+
+    // STEP 2: Apply Fade-In to start of song
+    function dspStep2FadeIn(buffer, fadeInSec) {
+      const fadeSamples = Math.min(buffer.length, Math.floor(fadeInSec * buffer.sampleRate));
+      if (fadeSamples <= 1) return;
+      for (let ch = 0; ch < buffer.numberOfChannels; ch++) {
+        const data = buffer.getChannelData(ch);
+        for (let i = 0; i < fadeSamples; i++) {
+          const gain = i / fadeSamples;
+          data[i] *= gain;
+        }
+      }
+    }
+
+    // STEP 3: Apply Fade-Out to end of song
+    function dspStep3FadeOut(buffer, fadeOutSec) {
+      const fadeSamples = Math.min(buffer.length, Math.floor(fadeOutSec * buffer.sampleRate));
+      if (fadeSamples <= 1) return;
+      const startIdx = buffer.length - fadeSamples;
+      for (let ch = 0; ch < buffer.numberOfChannels; ch++) {
+        const data = buffer.getChannelData(ch);
+        for (let i = 0; i < fadeSamples; i++) {
+          const gain = 1.0 - (i / fadeSamples);
+          data[startIdx + i] *= gain;
+        }
+      }
+    }
+
+    // STEPS 4, 6, 8: Normalize (Remove DC Offset + Peak Amplitude Normalization + Stereo Link/Independent)
+    function dspNormalize(buffer, cfg) {
+      const numCh = buffer.numberOfChannels;
+      const len = buffer.length;
+
+      // 1. Remove DC offset (center on 0.0 vertically)
+      if (cfg.removeDcOffset) {
+        for (let ch = 0; ch < numCh; ch++) {
+          const data = buffer.getChannelData(ch);
+          let sum = 0;
+          for (let i = 0; i < len; i++) sum += data[i];
+          const mean = sum / len;
+          for (let i = 0; i < len; i++) data[i] -= mean;
+        }
+      }
+
+      // 2. Normalize peak amplitude to target dB
+      if (cfg.normalizePeak) {
+        const targetLinear = dbToLinear(cfg.targetDb);
+
+        if (cfg.independentChannels) {
+          for (let ch = 0; ch < numCh; ch++) {
+            const data = buffer.getChannelData(ch);
+            let peak = 0;
+            for (let i = 0; i < len; i++) {
+              const abs = Math.abs(data[i]);
+              if (abs > peak) peak = abs;
+            }
+            if (peak > 0.000001) {
+              const scale = targetLinear / peak;
+              for (let i = 0; i < len; i++) data[i] *= scale;
+            }
+          }
+        } else {
+          // Linked stereo peak normalization
+          let globalPeak = 0;
+          for (let ch = 0; ch < numCh; ch++) {
+            const data = buffer.getChannelData(ch);
+            for (let i = 0; i < len; i++) {
+              const abs = Math.abs(data[i]);
+              if (abs > globalPeak) globalPeak = abs;
+            }
+          }
+          if (globalPeak > 0.000001) {
+            const scale = targetLinear / globalPeak;
+            for (let ch = 0; ch < numCh; ch++) {
+              const data = buffer.getChannelData(ch);
+              for (let i = 0; i < len; i++) data[i] *= scale;
+            }
+          }
+        }
+      }
+    }
+
+    // STEP 5: Lookahead Soft-Knee Compressor DSP
+    function dspStep5Compressor(buffer, cfg) {
+      const sr = buffer.sampleRate;
+      const len = buffer.length;
+      const numCh = buffer.numberOfChannels;
+
+      const T = cfg.thresholdDb;
+      const R = Math.max(1.0, cfg.ratio);
+      const W = Math.max(0.0, cfg.kneeWidthDb);
+      const makeupLinear = dbToLinear(cfg.makeupGainDb);
+
+      const lookaheadSamples = Math.min(len - 1, Math.max(0, Math.floor((cfg.lookaheadMs / 1000) * sr)));
+      const attackCoeff = Math.exp(-1.0 / Math.max(1, (cfg.attackMs / 1000) * sr));
+      const releaseCoeff = Math.exp(-1.0 / Math.max(1, (cfg.releaseMs / 1000) * sr));
+
+      const chData = [];
+      for (let ch = 0; ch < numCh; ch++) chData.push(buffer.getChannelData(ch));
+
+      let envLinear = 0;
+
+      for (let i = 0; i < len; i++) {
+        const detectIdx = Math.min(len - 1, i + lookaheadSamples);
+        let peakAbs = 0;
+        for (let ch = 0; ch < numCh; ch++) {
+          const a = Math.abs(chData[ch][detectIdx]);
+          if (a > peakAbs) peakAbs = a;
+        }
+
+        if (peakAbs > envLinear) {
+          envLinear = attackCoeff * envLinear + (1 - attackCoeff) * peakAbs;
+        } else {
+          envLinear = releaseCoeff * envLinear + (1 - releaseCoeff) * peakAbs;
+        }
+
+        const envDb = linearToDb(envLinear);
+        let gainReductionDb = 0;
+
+        if (W > 0 && (envDb - T) > -W / 2 && (envDb - T) < W / 2) {
+          // Soft knee interpolation
+          const x = envDb - T + W / 2;
+          gainReductionDb = ((1 / R - 1) * (x * x)) / (2 * W);
+        } else if (envDb >= T + W / 2) {
+          gainReductionDb = (T + (envDb - T) / R) - envDb;
+        }
+
+        const totalGain = dbToLinear(gainReductionDb) * makeupLinear;
+        for (let ch = 0; ch < numCh; ch++) {
+          chData[ch][i] *= totalGain;
+        }
+      }
+    }
+
+    // STEP 7: Lookahead Brickwall Soft-Knee Limiter DSP
+    function dspStep7Limiter(buffer, cfg) {
+      const sr = buffer.sampleRate;
+      const len = buffer.length;
+      const numCh = buffer.numberOfChannels;
+
+      const T = cfg.thresholdDb;
+      const targetDb = cfg.makeupTargetDb;
+      const W = Math.max(0.0, cfg.kneeWidthDb);
+      // Make-up gain brings threshold ceiling up to make-up target
+      const makeupDb = targetDb - T;
+      const ceilingLinear = dbToLinear(targetDb);
+
+      const lookaheadSamples = Math.min(len - 1, Math.max(0, Math.floor((cfg.lookaheadMs / 1000) * sr)));
+      const attackCoeff = Math.exp(-1.0 / Math.max(1, 0.0005 * sr)); // Fast lookahead catch
+      const releaseCoeff = Math.exp(-1.0 / Math.max(1, (cfg.releaseMs / 1000) * sr));
+
+      const chData = [];
+      for (let ch = 0; ch < numCh; ch++) chData.push(buffer.getChannelData(ch));
+
+      let envLinear = 0;
+
+      for (let i = 0; i < len; i++) {
+        const detectIdx = Math.min(len - 1, i + lookaheadSamples);
+        let peakAbs = 0;
+        for (let ch = 0; ch < numCh; ch++) {
+          const a = Math.abs(chData[ch][detectIdx]);
+          if (a > peakAbs) peakAbs = a;
+        }
+
+        if (peakAbs > envLinear) {
+          envLinear = attackCoeff * envLinear + (1 - attackCoeff) * peakAbs;
+        } else {
+          envLinear = releaseCoeff * envLinear + (1 - releaseCoeff) * peakAbs;
+        }
+
+        const envDb = linearToDb(envLinear);
+        let grDb = 0;
+
+        if (W > 0 && (envDb - T) > -W / 2 && (envDb - T) < W / 2) {
+          const x = envDb - T + W / 2;
+          grDb = -(x * x) / (2 * W);
+        } else if (envDb >= T + W / 2) {
+          grDb = T - envDb;
+        }
+
+        const gainLinear = dbToLinear(grDb + makeupDb);
+        for (let ch = 0; ch < numCh; ch++) {
+          const sample = chData[ch][i] * gainLinear;
+          // Brickwall safety clamp at ceiling
+          chData[ch][i] = Math.max(-ceilingLinear, Math.min(ceilingLinear, sample));
+        }
+      }
+    }
+
+    function resetStepCardsUI() {
+      document.querySelectorAll('.step-card').forEach(card => {
+        card.classList.remove('border-cyber-green', 'bg-emerald-950/25', 'shadow-[0_0_12px_rgba(0,255,157,0.2)]');
+        card.classList.add('border-slate-800');
+      });
+      const badge = document.getElementById('pipelineStatusBadge');
+      badge.textContent = 'STANDBY // PRESS [M] TO EXECUTE';
+      badge.className = 'font-mono text-[11px] px-2.5 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700';
+    }
+
+    function highlightStepCard(stepNum) {
+      const card = document.querySelector(`.step-card[data-step="${stepNum}"]`);
+      if (card) {
+        card.classList.remove('border-slate-800');
+        card.classList.add('border-cyber-green', 'bg-emerald-950/25', 'shadow-[0_0_12px_rgba(0,255,157,0.2)]');
+      }
+    }
+
+    async function runFullMasteringPipeline() {
+      if (!originalBuffer) {
+        showToast('Please upload a WAV/MP3 or load the Synth Demo first!');
+        return;
+      }
+
+      stopPlayback();
+      resetStepCardsUI();
+
+      const statusBadge = document.getElementById('pipelineStatusBadge');
+      statusBadge.textContent = 'PROCESSING 8-STEP MASTER...';
+      statusBadge.className = 'font-mono text-[11px] px-2.5 py-0.5 rounded bg-pink-950 text-cyber-magenta border border-pink-500 animate-pulse';
+
+      logConsole('=== STARTING 8-STEP AUDACITY-2077 MASTERING SEQUENCE ===', 'text-cyber-magenta font-bold');
+
+      // Work from a fresh clone of originalBuffer so re-running Master with new settings is clean & deterministic
+      let workingBuffer = cloneAudioBuffer(originalBuffer);
+
+      // Step 1: Trim start and end silence
+      const trimResult = dspStep1TrimSilence(workingBuffer);
+      workingBuffer = trimResult.buffer;
+      highlightStepCard(1);
+      logConsole(`Step 1/8: Trimmed ${trimResult.removedSec}s of start/end silence.`, 'text-cyber-cyan');
+
+      // Step 2: Half-second (or custom dot) Fade-In
+      dspStep2FadeIn(workingBuffer, masterConfig.fadeInSec);
+      highlightStepCard(2);
+      logConsole(`Step 2/8: Applied ${masterConfig.fadeInSec.toFixed(2)}s Fade-In to start.`, 'text-cyber-cyan');
+
+      // Step 3: 2-second (or custom dot) Fade-Out
+      dspStep3FadeOut(workingBuffer, masterConfig.fadeOutSec);
+      highlightStepCard(3);
+      logConsole(`Step 3/8: Applied ${masterConfig.fadeOutSec.toFixed(2)}s Fade-Out to end.`, 'text-cyber-cyan');
+
+      // Step 4: Normalize Pass #1
+      dspNormalize(workingBuffer, masterConfig.normalize);
+      highlightStepCard(4);
+      logConsole(`Step 4/8: Normalize #1 (DC Offset: ${masterConfig.normalize.removeDcOffset ? 'Removed' : 'Kept'}, Peak: ${masterConfig.normalize.targetDb} dB).`, 'text-emerald-300');
+
+      // Step 5: Compressor
+      dspStep5Compressor(workingBuffer, masterConfig.compressor);
+      highlightStepCard(5);
+      logConsole(`Step 5/8: Compressor (${masterConfig.compressor.thresholdDb}dB, Ratio ${masterConfig.compressor.ratio}:1, Gain +${masterConfig.compressor.makeupGainDb}dB).`, 'text-purple-300');
+
+      // Step 6: Normalize Pass #2
+      dspNormalize(workingBuffer, masterConfig.normalize);
+      highlightStepCard(6);
+      logConsole(`Step 6/8: Normalize #2 (Peak re-centered to ${masterConfig.normalize.targetDb} dB).`, 'text-emerald-300');
+
+      // Step 7: Limiter
+      dspStep7Limiter(workingBuffer, masterConfig.limiter);
+      highlightStepCard(7);
+      logConsole(`Step 7/8: Limiter (Thresh ${masterConfig.limiter.thresholdDb}dB, Target ${masterConfig.limiter.makeupTargetDb}dB, Release ${masterConfig.limiter.releaseMs}ms).`, 'text-cyber-yellow');
+
+      // Step 8: Final Normalize Pass #3
+      dspNormalize(workingBuffer, masterConfig.normalize);
+      highlightStepCard(8);
+      logConsole(`Step 8/8: Final Normalize #3 completed at ${masterConfig.normalize.targetDb} dB ceiling!`, 'text-cyber-green font-bold');
+
+      currentBuffer = workingBuffer;
+      isMastered = true;
+      pauseOffset = 0;
+
+      const badge = document.getElementById('badgeMasteredState');
+      badge.textContent = 'MASTERED';
+      badge.className = 'px-1.5 py-0.5 text-[9px] font-mono bg-emerald-500/20 text-cyber-green border border-emerald-400/50 rounded font-bold';
+
+      statusBadge.textContent = 'MASTER COMPLETE // READY FOR EXPORT [CTRL+S]';
+      statusBadge.className = 'font-mono text-[11px] px-2.5 py-0.5 rounded bg-emerald-950/80 text-cyber-green border border-emerald-400';
+
+      computeWaveformPeaks();
+      updateSignalMetrics();
+      updateTransportTimecodes();
+      drawWaveform();
+      showToast('8-Step Master Complete! Press Space to audition or Ctrl+S to download WAV.');
+    }
+
+    async function renderBufferWithTargetSettings(sourceBuf, targetChannels, targetSampleRate) {
+      const OfflineCtx = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+      if (OfflineCtx && (sourceBuf.sampleRate !== targetSampleRate || sourceBuf.numberOfChannels !== targetChannels)) {
+        const frameCount = Math.max(1, Math.round(sourceBuf.duration * targetSampleRate));
+        const offlineCtx = new OfflineCtx(targetChannels, frameCount, targetSampleRate);
+        const src = offlineCtx.createBufferSource();
+        src.buffer = sourceBuf;
+        src.connect(offlineCtx.destination);
+        src.start(0);
+        return await offlineCtx.startRendering();
+      }
+      return sourceBuf;
+    }
+
+    function createRiffInfoChunk(meta) {
+      // Build standard WAV RIFF LIST/INFO subchunks from user's CD Baby metadata inputs
+      const fields = [
+        { id: 'INAM', val: meta.title },
+        { id: 'IART', val: meta.artist },
+        { id: 'IPRD', val: meta.album },
+        { id: 'ITRK', val: meta.trackNumber },
+        { id: 'ICRD', val: meta.year },
+        { id: 'IGNR', val: meta.subGenre ? `${meta.genre} / ${meta.subGenre}` : meta.genre },
+        { id: 'ICMT', val: meta.comments },
+        { id: 'ISFT', val: 'ODDIO CITY 2999' }
+      ].filter(f => f.val && String(f.val).trim().length > 0);
+
+      if (fields.length === 0) return new Uint8Array(0);
+
+      const encoder = new TextEncoder();
+      const subChunks = [];
+      let infoPayloadSize = 4; // 'INFO'
+
+      for (const field of fields) {
+        // Null-terminated UTF-8/ASCII string, padded to even byte boundary per RIFF spec
+        const rawBytes = encoder.encode(String(field.val).trim());
+        const strLenWithNull = rawBytes.length + 1;
+        const paddedLen = strLenWithNull % 2 === 1 ? strLenWithNull + 1 : strLenWithNull;
+        const sub = new Uint8Array(8 + paddedLen);
+        const view = new DataView(sub.buffer);
+
+        for (let i = 0; i < 4; i++) sub[i] = field.id.charCodeAt(i);
+        view.setUint32(4, strLenWithNull, true);
+        sub.set(rawBytes, 8);
+        subChunks.push(sub);
+        infoPayloadSize += sub.byteLength;
+      }
+
+      const listChunk = new Uint8Array(8 + infoPayloadSize);
+      const listView = new DataView(listChunk.buffer);
+      listChunk[0] = 'L'.charCodeAt(0);
+      listChunk[1] = 'I'.charCodeAt(0);
+      listChunk[2] = 'S'.charCodeAt(0);
+      listChunk[3] = 'T'.charCodeAt(0);
+      listView.setUint32(4, infoPayloadSize, true);
+      listChunk[8] = 'I'.charCodeAt(0);
+      listChunk[9] = 'N'.charCodeAt(0);
+      listChunk[10] = 'F'.charCodeAt(0);
+      listChunk[11] = 'O'.charCodeAt(0);
+
+      let offset = 12;
+      for (const sub of subChunks) {
+        listChunk.set(sub, offset);
+        offset += sub.byteLength;
+      }
+      return listChunk;
+    }
+
+    function exportBufferToWavBlob(buffer, bitDepth = 16, targetChannels = 2, meta = {}) {
+      const numChannels = targetChannels;
+      const sampleRate = buffer.sampleRate;
+      const format = 1; // PCM
+      const bytesPerSample = bitDepth / 8;
+      const blockAlign = numChannels * bytesPerSample;
+      const dataSize = buffer.length * blockAlign;
+      const paddedDataSize = dataSize % 2 === 1 ? dataSize + 1 : dataSize;
+
+      const infoChunk = createRiffInfoChunk(meta);
+      const totalFileSize = 44 + paddedDataSize + infoChunk.byteLength;
+
+      const arrayBuffer = new ArrayBuffer(totalFileSize);
+      const view = new DataView(arrayBuffer);
+      const uint8 = new Uint8Array(arrayBuffer);
+
+      function writeStr(offset, str) {
+        for (let i = 0; i < str.length; i++) {
+          view.setUint8(offset + i, str.charCodeAt(i));
+        }
+      }
+
+      writeStr(0, 'RIFF');
+      view.setUint32(4, totalFileSize - 8, true);
+      writeStr(8, 'WAVE');
+      writeStr(12, 'fmt ');
+      view.setUint32(16, 16, true);
+      view.setUint16(20, format, true);
+      view.setUint16(22, numChannels, true);
+      view.setUint32(24, sampleRate, true);
+      view.setUint32(28, sampleRate * blockAlign, true);
+      view.setUint16(32, blockAlign, true);
+      view.setUint16(34, bitDepth, true);
+      writeStr(36, 'data');
+      view.setUint32(40, dataSize, true);
+
+      const channels = [];
+      for (let ch = 0; ch < numChannels; ch++) {
+        if (ch < buffer.numberOfChannels) {
+          channels.push(buffer.getChannelData(ch));
+        } else {
+          channels.push(buffer.getChannelData(0));
+        }
+      }
+
+      let offset = 44;
+      if (bitDepth === 24) {
+        for (let i = 0; i < buffer.length; i++) {
+          for (let ch = 0; ch < numChannels; ch++) {
+            const sample = Math.max(-1, Math.min(1, channels[ch][i]));
+            const int24 = Math.round(sample < 0 ? sample * 0x800000 : sample * 0x7FFFFF);
+            view.setUint8(offset, int24 & 0xFF);
+            view.setUint8(offset + 1, (int24 >> 8) & 0xFF);
+            view.setUint8(offset + 2, (int24 >> 16) & 0xFF);
+            offset += 3;
+          }
+        }
+      } else {
+        for (let i = 0; i < buffer.length; i++) {
+          for (let ch = 0; ch < numChannels; ch++) {
+            const sample = Math.max(-1, Math.min(1, channels[ch][i]));
+            const int16 = Math.round(sample < 0 ? sample * 0x8000 : sample * 0x7FFF);
+            view.setInt16(offset, int16, true);
+            offset += 2;
+          }
+        }
+      }
+
+      if (infoChunk.byteLength > 0) {
+        uint8.set(infoChunk, 44 + paddedDataSize);
+      }
+
+      return new Blob([arrayBuffer], { type: 'audio/wav' });
+    }
+
+    async function downloadMasteredWav() {
+      if (!currentBuffer) {
+        showToast('No audio loaded to download.');
+        return;
+      }
+
+      const targetChannels = parseInt(document.getElementById('metaChannels').value, 10) || 2;
+      const targetSampleRate = parseInt(document.getElementById('metaSampleRate').value, 10) || 44100;
+      const targetBitDepth = parseInt(document.getElementById('metaBitDepth').value, 10) || 16;
+
+      // Validate filename & warn if non-compliant, but never block download
+      const isNameCompliant = validateCdBabyFileName();
+      let rawExportName = metaFileNameInput.value.trim() || currentFileName || 'Oddio_City_2999_Master';
+      rawExportName = rawExportName.replace(/\.wav$/i, '');
+
+      const metaPayload = {
+        trackNumber: document.getElementById('metaTrackNumber').value,
+        artist: document.getElementById('metaArtist').value,
+        album: document.getElementById('metaAlbum').value,
+        title: document.getElementById('metaTitle').value,
+        year: document.getElementById('metaYear').value,
+        genre: document.getElementById('metaGenre').value,
+        subGenre: document.getElementById('metaSubGenre').value,
+        comments: document.getElementById('metaComments').value
+      };
+
+      logConsole(
+        `Rendering WAV export (${targetChannels === 2 ? 'Stereo' : 'Mono'}, ${(targetSampleRate / 1000).toFixed(1)} kHz, ${targetBitDepth}-bit)...`,
+        'text-cyber-cyan'
+      );
+
+      const renderedBuf = await renderBufferWithTargetSettings(currentBuffer, targetChannels, targetSampleRate);
+      const blob = exportBufferToWavBlob(renderedBuf, targetBitDepth, targetChannels, metaPayload);
+
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      const finalFileName = `${rawExportName}.wav`;
+      a.href = url;
+      a.download = finalFileName;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      logConsole(
+        `Exported clean WAV "${finalFileName}" with fresh RIFF INFO metadata (${isNameCompliant ? 'CD Baby filename compliant' : 'Filename warning active'}).`,
+        'text-cyber-green'
+      );
+      showToast(`Downloaded ${finalFileName}`);
+    }
+
+    btnUpload.addEventListener('click', () => fileInput.click());
+    btnOverlayUpload.addEventListener('click', (e) => {
+      e.stopPropagation();
+      fileInput.click();
+    });
+    btnOverlayDemo.addEventListener('click', (e) => {
+      e.stopPropagation();
+      generateSynthDemoTrack();
+    });
+
+    // Clicking the dropZoneBox (outside the buttons) also opens the file browser
+    const dropZoneBox = document.getElementById('dropZoneBox');
+    dropZoneBox.addEventListener('click', (e) => {
+      if (e.target.closest('button')) return;
+      fileInput.click();
+    });
+
+    // Drag & Drop handlers on the initial overlay AND entire waveform area
+    ['dragenter', 'dragover'].forEach(evtName => {
+      window.addEventListener(evtName, (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dropZoneBox.classList.add('drop-zone-active');
+      });
+    });
+
+    ['dragleave', 'drop'].forEach(evtName => {
+      window.addEventListener(evtName, (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dropZoneBox.classList.remove('drop-zone-active');
+      });
+    });
+
+    window.addEventListener('drop', (e) => {
+      const dt = e.dataTransfer;
+      if (dt && dt.files && dt.files.length > 0) {
+        handleFileSelected(dt.files[0]);
+      }
+    });
+
+    fileInput.addEventListener('change', (e) => {
+      if (e.target.files && e.target.files[0]) {
+        handleFileSelected(e.target.files[0]);
+        e.target.value = '';
+      }
+    });
+
+    // Auto-highlight all text/number inputs when clicked or focused throughout the app
+    function enableInputAutoHighlight() {
+      document.addEventListener('focusin', (e) => {
+        const el = e.target;
+        if (el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA')) {
+          const type = (el.getAttribute('type') || 'text').toLowerCase();
+          if (type === 'text' || type === 'number' || type === 'search') {
+            setTimeout(() => {
+              try { el.select(); } catch (err) {}
+            }, 10);
+          }
+        }
+      });
+
+      document.addEventListener('click', (e) => {
+        const el = e.target;
+        if (el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') && document.activeElement === el) {
+          const type = (el.getAttribute('type') || 'text').toLowerCase();
+          if (type === 'text' || type === 'number' || type === 'search') {
+            try { el.select(); } catch (err) {}
+          }
+        }
+      });
+    }
+
+    btnLoadDemo.addEventListener('click', generateSynthDemoTrack);
+    btnDownload.addEventListener('click', downloadMasteredWav);
+    btnPlayPause.addEventListener('click', togglePlayPause);
+    btnBack.addEventListener('click', seekToStart);
+
+    btnRevert.addEventListener('click', () => {
+      if (!originalBuffer) return;
+      stopPlayback();
+      currentBuffer = cloneAudioBuffer(originalBuffer);
+      isMastered = false;
+      pauseOffset = 0;
+      const badge = document.getElementById('badgeMasteredState');
+      badge.textContent = 'RAW INPUT';
+      badge.className = 'px-1.5 py-0.5 text-[9px] font-mono bg-slate-800 text-slate-300 rounded';
+      resetStepCardsUI();
+      computeWaveformPeaks();
+      updateSignalMetrics();
+      updateTransportTimecodes();
+      drawWaveform();
+      logConsole('Reverted to original unmastered audio buffer.', 'text-amber-300');
+      showToast('Reverted to Original Unmastered Audio');
+    });
+
+    document.getElementById('btnNormalizeConfig').addEventListener('click', () => openModal('normalize'));
+    document.getElementById('btnCompressorConfig').addEventListener('click', () => openModal('compressor'));
+    document.getElementById('btnLimiterConfig').addEventListener('click', () => openModal('limiter'));
+    btnMaster.addEventListener('click', runFullMasteringPipeline);
+
+    // Global Keyboard Shortcut Handler
+    window.addEventListener('keydown', (e) => {
+      const key = e.key;
+      const lower = key.toLowerCase();
+      const isCmdOrCtrl = e.ctrlKey || e.metaKey;
+
+      // 1. CTRL+O / CMD+O -> Open file browser
+      if (isCmdOrCtrl && lower === 'o') {
+        e.preventDefault();
+        fileInput.click();
+        return;
+      }
+
+      // 2. CTRL+S / CMD+S -> Download final WAV
+      if (isCmdOrCtrl && lower === 's') {
+        e.preventDefault();
+        downloadMasteredWav();
+        return;
+      }
+
+      // 3. If a configuration modal is currently open: Esc = Cancel, Enter = Save
+      if (activeModal) {
+        if (key === 'Escape') {
+          e.preventDefault();
+          closeActiveModal();
+        } else if (key === 'Enter') {
+          e.preventDefault();
+          saveCurrentActiveModal();
+        }
+        return;
+      }
+
+      // Ignore single-key shortcuts and Ctrl+Z if user is typing inside text inputs
+      const tag = document.activeElement ? document.activeElement.tagName : '';
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') {
+        if (key === 'Enter') {
+          document.activeElement.blur();
+        }
+        return;
+      }
+
+      // 3.5 CTRL+Z / CMD+Z -> Revert Original Audio Buffer
+      if (isCmdOrCtrl && lower === 'z') {
+        e.preventDefault();
+        btnRevert.click();
+        return;
+      }
+
+      // 4. Spacebar -> Play / Pause current version of song
+      if (key === ' ' || e.code === 'Space') {
+        e.preventDefault();
+        togglePlayPause();
+        return;
+      }
+
+      // 5. Left Arrow -> Back to start of song
+      if (key === 'ArrowLeft') {
+        e.preventDefault();
+        seekToStart();
+        return;
+      }
+
+      // 6. N -> Open Normalize config
+      if (!isCmdOrCtrl && lower === 'n') {
+        e.preventDefault();
+        openModal('normalize');
+        return;
+      }
+
+      // 7. C -> Open Compressor config
+      if (!isCmdOrCtrl && lower === 'c') {
+        e.preventDefault();
+        openModal('compressor');
+        return;
+      }
+
+      // 8. L -> Open Limiter config
+      if (!isCmdOrCtrl && lower === 'l') {
+        e.preventDefault();
+        openModal('limiter');
+        return;
+      }
+
+      // 9. M -> Run 8-step Master process
+      if (!isCmdOrCtrl && lower === 'm') {
+        e.preventDefault();
+        runFullMasteringPipeline();
+        return;
+      }
+    });
+
+    // Resize listener for responsive waveform canvas
+    window.addEventListener('resize', () => {
+      drawWaveform();
+    });
+
+    window.onload = function () {
+      initCdBabyGenres();
+      enableInputAutoHighlight();
+      validateCdBabyFileName();
+      syncFadeReadouts();
+      drawWaveform();
+    };
+  </script>
+</body>
+</html>
