@@ -58,6 +58,11 @@
       "dir": "apop/"
     },
     {
+      "name": "Oddio City 2099",
+      "path": "odd/index.html",
+      "dir": "odd/"
+    },
+    {
       "name": "Nuke Pac Man",
       "path": "pac/index.html",
       "dir": "pac/"
